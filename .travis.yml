@@ -14,4 +14,4 @@ addons:
       secure: $SONARQUBE_TOKEN
 script:
   - mvn install
-  - mvn sonar:sonar
+  - mvn sonar:sonar -Dsonar.java.libraries=target
