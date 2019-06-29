@@ -18,7 +18,19 @@ grammar Thorium;
 NUMBER
     : [+-]? ( [0-9]+ | [0-9]+'.' | '.'[0-9]+ | [0-9]+'.'[0-9]+ ) ( [eE] [+-]? [0-9]+ )?
     ;
+STRING
+    : '"' ( ~[\\"\r\n] | '\\"' )* '"'
+    ;
+BOOLEAN
+    : 'true' | 'false'
+    ;
+NONE
+    : 'none'
+    ;
 
 root
-    : NUMBER EOF
+    : NUMBER
+    | BOOLEAN
+    | NONE
+    | STRING
     ;
