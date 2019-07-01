@@ -35,6 +35,8 @@ class NumberTest {
             ".0E0", "0.E0", "0.0E0",
             ".0E+0", "0.E+0", "0.0E+0",
             ".0E-0", "0.E-0", "0.0E-0",
+            "1_2", "1_2_3", "1_2e1_2", "1_2E1_2",
+            "1_2.1_2"
     })
     void validNumbers(String string) {
         Assertions.assertThat(new Tokens(string).parse())
