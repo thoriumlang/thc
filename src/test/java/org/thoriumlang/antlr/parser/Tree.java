@@ -66,6 +66,6 @@ public class Tree {
             }
         });
 
-        return p.root().getText();
+        return p.root().toStringTree(p);
     }
 }

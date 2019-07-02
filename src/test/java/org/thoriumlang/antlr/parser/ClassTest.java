@@ -27,9 +27,10 @@ class ClassTest {
         Assertions.assertThat(
                 new Tree(
                         new TokenStub("class", ThoriumLexer.CLASS),
+                        new TokenStub("Identifier", ThoriumLexer.IDENTIFIER),
                         new TokenStub("{", ThoriumLexer.LBRACE),
                         new TokenStub("}", ThoriumLexer.RBRACE)
                 ).serialize()
-        ).isEqualTo("class{}");
+        ).isEqualTo("(root (classDef class Identifier { }))");
     }
 }

@@ -42,10 +42,10 @@ IDENTIFIER
     : [a-zA-Z_][0-9a-zA-Z_]*
     ;
 
-classDef
-    : CLASS LBRACE RBRACE
-    ;
-
 root
     : classDef
+    ;
+
+classDef
+    : CLASS IDENTIFIER LBRACE RBRACE
     ;
