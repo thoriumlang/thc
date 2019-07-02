@@ -30,11 +30,14 @@ class KeywordsTest {
     private static final Map<String, Integer> keywords = ImmutableMap.<String, Integer>builder()
             .put("class", ThoriumLexer.CLASS)
             .put("type", ThoriumLexer.TYPE)
+            .put("private", ThoriumLexer.PRIVATE)
+            .put("public", ThoriumLexer.PUBLIC)
+            .put("namespace", ThoriumLexer.NAMESPACE)
             .build();
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "class", "type"
+            "class", "type", "private", "public", "namespace"
     })
     void validKeywords(String text) {
         Assertions.assertThat(new Tokens(text).parse())

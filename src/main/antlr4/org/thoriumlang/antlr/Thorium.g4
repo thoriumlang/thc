@@ -22,6 +22,10 @@ TYPE
     : 'type'
     ;
 
+PRIVATE : 'private' ;
+PUBLIC : 'public' ;
+NAMESPACE : 'namespace' ;
+
 NUMBER
     : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )?
     ;
@@ -50,4 +54,12 @@ typeDef
 
 classDef
     : CLASS IDENTIFIER '{' '}'
+    ;
+
+typeSpec
+    : IDENTIFIER
+    ;
+
+methodSignature
+    : ( PRIVATE | NAMESPACE | PUBLIC )? IDENTIFIER '(' ( IDENTIFIER ':' typeSpec ( ',' IDENTIFIER ':' typeSpec )* )? ')' ':' typeSpec
     ;

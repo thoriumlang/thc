@@ -19,6 +19,7 @@ import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ListTokenSource;
 import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -27,6 +28,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.assertj.core.api.Assertions;
 import org.thoriumlang.antlr.ThoriumParser;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -38,12 +40,13 @@ public class Tree {
         this.tokens = Arrays.asList(tokens);
     }
 
-    public String serialize() {
+    public String serialize(String ruleName) {
         ThoriumParser p = new ThoriumParser(
                 new CommonTokenStream(
                         new ListTokenSource(tokens)
                 )
         );
+
         p.addErrorListener(new ANTLRErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
@@ -66,6 +69,23 @@ public class Tree {
             }
         });
 
-        return p.root().toStringTree(p);
+        try {
+            try {
+                return ((ParserRuleContext) (ThoriumParser.class.getMethod(ruleName).invoke(p))).toStringTree(p);
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof AssertionError) {
+                    throw (AssertionError) e.getCause();
+                }
+                Assertions.fail(e.getMessage());
+                return null;
+            }
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            Assertions.fail(String.format("'%s' is not a valid rule name", ruleName));
+            return null;
+        }
+    }
+
+    public String serialize() {
+        return serialize("root");
     }
 }
