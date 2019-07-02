@@ -15,14 +15,17 @@
  */
 package org.thoriumlang.antlr.parser;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.antlr.ThoriumLexer;
 
 class TypeSpecTest {
-    @Disabled
     @Test
     void test() {
-        Assertions.fail("implement");
+        Assertions.assertThat(
+                new Tree(
+                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                ).serialize("typeSpec")
+        ).isEqualTo("(typeSpec typeName)");
     }
 }
