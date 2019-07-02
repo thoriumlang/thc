@@ -43,7 +43,12 @@ IDENTIFIER
     ;
 
 root
-    : classDef
+    : typeDef
+    | classDef
+    ;
+
+typeDef
+    : TYPE IDENTIFIER LBRACE RBRACE
     ;
 
 classDef
