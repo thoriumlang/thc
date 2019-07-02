@@ -43,6 +43,10 @@ IDENTIFIER
     : [a-zA-Z_][0-9a-zA-Z_]*
     ;
 
+WS
+    : [ \t\r\n\u000C]+ -> skip
+    ;
+
 root
     : typeDef
     | classDef
