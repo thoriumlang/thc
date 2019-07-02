@@ -28,8 +28,8 @@ class TypeTest {
                 new Tree(
                         new TokenStub("type", ThoriumLexer.TYPE),
                         new TokenStub("Identifier", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("{", ThoriumLexer.LBRACE),
-                        new TokenStub("}", ThoriumLexer.RBRACE)
+                        new TokenStub("{"),
+                        new TokenStub("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier { }))");
     }

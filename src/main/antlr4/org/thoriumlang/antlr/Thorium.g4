@@ -15,9 +15,6 @@
  */
 grammar Thorium;
 
-RBRACE : '}' ;
-LBRACE : '{' ;
-
 CLASS
     : 'class'
     ;
@@ -48,9 +45,9 @@ root
     ;
 
 typeDef
-    : TYPE IDENTIFIER LBRACE RBRACE
+    : TYPE IDENTIFIER '{' '}'
     ;
 
 classDef
-    : CLASS IDENTIFIER LBRACE RBRACE
+    : CLASS IDENTIFIER '{' '}'
     ;

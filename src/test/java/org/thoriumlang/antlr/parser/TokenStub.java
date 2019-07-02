@@ -18,6 +18,7 @@ package org.thoriumlang.antlr.parser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
+import org.thoriumlang.antlr.ThoriumLexer;
 
 public class TokenStub implements Token {
     private final String text;
@@ -30,6 +31,19 @@ public class TokenStub implements Token {
 
     public TokenStub(int type) {
         this("", type);
+    }
+
+    public TokenStub(String litteral) {
+        this(litteral, findTokenType(litteral));
+    }
+
+    private static int findTokenType(String literal) {
+        for (int i = 0; i < ThoriumLexer.VOCABULARY.getMaxTokenType(); i++) {
+            if (("'" + literal + "'").equals(ThoriumLexer.VOCABULARY.getLiteralName(i))) {
+                return i;
+            }
+        }
+        throw new IllegalArgumentException(String.format("'%s' is not a valid token literal", literal));
     }
 
     @Override
