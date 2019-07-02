@@ -18,12 +18,14 @@ package org.thoriumlang.antlr.lexer;
 import com.google.common.collect.ImmutableMap;
 import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.antlr.ThoriumLexer;
 
 import java.util.Map;
 
+@Tag("lexer")
 class KeywordsTest {
     private static final Map<String, Integer> keywords = ImmutableMap.<String, Integer>builder()
             .put("class", ThoriumLexer.CLASS)

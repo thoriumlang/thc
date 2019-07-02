@@ -17,10 +17,12 @@ package org.thoriumlang.antlr.lexer;
 
 import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.antlr.ThoriumLexer;
 
+@Tag("lexer")
 class BooleanTest {
     @ParameterizedTest
     @ValueSource(strings = {
