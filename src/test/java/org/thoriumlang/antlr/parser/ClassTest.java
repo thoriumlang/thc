@@ -13,39 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-grammar Thorium;
+package org.thoriumlang.antlr.parser;
 
-RBRACE : '}' ;
-LBRACE : '{' ;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.thoriumlang.antlr.ThoriumLexer;
 
-CLASS
-    : 'class'
-    ;
-TYPE
-    : 'type'
-    ;
-
-NUMBER
-    : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )?
-    ;
-STRING
-    : '"' ( ~[\\"\r\n] | '\\"' )* '"'
-    ;
-BOOLEAN
-    : 'true' | 'false'
-    ;
-NONE
-    : 'none'
-    ;
-
-IDENTIFIER
-    : [a-zA-Z_][0-9a-zA-Z_]*
-    ;
-
-classDef
-    : CLASS LBRACE RBRACE
-    ;
-
-root
-    : classDef
-    ;
+@Tag("parser")
+class ClassTest {
+    @Test
+    void emptyClass() {
+        Assertions.assertThat(
+                new Tree(
+                        new TokenStub("class", ThoriumLexer.CLASS),
+                        new TokenStub("{", ThoriumLexer.LBRACE),
+                        new TokenStub("}", ThoriumLexer.RBRACE)
+                ).serialize()
+        ).isEqualTo("class{}");
+    }
+}
