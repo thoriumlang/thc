@@ -22,6 +22,8 @@ TYPE
     : 'type'
     ;
 
+USE : 'use' ;
+
 PRIVATE : 'private' ;
 PUBLIC : 'public' ;
 NAMESPACE : 'namespace' ;
@@ -50,6 +52,16 @@ WS
 root
     : typeDef
     | classDef
+    ;
+
+fqIdentifier
+    : IDENTIFIER ( '.' IDENTIFIER )*
+    ;
+use
+    : USE fqIdentifier ';'
+    | USE fqIdentifier '.' '*' ';'
+    | USE fqIdentifier ':' IDENTIFIER ';'
+    | USE fqIdentifier '.' '{' fqIdentifier ( ':' IDENTIFIER )? ( ',' fqIdentifier ( ':' IDENTIFIER )? )? '}' ';'
     ;
 
 typeDef

@@ -28,6 +28,7 @@ import java.util.Map;
 @Tag("lexer")
 class KeywordsTest {
     private static final Map<String, Integer> keywords = ImmutableMap.<String, Integer>builder()
+            .put("use", ThoriumLexer.USE)
             .put("class", ThoriumLexer.CLASS)
             .put("type", ThoriumLexer.TYPE)
             .put("private", ThoriumLexer.PRIVATE)
@@ -37,7 +38,7 @@ class KeywordsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "class", "type", "private", "public", "namespace"
+            "use", "class", "type", "private", "public", "namespace"
     })
     void validKeywords(String text) {
         Assertions.assertThat(new Tokens(text).parse())
