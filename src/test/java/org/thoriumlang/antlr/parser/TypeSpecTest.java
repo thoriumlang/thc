@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.antlr.ThoriumLexer;
 
+import static org.thoriumlang.antlr.parser.TokenStub.token;
+
 @SuppressWarnings("squid:S1192")
 @Tag("parser")
 class TypeSpecTest {
@@ -27,7 +29,7 @@ class TypeSpecTest {
     void simple() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec typeName)");
     }
@@ -36,11 +38,11 @@ class TypeSpecTest {
     void union() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("typeC", ThoriumLexer.IDENTIFIER)
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("typeC", ThoriumLexer.IDENTIFIER)
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec (typeSpecUnion typeA & typeB & typeC))");
     }
@@ -49,11 +51,11 @@ class TypeSpecTest {
     void intersection() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("|"),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("|"),
-                        new TokenStub("typeC", ThoriumLexer.IDENTIFIER)
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("typeC", ThoriumLexer.IDENTIFIER)
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec (typeSpecIntersection typeA | typeB | typeC))");
     }
@@ -62,13 +64,13 @@ class TypeSpecTest {
     void innerUnion() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("|"),
-                        new TokenStub("("),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("typeC", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")")
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("("),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("typeC", ThoriumLexer.IDENTIFIER),
+                        token(")")
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec (typeSpecIntersection typeA | ( (typeSpec (typeSpecUnion typeB & typeC)) )))");
     }
@@ -77,13 +79,13 @@ class TypeSpecTest {
     void innerIntersection() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("("),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("|"),
-                        new TokenStub("typeC", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")")
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("("),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("typeC", ThoriumLexer.IDENTIFIER),
+                        token(")")
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec (typeSpecUnion typeA & ( (typeSpec (typeSpecIntersection typeB | typeC)) )))");
     }
@@ -92,17 +94,17 @@ class TypeSpecTest {
     void intersectionOfUnions() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("("),
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")"),
-                        new TokenStub("|"),
-                        new TokenStub("("),
-                        new TokenStub("typeC", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("&"),
-                        new TokenStub("typeD", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")")
+                        token("("),
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("|"),
+                        token("("),
+                        token("typeC", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("typeD", ThoriumLexer.IDENTIFIER),
+                        token(")")
                 ).serialize("typeSpec")
         ).isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpec (typeSpecUnion typeA & typeB)) ) | ( (typeSpec (typeSpecUnion typeC & typeD)) )))");
     }
@@ -111,12 +113,12 @@ class TypeSpecTest {
     void unionOfIntersections() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("("),
-                        new TokenStub("typeA", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("|"),
-                        new TokenStub("typeB", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")"),
-                        new TokenStub("&"),
+                        token("("),
+                        token("typeA", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("typeB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("&"),
                         new TokenStub("("),
                         new TokenStub("typeC", ThoriumLexer.IDENTIFIER),
                         new TokenStub("|"),

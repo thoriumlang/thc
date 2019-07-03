@@ -20,16 +20,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.antlr.ThoriumLexer;
 
+import static org.thoriumlang.antlr.parser.TokenStub.token;
+
 @Tag("parser")
 class ClassTest {
     @Test
     void emptyClass() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("class", ThoriumLexer.CLASS),
-                        new TokenStub("Identifier", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("{"),
-                        new TokenStub("}")
+                        token("class", ThoriumLexer.CLASS),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token("{"),
+                        token("}")
                 ).serialize()
         ).isEqualTo("(root (classDef class Identifier { }))");
     }

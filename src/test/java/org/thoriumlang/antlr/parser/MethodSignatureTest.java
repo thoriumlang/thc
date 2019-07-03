@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.antlr.ThoriumLexer;
 
+import static org.thoriumlang.antlr.parser.TokenStub.token;
+
 @SuppressWarnings("squid:S1192")
 @Tag("parser")
 class MethodSignatureTest {
@@ -27,11 +29,11 @@ class MethodSignatureTest {
     void defaultMethodSignature() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature methodName ( ) : (typeSpec typeName))");
     }
@@ -40,12 +42,12 @@ class MethodSignatureTest {
     void privateMethodSignature() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("private", ThoriumLexer.PRIVATE),
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("private", ThoriumLexer.PRIVATE),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature private methodName ( ) : (typeSpec typeName))");
     }
@@ -54,12 +56,12 @@ class MethodSignatureTest {
     void namespaceMethodSignature() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("namespace", ThoriumLexer.NAMESPACE),
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("namespace", ThoriumLexer.NAMESPACE),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature namespace methodName ( ) : (typeSpec typeName))");
     }
@@ -68,12 +70,12 @@ class MethodSignatureTest {
     void publicMethodSignature() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("public", ThoriumLexer.PUBLIC),
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( ) : (typeSpec typeName))");
     }
@@ -82,15 +84,15 @@ class MethodSignatureTest {
     void methodSignatureWithParameter() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("public", ThoriumLexer.PUBLIC),
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub("id", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(":"),
-                        new TokenStub("type", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token("id", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("type", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( id : (typeSpec type) ) : (typeSpec typeName))");
     }
@@ -99,23 +101,23 @@ class MethodSignatureTest {
     void methodSignatureWithParameters() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("public", ThoriumLexer.PUBLIC),
-                        new TokenStub("methodName", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("("),
-                        new TokenStub("id", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(":"),
-                        new TokenStub("type", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(","),
-                        new TokenStub("id", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(":"),
-                        new TokenStub("type", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(","),
-                        new TokenStub("id", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(":"),
-                        new TokenStub("type", ThoriumLexer.IDENTIFIER),
-                        new TokenStub(")"),
-                        new TokenStub(":"),
-                        new TokenStub("typeName", ThoriumLexer.IDENTIFIER)
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token("id", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("type", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("id", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("type", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("id", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("type", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( id : (typeSpec type) , id : (typeSpec type) , id : (typeSpec type) ) : (typeSpec typeName))");
     }
