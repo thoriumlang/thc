@@ -37,6 +37,18 @@ public class TokenStub implements Token {
         this(litteral, findTokenType(litteral));
     }
 
+    public static TokenStub token(String text, int type) {
+        return new TokenStub(text, type);
+    }
+
+    public static TokenStub token(String text) {
+        return new TokenStub(text);
+    }
+
+    public static TokenStub token(int type) {
+        return new TokenStub(type);
+    }
+
     private static int findTokenType(String literal) {
         for (int i = 0; i < ThoriumLexer.VOCABULARY.getMaxTokenType(); i++) {
             if (("'" + literal + "'").equals(ThoriumLexer.VOCABULARY.getLiteralName(i))) {

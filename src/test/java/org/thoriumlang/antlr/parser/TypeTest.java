@@ -20,17 +20,60 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.antlr.ThoriumLexer;
 
+import static org.thoriumlang.antlr.parser.TokenStub.token;
+
+@SuppressWarnings("squid:S1192")
 @Tag("parser")
 class TypeTest {
     @Test
     void emptyType() {
         Assertions.assertThat(
                 new Tree(
-                        new TokenStub("type", ThoriumLexer.TYPE),
-                        new TokenStub("Identifier", ThoriumLexer.IDENTIFIER),
-                        new TokenStub("{"),
-                        new TokenStub("}")
+                        token("type", ThoriumLexer.TYPE),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token("{"),
+                        token("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier { }))");
+    }
+
+    @Test
+    void nonEmptyType() {
+        Assertions.assertThat(
+                new Tree(
+                        token("type", ThoriumLexer.TYPE),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token("{"),
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("fibonacci", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token("n", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("Integer", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token(":"),
+                        token("Integer", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("None", ThoriumLexer.IDENTIFIER),
+                        token(";"),
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("square", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token("n", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("Integer", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token(":"),
+                        token("Integer", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("None", ThoriumLexer.IDENTIFIER),
+                        token(";"),
+                        token("}")
+                ).serialize()
+        ).isEqualTo("(root (typeDef type Identifier { " +
+                            "(methodSignature public fibonacci ( n : (typeSpec Integer) ) : (typeSpec (typeSpecIntersection Integer | None))) ; " +
+                            "(methodSignature public square ( n : (typeSpec Integer) ) : (typeSpec (typeSpecIntersection Integer | None))) ;" +
+                            " }))"
+        );
     }
 }

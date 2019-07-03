@@ -53,7 +53,7 @@ root
     ;
 
 typeDef
-    : TYPE IDENTIFIER '{' '}'
+    : TYPE IDENTIFIER '{' ( methodSignature ';' )* '}'
     ;
 
 classDef
