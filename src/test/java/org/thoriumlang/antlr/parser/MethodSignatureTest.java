@@ -23,10 +23,6 @@ import org.thoriumlang.antlr.ThoriumLexer;
 @SuppressWarnings("squid:S1192")
 @Tag("parser")
 class MethodSignatureTest {
-    public static void main(String[] args) {
-        ThoriumLexer.VOCABULARY.getLiteralName(5);
-    }
-
     @Test
     void defaultMethodSignature() {
         Assertions.assertThat(
