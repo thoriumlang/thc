@@ -62,6 +62,20 @@ classDef
 
 typeSpec
     : IDENTIFIER
+    | typeSpecUnion
+    | typeSpecIntersection
+    ;
+typeSpecUnion
+    : IDENTIFIER ( '&' IDENTIFIER )+
+    | '(' typeSpec ')' '&' IDENTIFIER
+    | IDENTIFIER '&' '(' typeSpec ')'
+    | '(' typeSpec ')' '&' '(' typeSpec ')'
+    ;
+typeSpecIntersection
+    : IDENTIFIER ( '|' IDENTIFIER )+
+    | '(' typeSpec ')' '|' IDENTIFIER
+    | IDENTIFIER '|' '(' typeSpec ')'
+    | '(' typeSpec ')' '|' '(' typeSpec ')'
     ;
 
 methodSignature
