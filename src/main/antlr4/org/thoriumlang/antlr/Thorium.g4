@@ -93,3 +93,7 @@ typeSpecIntersection
 methodSignature
     : ( PRIVATE | NAMESPACE | PUBLIC )? IDENTIFIER '(' ( IDENTIFIER ':' typeSpec ( ',' IDENTIFIER ':' typeSpec )* )? ')' ':' typeSpec
     ;
+
+expression
+    : NUMBER
+    ;
