@@ -28,6 +28,9 @@ PRIVATE : 'private' ;
 PUBLIC : 'public' ;
 NAMESPACE : 'namespace' ;
 
+VAL : 'val' ;
+VAR : 'var' ;
+
 NUMBER
     : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )?
     ;
@@ -92,6 +95,11 @@ typeSpecIntersection
 
 methodSignature
     : ( PRIVATE | NAMESPACE | PUBLIC )? IDENTIFIER '(' ( IDENTIFIER ':' typeSpec ( ',' IDENTIFIER ':' typeSpec )* )? ')' ':' typeSpec
+    ;
+
+constOrVarDef
+    : VAL? IDENTIFIER ( ':' typeSpec )? '=' expression ';'
+    | VAR IDENTIFIER ( ':' typeSpec )? ( '=' expression )? ';'
     ;
 
 expression
