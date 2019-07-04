@@ -13,37 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.antlr.lexer;
+package org.thoriumlang.compiler.antlr.parser;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ListTokenSource;
 import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.assertj.core.api.Assertions;
-import org.thoriumlang.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumParser;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 
-class Tokens {
-    private final String string;
+public class Tree {
+    private final List<Token> tokens;
 
-    Tokens(String string) {
-        this.string = string;
+    public Tree(Token... tokens) {
+        this.tokens = Arrays.asList(tokens);
     }
 
-    List<Token> parse() {
-        CharStream cStream = CharStreams.fromString(string);
-        ThoriumLexer lexer = new ThoriumLexer(cStream);
-        lexer.addErrorListener(new ANTLRErrorListener() {
+    public String serialize(String ruleName) {
+        ThoriumParser p = new ThoriumParser(
+                new CommonTokenStream(
+                        new ListTokenSource(tokens)
+                )
+        );
+
+        p.addErrorListener(new ANTLRErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
                 Assertions.fail("syntaxError");
@@ -64,16 +68,24 @@ class Tokens {
                 Assertions.fail("reportContextSensitivity");
             }
         });
-        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        tokenStream.fill();
-        return Collections.unmodifiableList(
-                withoutEof(tokenStream.getTokens())
-        );
+
+        try {
+            try {
+                return ((ParserRuleContext) (ThoriumParser.class.getMethod(ruleName).invoke(p))).toStringTree(p);
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof AssertionError) {
+                    throw (AssertionError) e.getCause();
+                }
+                Assertions.fail(e.getMessage());
+                return null;
+            }
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            Assertions.fail(String.format("'%s' is not a valid rule name", ruleName));
+            return null;
+        }
     }
 
-    private List<Token> withoutEof(List<Token> tokens) {
-        ArrayList<Token> tokenWithoutEof = new ArrayList<>(tokens);
-        tokenWithoutEof.remove(tokens.size() - 1);
-        return tokenWithoutEof;
+    public String serialize() {
+        return serialize("root");
     }
 }

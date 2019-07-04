@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.antlr.parser;
+package org.thoriumlang.compiler.antlr.parser;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
-import org.thoriumlang.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
 public class TokenStub implements Token {
     private final String text;

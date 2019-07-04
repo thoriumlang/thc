@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.antlr.lexer;
+package org.thoriumlang.compiler.antlr.parser;
 
-import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.antlr.ThoriumLexer;
+import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
-@Tag("lexer")
-class StringTest {
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "\"any\"", "\"with\\\"double quotes\\\"\""
-    })
-    void validBooleans(String string) {
-        Assertions.assertThat(new Tokens(string).parse())
-                .hasSize(1)
-                .element(0)
-                .extracting(Token::getType, Token::getText)
-                .containsExactly(ThoriumLexer.STRING, string);
+import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
+
+@Tag("parser")
+class ExpressionTest {
+    @Test
+    void numberExpression() {
+        Assertions.assertThat(
+                new Tree(
+                        token("1", ThoriumLexer.NUMBER)
+                        ).serialize("expression")
+        ).isEqualTo("(expression 1)");
     }
+
 }

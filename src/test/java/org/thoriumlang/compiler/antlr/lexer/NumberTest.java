@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.antlr.lexer;
+package org.thoriumlang.compiler.antlr.lexer;
 
 import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
 @Tag("lexer")
 class NumberTest {

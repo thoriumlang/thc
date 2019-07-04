@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.antlr.parser;
+package org.thoriumlang.compiler.antlr.parser;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
-import static org.thoriumlang.antlr.parser.TokenStub.token;
+import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
 @SuppressWarnings("squid:S1192")
 @Tag("parser")
