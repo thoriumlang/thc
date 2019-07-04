@@ -103,5 +103,7 @@ constOrVarDef
     ;
 
 expression
-    : NUMBER
+    : NUMBER | STRING | BOOLEAN | NONE | IDENTIFIER
+    | '(' expression ')'
+    | expression ( '.' | '?.' ) IDENTIFIER '(' ')'
     ;
