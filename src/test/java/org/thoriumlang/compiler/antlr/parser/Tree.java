@@ -55,17 +55,17 @@ public class Tree {
 
             @Override
             public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
-                Assertions.fail("reportAmbiguity");
+                // nothing
             }
 
             @Override
             public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs) {
-                Assertions.fail("reportAttemptingFullContext");
+                // nothing
             }
 
             @Override
             public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs) {
-                Assertions.fail("reportContextSensitivity");
+                // nothing
             }
         });
 

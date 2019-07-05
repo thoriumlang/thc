@@ -77,20 +77,22 @@ classDef
 
 typeSpec
     : IDENTIFIER
+    | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
+    | typeSpecOptional
     | typeSpecUnion
     | typeSpecIntersection
     ;
+typeSpecOptional
+    : IDENTIFIER '?'
+    | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' '?'
+    ;
 typeSpecUnion
-    : IDENTIFIER ( '&' IDENTIFIER )+
-    | '(' typeSpec ')' '&' IDENTIFIER
-    | IDENTIFIER '&' '(' typeSpec ')'
-    | '(' typeSpec ')' '&' '(' typeSpec ')'
+    :       ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '&' ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 typeSpecIntersection
-    : IDENTIFIER ( '|' IDENTIFIER )+
-    | '(' typeSpec ')' '|' IDENTIFIER
-    | IDENTIFIER '|' '(' typeSpec ')'
-    | '(' typeSpec ')' '|' '(' typeSpec ')'
+    :       ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '|' ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 
 methodSignature

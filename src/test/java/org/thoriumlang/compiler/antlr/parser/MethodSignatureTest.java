@@ -119,6 +119,8 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature public methodName ( id : (typeSpec type) , id : (typeSpec type) , id : (typeSpec type) ) : (typeSpec typeName))");
+        ).isEqualTo("(methodSignature public methodName ( " +
+                "id : (typeSpec type) , id : (typeSpec type) , id : (typeSpec type) " +
+                ") : (typeSpec typeName))");
     }
 }
