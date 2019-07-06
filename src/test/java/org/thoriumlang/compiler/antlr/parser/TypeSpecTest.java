@@ -64,13 +64,15 @@ class TypeSpecTest {
                 new Tree(
                         token("("),
                         token("("),
+                        token("("),
                         token("TA", ThoriumLexer.IDENTIFIER),
+                        token(")"),
                         token(")"),
                         token(")")
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec ( (typeSpec ( TA )) ))");
+                .isEqualTo("(typeSpec ( (typeSpec ( (typeSpec ( TA )) )) ))");
     }
 
     @Test
@@ -93,14 +95,16 @@ class TypeSpecTest {
                 new Tree(
                         token("("),
                         token("("),
+                        token("("),
                         token("TA", ThoriumLexer.IDENTIFIER),
+                        token(")"),
                         token(")"),
                         token(")"),
                         token("?")
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpec ( TA )) ) ?))");
+                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpec ( (typeSpec ( TA )) )) ) ?))");
     }
 
     @Test
@@ -151,7 +155,7 @@ class TypeSpecTest {
     }
 
     @Test
-    void unionOptional() {
+    void unionOptional1() {
         Assertions.assertThat(
                 new Tree(
                         token("("),
@@ -164,6 +168,34 @@ class TypeSpecTest {
         )
                 .contains("TA", "TB")
                 .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpecUnion TA & TB) ) ?))");
+    }
+
+    @Test
+    void unionOptional2() {
+        Assertions.assertThat(
+                new Tree(
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("?"),
+                        token("&"),
+                        token("TB", ThoriumLexer.IDENTIFIER)
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB")
+                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional TA ?) & TB))");
+    }
+
+    @Test
+    void unionOptional3() {
+        Assertions.assertThat(
+                new Tree(
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token("?")
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB")
+                .isEqualTo("(typeSpec (typeSpecUnion TA & (typeSpecOptional TB ?)))");
     }
 
     @Test
@@ -481,7 +513,7 @@ class TypeSpecTest {
     }
 
     @Test
-    void intersectionOptional() {
+    void intersectionOptional1() {
         Assertions.assertThat(
                 new Tree(
                         token("("),
@@ -494,6 +526,34 @@ class TypeSpecTest {
         )
                 .contains("TA", "TB")
                 .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpecIntersection TA | TB) ) ?))");
+    }
+
+    @Test
+    void intersectionOptional2() {
+        Assertions.assertThat(
+                new Tree(
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("?"),
+                        token("|"),
+                        token("TB", ThoriumLexer.IDENTIFIER)
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB")
+                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional TA ?) | TB))");
+    }
+
+    @Test
+    void intersectionOptional3() {
+        Assertions.assertThat(
+                new Tree(
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token("?")
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB")
+                .isEqualTo("(typeSpec (typeSpecIntersection TA | (typeSpecOptional TB ?)))");
     }
 
     @Test
@@ -1121,5 +1181,55 @@ class TypeSpecTest {
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
                 .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecOptional TA ?) ) ?) | TB | TC | ( (typeSpecIntersection TD | TE) )))");
+    }
+
+    @Test
+    void complex4a() {
+        Assertions.assertThat(
+                new Tree(
+                        token("("),
+                        token("("),
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("?"),
+                        token("&"),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("|"),
+                        token("TC", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("?"),
+                        token("|"),
+                        token("("),
+                        token("TD", ThoriumLexer.IDENTIFIER),
+                        token(")")
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB", "TC", "TD")
+                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecIntersection ( (typeSpecUnion (typeSpecOptional TA ?) & TB) ) | TC) ) ?) | ( TD )))");
+    }
+
+    @Test
+    void complex4b() {
+        Assertions.assertThat(
+                new Tree(
+                        token("("),
+                        token("("),
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("?"),
+                        token("|"),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("&"),
+                        token("TC", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("?"),
+                        token("&"),
+                        token("("),
+                        token("TD", ThoriumLexer.IDENTIFIER),
+                        token(")")
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB", "TC", "TD")
+                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional TA ?) | TB) ) & TC) ) ?) & ( TD )))");
     }
 }
