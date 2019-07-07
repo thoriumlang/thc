@@ -16,7 +16,6 @@
 package org.thoriumlang.compiler.ast;
 
 import java.util.List;
-import java.util.Map;
 
 public interface Visitor<T> {
     T visitRoot(Type type);

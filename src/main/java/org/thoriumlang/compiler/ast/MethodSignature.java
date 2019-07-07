@@ -15,7 +15,6 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,8 +37,8 @@ public class MethodSignature implements Visitable {
                 visibility,
                 name,
                 parameters.stream()
-                .map(Parameter::toString)
-                .collect(Collectors.joining(", ")),
+                        .map(Parameter::toString)
+                        .collect(Collectors.joining(", ")),
                 returnType
         );
     }
