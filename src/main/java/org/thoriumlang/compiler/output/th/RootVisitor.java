@@ -17,8 +17,6 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.Type;
-import org.thoriumlang.compiler.tree.Node;
-import org.thoriumlang.compiler.tree.PrintableWrapper;
 
 public class RootVisitor extends BaseVisitor<String> {
     private final Configuration configuration;
@@ -29,6 +27,6 @@ public class RootVisitor extends BaseVisitor<String> {
 
     @Override
     public String visitRoot(Type type) {
-        return type.accept(new TypeVisitor(configuration)).toString();
+        return type.accept(new TypeVisitor(configuration));
     }
 }
