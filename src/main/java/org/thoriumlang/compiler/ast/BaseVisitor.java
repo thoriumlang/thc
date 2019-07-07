@@ -16,7 +16,6 @@
 package org.thoriumlang.compiler.ast;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class BaseVisitor<T> implements Visitor<T> {
     @Override
@@ -26,11 +25,6 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
 
     @Override
     public T visitType(String name, List<MethodSignature> methods) {
-        return null;
-    }
-
-    @Override
-    public T visitMethodSignature(Visibility visibility, String name, Map<String, String> parameters, TypeSpec returnType) {
         return null;
     }
 
@@ -51,6 +45,16 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
 
     @Override
     public T visitTypeSingle(String type) {
+        return null;
+    }
+
+    @Override
+    public T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType) {
+        return null;
+    }
+
+    @Override
+    public T visitParameter(String name, TypeSpec type) {
         return null;
     }
 }

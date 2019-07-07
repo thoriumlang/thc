@@ -15,25 +15,21 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.TypeSpec;
 
-import java.util.Collections;
+public class ParameterVisitor extends BaseVisitor<String> {
+    private final Configuration configuration;
 
-class WalkerTest {
-    @Test
-    void walk() {
-        Assertions.assertThat(
-                new Walker(
-                        new Root(
-                                new Type("name", Collections.emptyList()
-                                )
-                        ),
-                        new DefaultConfiguration()
-                ).walk()
-        )
-                .isEqualTo("type name {}");
+    public ParameterVisitor(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    @Override
+    public String visitParameter(String name, TypeSpec type) {
+        return String.format("%s: %s",
+                name,
+                type.accept(new TypeSpecVisitor(configuration))
+        );
     }
 }

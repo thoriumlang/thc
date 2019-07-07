@@ -7,4 +7,7 @@ type MyType {
   private f(): (A)?;
   private g(): (A & B & C & D);
   private h(): (A | B | C | D);
+  private i(i: Integer): None;
+  private j(i: (Integer)?): None;
+  private k(i: (Integer)?, j: (A & (B)?)): None;
 }

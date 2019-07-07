@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast;
+package org.thoriumlang.compiler.antlr4;
 
-import java.util.List;
-import java.util.Map;
+import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
+import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.Parameter;
 
-public interface Visitor<T> {
-    T visitRoot(Type type);
-    // will have a visitRoot(Class)
-
-    T visitType(String name, List<MethodSignature> methods);
-
-    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
-
-    T visitParameter(String name, TypeSpec type);
-
-    T visitTypeIntersection(List<TypeSpec> types);
-
-    T visitTypeOptional(TypeSpec typeSpec);
-
-    T visitTypeUnion(List<TypeSpec> types);
-
-    T visitTypeSingle(String type);
+public class MethodParameterVisitor  extends ThoriumBaseVisitor<Parameter> {
+    @Override
+    public Parameter visitMethodParameterDef(ThoriumParser.MethodParameterDefContext ctx) {
+        return new Parameter(
+                ctx.IDENTIFIER().getSymbol().getText(),
+                ctx.typeSpec().accept(new TypeSpecVisitor())
+        );
+    }
 }

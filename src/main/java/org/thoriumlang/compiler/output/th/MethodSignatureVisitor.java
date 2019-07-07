@@ -16,13 +16,15 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.Parameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
 import org.thoriumlang.compiler.tree.PrintableWrapper;
 
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MethodSignatureVisitor extends BaseVisitor<String> {
     private final Node<PrintableWrapper> parent;
@@ -34,8 +36,7 @@ public class MethodSignatureVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethodSignature(Visibility visibility, String name,
-            Map<String, String> parameters,
+    public String visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters,
             TypeSpec returnType) {
 
         return new Node<>(
@@ -43,9 +44,12 @@ public class MethodSignatureVisitor extends BaseVisitor<String> {
                 new BasePrintableWrapper() {
                     @Override
                     public String toString() {
-                        return String.format("%s %s(): %s;",
+                        return String.format("%s %s(%s): %s;",
                                 visibility.name().toLowerCase(),
                                 name,
+                                parameters.stream()
+                                        .map(p -> p.accept(new ParameterVisitor(configuration)))
+                                        .collect(Collectors.joining(", ")),
                                 returnType.accept(new TypeSpecVisitor(configuration)));
                     }
                 }

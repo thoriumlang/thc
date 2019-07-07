@@ -16,21 +16,32 @@
 package org.thoriumlang.compiler.ast;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class MethodSignature implements Visitable {
     private final Visibility visibility;
     private final String name;
+    private final List<Parameter> parameters;
     private final TypeSpec returnType;
 
-    public MethodSignature(Visibility visibility, String name, TypeSpec returnType) {
+    public MethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType) {
         this.visibility = visibility;
         this.name = name;
+        this.parameters = parameters;
         this.returnType = returnType;
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s ( ) : %s", visibility, name, returnType);
+        return String.format("%s %s ( %s ) : %s",
+                visibility,
+                name,
+                parameters.stream()
+                .map(Parameter::toString)
+                .collect(Collectors.joining(", ")),
+                returnType
+        );
     }
 
     @Override
@@ -38,7 +49,7 @@ public class MethodSignature implements Visitable {
         return visitor.visitMethodSignature(
                 visibility,
                 name,
-                Collections.emptyMap(),
+                parameters,
                 returnType
         );
     }

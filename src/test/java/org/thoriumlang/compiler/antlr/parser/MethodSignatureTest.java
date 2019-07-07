@@ -94,7 +94,8 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature public methodName ( id : (typeSpec type) ) : (typeSpec typeName))");
+        ).isEqualTo(
+                "(methodSignature public methodName ( (methodParameterDef id : (typeSpec type)) ) : (typeSpec typeName))");
     }
 
     @Test
@@ -104,23 +105,25 @@ class MethodSignatureTest {
                         token("public", ThoriumLexer.PUBLIC),
                         token("methodName", ThoriumLexer.IDENTIFIER),
                         token("("),
-                        token("id", ThoriumLexer.IDENTIFIER),
+                        token("id1", ThoriumLexer.IDENTIFIER),
                         token(":"),
-                        token("type", ThoriumLexer.IDENTIFIER),
+                        token("type1", ThoriumLexer.IDENTIFIER),
                         token(","),
-                        token("id", ThoriumLexer.IDENTIFIER),
+                        token("id2", ThoriumLexer.IDENTIFIER),
                         token(":"),
-                        token("type", ThoriumLexer.IDENTIFIER),
+                        token("type2", ThoriumLexer.IDENTIFIER),
                         token(","),
-                        token("id", ThoriumLexer.IDENTIFIER),
+                        token("id3", ThoriumLexer.IDENTIFIER),
                         token(":"),
-                        token("type", ThoriumLexer.IDENTIFIER),
+                        token("type3", ThoriumLexer.IDENTIFIER),
                         token(")"),
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( " +
-                "id : (typeSpec type) , id : (typeSpec type) , id : (typeSpec type) " +
+                "(methodParameterDef id1 : (typeSpec type1)) , " +
+                "(methodParameterDef id2 : (typeSpec type2)) , " +
+                "(methodParameterDef id3 : (typeSpec type3)) " +
                 ") : (typeSpec typeName))");
     }
 }

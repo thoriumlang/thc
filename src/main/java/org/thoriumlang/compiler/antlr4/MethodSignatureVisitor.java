@@ -20,12 +20,20 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.Visibility;
 
+import java.util.stream.Collectors;
+
 public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
+    private static final MethodParameterVisitor methodParameterVisitor = new MethodParameterVisitor();
+
     @Override
     public MethodSignature visitMethodSignature(ThoriumParser.MethodSignatureContext ctx) {
+
         return new MethodSignature(
                 visibility(ctx),
                 ctx.name.getText(),
+                ctx.methodParameterDef().stream()
+                        .map(p -> p.accept(methodParameterVisitor))
+                        .collect(Collectors.toList()),
                 ctx.returnType.accept(new TypeSpecVisitor())
         );
     }

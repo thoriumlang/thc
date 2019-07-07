@@ -28,8 +28,7 @@ class TypeVisitorTest {
     void visitEmptyType() {
         Assertions.assertThat(
                 new TypeVisitor(new DefaultConfiguration())
-                        .visitType("name", Collections.emptyList())
-                        .toString())
+                        .visitType("name", Collections.emptyList()))
                 .isEqualTo("type name {}");
     }
 
@@ -39,8 +38,15 @@ class TypeVisitorTest {
                 new TypeVisitor(new DefaultConfiguration())
                         .visitType("name", Collections
                                 .singletonList(
-                                        new MethodSignature(Visibility.PRIVATE, "m", new TypeSpecSingle("type"))))
-                        .toString())
+                                        new MethodSignature(
+                                                Visibility.PRIVATE,
+                                                "m",
+                                                Collections.emptyList(),
+                                                new TypeSpecSingle("type")
+                                        )
+                                )
+                        )
+        )
                 .isEqualTo("type name {\n  private m(): type;\n}");
     }
 }

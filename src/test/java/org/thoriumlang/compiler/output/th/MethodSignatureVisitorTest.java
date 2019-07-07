@@ -17,12 +17,13 @@ package org.thoriumlang.compiler.output.th;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.Parameter;
 import org.thoriumlang.compiler.ast.TypeSpecSingle;
 import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 class MethodSignatureVisitorTest {
     @Test
@@ -36,10 +37,12 @@ class MethodSignatureVisitorTest {
                         .visitMethodSignature(
                                 Visibility.PRIVATE,
                                 "m",
-                                Collections.emptyMap(),
+                                Arrays.asList(
+                                        new Parameter("p1", new TypeSpecSingle("type1")),
+                                        new Parameter("p2", new TypeSpecSingle("type2"))
+                                ),
                                 new TypeSpecSingle("type"))
-                        .toString()
         )
-                .isEqualTo("private m(): type;");
+                .isEqualTo("private m(p1: type1, p2: type2): type;");
     }
 }

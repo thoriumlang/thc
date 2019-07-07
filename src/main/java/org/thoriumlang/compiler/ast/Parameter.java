@@ -15,24 +15,22 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.List;
-import java.util.Map;
+public class Parameter implements Visitable {
+    private final String name;
+    private final TypeSpec type;
 
-public interface Visitor<T> {
-    T visitRoot(Type type);
-    // will have a visitRoot(Class)
+    public Parameter(String name, TypeSpec type) {
+        this.name = name;
+        this.type = type;
+    }
 
-    T visitType(String name, List<MethodSignature> methods);
+    @Override
+    public String toString() {
+        return name + ": " + type;
+    }
 
-    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
-
-    T visitParameter(String name, TypeSpec type);
-
-    T visitTypeIntersection(List<TypeSpec> types);
-
-    T visitTypeOptional(TypeSpec typeSpec);
-
-    T visitTypeUnion(List<TypeSpec> types);
-
-    T visitTypeSingle(String type);
+    @Override
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitParameter(name, type);
+    }
 }
