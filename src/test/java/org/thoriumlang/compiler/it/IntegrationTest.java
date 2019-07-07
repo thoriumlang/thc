@@ -15,15 +15,11 @@
  */
 package org.thoriumlang.compiler.it;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.compiler.antlr.ThoriumLexer;
-import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.antlr4.RootVisitor;
+import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.BufferedReader;
@@ -40,8 +36,7 @@ class IntegrationTest {
     void ast(String path) throws IOException {
         Assertions
                 .assertThat(
-                        new RootVisitor()
-                                .visit(parser(path).root())
+                        new AST(IntegrationTest.class.getResourceAsStream(path + ".th")).root()
                                 .toString())
                 .isEqualTo(
                         new BufferedReader(
@@ -54,18 +49,6 @@ class IntegrationTest {
                 );
     }
 
-    private ThoriumParser parser(String path) throws IOException {
-        return new ThoriumParser(
-                new CommonTokenStream(
-                        new ThoriumLexer(
-                                CharStreams.fromStream(
-                                        IntegrationTest.class.getResourceAsStream(path + ".th")
-                                )
-                        )
-                )
-        );
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type"
@@ -74,9 +57,8 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new Walker(
-                                new RootVisitor().visit(parser(path).root())
-                        )
-                                .walk()
+                                new AST(IntegrationTest.class.getResourceAsStream(path + ".th")).root()
+                        ).walk()
                 )
                 .isEqualTo(
                         new BufferedReader(

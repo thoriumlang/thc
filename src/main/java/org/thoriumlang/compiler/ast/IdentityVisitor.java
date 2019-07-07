@@ -66,7 +66,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
                 parameters.stream()
                         .map(p -> (Parameter) p.accept(this))
                         .collect(Collectors.toList()),
-                returnType
+                (TypeSpec) returnType.accept(this)
         );
     }
 

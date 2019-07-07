@@ -1,5 +1,5 @@
 type MyType:
-PRIVATE a (  ) : i:[D, i:[i:[C, u:[B, i:[A, None]]], None]]
+PRIVATE a (  ) : i:[D, None, C, u:[B, i:[A, None]]]
 PRIVATE b (  ) : u:[A, B]
 PRIVATE c (  ) : u:[C, i:[A, None]]
 PRIVATE d (  ) : i:[A, None]

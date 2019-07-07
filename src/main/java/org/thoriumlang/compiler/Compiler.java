@@ -15,11 +15,7 @@
  */
 package org.thoriumlang.compiler;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.thoriumlang.compiler.antlr.ThoriumLexer;
-import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.antlr4.RootVisitor;
+import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.output.th.Walker;
 
@@ -31,18 +27,7 @@ public class Compiler {
     }
 
     private void compile() throws IOException {
-        ThoriumParser parser = new ThoriumParser(
-                new CommonTokenStream(
-                        new ThoriumLexer(
-                                CharStreams.fromStream(
-                                        Compiler.class.getResourceAsStream("/org/thoriumlang/compiler/examples/type.th")
-                                )
-                        )
-                )
-        );
-
-        RootVisitor rootVisitor = new RootVisitor();
-        Root r = rootVisitor.visit(parser.root());
+        Root r = new AST(Compiler.class.getResourceAsStream("/org/thoriumlang/compiler/examples/type.th")).root();
         System.out.println(r);
 
         Walker walker = new Walker(r);

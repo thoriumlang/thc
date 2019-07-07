@@ -1,5 +1,5 @@
 type MyType {
-  private a(): (D | ((C | (B & (A | None))) | None));
+  private a(): (D | None | C | (B & (A | None)));
   private b(): (A & B);
   private c(): (C & (A | None));
   private d(): (A | None);
