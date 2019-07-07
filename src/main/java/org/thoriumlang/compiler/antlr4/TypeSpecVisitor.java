@@ -34,13 +34,13 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         if (ctx.typeSpec() != null) {
             return ctx.typeSpec().accept(this);
         }
-        if (ctx.typeSpecOptional()!=null) {
+        if (ctx.typeSpecOptional() != null) {
             return ctx.typeSpecOptional().accept(this);
         }
-        if (ctx.typeSpecUnion()!=null){
+        if (ctx.typeSpecUnion() != null) {
             return ctx.typeSpecUnion().accept(this);
         }
-        if (ctx.typeSpecIntersection()!=null){
+        if (ctx.typeSpecIntersection() != null) {
             return ctx.typeSpecIntersection().accept(this);
         }
         throw new IllegalStateException("Missing branch");
@@ -80,10 +80,10 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         );
         types.addAll(
                 ctx.typeSpecUnion().stream()
-                .map(t -> (TypeSpecUnion) t.accept(this))
-                .map(TypeSpecUnion::types)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList())
+                        .map(t -> (TypeSpecUnion) t.accept(this))
+                        .map(TypeSpecUnion::types)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
         );
         types.addAll(
                 ctx.typeSpecIntersection().stream()
