@@ -1,0 +1,10 @@
+type MyType {
+  private a(): (D | ((C | (B & (A)?)))?);
+  private b(): (A & B);
+  private c(): (C & (A)?);
+  private d(): (A)?;
+  private e(): ((A & B))?;
+  private f(): (A)?;
+  private g(): (A & B & C & D);
+  private h(): (A | B | C | D);
+}

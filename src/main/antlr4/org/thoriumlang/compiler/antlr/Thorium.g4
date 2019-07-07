@@ -96,7 +96,7 @@ typeSpecIntersection
     ;
 
 methodSignature
-    : ( PRIVATE | NAMESPACE | PUBLIC )? IDENTIFIER '(' ( IDENTIFIER ':' typeSpec ( ',' IDENTIFIER ':' typeSpec )* )? ')' ':' typeSpec
+    : visibility=( PRIVATE | NAMESPACE | PUBLIC )? name=IDENTIFIER '(' ( IDENTIFIER ':' typeSpec ( ',' IDENTIFIER ':' typeSpec )* )? ')' ':' returnType=typeSpec
     ;
 
 constOrVarDef

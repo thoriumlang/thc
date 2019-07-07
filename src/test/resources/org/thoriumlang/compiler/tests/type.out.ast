@@ -1,0 +1,9 @@
+type MyType:
+PRIVATE a ( ) : i:[D, i:[C, u:[B, A?]]?]
+PRIVATE b ( ) : u:[A, B]
+PRIVATE c ( ) : u:[C, A?]
+PRIVATE d ( ) : A?
+PRIVATE e ( ) : u:[A, B]?
+PRIVATE f ( ) : A?
+PRIVATE g ( ) : u:[A, B, C, D]
+PRIVATE h ( ) : i:[A, B, C, D]
