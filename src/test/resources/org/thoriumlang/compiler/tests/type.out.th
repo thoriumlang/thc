@@ -1,13 +1,13 @@
 type MyType {
-  private a(): (D | ((C | (B & (A)?)))?);
+  private a(): (D | ((C | (B & (A | None))) | None));
   private b(): (A & B);
-  private c(): (C & (A)?);
-  private d(): (A)?;
-  private e(): ((A & B))?;
-  private f(): (A)?;
+  private c(): (C & (A | None));
+  private d(): (A | None);
+  private e(): ((A & B) | None);
+  private f(): (A | None);
   private g(): (A & B & C & D);
   private h(): (A | B | C | D);
   private i(i: Integer): None;
-  private j(i: (Integer)?): None;
-  private k(i: (Integer)?, j: (A & (B)?)): None;
+  private j(i: (Integer | None)): None;
+  private k(i: (Integer | None), j: (A & (B | None))): None;
 }

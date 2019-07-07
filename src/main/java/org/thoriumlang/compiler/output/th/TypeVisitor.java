@@ -24,12 +24,6 @@ import org.thoriumlang.compiler.tree.PrintableWrapper;
 import java.util.List;
 
 public class TypeVisitor extends BaseVisitor<String> {
-    private final Configuration configuration;
-
-    public TypeVisitor(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     @Override
     public String visitType(String name, List<MethodSignature> methods) {
         Node<PrintableWrapper> typeNode = new Node<>(
@@ -54,7 +48,7 @@ public class TypeVisitor extends BaseVisitor<String> {
                 }
         );
 
-        MethodSignatureVisitor methodSignatureVisitor = new MethodSignatureVisitor(typeNode, configuration);
+        MethodSignatureVisitor methodSignatureVisitor = new MethodSignatureVisitor(typeNode);
         methods.forEach(m -> m.accept(methodSignatureVisitor));
 
         return typeNode.toString();

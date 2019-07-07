@@ -24,7 +24,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
-import org.thoriumlang.compiler.output.th.DefaultConfiguration;
 import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.BufferedReader;
@@ -75,8 +74,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new Walker(
-                                new RootVisitor().visit(parser(path).root()),
-                                new DefaultConfiguration()
+                                new RootVisitor().visit(parser(path).root())
                         )
                                 .walk()
                 )

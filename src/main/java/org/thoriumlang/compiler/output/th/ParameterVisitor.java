@@ -19,17 +19,11 @@ import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.TypeSpec;
 
 public class ParameterVisitor extends BaseVisitor<String> {
-    private final Configuration configuration;
-
-    public ParameterVisitor(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     @Override
     public String visitParameter(String name, TypeSpec type) {
         return String.format("%s: %s",
                 name,
-                type.accept(new TypeSpecVisitor(configuration))
+                type.accept(new TypeSpecVisitor())
         );
     }
 }

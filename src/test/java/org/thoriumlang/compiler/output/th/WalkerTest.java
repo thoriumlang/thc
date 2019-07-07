@@ -30,8 +30,7 @@ class WalkerTest {
                         new Root(
                                 new Type("name", Collections.emptyList()
                                 )
-                        ),
-                        new DefaultConfiguration()
+                        )
                 ).walk()
         )
                 .isEqualTo("type name {}");

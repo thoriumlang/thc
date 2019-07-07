@@ -28,11 +28,9 @@ import java.util.stream.Collectors;
 
 public class MethodSignatureVisitor extends BaseVisitor<String> {
     private final Node<PrintableWrapper> parent;
-    private final Configuration configuration;
 
-    public MethodSignatureVisitor(Node<PrintableWrapper> parent, Configuration configuration) {
+    public MethodSignatureVisitor(Node<PrintableWrapper> parent) {
         this.parent = parent;
-        this.configuration = configuration;
     }
 
     @Override
@@ -48,9 +46,9 @@ public class MethodSignatureVisitor extends BaseVisitor<String> {
                                 visibility.name().toLowerCase(),
                                 name,
                                 parameters.stream()
-                                        .map(p -> p.accept(new ParameterVisitor(configuration)))
+                                        .map(p -> p.accept(new ParameterVisitor()))
                                         .collect(Collectors.joining(", ")),
-                                returnType.accept(new TypeSpecVisitor(configuration)));
+                                returnType.accept(new TypeSpecVisitor()));
                     }
                 }
         ).toString();

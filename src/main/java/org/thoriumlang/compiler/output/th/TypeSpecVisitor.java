@@ -22,12 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeSpecVisitor extends BaseVisitor<String> {
-    private final Configuration configuration;
-
-    public TypeSpecVisitor(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     @Override
     public String visitTypeIntersection(List<TypeSpec> types) {
         return String.format("(%s)",
@@ -35,14 +29,6 @@ public class TypeSpecVisitor extends BaseVisitor<String> {
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(" | "))
         );
-    }
-
-    @Override
-    public String visitTypeOptional(TypeSpec typeSpec) {
-        if (configuration.expandOptional()) {
-            return String.format("(%s | None)", typeSpec.accept(this));
-        }
-        return String.format("(%s)?", typeSpec.accept(this));
     }
 
     @Override

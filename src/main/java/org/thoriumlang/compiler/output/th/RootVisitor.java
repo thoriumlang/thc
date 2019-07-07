@@ -19,14 +19,8 @@ import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.Type;
 
 public class RootVisitor extends BaseVisitor<String> {
-    private final Configuration configuration;
-
-    public RootVisitor(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
     @Override
     public String visitRoot(Type type) {
-        return type.accept(new TypeVisitor(configuration));
+        return type.accept(new TypeVisitor());
     }
 }

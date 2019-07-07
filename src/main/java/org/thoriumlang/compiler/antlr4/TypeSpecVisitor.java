@@ -18,9 +18,13 @@ package org.thoriumlang.compiler.antlr4;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.*;
+import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecUnion;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,11 +53,21 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpecOptional(ThoriumParser.TypeSpecOptionalContext ctx) {
         if (ctx.IDENTIFIER() != null) {
-            return new TypeSpecOptional(new TypeSpecSingle(ctx.IDENTIFIER().getSymbol().getText()));
+            return new TypeSpecIntersection(
+                    Arrays.asList(
+                            new TypeSpecSingle(ctx.IDENTIFIER().getSymbol().getText()),
+                            new TypeSpecSingle("None")
+                    )
+            );
         }
 
         if (ctx.typeSpec() != null) {
-            return new TypeSpecOptional(ctx.typeSpec().accept(this));
+            return new TypeSpecIntersection(
+                    Arrays.asList(
+                            ctx.typeSpec().accept(this),
+                            new TypeSpecSingle("None")
+                    )
+            );
         }
 
         if (ctx.typeSpecOptional() != null) {
@@ -61,11 +75,21 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         }
 
         if (ctx.typeSpecUnion() != null) {
-            return new TypeSpecOptional(ctx.typeSpecUnion().accept(this));
+            return new TypeSpecIntersection(
+                    Arrays.asList(
+                            ctx.typeSpecUnion().accept(this),
+                            new TypeSpecSingle("None")
+                    )
+            );
         }
 
         if (ctx.typeSpecIntersection() != null) {
-            return new TypeSpecOptional(ctx.typeSpecIntersection().accept(this));
+            return new TypeSpecIntersection(
+                    Arrays.asList(
+                            ctx.typeSpecIntersection().accept(this),
+                            new TypeSpecSingle("None")
+                    )
+            );
         }
 
         throw new IllegalStateException("Missing branch");

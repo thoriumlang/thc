@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
 import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
+@SuppressWarnings("squid:S1192")
 @Tag("parser")
 class ExpressionTest {
     @Test

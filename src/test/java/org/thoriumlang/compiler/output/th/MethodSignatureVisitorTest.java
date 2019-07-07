@@ -31,8 +31,7 @@ class MethodSignatureVisitorTest {
         Assertions.assertThat(
                 new MethodSignatureVisitor(
                         new Node<>(new BasePrintableWrapper() {
-                        }),
-                        new DefaultConfiguration()
+                        })
                 )
                         .visitMethodSignature(
                                 Visibility.PRIVATE,

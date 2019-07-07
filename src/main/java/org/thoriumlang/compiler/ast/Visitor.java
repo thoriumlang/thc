@@ -25,8 +25,6 @@ public interface Visitor<T> {
 
     T visitTypeIntersection(List<TypeSpec> types);
 
-    T visitTypeOptional(TypeSpec typeSpec);
-
     T visitTypeUnion(List<TypeSpec> types);
 
     T visitTypeSingle(String type);

@@ -44,14 +44,6 @@ class BaseVisitorTest {
     }
 
     @Test
-    void visitTypeOptional() {
-        Assertions.assertThat(
-                visitor().visitTypeOptional(null)
-        )
-                .isEqualTo(null);
-    }
-
-    @Test
     void visitTypeUnion() {
         Assertions.assertThat(
                 visitor().visitTypeUnion(null)

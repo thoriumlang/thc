@@ -1,12 +1,12 @@
 type MyType:
-PRIVATE a (  ) : i:[D, i:[C, u:[B, A?]]?]
+PRIVATE a (  ) : i:[D, i:[i:[C, u:[B, i:[A, None]]], None]]
 PRIVATE b (  ) : u:[A, B]
-PRIVATE c (  ) : u:[C, A?]
-PRIVATE d (  ) : A?
-PRIVATE e (  ) : u:[A, B]?
-PRIVATE f (  ) : A?
+PRIVATE c (  ) : u:[C, i:[A, None]]
+PRIVATE d (  ) : i:[A, None]
+PRIVATE e (  ) : i:[u:[A, B], None]
+PRIVATE f (  ) : i:[A, None]
 PRIVATE g (  ) : u:[A, B, C, D]
 PRIVATE h (  ) : i:[A, B, C, D]
 PRIVATE i ( i: Integer ) : None
-PRIVATE j ( i: Integer? ) : None
-PRIVATE k ( i: Integer?, j: u:[A, B?] ) : None
+PRIVATE j ( i: i:[Integer, None] ) : None
+PRIVATE k ( i: i:[Integer, None], j: u:[A, i:[B, None]] ) : None

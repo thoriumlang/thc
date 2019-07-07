@@ -19,14 +19,12 @@ import org.thoriumlang.compiler.ast.Root;
 
 public class Walker {
     private final Root root;
-    private final Configuration configuration;
 
-    public Walker(Root root, Configuration configuration) {
+    public Walker(Root root) {
         this.root = root;
-        this.configuration = configuration;
     }
 
     public String walk() {
-        return root.accept(new RootVisitor(configuration));
+        return root.accept(new RootVisitor());
     }
 }

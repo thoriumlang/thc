@@ -21,11 +21,9 @@ import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.output.th.Configuration;
 import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class Compiler {
     public static void main(String[] args) throws IOException {
@@ -47,15 +45,7 @@ public class Compiler {
         Root r = rootVisitor.visit(parser.root());
         System.out.println(r);
 
-        Walker walker = new Walker(r, new Configuration() {
-            @Override
-            public boolean expandOptional() {
-                return Boolean.valueOf(
-                        Optional.ofNullable(System.getProperty("compiler.output.th.expandOptional"))
-                                .orElse("false")
-                );
-            }
-        });
+        Walker walker = new Walker(r);
         System.out.println(walker.walk());
     }
 }

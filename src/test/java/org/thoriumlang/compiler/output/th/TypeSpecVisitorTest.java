@@ -24,13 +24,13 @@ import java.util.Arrays;
 class TypeSpecVisitorTest {
     @Test
     void visitTypeSingle() {
-        Assertions.assertThat(new TypeSpecVisitor(new DefaultConfiguration()).visitTypeSingle("type"))
+        Assertions.assertThat(new TypeSpecVisitor().visitTypeSingle("type"))
                 .isEqualTo("type");
     }
 
     @Test
     void visitTypeUnion() {
-        Assertions.assertThat(new TypeSpecVisitor(new DefaultConfiguration()).visitTypeUnion(Arrays.asList(
+        Assertions.assertThat(new TypeSpecVisitor().visitTypeUnion(Arrays.asList(
                 new TypeSpecSingle("TA"), new TypeSpecSingle("TB")
         )))
                 .isEqualTo("(TA & TB)");
@@ -38,31 +38,9 @@ class TypeSpecVisitorTest {
 
     @Test
     void visitTypeIntersection() {
-        Assertions.assertThat(new TypeSpecVisitor(new DefaultConfiguration()).visitTypeIntersection(Arrays.asList(
+        Assertions.assertThat(new TypeSpecVisitor().visitTypeIntersection(Arrays.asList(
                 new TypeSpecSingle("TA"), new TypeSpecSingle("TB")
         )))
                 .isEqualTo("(TA | TB)");
-    }
-
-    @Test
-    void visitTypeOptionalWithoutExpansion() {
-        Assertions.assertThat(new TypeSpecVisitor(new Configuration() {
-            @Override
-            public boolean expandOptional() {
-                return false;
-            }
-        }).visitTypeOptional(new TypeSpecSingle("TA")))
-                .isEqualTo("(TA)?");
-    }
-
-    @Test
-    void visitTypeOptionalWithExpansion() {
-        Assertions.assertThat(new TypeSpecVisitor(new Configuration() {
-            @Override
-            public boolean expandOptional() {
-                return true;
-            }
-        }).visitTypeOptional(new TypeSpecSingle("TA")))
-                .isEqualTo("(TA | None)");
     }
 }

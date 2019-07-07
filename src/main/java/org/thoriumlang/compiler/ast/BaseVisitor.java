@@ -34,11 +34,6 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitTypeOptional(TypeSpec typeSpec) {
-        return null;
-    }
-
-    @Override
     public T visitTypeUnion(List<TypeSpec> types) {
         return null;
     }
