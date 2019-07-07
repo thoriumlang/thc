@@ -15,42 +15,21 @@
  */
 grammar Thorium;
 
-CLASS
-    : 'class'
-    ;
-TYPE
-    : 'type'
-    ;
-
+CLASS : 'class' ;
+TYPE : 'type' ;
 USE : 'use' ;
-
 PRIVATE : 'private' ;
 PUBLIC : 'public' ;
 NAMESPACE : 'namespace' ;
-
 VAL : 'val' ;
 VAR : 'var' ;
+BOOLEAN : 'true' | 'false' ;
+NONE : 'none' ;
 
-NUMBER
-    : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )?
-    ;
-STRING
-    : '"' ( ~[\\"\r\n] | '\\"' )* '"'
-    ;
-BOOLEAN
-    : 'true' | 'false'
-    ;
-NONE
-    : 'none'
-    ;
-
-IDENTIFIER
-    : [a-zA-Z_][0-9a-zA-Z_]*
-    ;
-
-WS
-    : [ \t\r\n\u000C]+ -> skip
-    ;
+NUMBER : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )? ;
+STRING : '"' ( ~[\\"\r\n] | '\\"' )* '"' ;
+IDENTIFIER : [a-zA-Z_][0-9a-zA-Z_]* ;
+WS : [ \t\r\n\u000C]+ -> skip ;
 
 root
     : typeDef
