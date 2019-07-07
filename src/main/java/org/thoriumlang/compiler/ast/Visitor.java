@@ -23,10 +23,6 @@ public interface Visitor<T> {
 
     T visitType(String name, List<MethodSignature> methods);
 
-    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
-
-    T visitParameter(String name, TypeSpec type);
-
     T visitTypeIntersection(List<TypeSpec> types);
 
     T visitTypeOptional(TypeSpec typeSpec);
@@ -34,4 +30,8 @@ public interface Visitor<T> {
     T visitTypeUnion(List<TypeSpec> types);
 
     T visitTypeSingle(String type);
+
+    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
+
+    T visitParameter(String name, TypeSpec type);
 }
