@@ -15,11 +15,19 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.Objects;
+
 public class Parameter implements Visitable {
     private final String name;
     private final TypeSpec type;
 
     public Parameter(String name, TypeSpec type) {
+        if (name == null) {
+            throw new NullPointerException("name cannot be null");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
         this.name = name;
         this.type = type;
     }
@@ -32,5 +40,23 @@ public class Parameter implements Visitable {
     @Override
     public String toString() {
         return name + ": " + type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Parameter parameter = (Parameter) o;
+        return name.equals(parameter.name) &&
+                type.equals(parameter.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
     }
 }

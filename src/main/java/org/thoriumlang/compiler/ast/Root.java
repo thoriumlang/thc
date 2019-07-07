@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.Objects;
+
 public class Root implements Visitable {
     private final Type type;
 
@@ -30,5 +32,22 @@ public class Root implements Visitable {
     @Override
     public String toString() {
         return type.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Root root = (Root) o;
+        return Objects.equals(type, root.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

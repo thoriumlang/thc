@@ -15,10 +15,15 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.Objects;
+
 public class TypeSpecSingle implements TypeSpec {
     private final String type;
 
     public TypeSpecSingle(String type) {
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
         this.type = type;
     }
 
@@ -30,5 +35,22 @@ public class TypeSpecSingle implements TypeSpec {
     @Override
     public String toString() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeSpecSingle that = (TypeSpecSingle) o;
+        return type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type);
     }
 }

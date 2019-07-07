@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MethodSignature implements Visitable {
@@ -25,6 +26,18 @@ public class MethodSignature implements Visitable {
     private final TypeSpec returnType;
 
     public MethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType) {
+        if (visibility == null) {
+            throw new NullPointerException("visibility cannot be null");
+        }
+        if (name == null) {
+            throw new NullPointerException("name cannot be null");
+        }
+        if (parameters == null) {
+            throw new NullPointerException("parameters cannot be null");
+        }
+        if (returnType == null) {
+            throw new NullPointerException("returnType cannot be null");
+        }
         this.visibility = visibility;
         this.name = name;
         this.parameters = parameters;
@@ -51,5 +64,25 @@ public class MethodSignature implements Visitable {
                         .collect(Collectors.joining(", ")),
                 returnType
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MethodSignature that = (MethodSignature) o;
+        return visibility == that.visibility &&
+                name.equals(that.name) &&
+                parameters.equals(that.parameters) &&
+                returnType.equals(that.returnType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(visibility, name, parameters, returnType);
     }
 }
