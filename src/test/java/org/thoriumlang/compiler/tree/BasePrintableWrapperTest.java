@@ -15,8 +15,28 @@
  */
 package org.thoriumlang.compiler.tree;
 
-public interface PrintableWrapper {
-    String startString();
-    String toString();
-    String endString();
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class BasePrintableWrapperTest {
+    @Test
+    void toStringReturnsEmptyString() {
+        Assertions.assertThat(new BasePrintableWrapper() {
+        }.toString())
+                .isEqualTo("");
+    }
+
+    @Test
+    void startStringReturnsEmptyString() {
+        Assertions.assertThat(new BasePrintableWrapper() {
+        }.startString())
+                .isEqualTo("");
+    }
+
+    @Test
+    void endStringReturnsEmptyString() {
+        Assertions.assertThat(new BasePrintableWrapper() {
+        }.endString())
+                .isEqualTo("");
+    }
 }
