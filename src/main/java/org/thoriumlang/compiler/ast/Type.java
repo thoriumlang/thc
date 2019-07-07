@@ -28,6 +28,11 @@ public class Type implements Visitable {
     }
 
     @Override
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitType(name, methods);
+    }
+
+    @Override
     public String toString() {
         return String.format("type %s:%n%s",
                 name,
@@ -35,10 +40,5 @@ public class Type implements Visitable {
                         .map(MethodSignature::toString)
                         .collect(Collectors.joining(String.format("%n")))
         );
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(name, methods);
     }
 }

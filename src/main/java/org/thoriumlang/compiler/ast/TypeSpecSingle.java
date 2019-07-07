@@ -23,12 +23,12 @@ public class TypeSpecSingle implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return type;
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitTypeSingle(type);
     }
 
     @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeSingle(type);
+    public String toString() {
+        return type;
     }
 }

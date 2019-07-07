@@ -25,12 +25,12 @@ public class Parameter implements Visitable {
     }
 
     @Override
-    public String toString() {
-        return name + ": " + type;
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitParameter(name, type);
     }
 
     @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitParameter(name, type);
+    public String toString() {
+        return name + ": " + type;
     }
 }

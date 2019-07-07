@@ -29,12 +29,12 @@ public class TypeSpecIntersection implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return "i:" + types.toString();
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitTypeIntersection(types);
     }
 
     @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeIntersection(types);
+    public String toString() {
+        return "i:" + types.toString();
     }
 }

@@ -29,12 +29,12 @@ public class TypeSpecUnion implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return "u:" + types.toString();
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitTypeUnion(types);
     }
 
     @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeUnion(types);
+    public String toString() {
+        return "u:" + types.toString();
     }
 }

@@ -23,12 +23,12 @@ public class Root implements Visitable {
     }
 
     @Override
-    public String toString() {
-        return type.toString();
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitRoot(type);
     }
 
     @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitRoot(type);
+    public String toString() {
+        return type.toString();
     }
 }

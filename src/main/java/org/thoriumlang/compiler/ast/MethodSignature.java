@@ -32,6 +32,16 @@ public class MethodSignature implements Visitable {
     }
 
     @Override
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitMethodSignature(
+                visibility,
+                name,
+                parameters,
+                returnType
+        );
+    }
+
+    @Override
     public String toString() {
         return String.format("%s %s ( %s ) : %s",
                 visibility,
@@ -39,16 +49,6 @@ public class MethodSignature implements Visitable {
                 parameters.stream()
                         .map(Parameter::toString)
                         .collect(Collectors.joining(", ")),
-                returnType
-        );
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodSignature(
-                visibility,
-                name,
-                parameters,
                 returnType
         );
     }
