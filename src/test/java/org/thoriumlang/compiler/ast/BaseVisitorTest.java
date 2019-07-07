@@ -83,8 +83,8 @@ class BaseVisitorTest {
                 .isEqualTo(null);
     }
 
-    private BaseVisitor visitor() {
-        return new BaseVisitor() {
+    private BaseVisitor<Object> visitor() {
+        return new BaseVisitor<Object>() {
         };
     }
 }
