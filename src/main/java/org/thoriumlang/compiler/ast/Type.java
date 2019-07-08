@@ -41,11 +41,13 @@ public class Type implements Visitable {
 
     @Override
     public String toString() {
-        return String.format("type %s:%n%s",
+        String method = methods.stream()
+                .map(MethodSignature::toString)
+                .collect(Collectors.joining(String.format("%n")));
+
+        return String.format("TYPE %s:%s",
                 name,
-                methods.stream()
-                        .map(MethodSignature::toString)
-                        .collect(Collectors.joining(String.format("%n")))
+                method.isEmpty() ? "" : String.format("%n%s", method)
         );
     }
 

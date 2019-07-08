@@ -1,3 +1,5 @@
+use a.b.Whatever;
+
 // a comment
 type MyType {
     a(): ((A?&B)|C)?|(D);

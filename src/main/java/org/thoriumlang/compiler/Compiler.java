@@ -21,6 +21,7 @@ import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.IOException;
 
+@SuppressWarnings("squid:S106")
 public class Compiler {
     public static void main(String[] args) throws IOException {
         new Compiler().compile();

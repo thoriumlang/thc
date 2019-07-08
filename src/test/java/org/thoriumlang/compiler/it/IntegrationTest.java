@@ -31,7 +31,8 @@ import java.util.stream.Collectors;
 class IntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = {
-            "/org/thoriumlang/compiler/tests/type"
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/use"
     })
     void ast(String path) throws IOException {
         Assertions
@@ -51,7 +52,8 @@ class IntegrationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "/org/thoriumlang/compiler/tests/type"
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/use"
     })
     void thorium(String path) throws IOException {
         Assertions

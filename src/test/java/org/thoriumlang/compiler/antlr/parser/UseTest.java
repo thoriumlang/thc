@@ -56,7 +56,7 @@ class UseTest {
     }
 
     @Test
-    void simpleAs() {
+    void simpleAs1() {
         Assertions.assertThat(
                 new Tree(
                         token("use", ThoriumLexer.USE),
@@ -69,7 +69,20 @@ class UseTest {
                         token("d", ThoriumLexer.IDENTIFIER),
                         token(";")
                 ).serialize("use")
-        ).isEqualTo("(use use (fqIdentifier a . b . c) : d ;)");
+        ).isEqualTo("(use use (useAs (fqIdentifier a . b . c) : d) ;)");
+    }
+
+    @Test
+    void simpleAs2() {
+        Assertions.assertThat(
+                new Tree(
+                        token("use", ThoriumLexer.USE),
+                        token("a", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("b", ThoriumLexer.IDENTIFIER),
+                        token(";")
+                ).serialize("use")
+        ).isEqualTo("(use use (useAs (fqIdentifier a) : b) ;)");
     }
 
     @Test
@@ -92,6 +105,6 @@ class UseTest {
                         token("}"),
                         token(";")
                 ).serialize("use")
-        ).isEqualTo("(use use (fqIdentifier a . b) . { (fqIdentifier c . f) : d , (fqIdentifier e) } ;)");
+        ).isEqualTo("(use use (fqIdentifier a . b) . { (useAs (fqIdentifier c . f) : d) , (useAs (fqIdentifier e)) } ;)");
     }
 }

@@ -1,0 +1,9 @@
+use a.b.C : C;
+use a.b.C : CC;
+use a.b.* : *;
+use a.b.c.D : D;
+use a.b.c.E : E;
+use a.b.c.D : DD;
+use a.b.c.E : EE;
+
+type T {}

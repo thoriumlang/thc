@@ -18,15 +18,20 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Type;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
-        TypeDefVisitor visitor = new TypeDefVisitor();
-        Type type = ctx.accept(visitor);
+        UseVisitor useVisitor = new UseVisitor();
         return new Root(
-                type
+                ctx.use().stream()
+                        .map(u -> u.accept(useVisitor))
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList()),
+                ctx.typeDef().accept(new TypeDefVisitor())
         );
     }
 }

@@ -26,6 +26,7 @@ class FlattenedTypesRootTest {
     @Test
     void accept() {
         Root root = new Root(
+                Collections.emptyList(),
                 new Type(
                         "type",
                         Collections.singletonList(
@@ -49,6 +50,7 @@ class FlattenedTypesRootTest {
                 )
         );
         Root expectedRoot = new Root(
+                Collections.emptyList(),
                 new Type(
                         "type",
                         Collections.singletonList(

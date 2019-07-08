@@ -15,17 +15,18 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 class IdentityVisitorTest {
     @Test
     void visitRoot() {
-        Root root = new Root(new Type("name", Collections.emptyList()));
+        Root root = new Root(
+                Collections.emptyList(), // FIXME
+                new Type("name", Collections.emptyList())
+        );
         Assertions.assertThat(root.accept(visitor()))
                 .isEqualTo(root);
     }

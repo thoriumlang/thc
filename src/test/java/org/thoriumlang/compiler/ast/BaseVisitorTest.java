@@ -22,7 +22,15 @@ class BaseVisitorTest {
     @Test
     void visitRoot() {
         Assertions.assertThat(
-                visitor().visitRoot(null)
+                visitor().visitRoot(null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitUse() {
+        Assertions.assertThat(
+                visitor().visitUse(null, null)
         )
                 .isEqualTo(null);
     }

@@ -15,24 +15,11 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.BaseVisitor;
 
-import java.util.Collections;
-
-class WalkerTest {
-    @Test
-    void walk() {
-        Assertions.assertThat(
-                new Walker(
-                        new Root(
-                                Collections.emptyList(),
-                                new Type("name", Collections.emptyList())
-                        )
-                ).walk()
-        )
-                .isEqualTo("type name {}");
+public class UseVisitor extends BaseVisitor<String> {
+    @Override
+    public String visitUse(String from, String to) {
+        return String.format("use %s : %s;", from, to);
     }
 }

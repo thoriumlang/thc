@@ -1,4 +1,4 @@
-type MyType:
+TYPE MyType:
 PRIVATE a (  ) : i:[D, None, C, u:[B, i:[A, None]]]
 PRIVATE b (  ) : u:[A, B]
 PRIVATE c (  ) : u:[C, i:[A, None]]

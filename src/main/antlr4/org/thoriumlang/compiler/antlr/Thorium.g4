@@ -33,18 +33,20 @@ WS : [ \t\r\n\u000C]+ -> skip ;
 LINE_COMMENT : '//' ~[\r\n]* -> skip ;
 
 root
-    : typeDef
-    | classDef
+    : use* ( typeDef | classDef )
     ;
 
 fqIdentifier
     : IDENTIFIER ( '.' IDENTIFIER )*
     ;
 use
-    : USE fqIdentifier ';'
-    | USE fqIdentifier '.' '*' ';'
-    | USE fqIdentifier ':' IDENTIFIER ';'
-    | USE fqIdentifier '.' '{' fqIdentifier ( ':' IDENTIFIER )? ( ',' fqIdentifier ( ':' IDENTIFIER )? )? '}' ';'
+    : USE baseFqIdentifier=fqIdentifier ';'
+    | USE baseFqIdentifier=fqIdentifier '.' star='*' ';'
+    | USE baseFqIdentifier=fqIdentifier '.' '{' useAs ( ',' useAs )* '}' ';'
+    | USE useAs ';'
+    ;
+useAs
+    : fqIdentifier ( ':' alias=IDENTIFIER )?
     ;
 
 typeDef

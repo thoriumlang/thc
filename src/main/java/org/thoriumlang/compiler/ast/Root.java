@@ -15,23 +15,34 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Root implements Visitable {
+    private final List<Use> uses;
     private final Type type;
 
-    public Root(Type type) {
+    public Root(List<Use> uses, Type type) {
+        this.uses = uses;
         this.type = type;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitRoot(type);
+        return visitor.visitRoot(type, uses);
     }
 
     @Override
     public String toString() {
-        return type.toString();
+        String use = uses.stream()
+                .map(Use::toString)
+                .collect(Collectors.joining("\n"));
+
+        return String.format("%s%s",
+                use.isEmpty() ? "" : String.format("%s%n", use),
+                type.toString()
+        );
     }
 
     @Override
