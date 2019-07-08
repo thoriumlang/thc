@@ -1,3 +1,4 @@
+// a comment
 type MyType {
     a(): ((A?&B)|C)?|(D);
     b(): A&B;
