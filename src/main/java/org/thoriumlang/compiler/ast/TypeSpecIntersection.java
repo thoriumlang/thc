@@ -22,7 +22,9 @@ public class TypeSpecIntersection implements TypeSpec {
     private final List<TypeSpec> types;
 
     public TypeSpecIntersection(List<TypeSpec> types) {
-        if (types==null){throw new NullPointerException("types cannot be null");}
+        if (types == null) {
+            throw new NullPointerException("types cannot be null");
+        }
         this.types = types;
     }
 

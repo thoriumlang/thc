@@ -24,6 +24,12 @@ public class Root implements Visitable {
     private final Type type;
 
     public Root(List<Use> uses, Type type) {
+        if (uses == null) {
+            throw new NullPointerException("uses cannot be null");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
         this.uses = uses;
         this.type = type;
     }

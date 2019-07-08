@@ -31,7 +31,11 @@ public class Use implements Visitable {
     }
 
     public Use(String from) {
-        this(from, from.substring(from.lastIndexOf('.') + 1));
+        if (from == null) {
+            throw new NullPointerException("from cannot be null");
+        }
+        this.from = from;
+        this.to = from.substring(from.lastIndexOf('.') + 1);
     }
 
     @Override
@@ -41,6 +45,6 @@ public class Use implements Visitable {
 
     @Override
     public String toString() {
-        return String.format("USE %s : %s;", from, to);
+        return String.format("USE %s : %s", from, to);
     }
 }
