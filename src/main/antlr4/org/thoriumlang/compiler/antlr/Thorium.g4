@@ -29,8 +29,8 @@ NONE : 'none' ;
 NUMBER : ( [0-9][0-9_]* | [0-9][0-9_]*'.' | '.'[0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )? ;
 STRING : '"' ( ~[\\"\r\n] | '\\"' )* '"' ;
 IDENTIFIER : [a-zA-Z_][0-9a-zA-Z_]* ;
-WS : [ \t\r\n\u000C]+ -> skip ;
-LINE_COMMENT : '//' ~[\r\n]* -> skip ;
+WS : [ \t\r\n\u000C]+ -> channel(HIDDEN) ;
+LINE_COMMENT : '//' ~[\r\n]* -> channel(HIDDEN) ;
 
 root
     : use* ( typeDef | classDef )
