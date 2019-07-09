@@ -10,4 +10,5 @@ type MyType {
     i(i: Integer): None;
     j(i: Integer?): None;
     k(i: Integer?, j: A&B?): None;
+    l(i: Integer | None): A?;
 }

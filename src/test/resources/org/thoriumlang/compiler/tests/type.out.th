@@ -1,13 +1,14 @@
 type MyType {
-  private a(): (D | None | C | (B & (A | None)));
+  private a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
   private b(): (A & B);
-  private c(): (C & (A | None));
-  private d(): (A | None);
-  private e(): ((A & B) | None);
-  private f(): (A | None);
+  private c(): (C & (A | org.thoriumlang.None));
+  private d(): (A | org.thoriumlang.None);
+  private e(): ((A & B) | org.thoriumlang.None);
+  private f(): (A | org.thoriumlang.None);
   private g(): (A & B & C & D);
   private h(): (A | B | C | D);
   private i(i: Integer): None;
-  private j(i: (Integer | None)): None;
-  private k(i: (Integer | None), j: (A & (B | None))): None;
+  private j(i: (Integer | org.thoriumlang.None)): None;
+  private k(i: (Integer | org.thoriumlang.None), j: (A & (B | org.thoriumlang.None))): None;
+  private l(i: (Integer | None)): (A | org.thoriumlang.None);
 }

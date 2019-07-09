@@ -56,7 +56,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             new TypeSpecSingle(ctx.IDENTIFIER().getSymbol().getText()),
-                            new TypeSpecSingle("None")
+                            new TypeSpecSingle("org.thoriumlang.None")
                     )
             );
         }
@@ -65,7 +65,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpec().accept(this),
-                            new TypeSpecSingle("None")
+                            new TypeSpecSingle("org.thoriumlang.None")
                     )
             );
         }
@@ -78,7 +78,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecUnion().accept(this),
-                            new TypeSpecSingle("None")
+                            new TypeSpecSingle("org.thoriumlang.None")
                     )
             );
         }
@@ -87,7 +87,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecIntersection().accept(this),
-                            new TypeSpecSingle("None")
+                            new TypeSpecSingle("org.thoriumlang.None")
                     )
             );
         }

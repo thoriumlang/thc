@@ -1,12 +1,13 @@
 TYPE MyType:
-PRIVATE a (  ) : i:[D, None, C, u:[B, i:[A, None]]]
+PRIVATE a (  ) : i:[D, org.thoriumlang.None, C, u:[B, i:[A, org.thoriumlang.None]]]
 PRIVATE b (  ) : u:[A, B]
-PRIVATE c (  ) : u:[C, i:[A, None]]
-PRIVATE d (  ) : i:[A, None]
-PRIVATE e (  ) : i:[u:[A, B], None]
-PRIVATE f (  ) : i:[A, None]
+PRIVATE c (  ) : u:[C, i:[A, org.thoriumlang.None]]
+PRIVATE d (  ) : i:[A, org.thoriumlang.None]
+PRIVATE e (  ) : i:[u:[A, B], org.thoriumlang.None]
+PRIVATE f (  ) : i:[A, org.thoriumlang.None]
 PRIVATE g (  ) : u:[A, B, C, D]
 PRIVATE h (  ) : i:[A, B, C, D]
 PRIVATE i ( i: Integer ) : None
-PRIVATE j ( i: i:[Integer, None] ) : None
-PRIVATE k ( i: i:[Integer, None], j: u:[A, i:[B, None]] ) : None
+PRIVATE j ( i: i:[Integer, org.thoriumlang.None] ) : None
+PRIVATE k ( i: i:[Integer, org.thoriumlang.None], j: u:[A, i:[B, org.thoriumlang.None]] ) : None
+PRIVATE l ( i: i:[Integer, None] ) : i:[A, org.thoriumlang.None]
