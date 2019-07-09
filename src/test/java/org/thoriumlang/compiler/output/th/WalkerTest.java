@@ -28,11 +28,12 @@ class WalkerTest {
         Assertions.assertThat(
                 new Walker(
                         new Root(
+                                "namespace",
                                 Collections.emptyList(),
                                 new Type("name", Collections.emptyList())
                         )
                 ).walk()
         )
-                .isEqualTo("type name {}");
+                .isEqualTo("// namespace namespace\n\ntype name {}");
     }
 }

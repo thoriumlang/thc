@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("squid:S1192")
 public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpec(ThoriumParser.TypeSpecContext ctx) {

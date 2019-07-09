@@ -23,10 +23,17 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
+    private final String namespace;
+
+    public RootVisitor(String namespace) {
+        this.namespace = namespace;
+    }
+
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
         UseVisitor useVisitor = new UseVisitor();
         return new Root(
+                namespace,
                 ctx.use().stream()
                         .map(u -> u.accept(useVisitor))
                         .flatMap(Collection::stream)

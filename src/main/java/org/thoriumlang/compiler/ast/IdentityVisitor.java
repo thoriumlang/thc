@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
 
 public abstract class IdentityVisitor implements Visitor<Visitable> {
     @Override
-    public Visitable visitRoot(Type type, List<Use> uses) {
+    public Visitable visitRoot(String namespace, Type type, List<Use> uses) {
         return new Root(
+                namespace,
                 uses.stream()
                         .map(u -> (Use) u.accept(this))
                         .collect(Collectors.toList()),

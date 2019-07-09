@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
@@ -27,14 +28,16 @@ import java.io.InputStream;
 
 public class AST {
     private final InputStream inputStream;
+    private final String namespace;
 
-    public AST(InputStream inputStream) {
+    public AST(InputStream inputStream, String namespace) {
         this.inputStream = inputStream;
+        this.namespace = namespace;
     }
 
     public Root root() throws IOException {
         return new FlattenedTypesRoot(
-                new RootVisitor().visit(
+                new RootVisitor(namespace).visit(
                         parser().root()
                 )
         ).root();

@@ -18,8 +18,8 @@ package org.thoriumlang.compiler.ast;
 import java.util.List;
 
 public interface Visitor<T> {
-    // will have a visitRoot(Class, List<Use>)
-    T visitRoot(Type type, List<Use> uses);
+    // will have a visitRoot(String, Class, List<Use>)
+    T visitRoot(String namespace, Type type, List<Use> uses);
 
     T visitUse(String from, String to);
 

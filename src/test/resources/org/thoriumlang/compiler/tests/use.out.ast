@@ -1,3 +1,4 @@
+NAMESPACE org.thoriumlang.compiler.tests
 USE a.b.C : C
 USE a.b.C : CC
 USE a.b.* : *

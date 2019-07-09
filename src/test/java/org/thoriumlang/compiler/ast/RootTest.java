@@ -23,9 +23,22 @@ import java.util.List;
 
 class RootTest {
     @Test
+    void constructor_namespace() {
+        try {
+            new Root(null, Collections.emptyList(), new Type("name", Collections.emptyList()));
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("namespace cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void constructor_uses() {
         try {
-            new Root(null, new Type("name", Collections.emptyList()));
+            new Root("namespace", null, new Type("name", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -38,7 +51,7 @@ class RootTest {
     @Test
     void constructor_type() {
         try {
-            new Root(Collections.emptyList(), null);
+            new Root("namespace", Collections.emptyList(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -52,24 +65,26 @@ class RootTest {
     void accept() {
         Assertions.assertThat(
                 new Root(
+                        "namespace",
                         Collections.singletonList(new Use("from")),
                         new Type("name", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(Type type, List<Use> uses) {
-                        return type + ":" + uses;
+                    public String visitRoot(String namespace, Type type, List<Use> uses) {
+                        return namespace + ":" + uses + ":" + type;
                     }
                 })
-        ).isEqualTo("TYPE name::[USE from : from]");
+        ).isEqualTo("namespace:[USE from : from]:TYPE name:");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new Root(
+                        "namespace",
                         Collections.singletonList(new Use("from")),
                         new Type("name", Collections.emptyList())
                 ).toString()
-        ).isEqualTo("USE from : from\nTYPE name:");
+        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name:");
     }
 }

@@ -19,12 +19,16 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.thoriumlang.compiler.SourceFile;
+import org.thoriumlang.compiler.SourceFiles;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 @Tag("integration")
@@ -34,10 +38,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/use"
     })
-    void ast(String path) throws IOException {
+    void ast(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path);
         Assertions
                 .assertThat(
-                        new AST(IntegrationTest.class.getResourceAsStream(path + ".th")).root()
+                        new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
                                 .toString())
                 .isEqualTo(
                         new BufferedReader(
@@ -50,16 +55,28 @@ class IntegrationTest {
                 );
     }
 
+    private SourceFile sourceFile(String path) throws URISyntaxException, IOException {
+        return new SourceFiles(
+                Paths.get(IntegrationTest.class.getResource("/").toURI()),
+                (p, bfa) -> p.getFileName().toString().equals(sourceFilename(path))
+        ).files().get(0);
+    }
+
+    private String sourceFilename(String path) {
+        return path.substring(path.lastIndexOf("/") + 1) + ".th";
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/use"
     })
-    void thorium(String path) throws IOException {
+    void thorium(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path);
         Assertions
                 .assertThat(
                         new Walker(
-                                new AST(IntegrationTest.class.getResourceAsStream(path + ".th")).root()
+                                new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
                         ).walk()
                 )
                 .isEqualTo(

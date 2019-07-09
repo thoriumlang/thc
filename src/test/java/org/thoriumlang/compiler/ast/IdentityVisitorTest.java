@@ -24,6 +24,7 @@ class IdentityVisitorTest {
     @Test
     void visitRoot() {
         Root root = new Root(
+                "namespace",
                 Collections.emptyList(), // FIXME
                 new Type("name", Collections.emptyList())
         );

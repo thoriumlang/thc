@@ -20,18 +20,29 @@ import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.output.th.Walker;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 
-@SuppressWarnings("squid:S106")
+@SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Compiler {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, URISyntaxException {
         new Compiler().compile();
     }
 
-    private void compile() throws IOException {
-        Root r = new AST(Compiler.class.getResourceAsStream("/org/thoriumlang/compiler/examples/type.th")).root();
-        System.out.println(r);
+    private void compile() throws IOException, URISyntaxException {
+        new SourceFiles(
+                Paths.get(Compiler.class.getResource("/").toURI())
+        ).files().forEach(f -> {
+            try {
+                Root r = new AST(f.inputStream(), f.namespace()).root();
+                System.out.println(r);
 
-        Walker walker = new Walker(r);
-        System.out.println(walker.walk());
+                Walker walker = new Walker(r);
+                System.out.println(walker.walk());
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

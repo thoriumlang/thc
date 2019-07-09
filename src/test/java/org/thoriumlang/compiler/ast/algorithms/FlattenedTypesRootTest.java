@@ -26,6 +26,7 @@ class FlattenedTypesRootTest {
     @Test
     void accept() {
         Root root = new Root(
+                "namespace",
                 Collections.emptyList(),
                 new Type(
                         "type",
@@ -50,6 +51,7 @@ class FlattenedTypesRootTest {
                 )
         );
         Root expectedRoot = new Root(
+                "namespace",
                 Collections.emptyList(),
                 new Type(
                         "type",

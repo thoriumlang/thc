@@ -1,3 +1,5 @@
+// namespace org.thoriumlang.compiler.tests
+
 type MyType {
   private a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
   private b(): (A & B);

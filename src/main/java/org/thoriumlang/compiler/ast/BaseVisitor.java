@@ -19,7 +19,7 @@ import java.util.List;
 
 public abstract class BaseVisitor<T> implements Visitor<T> {
     @Override
-    public T visitRoot(Type type, List<Use> uses) {
+    public T visitRoot(String namespace, Type type, List<Use> uses) {
         return null;
     }
 
