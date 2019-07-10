@@ -94,3 +94,7 @@ expression
     | '(' expression ')'
     | expression ( '.' | '?.' ) IDENTIFIER '(' ')'
     ;
+
+ERRCHAR
+    : . -> channel(HIDDEN)
+    ;
