@@ -20,6 +20,9 @@ import org.thoriumlang.compiler.ast.BaseVisitor;
 public class UseVisitor extends BaseVisitor<String> {
     @Override
     public String visitUse(String from, String to) {
+        if (to.equals("*")) {
+            return String.format("use %s;", from);
+        }
         return String.format("use %s : %s;", from, to);
     }
 }

@@ -18,10 +18,16 @@ package org.thoriumlang.compiler.output.th;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UseVisitorTest {
+class UseVisitorTest {
     @Test
     void visitUse() {
         Assertions.assertThat(new UseVisitor().visitUse("from", "to"))
                 .isEqualTo("use from : to;");
+    }
+
+    @Test
+    void visitUseWildcard() {
+        Assertions.assertThat(new UseVisitor().visitUse("from", "*"))
+                .isEqualTo("use from;");
     }
 }
