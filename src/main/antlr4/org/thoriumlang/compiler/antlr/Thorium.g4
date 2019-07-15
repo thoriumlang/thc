@@ -31,6 +31,7 @@ STRING : '"' ( ~[\\"\r\n] | '\\"' )* '"' ;
 IDENTIFIER : [a-zA-Z_][0-9a-zA-Z_]* ;
 WS : [ \t\r\n\u000C]+ -> channel(HIDDEN) ;
 LINE_COMMENT : '//' ~[\r\n]* -> channel(HIDDEN) ;
+BLOCK_COMMENT : '/*' .*? '*/' -> channel(HIDDEN) ;
 
 root
     : use* ( typeDef | classDef )

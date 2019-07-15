@@ -1,5 +1,9 @@
 type MyType {
+    /**
+     * block comment
+     */
     a(): ((A?&B)|C)?|(D);
+    // inline comment
     b(): A&B;
     c(): A?&C;
     d(): ((A?)?)?;
