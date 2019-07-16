@@ -22,7 +22,7 @@ import org.thoriumlang.compiler.ast.Use;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RootVisitor extends BaseVisitor<String> {
+class RootVisitor extends BaseVisitor<String> {
     @Override
     public String visitRoot(String namespace, Type type, List<Use> uses) {
         UseVisitor useVisitor = new UseVisitor();

@@ -26,10 +26,10 @@ import org.thoriumlang.compiler.tree.PrintableWrapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodSignatureVisitor extends BaseVisitor<String> {
+class MethodSignatureVisitor extends BaseVisitor<String> {
     private final Node<PrintableWrapper> parent;
 
-    public MethodSignatureVisitor(Node<PrintableWrapper> parent) {
+    MethodSignatureVisitor(Node<PrintableWrapper> parent) {
         this.parent = parent;
     }
 

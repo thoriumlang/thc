@@ -15,26 +15,17 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Type;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.output.Walker;
 
-import java.util.Collections;
+public class ThWalker implements Walker<String> {
+    private final Root root;
 
-class WalkerTest {
-    @Test
-    void walk() {
-        Assertions.assertThat(
-                new Walker(
-                        new Root(
-                                "namespace",
-                                Collections.emptyList(),
-                                new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
-                        )
-                ).walk()
-        )
-                .isEqualTo("// namespace namespace\n\ntype name : org.thoriumlang.Object {}");
+    public ThWalker(Root root) {
+        this.root = root;
+    }
+
+    public String walk() {
+        return root.accept(new RootVisitor());
     }
 }

@@ -22,7 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.SourceFiles;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.output.th.Walker;
+import org.thoriumlang.compiler.output.th.ThWalker;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -75,7 +75,7 @@ class IntegrationTest {
         SourceFile sourceFile = sourceFile(path);
         Assertions
                 .assertThat(
-                        new Walker(
+                        new ThWalker(
                                 new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
                         ).walk()
                 )

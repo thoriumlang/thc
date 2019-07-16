@@ -17,7 +17,8 @@ package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.output.th.Walker;
+import org.thoriumlang.compiler.output.Walker;
+import org.thoriumlang.compiler.output.th.ThWalker;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -37,8 +38,8 @@ public class Compiler {
                 Root r = new AST(f.inputStream(), f.namespace()).root();
                 System.out.println(r);
 
-                Walker walker = new Walker(r);
-                System.out.println(walker.walk());
+                Walker<String> thWalker = new ThWalker(r);
+                System.out.println(thWalker.walk());
             }
             catch (IOException e) {
                 throw new RuntimeException(e);

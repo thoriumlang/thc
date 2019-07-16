@@ -13,16 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.output.th;
+package org.thoriumlang.compiler.output;
 
-import org.thoriumlang.compiler.ast.BaseVisitor;
-
-class UseVisitor extends BaseVisitor<String> {
-    @Override
-    public String visitUse(String from, String to) {
-        if (to.equals("*")) {
-            return String.format("use %s;", from);
-        }
-        return String.format("use %s : %s;", from, to);
-    }
+public interface Walker<T> {
+    T walk();
 }

@@ -24,7 +24,7 @@ import org.thoriumlang.compiler.tree.PrintableWrapper;
 
 import java.util.List;
 
-public class TypeVisitor extends BaseVisitor<String> {
+class TypeVisitor extends BaseVisitor<String> {
     @Override
     public String visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
         Node<PrintableWrapper> typeNode = new Node<>(

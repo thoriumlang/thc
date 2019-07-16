@@ -21,7 +21,7 @@ import org.thoriumlang.compiler.ast.TypeSpec;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeSpecVisitor extends BaseVisitor<String> {
+class TypeSpecVisitor extends BaseVisitor<String> {
     @Override
     public String visitTypeIntersection(List<TypeSpec> types) {
         return String.format("(%s)",
