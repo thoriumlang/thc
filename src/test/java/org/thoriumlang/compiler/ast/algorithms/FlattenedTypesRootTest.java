@@ -30,6 +30,7 @@ class FlattenedTypesRootTest {
                 Collections.emptyList(),
                 new Type(
                         "type",
+                        TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -55,6 +56,7 @@ class FlattenedTypesRootTest {
                 Collections.emptyList(),
                 new Type(
                         "type",
+                        TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,

@@ -27,14 +27,14 @@ class TypeVisitorTest {
     @Test
     void visitEmptyType() {
         Assertions.assertThat(
-                new TypeVisitor().visitType("name", Collections.emptyList()))
-                .isEqualTo("type name {}");
+                new TypeVisitor().visitType("name", TypeSpecSingle.OBJECT, Collections.emptyList()))
+                .isEqualTo("type name : org.thoriumlang.Object {}");
     }
 
     @Test
     void visitNonEmptyType() {
         Assertions.assertThat(
-                new TypeVisitor().visitType("name", Collections
+                new TypeVisitor().visitType("name", TypeSpecSingle.OBJECT, Collections
                         .singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -45,6 +45,6 @@ class TypeVisitorTest {
                         )
                 )
         )
-                .isEqualTo("type name {\n  private m(): type;\n}");
+                .isEqualTo("type name : org.thoriumlang.Object {\n  private m(): type;\n}");
     }
 }

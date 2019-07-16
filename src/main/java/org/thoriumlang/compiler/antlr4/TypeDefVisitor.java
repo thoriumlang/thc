@@ -18,6 +18,8 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecSingle;
 
 import java.util.stream.Collectors;
 
@@ -28,9 +30,17 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
         return new Type(
                 ctx.IDENTIFIER().getSymbol().getText(),
+                implementsSpec(ctx),
                 ctx.methodSignature().stream()
                         .map(method -> method.accept(methodSignatureVisitor))
                         .collect(Collectors.toList())
         );
+    }
+
+    private TypeSpec implementsSpec(ThoriumParser.TypeDefContext ctx) {
+        if (ctx.implementsSpec() == null) {
+            return TypeSpecSingle.OBJECT;
+        }
+        return ctx.implementsSpec().typeSpec().accept(new TypeSpecVisitor());
     }
 }

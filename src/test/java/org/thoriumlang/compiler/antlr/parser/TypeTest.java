@@ -38,6 +38,29 @@ class TypeTest {
     }
 
     @Test
+    void emptyTypeImplements() {
+        Assertions.assertThat(
+                new Tree(
+                        token("type", ThoriumLexer.TYPE),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("("),
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("&"),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token("|"),
+                        token("TC", ThoriumLexer.IDENTIFIER),
+                        token("?"),
+                        token("{"),
+                        token("}")
+                ).serialize()
+        ).isEqualTo("(root (typeDef type Identifier " +
+                "(implementsSpec : (typeSpec (typeSpecIntersection ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) | (typeSpecOptional (fqIdentifier TC) ?)))) " +
+                "{ }))");
+    }
+
+    @Test
     void nonEmptyType() {
         Assertions.assertThat(
                 new Tree(

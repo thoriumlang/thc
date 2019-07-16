@@ -21,22 +21,27 @@ import java.util.stream.Collectors;
 
 public class Type implements Visitable {
     private final String name;
+    private final TypeSpec superType;
     private final List<MethodSignature> methods;
 
-    public Type(String name, List<MethodSignature> methods) {
+    public Type(String name, TypeSpec superType, List<MethodSignature> methods) {
         if (name == null) {
             throw new NullPointerException("name cannot be null");
+        }
+        if (superType == null) {
+            throw new NullPointerException("superType cannot be null");
         }
         if (methods == null) {
             throw new NullPointerException("methods cannot be null");
         }
         this.name = name;
+        this.superType = superType;
         this.methods = methods;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(name, methods);
+        return visitor.visitType(name, superType, methods);
     }
 
     @Override
@@ -45,8 +50,9 @@ public class Type implements Visitable {
                 .map(MethodSignature::toString)
                 .collect(Collectors.joining(String.format("%n")));
 
-        return String.format("TYPE %s:%s",
+        return String.format("TYPE %s : %s:%s",
                 name,
+                superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );
     }

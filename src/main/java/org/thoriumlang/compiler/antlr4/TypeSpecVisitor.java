@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
-    private static final String NONE = "org.thoriumlang.None";
     private static final FqIdentifierVisitor fqIdentifierVisitor = new FqIdentifierVisitor();
 
     @Override
@@ -58,7 +57,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             new TypeSpecSingle(ctx.fqIdentifier().accept(fqIdentifierVisitor)),
-                            new TypeSpecSingle(NONE)
+                            TypeSpecSingle.NONE
                     )
             );
         }
@@ -67,7 +66,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpec().accept(this),
-                            new TypeSpecSingle(NONE)
+                            TypeSpecSingle.NONE
                     )
             );
         }
@@ -80,7 +79,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecUnion().accept(this),
-                            new TypeSpecSingle(NONE)
+                            TypeSpecSingle.NONE
                     )
             );
         }
@@ -89,7 +88,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecIntersection().accept(this),
-                            new TypeSpecSingle(NONE)
+                            TypeSpecSingle.NONE
                     )
             );
         }

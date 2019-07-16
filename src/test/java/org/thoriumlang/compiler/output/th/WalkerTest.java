@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.TypeSpecSingle;
 
 import java.util.Collections;
 
@@ -30,10 +31,10 @@ class WalkerTest {
                         new Root(
                                 "namespace",
                                 Collections.emptyList(),
-                                new Type("name", Collections.emptyList())
+                                new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
                         )
                 ).walk()
         )
-                .isEqualTo("// namespace namespace\n\ntype name {}");
+                .isEqualTo("// namespace namespace\n\ntype name : org.thoriumlang.Object {}");
     }
 }

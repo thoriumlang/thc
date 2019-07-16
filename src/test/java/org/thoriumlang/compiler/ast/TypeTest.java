@@ -25,7 +25,7 @@ class TypeTest {
     @Test
     void constructor_name() {
         try {
-            new Type(null, Collections.emptyList());
+            new Type(null, TypeSpecSingle.OBJECT, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -36,9 +36,22 @@ class TypeTest {
     }
 
     @Test
+    void constructor_implements() {
+        try {
+            new Type("name", null, Collections.emptyList());
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("superType cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void constructor_methods() {
         try {
-            new Type("name", null);
+            new Type("name", TypeSpecSingle.OBJECT, null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -53,6 +66,7 @@ class TypeTest {
         Assertions.assertThat(
                 new Type(
                         "name",
+                        TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -63,11 +77,11 @@ class TypeTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitType(String name, List<MethodSignature> methods) {
-                        return name + ":" + methods;
+                    public String visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
+                        return name + ":" + superType.toString() + ":" + methods;
                     }
                 })
-        ).isEqualTo("name:[PRIVATE name (  ) : type]");
+        ).isEqualTo("name:org.thoriumlang.Object:[PRIVATE name (  ) : type]");
     }
 
     @Test
@@ -75,6 +89,7 @@ class TypeTest {
         Assertions.assertThat(
                 new Type(
                         "name",
+                        TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -86,6 +101,6 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name:\nPRIVATE name ( parameter: type ) : returnType");
+        ).isEqualTo("TYPE name : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
     }
 }

@@ -38,9 +38,10 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitType(String name, List<MethodSignature> methods) {
+    public Visitable visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
         return new Type(
                 name,
+                superType,
                 methods.stream()
                         .map(m -> (MethodSignature) m.accept(this))
                         .collect(Collectors.toList())

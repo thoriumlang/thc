@@ -18,6 +18,9 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class TypeSpecSingle implements TypeSpec {
+    public static final TypeSpec OBJECT = new TypeSpecSingle("org.thoriumlang.Object");
+    public static final TypeSpec NONE = new TypeSpecSingle("org.thoriumlang.None");
+
     private final String type;
 
     public TypeSpecSingle(String type) {
