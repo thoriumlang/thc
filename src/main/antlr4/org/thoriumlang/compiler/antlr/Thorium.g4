@@ -59,23 +59,23 @@ classDef
     ;
 
 typeSpec
-    : IDENTIFIER
-    | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
+    : fqIdentifier
+    | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
     | typeSpecOptional
     | typeSpecUnion
     | typeSpecIntersection
     ;
 typeSpecOptional
-    : IDENTIFIER '?'
-    | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' '?'
+    : fqIdentifier '?'
+    | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' '?'
     ;
 typeSpecUnion
-    :       ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
-      ( '&' ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
+    :       ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '&' ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 typeSpecIntersection
-    :       ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
-      ( '|' ( IDENTIFIER | typeSpecOptional | '(' ( IDENTIFIER | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
+    :       ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '|' ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 
 methodSignature

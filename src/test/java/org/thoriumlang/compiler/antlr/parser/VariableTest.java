@@ -48,7 +48,7 @@ class VariableTest {
                         token("1", ThoriumLexer.NUMBER),
                         token(";")
                 ).serialize("constOrVarDef")
-        ).isEqualTo("(constOrVarDef name : (typeSpec type) = (expression 1) ;)");
+        ).isEqualTo("(constOrVarDef name : (typeSpec (fqIdentifier type)) = (expression 1) ;)");
     }
 
     @Test
@@ -76,7 +76,7 @@ class VariableTest {
                         token("1", ThoriumLexer.NUMBER),
                         token(";")
                 ).serialize("constOrVarDef")
-        ).isEqualTo("(constOrVarDef val name : (typeSpec type) = (expression 1) ;)");
+        ).isEqualTo("(constOrVarDef val name : (typeSpec (fqIdentifier type)) = (expression 1) ;)");
     }
 
     @Test
@@ -100,7 +100,7 @@ class VariableTest {
                         token("type", ThoriumLexer.IDENTIFIER),
                         token(";")
                 ).serialize("constOrVarDef")
-        ).isEqualTo("(constOrVarDef var name : (typeSpec type) ;)");
+        ).isEqualTo("(constOrVarDef var name : (typeSpec (fqIdentifier type)) ;)");
     }
 
     @Test
@@ -128,6 +128,6 @@ class VariableTest {
                         token("1", ThoriumLexer.NUMBER),
                         token(";")
                 ).serialize("constOrVarDef")
-        ).isEqualTo("(constOrVarDef var name : (typeSpec type) = (expression 1) ;)");
+        ).isEqualTo("(constOrVarDef var name : (typeSpec (fqIdentifier type)) = (expression 1) ;)");
     }
 }

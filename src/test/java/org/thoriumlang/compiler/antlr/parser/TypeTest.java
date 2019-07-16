@@ -71,8 +71,8 @@ class TypeTest {
                         token("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier { " +
-                "(methodSignature public fibonacci ( (methodParameterDef n : (typeSpec Integer)) ) : (typeSpec (typeSpecIntersection Integer | None))) ; " +
-                "(methodSignature public square ( (methodParameterDef n : (typeSpec Integer)) ) : (typeSpec (typeSpecIntersection Integer | None))) ; " +
+                "(methodSignature public fibonacci ( (methodParameterDef n : (typeSpec (fqIdentifier Integer))) ) : (typeSpec (typeSpecIntersection (fqIdentifier Integer) | (fqIdentifier None)))) ; " +
+                "(methodSignature public square ( (methodParameterDef n : (typeSpec (fqIdentifier Integer))) ) : (typeSpec (typeSpecIntersection (fqIdentifier Integer) | (fqIdentifier None)))) ; " +
                 "}))"
         );
     }
