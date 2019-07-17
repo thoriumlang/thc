@@ -18,9 +18,12 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecSingle;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
@@ -30,17 +33,27 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
         return new Type(
                 ctx.IDENTIFIER().getSymbol().getText(),
-                implementsSpec(ctx),
+                typeParameters(ctx.typeParameterDef()),
+                implementsSpec(ctx.implementsSpec()),
                 ctx.methodSignature().stream()
                         .map(method -> method.accept(methodSignatureVisitor))
                         .collect(Collectors.toList())
         );
     }
 
-    private TypeSpec implementsSpec(ThoriumParser.TypeDefContext ctx) {
-        if (ctx.implementsSpec() == null) {
+    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {
+        if (ctx == null || ctx.IDENTIFIER() == null) {
+            return Collections.emptyList();
+        }
+        return ctx.IDENTIFIER().stream()
+                .map(i -> new TypeParameter(i.getSymbol().getText()))
+                .collect(Collectors.toList());
+    }
+
+    private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
+        if (ctx == null) {
             return TypeSpecSingle.OBJECT;
         }
-        return ctx.implementsSpec().typeSpec().accept(new TypeSpecVisitor());
+        return ctx.typeSpec().accept(new TypeSpecVisitor());
     }
 }

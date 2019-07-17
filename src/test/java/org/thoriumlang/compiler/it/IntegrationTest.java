@@ -36,13 +36,15 @@ class IntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
             "/org/thoriumlang/compiler/tests/use"
     })
     void ast(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path);
         Assertions
                 .assertThat(
-                        new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
+                        new AST(sourceFile.inputStream(), sourceFile.namespace())
+                                .root()
                                 .toString())
                 .isEqualTo(
                         new BufferedReader(
@@ -69,6 +71,7 @@ class IntegrationTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
             "/org/thoriumlang/compiler/tests/use"
     })
     void thorium(String path) throws IOException, URISyntaxException {

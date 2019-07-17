@@ -29,7 +29,8 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
+    public T visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType,
+            List<MethodSignature> methods) {
         return null;
     }
 

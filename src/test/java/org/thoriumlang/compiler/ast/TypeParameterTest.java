@@ -15,23 +15,30 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.List;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public interface Visitor<T> {
-    // will have a visitRoot(String, Class, List<Use>)
-    T visitRoot(String namespace, Type type, List<Use> uses);
+import java.util.Arrays;
+import java.util.Collections;
 
-    T visitUse(String from, String to);
+class TypeParameterTest {
+    @Test
+    void constructor_name() {
+        try {
+            new TypeParameter(null);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("name cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
 
-    T visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType, List<MethodSignature> methods);
-
-    T visitTypeIntersection(List<TypeSpec> types);
-
-    T visitTypeUnion(List<TypeSpec> types);
-
-    T visitTypeSingle(String type);
-
-    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
-
-    T visitParameter(String name, TypeSpec type);
+    @Test
+    void _toString() {
+        Assertions.assertThat(
+                new TypeParameter("A").toString()
+        ).isEqualTo("A");
+    }
 }

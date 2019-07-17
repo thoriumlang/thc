@@ -51,7 +51,11 @@ useAs
     ;
 
 typeDef
-    : TYPE IDENTIFIER implementsSpec? '{' ( methodSignature ';' )* '}'
+    : TYPE IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( methodSignature ';' )* '}'
+    ;
+
+typeParameterDef
+    : IDENTIFIER ( ',' IDENTIFIER )*
     ;
 
 implementsSpec

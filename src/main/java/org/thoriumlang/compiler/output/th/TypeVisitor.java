@@ -17,23 +17,29 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
 import org.thoriumlang.compiler.tree.PrintableWrapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 class TypeVisitor extends BaseVisitor<String> {
     @Override
-    public String visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
+    public String visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType,
+            List<MethodSignature> methods) {
         Node<PrintableWrapper> typeNode = new Node<>(
                 new BasePrintableWrapper() {
                     @Override
                     public String startString() {
                         return String.format(
-                                "type %s : %s {",
+                                "type %s%s : %s {",
                                 name,
+                                typeParameters.isEmpty() ? "" : typeParameters.stream()
+                                        .map(Object::toString)
+                                        .collect(Collectors.joining(",", "[", "]")),
                                 superType.accept(new TypeSpecVisitor())
                         );
                     }

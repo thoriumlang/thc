@@ -21,12 +21,16 @@ import java.util.stream.Collectors;
 
 public class Type implements Visitable {
     private final String name;
+    private final List<TypeParameter> typeParameters;
     private final TypeSpec superType;
     private final List<MethodSignature> methods;
 
-    public Type(String name, TypeSpec superType, List<MethodSignature> methods) {
+    public Type(String name, List<TypeParameter> typeParameters, TypeSpec superType, List<MethodSignature> methods) {
         if (name == null) {
             throw new NullPointerException("name cannot be null");
+        }
+        if (typeParameters == null) {
+            throw new NullPointerException("typeParameters cannot be null");
         }
         if (superType == null) {
             throw new NullPointerException("superType cannot be null");
@@ -35,13 +39,14 @@ public class Type implements Visitable {
             throw new NullPointerException("methods cannot be null");
         }
         this.name = name;
+        this.typeParameters = typeParameters;
         this.superType = superType;
         this.methods = methods;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(name, superType, methods);
+        return visitor.visitType(name, typeParameters, superType, methods);
     }
 
     @Override
@@ -50,8 +55,11 @@ public class Type implements Visitable {
                 .map(MethodSignature::toString)
                 .collect(Collectors.joining(String.format("%n")));
 
-        return String.format("TYPE %s : %s:%s",
+        return String.format("TYPE %s%s : %s:%s",
                 name,
+                typeParameters.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(",", "[", "]")),
                 superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );
@@ -67,11 +75,13 @@ public class Type implements Visitable {
         }
         Type type = (Type) o;
         return name.equals(type.name) &&
+                typeParameters.equals(type.typeParameters) &&
+                superType.equals(type.superType) &&
                 methods.equals(type.methods);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, methods);
+        return Objects.hash(name, typeParameters, superType, methods);
     }
 }

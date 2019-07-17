@@ -18,14 +18,16 @@ package org.thoriumlang.compiler.ast;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class TypeTest {
     @Test
     void constructor_name() {
         try {
-            new Type(null, TypeSpecSingle.OBJECT, Collections.emptyList());
+            new Type(null, Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -36,9 +38,22 @@ class TypeTest {
     }
 
     @Test
+    void constructor_typeParameters() {
+        try {
+            new Type("name", null, TypeSpecSingle.OBJECT, Collections.emptyList());
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("typeParameters cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void constructor_implements() {
         try {
-            new Type("name", null, Collections.emptyList());
+            new Type("name", Collections.emptyList(), null, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -51,7 +66,7 @@ class TypeTest {
     @Test
     void constructor_methods() {
         try {
-            new Type("name", TypeSpecSingle.OBJECT, null);
+            new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -66,6 +81,7 @@ class TypeTest {
         Assertions.assertThat(
                 new Type(
                         "name",
+                        Collections.singletonList(new TypeParameter("A")),
                         TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
@@ -77,11 +93,19 @@ class TypeTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitType(String name, TypeSpec superType, List<MethodSignature> methods) {
-                        return name + ":" + superType.toString() + ":" + methods;
+                    public String visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType,
+                            List<MethodSignature> methods) {
+                        return String.format("%s:[%s]:%s:%s",
+                                name,
+                                typeParameters.stream()
+                                        .map(Object::toString)
+                                        .collect(Collectors.joining(",")),
+                                superType.toString(),
+                                methods
+                        );
                     }
                 })
-        ).isEqualTo("name:org.thoriumlang.Object:[PRIVATE name (  ) : type]");
+        ).isEqualTo("name:[A]:org.thoriumlang.Object:[PRIVATE name (  ) : type]");
     }
 
     @Test
@@ -89,6 +113,7 @@ class TypeTest {
         Assertions.assertThat(
                 new Type(
                         "name",
+                        Arrays.asList(new TypeParameter("A"), new TypeParameter("B")),
                         TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
@@ -101,6 +126,27 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
+        ).isEqualTo("TYPE name[A,B] : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
+    }
+
+    @Test
+    void _toStringWithoutTypeParameter() {
+        Assertions.assertThat(
+                new Type(
+                        "name",
+                        Collections.emptyList(),
+                        TypeSpecSingle.OBJECT,
+                        Collections.singletonList(
+                                new MethodSignature(
+                                        Visibility.PRIVATE,
+                                        "name",
+                                        Collections.singletonList(new Parameter(
+                                                "parameter", new TypeSpecSingle("type")
+                                        )),
+                                        new TypeSpecSingle("returnType")
+                                )
+                        )
+                ).toString()
+        ).isEqualTo("TYPE name[] : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
     }
 }

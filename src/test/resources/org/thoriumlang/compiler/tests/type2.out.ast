@@ -1,0 +1,2 @@
+NAMESPACE org.thoriumlang.compiler.tests
+TYPE MyType[A] : org.thoriumlang.Object:

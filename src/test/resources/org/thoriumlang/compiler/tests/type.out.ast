@@ -1,5 +1,5 @@
 NAMESPACE org.thoriumlang.compiler.tests
-TYPE MyType : ParentType:
+TYPE MyType[] : ParentType:
 PRIVATE a (  ) : i:[D, org.thoriumlang.None, C, u:[B, i:[A, org.thoriumlang.None]]]
 PRIVATE b (  ) : u:[A, B]
 PRIVATE c (  ) : u:[C, i:[A, org.thoriumlang.None]]

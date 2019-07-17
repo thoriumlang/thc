@@ -26,7 +26,7 @@ class IdentityVisitorTest {
         Root root = new Root(
                 "namespace",
                 Collections.emptyList(), // FIXME
-                new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
+                new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
         );
         Assertions.assertThat(root.accept(visitor()))
                 .isEqualTo(root);
@@ -34,7 +34,12 @@ class IdentityVisitorTest {
 
     @Test
     void visitType() {
-        Type type = new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList());
+        Type type = new Type(
+                "name",
+                Collections.singletonList(new TypeParameter("T")),
+                TypeSpecSingle.OBJECT,
+                Collections.emptyList()
+        );
         Assertions.assertThat(type.accept(visitor()))
                 .isEqualTo(type);
     }

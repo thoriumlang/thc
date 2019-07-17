@@ -17,37 +17,19 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class Use implements Visitable {
-    private final String from;
-    private final String to;
+public class TypeParameter {
+    private final String name;
 
-    public Use(String from, String to) {
-        if (from == null) {
-            throw new NullPointerException("from cannot be null");
+    public TypeParameter(String name) {
+        if (name == null) {
+            throw new NullPointerException("name cannot be null");
         }
-        if (to == null) {
-            throw new NullPointerException("to cannot be null");
-        }
-        this.from = from;
-        this.to = to;
-    }
-
-    public Use(String from) {
-        if (from == null) {
-            throw new NullPointerException("from cannot be null");
-        }
-        this.from = from;
-        this.to = from.substring(from.lastIndexOf('.') + 1);
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitUse(from, to);
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return String.format("USE %s : %s", from, to);
+        return name;
     }
 
     @Override
@@ -58,13 +40,12 @@ public class Use implements Visitable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Use use = (Use) o;
-        return from.equals(use.from) &&
-                to.equals(use.to);
+        TypeParameter that = (TypeParameter) o;
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to);
+        return Objects.hash(name);
     }
 }

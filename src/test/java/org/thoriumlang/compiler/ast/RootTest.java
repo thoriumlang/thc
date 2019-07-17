@@ -25,7 +25,11 @@ class RootTest {
     @Test
     void constructor_namespace() {
         try {
-            new Root(null, Collections.emptyList(), new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList()));
+            new Root(
+                    null,
+                    Collections.emptyList(),
+                    new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -38,7 +42,11 @@ class RootTest {
     @Test
     void constructor_uses() {
         try {
-            new Root("namespace", null, new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList()));
+            new Root(
+                    "namespace",
+                    null,
+                    new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -67,14 +75,14 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
+                        new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitRoot(String namespace, Type type, List<Use> uses) {
                         return namespace + ":" + uses + ":" + type;
                     }
                 })
-        ).isEqualTo("namespace:[USE from : from]:TYPE name : org.thoriumlang.Object:");
+        ).isEqualTo("namespace:[USE from : from]:TYPE name[] : org.thoriumlang.Object:");
     }
 
     @Test
@@ -83,8 +91,8 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
+                        new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
                 ).toString()
-        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name : org.thoriumlang.Object:");
+        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name[] : org.thoriumlang.Object:");
     }
 }

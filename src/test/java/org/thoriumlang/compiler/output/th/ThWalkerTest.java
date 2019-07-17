@@ -31,7 +31,12 @@ class ThWalkerTest {
                         new Root(
                                 "namespace",
                                 Collections.emptyList(),
-                                new Type("name", TypeSpecSingle.OBJECT, Collections.emptyList())
+                                new Type(
+                                        "name",
+                                        Collections.emptyList(),
+                                        TypeSpecSingle.OBJECT,
+                                        Collections.emptyList()
+                                )
                         )
                 ).walk()
         )

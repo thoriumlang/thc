@@ -99,4 +99,21 @@ class TypeDefTest {
                 "}))"
         );
     }
+
+    @Test
+    void parameterizedType() {
+        Assertions.assertThat(
+                new Tree(
+                        token("type", ThoriumLexer.TYPE),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token("["),
+                        token("T", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("U", ThoriumLexer.IDENTIFIER),
+                        token("]"),
+                        token("{"),
+                        token("}")
+                ).serialize()
+        ).isEqualTo("(root (typeDef type Identifier [ (typeParameterDef T , U) ] { }))");
+    }
 }
