@@ -16,12 +16,14 @@
 package org.thoriumlang.compiler.antlr.parser;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
 import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
 @SuppressWarnings("squid:S1192")
+@Tag("parser")
 class TypeSpecTest {
     @Test
     void single() {

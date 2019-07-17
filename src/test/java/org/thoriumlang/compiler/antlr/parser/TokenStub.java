@@ -20,20 +20,20 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
-public class TokenStub implements Token {
+class TokenStub implements Token {
     private final String text;
     private final int type;
 
-    public TokenStub(String text, int type) {
+    TokenStub(String text, int type) {
         this.text = text;
         this.type = type;
     }
 
-    public TokenStub(int type) {
+    TokenStub(int type) {
         this("", type);
     }
 
-    public TokenStub(String litteral) {
+    TokenStub(String litteral) {
         this(litteral, findTokenType(litteral));
     }
 

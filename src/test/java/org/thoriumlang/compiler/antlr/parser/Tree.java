@@ -33,14 +33,14 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
-public class Tree {
+ class Tree {
     private final List<Token> tokens;
 
-    public Tree(Token... tokens) {
+     Tree(Token... tokens) {
         this.tokens = Arrays.asList(tokens);
     }
 
-    public String serialize(String ruleName) {
+     String serialize(String ruleName) {
         ThoriumParser p = new ThoriumParser(
                 new CommonTokenStream(
                         new ListTokenSource(tokens)
@@ -85,7 +85,7 @@ public class Tree {
         }
     }
 
-    public String serialize() {
+     String serialize() {
         return serialize("root");
     }
 }

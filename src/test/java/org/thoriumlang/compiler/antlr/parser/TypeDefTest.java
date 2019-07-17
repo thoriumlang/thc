@@ -24,7 +24,7 @@ import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
 @SuppressWarnings("squid:S1192")
 @Tag("parser")
-class TypeTest {
+class TypeDefTest {
     @Test
     void emptyType() {
         Assertions.assertThat(
