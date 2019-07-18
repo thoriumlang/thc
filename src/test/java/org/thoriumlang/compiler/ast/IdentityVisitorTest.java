@@ -71,6 +71,7 @@ class IdentityVisitorTest {
                 Visibility.PRIVATE,
                 "name",
                 Collections.emptyList(),
+                Collections.emptyList(),
                 new TypeSpecSingle("type")
         );
         Assertions.assertThat(methodSignature.accept(visitor()))
@@ -80,6 +81,13 @@ class IdentityVisitorTest {
     @Test
     void visitParameter() {
         Parameter parameter = new Parameter("name", new TypeSpecSingle("type"));
+        Assertions.assertThat(parameter.accept(visitor()))
+                .isEqualTo(parameter);
+    }
+
+    @Test
+    void visitTypeParameter() {
+        TypeParameter parameter = new TypeParameter("name");
         Assertions.assertThat(parameter.accept(visitor()))
                 .isEqualTo(parameter);
     }

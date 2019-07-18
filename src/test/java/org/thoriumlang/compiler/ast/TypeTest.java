@@ -88,6 +88,7 @@ class TypeTest {
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
+                                        Collections.emptyList(),
                                         new TypeSpecSingle("type")
                                 )
                         )
@@ -98,14 +99,14 @@ class TypeTest {
                         return String.format("%s:[%s]:%s:%s",
                                 name,
                                 typeParameters.stream()
-                                        .map(Object::toString)
+                                        .map(TypeParameter::toString)
                                         .collect(Collectors.joining(",")),
-                                superType.toString(),
+                                superType,
                                 methods
                         );
                     }
                 })
-        ).isEqualTo("name:[A]:org.thoriumlang.Object:[PRIVATE name (  ) : type]");
+        ).isEqualTo("name:[A]:org.thoriumlang.Object:[PRIVATE name [  ] (  ) : type]");
     }
 
     @Test
@@ -113,20 +114,22 @@ class TypeTest {
         Assertions.assertThat(
                 new Type(
                         "name",
-                        Arrays.asList(new TypeParameter("A"), new TypeParameter("B")),
+                        Arrays.asList(
+                                new TypeParameter("A"),
+                                new TypeParameter("B")
+                        ),
                         TypeSpecSingle.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "name",
-                                        Collections.singletonList(new Parameter(
-                                                "parameter", new TypeSpecSingle("type")
-                                        )),
+                                        Collections.emptyList(),
+                                        Collections.emptyList(),
                                         new TypeSpecSingle("returnType")
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[A,B] : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
+        ).isEqualTo("TYPE name[A,B] : org.thoriumlang.Object:\nPRIVATE name [  ] (  ) : returnType");
     }
 
     @Test
@@ -140,6 +143,7 @@ class TypeTest {
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "name",
+                                        Collections.emptyList(),
                                         Collections.singletonList(new Parameter(
                                                 "parameter", new TypeSpecSingle("type")
                                         )),
@@ -147,6 +151,6 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[] : org.thoriumlang.Object:\nPRIVATE name ( parameter: type ) : returnType");
+        ).isEqualTo("TYPE name[] : org.thoriumlang.Object:\nPRIVATE name [  ] ( parameter: type ) : returnType");
     }
 }

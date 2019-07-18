@@ -37,6 +37,7 @@ class FlattenedTypesRootTest {
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
+                                        Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
                                                         new TypeSpecSingle("TA"),
@@ -63,6 +64,7 @@ class FlattenedTypesRootTest {
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "name",
+                                        Collections.emptyList(),
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(

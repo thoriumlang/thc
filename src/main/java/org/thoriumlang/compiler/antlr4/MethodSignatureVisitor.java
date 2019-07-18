@@ -18,12 +18,16 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.Visibility;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
     private static final MethodParameterVisitor methodParameterVisitor = new MethodParameterVisitor();
+    private static final TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor();
 
     @Override
     public MethodSignature visitMethodSignature(ThoriumParser.MethodSignatureContext ctx) {
@@ -31,6 +35,7 @@ public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> 
         return new MethodSignature(
                 visibility(ctx),
                 ctx.name.getText(),
+                typeParameters(ctx.typeParameterDef()),
                 ctx.methodParameterDef().stream()
                         .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
@@ -40,5 +45,12 @@ public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> 
 
     private Visibility visibility(ThoriumParser.MethodSignatureContext ctx) {
         return ctx.visibility == null ? Visibility.PRIVATE : Visibility.valueOf(ctx.visibility.getText().toUpperCase());
+    }
+
+    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {
+        if (ctx == null || ctx.IDENTIFIER() == null) {
+            return Collections.emptyList();
+        }
+        return ctx.accept(typeParameterDefVisitor);
     }
 }

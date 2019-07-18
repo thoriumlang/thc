@@ -126,4 +126,42 @@ class MethodSignatureTest {
                 "(methodParameterDef id3 : (typeSpec (fqIdentifier type3))) " +
                 ") : (typeSpec (fqIdentifier typeName)))");
     }
+
+    @Test
+    void methodSignatureWithTypeParameter() {
+        Assertions.assertThat(
+                new Tree(
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("["),
+                        token("T", ThoriumLexer.IDENTIFIER),
+                        token("]"),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
+                ).serialize("methodSignature")
+        ).isEqualTo(
+                "(methodSignature public methodName [ (typeParameterDef T) ] ( ) : (typeSpec (fqIdentifier typeName)))");
+    }
+
+    @Test
+    void methodSignatureWithTypeParameters() {
+        Assertions.assertThat(
+                new Tree(
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("["),
+                        token("T", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("U", ThoriumLexer.IDENTIFIER),
+                        token("]"),
+                        token("("),
+                        token(")"),
+                        token(":"),
+                        token("typeName", ThoriumLexer.IDENTIFIER)
+                ).serialize("methodSignature")
+        ).isEqualTo(
+                "(methodSignature public methodName [ (typeParameterDef T , U) ] ( ) : (typeSpec (fqIdentifier typeName)))");
+    }
 }

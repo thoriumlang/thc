@@ -70,7 +70,7 @@ class BaseVisitorTest {
     @Test
     void visitMethodSignature() {
         Assertions.assertThat(
-                visitor().visitMethodSignature(null, null, null, null)
+                visitor().visitMethodSignature(null, null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -79,6 +79,14 @@ class BaseVisitorTest {
     void visitParameter() {
         Assertions.assertThat(
                 visitor().visitParameter(null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitTypeParameter() {
+        Assertions.assertThat(
+                visitor().visitTypeParameter(null)
         )
                 .isEqualTo(null);
     }

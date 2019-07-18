@@ -74,11 +74,13 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters,
+    public Visitable visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+            List<Parameter> parameters,
             TypeSpec returnType) {
         return new MethodSignature(
                 visibility,
                 name,
+                typeParameters,
                 parameters.stream()
                         .map(p -> (Parameter) p.accept(this))
                         .collect(Collectors.toList()),
@@ -89,5 +91,10 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     @Override
     public Visitable visitParameter(String name, TypeSpec type) {
         return new Parameter(name, (TypeSpec) type.accept(this));
+    }
+
+    @Override
+    public Visitable visitTypeParameter(String name) {
+        return new TypeParameter(name);
     }
 }

@@ -1,3 +1,5 @@
 // namespace org.thoriumlang.compiler.tests
 
-type MyType[A] : org.thoriumlang.Object {}
+type MyType[A] : org.thoriumlang.Object {
+  private add[T, U](a: T): T;
+}

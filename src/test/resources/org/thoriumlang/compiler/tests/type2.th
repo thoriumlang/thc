@@ -1,1 +1,3 @@
-type MyType [A] {}
+type MyType [A] {
+    add[T,U](a:T):T;
+}

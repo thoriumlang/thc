@@ -37,9 +37,11 @@ class TypeVisitor extends BaseVisitor<String> {
                         return String.format(
                                 "type %s%s : %s {",
                                 name,
-                                typeParameters.isEmpty() ? "" : typeParameters.stream()
-                                        .map(Object::toString)
-                                        .collect(Collectors.joining(",", "[", "]")),
+                                typeParameters.isEmpty() ?
+                                        "" :
+                                        typeParameters.stream()
+                                                .map(TypeParameter::toString)
+                                                .collect(Collectors.joining(",", "[", "]")),
                                 superType.accept(new TypeSpecVisitor())
                         );
                     }

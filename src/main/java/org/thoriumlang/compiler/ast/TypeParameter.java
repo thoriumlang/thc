@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class TypeParameter {
+public class TypeParameter implements Visitable {
     private final String name;
 
     public TypeParameter(String name) {
@@ -25,6 +25,11 @@ public class TypeParameter {
             throw new NullPointerException("name cannot be null");
         }
         this.name = name;
+    }
+
+    @Override
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visitTypeParameter(name);
     }
 
     @Override

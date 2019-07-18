@@ -1,2 +1,3 @@
 NAMESPACE org.thoriumlang.compiler.tests
 TYPE MyType[A] : org.thoriumlang.Object:
+PRIVATE add [ T, U ] ( a: T ) : T

@@ -55,11 +55,11 @@ public class Type implements Visitable {
                 .map(MethodSignature::toString)
                 .collect(Collectors.joining(String.format("%n")));
 
-        return String.format("TYPE %s%s : %s:%s",
+        return String.format("TYPE %s[%s] : %s:%s",
                 name,
                 typeParameters.stream()
-                        .map(Object::toString)
-                        .collect(Collectors.joining(",", "[", "]")),
+                        .map(TypeParameter::toString)
+                        .collect(Collectors.joining(",")),
                 superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );

@@ -18,12 +18,14 @@ package org.thoriumlang.compiler.output.th;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Parameter;
+import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpecSingle;
 import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 class MethodSignatureVisitorTest {
     @Test
@@ -37,11 +39,15 @@ class MethodSignatureVisitorTest {
                                 Visibility.PRIVATE,
                                 "m",
                                 Arrays.asList(
+                                        new TypeParameter("T"),
+                                        new TypeParameter("U")
+                                ),
+                                Arrays.asList(
                                         new Parameter("p1", new TypeSpecSingle("type1")),
                                         new Parameter("p2", new TypeSpecSingle("type2"))
                                 ),
                                 new TypeSpecSingle("type"))
         )
-                .isEqualTo("private m(p1: type1, p2: type2): type;");
+                .isEqualTo("private m[T, U](p1: type1, p2: type2): type;");
     }
 }

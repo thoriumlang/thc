@@ -48,6 +48,7 @@ class TypeVisitorTest {
                                         Visibility.PRIVATE,
                                         "m",
                                         Collections.emptyList(),
+                                        Collections.emptyList(),
                                         new TypeSpecSingle("type")
                                 )
                         )

@@ -20,12 +20,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class MethodSignatureTest {
     @Test
     void constructor_visibility() {
         try {
-            new MethodSignature(null, "name", Collections.emptyList(), new TypeSpecSingle("test"));
+            new MethodSignature(null, "name", Collections.emptyList(), Collections.emptyList(),
+                    new TypeSpecSingle("test"));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -38,7 +40,8 @@ class MethodSignatureTest {
     @Test
     void constructor_name() {
         try {
-            new MethodSignature(Visibility.PRIVATE, null, Collections.emptyList(), new TypeSpecSingle("test"));
+            new MethodSignature(Visibility.PRIVATE, null, Collections.emptyList(), Collections.emptyList(),
+                    new TypeSpecSingle("test"));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -49,9 +52,22 @@ class MethodSignatureTest {
     }
 
     @Test
+    void constructor_typeParameters() {
+        try {
+            new MethodSignature(Visibility.PRIVATE, "name", null, Collections.emptyList(), new TypeSpecSingle("test"));
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("typeParameters cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void constructor_parameters() {
         try {
-            new MethodSignature(Visibility.PRIVATE, "name", null, new TypeSpecSingle("test"));
+            new MethodSignature(Visibility.PRIVATE, "name", Collections.emptyList(), null, new TypeSpecSingle("test"));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -64,7 +80,7 @@ class MethodSignatureTest {
     @Test
     void constructor_returnType() {
         try {
-            new MethodSignature(Visibility.PRIVATE, "name", Collections.emptyList(), null);
+            new MethodSignature(Visibility.PRIVATE, "name", Collections.emptyList(), Collections.emptyList(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -80,16 +96,28 @@ class MethodSignatureTest {
                 new MethodSignature(
                         Visibility.PRIVATE,
                         "name",
+                        Collections.singletonList(new TypeParameter("T")),
                         Collections.singletonList(new Parameter("name", new TypeSpecSingle("type"))),
                         new TypeSpecSingle("test")
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters,
-                            TypeSpec returnType) {
-                        return visibility + ":" + name + ":" + parameters + ":" + returnType;
+                    public String visitMethodSignature(Visibility visibility, String name,
+                            List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
+                        return String.format(
+                                "%s:%s:[%s]:(%s):%s",
+                                visibility,
+                                name,
+                                typeParameters.stream()
+                                        .map(TypeParameter::toString)
+                                        .collect(Collectors.joining(",")),
+                                parameters.stream()
+                                        .map(Parameter::toString)
+                                        .collect(Collectors.joining(",")),
+                                returnType
+                        );
                     }
                 })
-        ).isEqualTo("PRIVATE:name:[name: type]:test");
+        ).isEqualTo("PRIVATE:name:[T]:(name: type):test");
     }
 
     @Test
@@ -98,9 +126,10 @@ class MethodSignatureTest {
                 new MethodSignature(
                         Visibility.PRIVATE,
                         "name",
+                        Collections.singletonList(new TypeParameter("T")),
                         Collections.singletonList(new Parameter("name", new TypeSpecSingle("type"))),
                         new TypeSpecSingle("returnType")
                 ).toString()
-        ).isEqualTo("PRIVATE name ( name: type ) : returnType");
+        ).isEqualTo("PRIVATE name [ T ] ( name: type ) : returnType");
     }
 }

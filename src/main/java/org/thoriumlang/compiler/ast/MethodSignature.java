@@ -22,15 +22,20 @@ import java.util.stream.Collectors;
 public class MethodSignature implements Visitable {
     private final Visibility visibility;
     private final String name;
+    private final List<TypeParameter> typeParameters;
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
 
-    public MethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType) {
+    public MethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+            List<Parameter> parameters, TypeSpec returnType) {
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
         if (name == null) {
             throw new NullPointerException("name cannot be null");
+        }
+        if (typeParameters == null) {
+            throw new NullPointerException("typeParameters cannot be null");
         }
         if (parameters == null) {
             throw new NullPointerException("parameters cannot be null");
@@ -40,6 +45,7 @@ public class MethodSignature implements Visitable {
         }
         this.visibility = visibility;
         this.name = name;
+        this.typeParameters = typeParameters;
         this.parameters = parameters;
         this.returnType = returnType;
     }
@@ -49,6 +55,7 @@ public class MethodSignature implements Visitable {
         return visitor.visitMethodSignature(
                 visibility,
                 name,
+                typeParameters,
                 parameters,
                 returnType
         );
@@ -56,9 +63,12 @@ public class MethodSignature implements Visitable {
 
     @Override
     public String toString() {
-        return String.format("%s %s ( %s ) : %s",
+        return String.format("%s %s [ %s ] ( %s ) : %s",
                 visibility,
                 name,
+                typeParameters.stream()
+                        .map(TypeParameter::toString)
+                        .collect(Collectors.joining(", ")),
                 parameters.stream()
                         .map(Parameter::toString)
                         .collect(Collectors.joining(", ")),
@@ -77,12 +87,13 @@ public class MethodSignature implements Visitable {
         MethodSignature that = (MethodSignature) o;
         return visibility == that.visibility &&
                 name.equals(that.name) &&
+                typeParameters.equals(that.typeParameters) &&
                 parameters.equals(that.parameters) &&
                 returnType.equals(that.returnType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(visibility, name, parameters, returnType);
+        return Objects.hash(visibility, name, typeParameters, parameters, returnType);
     }
 }

@@ -31,7 +31,10 @@ public interface Visitor<T> {
 
     T visitTypeSingle(String type);
 
-    T visitMethodSignature(Visibility visibility, String name, List<Parameter> parameters, TypeSpec returnType);
+    T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+            List<Parameter> parameters, TypeSpec returnType);
 
     T visitParameter(String name, TypeSpec type);
+
+    T visitTypeParameter(String name);
 }
