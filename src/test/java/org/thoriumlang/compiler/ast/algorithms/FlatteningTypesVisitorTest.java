@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.TypeSpecSingle;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 class FlatteningTypesVisitorTest {
     @Test
@@ -30,11 +31,16 @@ class FlatteningTypesVisitorTest {
 
         TypeSpecIntersection spec = new TypeSpecIntersection(
                 Arrays.asList(
-                        new TypeSpecSingle("TA"),
+                        new TypeSpecSingle("TA", Collections.emptyList()),
                         new TypeSpecIntersection(
-                                Arrays.asList(new TypeSpecSingle("TB"), new TypeSpecSingle("TC"),
+                                Arrays.asList(
+                                        new TypeSpecSingle("TB", Collections.emptyList()),
+                                        new TypeSpecSingle("TC", Collections.emptyList()),
                                         new TypeSpecIntersection(
-                                                Arrays.asList(new TypeSpecSingle("TD"), new TypeSpecSingle("TE"))
+                                                Arrays.asList(
+                                                        new TypeSpecSingle("TD", Collections.emptyList()),
+                                                        new TypeSpecSingle("TE", Collections.emptyList())
+                                                )
                                         ))
                         )
                 )
@@ -43,11 +49,11 @@ class FlatteningTypesVisitorTest {
         Assertions.assertThat(spec.accept(visitor))
                 .isEqualTo(new TypeSpecIntersection(
                         Arrays.asList(
-                                new TypeSpecSingle("TA"),
-                                new TypeSpecSingle("TB"),
-                                new TypeSpecSingle("TC"),
-                                new TypeSpecSingle("TD"),
-                                new TypeSpecSingle("TE")
+                                new TypeSpecSingle("TA", Collections.emptyList()),
+                                new TypeSpecSingle("TB", Collections.emptyList()),
+                                new TypeSpecSingle("TC", Collections.emptyList()),
+                                new TypeSpecSingle("TD", Collections.emptyList()),
+                                new TypeSpecSingle("TE", Collections.emptyList())
                         )
                 ));
     }
@@ -58,11 +64,16 @@ class FlatteningTypesVisitorTest {
 
         TypeSpecUnion spec = new TypeSpecUnion(
                 Arrays.asList(
-                        new TypeSpecSingle("TA"),
+                        new TypeSpecSingle("TA", Collections.emptyList()),
                         new TypeSpecUnion(
-                                Arrays.asList(new TypeSpecSingle("TB"), new TypeSpecSingle("TC"),
+                                Arrays.asList(
+                                        new TypeSpecSingle("TB", Collections.emptyList()),
+                                        new TypeSpecSingle("TC", Collections.emptyList()),
                                         new TypeSpecUnion(
-                                                Arrays.asList(new TypeSpecSingle("TD"), new TypeSpecSingle("TE"))
+                                                Arrays.asList(
+                                                        new TypeSpecSingle("TD", Collections.emptyList()),
+                                                        new TypeSpecSingle("TE", Collections.emptyList())
+                                                )
                                         ))
                         )
                 )
@@ -71,11 +82,11 @@ class FlatteningTypesVisitorTest {
         Assertions.assertThat(spec.accept(visitor))
                 .isEqualTo(new TypeSpecUnion(
                         Arrays.asList(
-                                new TypeSpecSingle("TA"),
-                                new TypeSpecSingle("TB"),
-                                new TypeSpecSingle("TC"),
-                                new TypeSpecSingle("TD"),
-                                new TypeSpecSingle("TE")
+                                new TypeSpecSingle("TA", Collections.emptyList()),
+                                new TypeSpecSingle("TB", Collections.emptyList()),
+                                new TypeSpecSingle("TC", Collections.emptyList()),
+                                new TypeSpecSingle("TD", Collections.emptyList()),
+                                new TypeSpecSingle("TE", Collections.emptyList())
                         )
                 ));
     }

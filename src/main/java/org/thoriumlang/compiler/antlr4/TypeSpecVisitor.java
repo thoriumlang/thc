@@ -25,6 +25,7 @@ import org.thoriumlang.compiler.ast.TypeSpecUnion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +34,8 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
 
     @Override
     public TypeSpec visitTypeSpec(ThoriumParser.TypeSpecContext ctx) {
-        if (ctx.fqIdentifier() != null) {
-            return new TypeSpecSingle(ctx.fqIdentifier().accept(fqIdentifierVisitor));
+        if (ctx.typeSpecSimple() != null) {
+            return ctx.typeSpecSimple().accept(this);
         }
         if (ctx.typeSpec() != null) {
             return ctx.typeSpec().accept(this);
@@ -52,11 +53,28 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     }
 
     @Override
+    public TypeSpec visitTypeSpecSimple(ThoriumParser.TypeSpecSimpleContext ctx) {
+        return new TypeSpecSingle(
+                ctx.fqIdentifier().accept(fqIdentifierVisitor),
+                visitArguments(ctx.typeArguments())
+        );
+    }
+
+    private List<TypeSpec> visitArguments(ThoriumParser.TypeArgumentsContext ctx) {
+        if (ctx == null) {
+            return Collections.emptyList();
+        }
+        return ctx.typeSpec().stream()
+                .map(e -> e.accept(this))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public TypeSpec visitTypeSpecOptional(ThoriumParser.TypeSpecOptionalContext ctx) {
-        if (ctx.fqIdentifier() != null) {
+        if (ctx.typeSpecSimple() != null) {
             return new TypeSpecIntersection(
                     Arrays.asList(
-                            new TypeSpecSingle(ctx.fqIdentifier().accept(fqIdentifierVisitor)),
+                            ctx.typeSpecSimple().accept(this),
                             TypeSpecSingle.NONE
                     )
             );
@@ -99,7 +117,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpecUnion(ThoriumParser.TypeSpecUnionContext ctx) {
         List<TypeSpec> types = visit(
-                ctx.fqIdentifier(),
+                ctx.typeSpecSimple(),
                 ctx.typeSpec(),
                 ctx.typeSpecOptional()
         );
@@ -119,16 +137,14 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         return new TypeSpecUnion(types);
     }
 
-    private List<TypeSpec> visit(List<ThoriumParser.FqIdentifierContext> identifier,
+    private List<TypeSpec> visit(List<ThoriumParser.TypeSpecSimpleContext> specSimpleContexts,
             List<ThoriumParser.TypeSpecContext> typeSpecContexts,
             List<ThoriumParser.TypeSpecOptionalContext> typeSpecOptionalContexts) {
         List<TypeSpec> typeSpecs = new ArrayList<>();
 
         typeSpecs.addAll(
-                identifier.stream()
-                        .map(t -> new TypeSpecSingle(
-                                t.accept(fqIdentifierVisitor)
-                        ))
+                specSimpleContexts.stream()
+                        .map(t -> t.accept(this))
                         .collect(Collectors.toList())
         );
         typeSpecs.addAll(
@@ -148,7 +164,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpecIntersection(ThoriumParser.TypeSpecIntersectionContext ctx) {
         List<TypeSpec> types = visit(
-                ctx.fqIdentifier(),
+                ctx.typeSpecSimple(),
                 ctx.typeSpec(),
                 ctx.typeSpecOptional()
         );

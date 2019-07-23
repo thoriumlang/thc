@@ -56,7 +56,7 @@ class TypeDefTest {
                         token("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier " +
-                "(implementsSpec : (typeSpec (typeSpecIntersection ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) | (typeSpecOptional (fqIdentifier TC) ?)))) " +
+                "(implementsSpec : (typeSpec (typeSpecIntersection ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecOptional (typeSpecSimple (fqIdentifier TC)) ?)))) " +
                 "{ }))");
     }
 
@@ -94,8 +94,8 @@ class TypeDefTest {
                         token("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier { " +
-                "(methodSignature public fibonacci ( (methodParameterDef n : (typeSpec (fqIdentifier Integer))) ) : (typeSpec (typeSpecIntersection (fqIdentifier Integer) | (fqIdentifier None)))) ; " +
-                "(methodSignature public square ( (methodParameterDef n : (typeSpec (fqIdentifier Integer))) ) : (typeSpec (typeSpecIntersection (fqIdentifier Integer) | (fqIdentifier None)))) ; " +
+                "(methodSignature public fibonacci ( (methodParameterDef n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
+                "(methodSignature public square ( (methodParameterDef n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
                 "}))"
         );
     }

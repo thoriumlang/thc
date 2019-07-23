@@ -45,7 +45,7 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitTypeSingle(String type) {
+    public T visitTypeSingle(String type, List<TypeSpec> arguments) {
         return null;
     }
 

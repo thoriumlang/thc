@@ -46,21 +46,30 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeIntersection() {
-        TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSingle("type")));
+        TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSingle(
+                "type",
+                Collections.emptyList()
+        )));
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
     }
 
     @Test
     void visitTypeUnion() {
-        TypeSpecUnion typeSpec = new TypeSpecUnion(Collections.singletonList(new TypeSpecSingle("type")));
+        TypeSpecUnion typeSpec = new TypeSpecUnion(Collections.singletonList(new TypeSpecSingle(
+                "type",
+                Collections.emptyList()
+        )));
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
     }
 
     @Test
     void visitTypeSingle() {
-        TypeSpecSingle typeSpec = new TypeSpecSingle("type");
+        TypeSpecSingle typeSpec = new TypeSpecSingle(
+                "type",
+                Collections.emptyList()
+        );
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
     }
@@ -72,7 +81,10 @@ class IdentityVisitorTest {
                 "name",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new TypeSpecSingle("type")
+                new TypeSpecSingle(
+                        "type",
+                        Collections.emptyList()
+                )
         );
         Assertions.assertThat(methodSignature.accept(visitor()))
                 .isEqualTo(methodSignature);
@@ -80,7 +92,10 @@ class IdentityVisitorTest {
 
     @Test
     void visitParameter() {
-        Parameter parameter = new Parameter("name", new TypeSpecSingle("type"));
+        Parameter parameter = new Parameter("name", new TypeSpecSingle(
+                "type",
+                Collections.emptyList()
+        ));
         Assertions.assertThat(parameter.accept(visitor()))
                 .isEqualTo(parameter);
     }

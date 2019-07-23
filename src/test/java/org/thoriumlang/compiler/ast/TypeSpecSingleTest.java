@@ -18,13 +18,16 @@ package org.thoriumlang.compiler.ast;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class TypeSpecSingleTest {
     @Test
-    void constructor() {
+    void constructor_type() {
         try {
-            new TypeSpecSingle(null);
+            new TypeSpecSingle(null, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,21 +38,54 @@ class TypeSpecSingleTest {
     }
 
     @Test
+    void constructor_arguments() {
+        try {
+            new TypeSpecSingle("type", null);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("arguments cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void accept() {
         Assertions.assertThat(
-                new TypeSpecSingle("type").accept(new BaseVisitor<String>() {
+                new TypeSpecSingle(
+                        "type",
+                        Arrays.asList(
+                                new TypeSpecSingle("A", Collections.singletonList(
+                                        new TypeSpecSingle("C", Collections.emptyList())
+                                )),
+                                new TypeSpecSingle("B", Collections.emptyList())
+                        )
+                ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeSingle(String type) {
-                        return type;
+                    public String visitTypeSingle(String type, List<TypeSpec> arguments) {
+                        return String.format(
+                                "%s:[%s]",
+                                type,
+                                arguments.stream()
+                                        .map(TypeSpec::toString)
+                                        .collect(Collectors.joining(","))
+                        );
                     }
                 })
-        ).isEqualTo("type");
+        ).isEqualTo("type:[A[C[]],B[]]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new TypeSpecSingle("type").toString()
-        ).isEqualTo("type");
+                new TypeSpecSingle(
+                        "type",
+                        Arrays.asList(
+                                new TypeSpecSingle("A", Collections.emptyList()),
+                                new TypeSpecSingle("B", Collections.emptyList())
+                        )
+                ).toString()
+        ).isEqualTo("type[A[], B[]]");
     }
 }

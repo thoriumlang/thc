@@ -43,10 +43,16 @@ class MethodSignatureVisitorTest {
                                         new TypeParameter("U")
                                 ),
                                 Arrays.asList(
-                                        new Parameter("p1", new TypeSpecSingle("type1")),
-                                        new Parameter("p2", new TypeSpecSingle("type2"))
+                                        new Parameter("p1", new TypeSpecSingle(
+                                                "type1",
+                                                Collections.emptyList()
+                                        )),
+                                        new Parameter("p2", new TypeSpecSingle(
+                                                "type2",
+                                                Collections.emptyList()
+                                        ))
                                 ),
-                                new TypeSpecSingle("type"))
+                                new TypeSpecSingle("type", Collections.emptyList()))
         )
                 .isEqualTo("private m[T, U](p1: type1, p2: type2): type;");
     }

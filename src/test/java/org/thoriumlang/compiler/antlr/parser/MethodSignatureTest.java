@@ -35,7 +35,7 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature methodName ( ) : (typeSpec (fqIdentifier typeName)))");
+        ).isEqualTo("(methodSignature methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -49,7 +49,7 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature private methodName ( ) : (typeSpec (fqIdentifier typeName)))");
+        ).isEqualTo("(methodSignature private methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -63,7 +63,7 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature namespace methodName ( ) : (typeSpec (fqIdentifier typeName)))");
+        ).isEqualTo("(methodSignature namespace methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -77,7 +77,7 @@ class MethodSignatureTest {
                         token(":"),
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature public methodName ( ) : (typeSpec (fqIdentifier typeName)))");
+        ).isEqualTo("(methodSignature public methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -95,7 +95,7 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo(
-                "(methodSignature public methodName ( (methodParameterDef id : (typeSpec (fqIdentifier type))) ) : (typeSpec (fqIdentifier typeName)))");
+                "(methodSignature public methodName ( (methodParameterDef id : (typeSpec (typeSpecSimple (fqIdentifier type)))) ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -121,10 +121,10 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( " +
-                "(methodParameterDef id1 : (typeSpec (fqIdentifier type1))) , " +
-                "(methodParameterDef id2 : (typeSpec (fqIdentifier type2))) , " +
-                "(methodParameterDef id3 : (typeSpec (fqIdentifier type3))) " +
-                ") : (typeSpec (fqIdentifier typeName)))");
+                "(methodParameterDef id1 : (typeSpec (typeSpecSimple (fqIdentifier type1)))) , " +
+                "(methodParameterDef id2 : (typeSpec (typeSpecSimple (fqIdentifier type2)))) , " +
+                "(methodParameterDef id3 : (typeSpec (typeSpecSimple (fqIdentifier type3)))) " +
+                ") : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -142,7 +142,7 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo(
-                "(methodSignature public methodName [ (typeParameterDef T) ] ( ) : (typeSpec (fqIdentifier typeName)))");
+                "(methodSignature public methodName [ (typeParameterDef T) ] ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -162,6 +162,6 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo(
-                "(methodSignature public methodName [ (typeParameterDef T , U) ] ( ) : (typeSpec (fqIdentifier typeName)))");
+                "(methodSignature public methodName [ (typeParameterDef T , U) ] ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 }

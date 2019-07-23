@@ -1,6 +1,6 @@
 // namespace org.thoriumlang.compiler.tests
 
-type MyType : ParentType {
+type MyType : org.thoriumlang.Object {
   private a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
   private b(): (A & B);
   private c(): (C & (A | org.thoriumlang.None));

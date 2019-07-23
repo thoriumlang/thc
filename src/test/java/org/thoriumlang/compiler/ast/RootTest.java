@@ -82,7 +82,7 @@ class RootTest {
                         return namespace + ":" + uses + ":" + type;
                     }
                 })
-        ).isEqualTo("namespace:[USE from : from]:TYPE name[] : org.thoriumlang.Object:");
+        ).isEqualTo("namespace:[USE from : from]:TYPE name[] : org.thoriumlang.Object[]:");
     }
 
     @Test
@@ -93,6 +93,6 @@ class RootTest {
                         Collections.singletonList(new Use("from")),
                         new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
                 ).toString()
-        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name[] : org.thoriumlang.Object:");
+        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name[] : org.thoriumlang.Object[]:");
     }
 }

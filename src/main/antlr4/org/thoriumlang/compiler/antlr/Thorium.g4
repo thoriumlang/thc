@@ -57,6 +57,9 @@ typeDef
 typeParameterDef
     : IDENTIFIER ( ',' IDENTIFIER )*
     ;
+typeArguments
+    : typeSpec ( ',' typeSpec )*
+    ;
 
 implementsSpec
     : ':' typeSpec
@@ -67,23 +70,26 @@ classDef
     ;
 
 typeSpec
-    : fqIdentifier
-    | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
+    : typeSpecSimple
+    | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
     | typeSpecOptional
     | typeSpecUnion
     | typeSpecIntersection
     ;
+typeSpecSimple
+    : fqIdentifier ( '[' typeArguments ']' )?
+    ;
 typeSpecOptional
-    : fqIdentifier '?'
-    | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' '?'
+    : typeSpecSimple '?'
+    | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' '?'
     ;
 typeSpecUnion
-    :       ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
-      ( '&' ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
+    :       ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '&' ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 typeSpecIntersection
-    :       ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
-      ( '|' ( fqIdentifier | typeSpecOptional | '(' ( fqIdentifier | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
+    :       ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
+      ( '|' ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
     ;
 
 methodSignature

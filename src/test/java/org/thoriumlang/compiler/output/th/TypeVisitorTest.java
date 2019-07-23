@@ -49,7 +49,7 @@ class TypeVisitorTest {
                                         "m",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("type")
+                                        new TypeSpecSingle("type", Collections.emptyList())
                                 )
                         )
                 )

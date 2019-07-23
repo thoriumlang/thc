@@ -27,7 +27,7 @@ class MethodSignatureTest {
     void constructor_visibility() {
         try {
             new MethodSignature(null, "name", Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSingle("test"));
+                    new TypeSpecSingle("test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -41,7 +41,7 @@ class MethodSignatureTest {
     void constructor_name() {
         try {
             new MethodSignature(Visibility.PRIVATE, null, Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSingle("test"));
+                    new TypeSpecSingle("test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -54,7 +54,13 @@ class MethodSignatureTest {
     @Test
     void constructor_typeParameters() {
         try {
-            new MethodSignature(Visibility.PRIVATE, "name", null, Collections.emptyList(), new TypeSpecSingle("test"));
+            new MethodSignature(
+                    Visibility.PRIVATE,
+                    "name",
+                    null,
+                    Collections.emptyList(),
+                    new TypeSpecSingle("test", Collections.emptyList())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -67,7 +73,13 @@ class MethodSignatureTest {
     @Test
     void constructor_parameters() {
         try {
-            new MethodSignature(Visibility.PRIVATE, "name", Collections.emptyList(), null, new TypeSpecSingle("test"));
+            new MethodSignature(
+                    Visibility.PRIVATE,
+                    "name",
+                    Collections.emptyList(),
+                    null,
+                    new TypeSpecSingle("test", Collections.emptyList())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -97,8 +109,14 @@ class MethodSignatureTest {
                         Visibility.PRIVATE,
                         "name",
                         Collections.singletonList(new TypeParameter("T")),
-                        Collections.singletonList(new Parameter("name", new TypeSpecSingle("type"))),
-                        new TypeSpecSingle("test")
+                        Collections.singletonList(new Parameter(
+                                "name",
+                                new TypeSpecSingle(
+                                        "type",
+                                        Collections.emptyList()
+                                )
+                        )),
+                        new TypeSpecSingle("test", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitMethodSignature(Visibility visibility, String name,
@@ -117,7 +135,7 @@ class MethodSignatureTest {
                         );
                     }
                 })
-        ).isEqualTo("PRIVATE:name:[T]:(name: type):test");
+        ).isEqualTo("PRIVATE:name:[T]:(name: type[]):test[]");
     }
 
     @Test
@@ -127,9 +145,12 @@ class MethodSignatureTest {
                         Visibility.PRIVATE,
                         "name",
                         Collections.singletonList(new TypeParameter("T")),
-                        Collections.singletonList(new Parameter("name", new TypeSpecSingle("type"))),
-                        new TypeSpecSingle("returnType")
+                        Collections.singletonList(new Parameter(
+                                "name",
+                                new TypeSpecSingle("type", Collections.emptyList())
+                        )),
+                        new TypeSpecSingle("returnType", Collections.emptyList())
                 ).toString()
-        ).isEqualTo("PRIVATE name [ T ] ( name: type ) : returnType");
+        ).isEqualTo("PRIVATE name [ T ] ( name: type[] ) : returnType[]");
     }
 }

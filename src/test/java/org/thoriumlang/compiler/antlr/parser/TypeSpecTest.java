@@ -33,7 +33,26 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec (fqIdentifier TA))");
+                .isEqualTo("(typeSpec (typeSpecSimple (fqIdentifier TA)))");
+    }
+
+    @Test
+    void singleWithTypeParameter() {
+        Assertions.assertThat(
+                new Tree(
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token("["),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("TC", ThoriumLexer.IDENTIFIER),
+                        token("]")
+                ).serialize("typeSpec")
+        )
+                .contains("TA")
+                .isEqualTo("(typeSpec (typeSpecSimple (fqIdentifier TA) [ " +
+                        "(typeArguments (typeSpec (typeSpecSimple (fqIdentifier TB))) , " +
+                        "(typeSpec (typeSpecSimple (fqIdentifier TC)))) " +
+                        "]))");
     }
 
     @Test
@@ -45,7 +64,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec (typeSpecOptional (fqIdentifier TA) ?))");
+                .isEqualTo("(typeSpec (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?))");
     }
 
     @Test
@@ -58,7 +77,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec ( (fqIdentifier TA) ))");
+                .isEqualTo("(typeSpec ( (typeSpecSimple (fqIdentifier TA)) ))");
     }
 
     @Test
@@ -75,7 +94,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec ( (typeSpec ( (typeSpec ( (fqIdentifier TA) )) )) ))");
+                .isEqualTo("(typeSpec ( (typeSpec ( (typeSpec ( (typeSpecSimple (fqIdentifier TA)) )) )) ))");
     }
 
     @Test
@@ -89,7 +108,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec (typeSpecOptional ( (fqIdentifier TA) ) ?))");
+                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpecSimple (fqIdentifier TA)) ) ?))");
     }
 
     @Test
@@ -107,7 +126,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpec ( (typeSpec ( (fqIdentifier TA) )) )) ) ?))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecOptional ( (typeSpec ( (typeSpec ( (typeSpecSimple (fqIdentifier TA)) )) )) ) ?))");
     }
 
     @Test
@@ -123,7 +143,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec ( (typeSpecOptional ( (fqIdentifier TA) ) ?) ))");
+                .isEqualTo("(typeSpec ( (typeSpecOptional ( (typeSpecSimple (fqIdentifier TA)) ) ?) ))");
     }
 
     @Test
@@ -139,7 +159,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA")
-                .isEqualTo("(typeSpec ( (typeSpec ( (typeSpecOptional (fqIdentifier TA) ?) )) ))");
+                .isEqualTo("(typeSpec ( (typeSpec ( (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) )) ))");
     }
 
     @Test
@@ -154,7 +174,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -170,7 +191,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) ?))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecOptional ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) ?))");
     }
 
     @Test
@@ -184,7 +206,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional (fqIdentifier TA) ?) & (fqIdentifier TB)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) & (typeSpecSimple (fqIdentifier TB))))");
     }
 
     @Test
@@ -198,7 +221,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (typeSpecOptional (fqIdentifier TB) ?)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecOptional (typeSpecSimple (fqIdentifier TB)) ?)))");
     }
 
     @Test
@@ -217,7 +241,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) & (fqIdentifier TC) & (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) & (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -236,7 +261,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & ( (typeSpecUnion (fqIdentifier TB) & (fqIdentifier TC)) ) & (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & ( (typeSpecUnion (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))) ) & (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -255,7 +281,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & ( (typeSpecUnion (fqIdentifier TC) & (fqIdentifier TD)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & ( (typeSpecUnion (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))) )))");
     }
 
     @Test
@@ -272,7 +299,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (fqIdentifier TA) ) & (fqIdentifier TB) & (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecSimple (fqIdentifier TA)) ) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -289,7 +317,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & ( (fqIdentifier TB) ) & (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & ( (typeSpecSimple (fqIdentifier TB)) ) & (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -306,7 +335,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & ( (fqIdentifier TC) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & ( (typeSpecSimple (fqIdentifier TC)) )))");
     }
 
     @Test
@@ -325,7 +355,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpec ( (fqIdentifier TA) )) ) & (fqIdentifier TB) & (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpec ( (typeSpecSimple (fqIdentifier TA)) )) ) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -344,7 +375,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & ( (typeSpec ( (fqIdentifier TB) )) ) & (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & ( (typeSpec ( (typeSpecSimple (fqIdentifier TB)) )) ) & (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -363,7 +395,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & ( (typeSpec ( (fqIdentifier TC) )) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & ( (typeSpec ( (typeSpecSimple (fqIdentifier TC)) )) )))");
     }
 
     @Test
@@ -384,7 +417,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpec ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) )) ) & (fqIdentifier TC) & (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) )) ) & (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -405,7 +439,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & ( (typeSpec ( (typeSpecUnion (fqIdentifier TB) & (fqIdentifier TC)) )) ) & (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & ( (typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))) )) ) & (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -426,7 +461,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & ( (typeSpec ( (typeSpecUnion (fqIdentifier TC) & (fqIdentifier TD)) )) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & ( (typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))) )) )))");
     }
 
     @Test
@@ -457,9 +493,9 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (fqIdentifier TA) ) & " +
-                        "( (typeSpec ( (typeSpecUnion (fqIdentifier TB) & (fqIdentifier TC)) )) ) & " +
-                        "( (typeSpec ( (typeSpec ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )) )) )))");
+                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecSimple (fqIdentifier TA)) ) & " +
+                        "( (typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))) )) ) & " +
+                        "( (typeSpec ( (typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )) )) )))");
     }
 
     @Test
@@ -474,7 +510,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ))");
+                .isEqualTo(
+                        "(typeSpec ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ))");
     }
 
     @Test
@@ -495,7 +532,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) & ( (typeSpecUnion (fqIdentifier TC) & (fqIdentifier TD)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) & ( (typeSpecUnion (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))) )))");
     }
 
     @Test
@@ -512,7 +550,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | (fqIdentifier TC) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -528,7 +567,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecOptional ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ) ?))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecOptional ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ) ?))");
     }
 
     @Test
@@ -542,7 +582,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional (fqIdentifier TA) ?) | (fqIdentifier TB)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) | (typeSpecSimple (fqIdentifier TB))))");
     }
 
     @Test
@@ -556,7 +597,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (typeSpecOptional (fqIdentifier TB) ?)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecOptional (typeSpecSimple (fqIdentifier TB)) ?)))");
     }
 
     @Test
@@ -575,7 +617,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ) | (fqIdentifier TC) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -594,7 +637,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | ( (typeSpecIntersection (fqIdentifier TB) | (fqIdentifier TC)) ) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))) ) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -613,7 +657,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | ( (typeSpecIntersection (fqIdentifier TC) | (fqIdentifier TD)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))) )))");
     }
 
     @Test
@@ -630,7 +675,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (fqIdentifier TA) ) | (fqIdentifier TB) | (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecSimple (fqIdentifier TA)) ) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -647,7 +693,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | ( (fqIdentifier TB) ) | (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | ( (typeSpecSimple (fqIdentifier TB)) ) | (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -664,7 +711,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | ( (fqIdentifier TC) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | ( (typeSpecSimple (fqIdentifier TC)) )))");
     }
 
     @Test
@@ -683,7 +731,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpec ( (fqIdentifier TA) )) ) | (fqIdentifier TB) | (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpec ( (typeSpecSimple (fqIdentifier TA)) )) ) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -702,7 +751,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | ( (typeSpec ( (fqIdentifier TB) )) ) | (fqIdentifier TC)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | ( (typeSpec ( (typeSpecSimple (fqIdentifier TB)) )) ) | (typeSpecSimple (fqIdentifier TC))))");
     }
 
     @Test
@@ -721,7 +771,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | ( (typeSpec ( (fqIdentifier TC) )) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | ( (typeSpec ( (typeSpecSimple (fqIdentifier TC)) )) )))");
     }
 
     @Test
@@ -742,7 +793,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpec ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) )) ) | (fqIdentifier TC) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) )) ) | (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -763,7 +815,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | ( (typeSpec ( (typeSpecIntersection (fqIdentifier TB) | (fqIdentifier TC)) )) ) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | ( (typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))) )) ) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -784,7 +837,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | ( (typeSpec ( (typeSpecIntersection (fqIdentifier TC) | (fqIdentifier TD)) )) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | ( (typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))) )) )))");
     }
 
     @Test
@@ -815,9 +869,9 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (fqIdentifier TA) ) | " +
-                        "( (typeSpec ( (typeSpecIntersection (fqIdentifier TB) | (fqIdentifier TC)) )) ) | " +
-                        "( (typeSpec ( (typeSpec ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )) )) )))");
+                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecSimple (fqIdentifier TA)) ) | " +
+                        "( (typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))) )) ) | " +
+                        "( (typeSpec ( (typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )) )) )))");
     }
 
     @Test
@@ -832,7 +886,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB")
-                .isEqualTo("(typeSpec ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ))");
+                .isEqualTo(
+                        "(typeSpec ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ))");
     }
 
     @Test
@@ -853,7 +908,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ) | ( (typeSpecIntersection (fqIdentifier TC) | (fqIdentifier TD)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ) | ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))) )))");
     }
 
     @Test
@@ -876,7 +932,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | (fqIdentifier TC)) ) & ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))) ) & ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -899,7 +956,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & ( (typeSpecIntersection (fqIdentifier TB) | (fqIdentifier TC)) ) & ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC))) ) & ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -922,7 +980,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ) & (fqIdentifier TC) & ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ) & (typeSpecSimple (fqIdentifier TC)) & ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -945,7 +1004,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion ( (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB)) ) & ( (typeSpecIntersection (fqIdentifier TC) | (fqIdentifier TD)) ) & (fqIdentifier TE)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB))) ) & ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TC)) | (typeSpecSimple (fqIdentifier TD))) ) & (typeSpecSimple (fqIdentifier TE))))");
     }
 
     @Test
@@ -968,7 +1028,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & (fqIdentifier TC)) ) | ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))) ) | ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -991,7 +1052,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | ( (typeSpecUnion (fqIdentifier TB) & (fqIdentifier TC)) ) | ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | ( (typeSpecUnion (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC))) ) | ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1014,7 +1076,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) | (fqIdentifier TC) | ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecSimple (fqIdentifier TC)) | ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1037,7 +1100,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection ( (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB)) ) | ( (typeSpecUnion (fqIdentifier TC) & (fqIdentifier TD)) ) | (fqIdentifier TE)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) | ( (typeSpecUnion (typeSpecSimple (fqIdentifier TC)) & (typeSpecSimple (fqIdentifier TD))) ) | (typeSpecSimple (fqIdentifier TE))))");
     }
 
     @Test
@@ -1060,7 +1124,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecIntersection ( (typeSpecUnion (typeSpecOptional (fqIdentifier TA) ?) & (fqIdentifier TB)) ) | (fqIdentifier TC)) ) ?) | (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecIntersection ( (typeSpecUnion (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) & (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecSimple (fqIdentifier TC))) ) ?) | (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -1083,7 +1148,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional (fqIdentifier TA) ?) | (fqIdentifier TB)) ) & (fqIdentifier TC)) ) ?) & (fqIdentifier TD)))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) | (typeSpecSimple (fqIdentifier TB))) ) & (typeSpecSimple (fqIdentifier TC))) ) ?) & (typeSpecSimple (fqIdentifier TD))))");
     }
 
     @Test
@@ -1108,7 +1174,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion (fqIdentifier TA) & (fqIdentifier TB) & (typeSpecOptional ( (typeSpecOptional (fqIdentifier TC) ?) ) ?) & ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecOptional ( (typeSpecOptional (typeSpecSimple (fqIdentifier TC)) ?) ) ?) & ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1133,7 +1200,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection (fqIdentifier TA) | (fqIdentifier TB) | (typeSpecOptional ( (typeSpecOptional (fqIdentifier TC) ?) ) ?) | ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TA)) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecOptional ( (typeSpecOptional (typeSpecSimple (fqIdentifier TC)) ?) ) ?) | ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1158,7 +1226,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecOptional (fqIdentifier TA) ?) ) ?) & (fqIdentifier TB) & (fqIdentifier TC) & ( (typeSpecUnion (fqIdentifier TD) & (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) ) ?) & (typeSpecSimple (fqIdentifier TB)) & (typeSpecSimple (fqIdentifier TC)) & ( (typeSpecUnion (typeSpecSimple (fqIdentifier TD)) & (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1183,7 +1252,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD", "TE")
-                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecOptional (fqIdentifier TA) ?) ) ?) | (fqIdentifier TB) | (fqIdentifier TC) | ( (typeSpecIntersection (fqIdentifier TD) | (fqIdentifier TE)) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) ) ?) | (typeSpecSimple (fqIdentifier TB)) | (typeSpecSimple (fqIdentifier TC)) | ( (typeSpecIntersection (typeSpecSimple (fqIdentifier TD)) | (typeSpecSimple (fqIdentifier TE))) )))");
     }
 
     @Test
@@ -1208,7 +1278,8 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecIntersection ( (typeSpecUnion (typeSpecOptional (fqIdentifier TA) ?) & (fqIdentifier TB)) ) | (fqIdentifier TC)) ) ?) | ( (fqIdentifier TD) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecIntersection (typeSpecOptional ( (typeSpecIntersection ( (typeSpecUnion (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) & (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecSimple (fqIdentifier TC))) ) ?) | ( (typeSpecSimple (fqIdentifier TD)) )))");
     }
 
     @Test
@@ -1233,6 +1304,7 @@ class TypeSpecTest {
                 ).serialize("typeSpec")
         )
                 .contains("TA", "TB", "TC", "TD")
-                .isEqualTo("(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional (fqIdentifier TA) ?) | (fqIdentifier TB)) ) & (fqIdentifier TC)) ) ?) & ( (fqIdentifier TD) )))");
+                .isEqualTo(
+                        "(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) | (typeSpecSimple (fqIdentifier TB))) ) & (typeSpecSimple (fqIdentifier TC))) ) ?) & ( (typeSpecSimple (fqIdentifier TD)) )))");
     }
 }

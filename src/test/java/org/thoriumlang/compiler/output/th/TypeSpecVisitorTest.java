@@ -20,18 +20,28 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.TypeSpecSingle;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 class TypeSpecVisitorTest {
     @Test
     void visitTypeSingle() {
-        Assertions.assertThat(new TypeSpecVisitor().visitTypeSingle("type"))
-                .isEqualTo("type");
+        Assertions.assertThat(new TypeSpecVisitor().visitTypeSingle(
+                "type",
+                Arrays.asList(
+                        new TypeSpecSingle("A", Collections.singletonList(
+                                new TypeSpecSingle("B", Collections.emptyList())
+                        )),
+                        new TypeSpecSingle("C", Collections.emptyList())
+                )
+        ))
+                .isEqualTo("type[A[B], C]");
     }
 
     @Test
     void visitTypeUnion() {
         Assertions.assertThat(new TypeSpecVisitor().visitTypeUnion(Arrays.asList(
-                new TypeSpecSingle("TA"), new TypeSpecSingle("TB")
+                new TypeSpecSingle("TA", Collections.emptyList()),
+                new TypeSpecSingle("TB", Collections.emptyList())
         )))
                 .isEqualTo("(TA & TB)");
     }
@@ -39,7 +49,8 @@ class TypeSpecVisitorTest {
     @Test
     void visitTypeIntersection() {
         Assertions.assertThat(new TypeSpecVisitor().visitTypeIntersection(Arrays.asList(
-                new TypeSpecSingle("TA"), new TypeSpecSingle("TB")
+                new TypeSpecSingle("TA", Collections.emptyList()),
+                new TypeSpecSingle("TB", Collections.emptyList())
         )))
                 .isEqualTo("(TA | TB)");
     }

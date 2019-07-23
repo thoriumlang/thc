@@ -24,7 +24,7 @@ class ParameterTest {
     @Test
     void constructor_name() {
         try {
-            new Parameter(null, new TypeSpecSingle("test"));
+            new Parameter(null, new TypeSpecSingle("test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -50,19 +50,22 @@ class ParameterTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new Parameter("name", new TypeSpecSingle("type")).accept(new BaseVisitor<String>() {
+                new Parameter(
+                        "name",
+                        new TypeSpecSingle("type", Collections.emptyList())
+                ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitParameter(String name, TypeSpec type) {
                         return name + ":" + type.toString();
                     }
                 })
-        ).isEqualTo("name:type");
+        ).isEqualTo("name:type[]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new Parameter("name", new TypeSpecSingle("type")).toString()
-        ).isEqualTo("name: type");
+                new Parameter("name", new TypeSpecSingle("type", Collections.emptyList())).toString()
+        ).isEqualTo("name: type[]");
     }
 }

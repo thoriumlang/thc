@@ -15,29 +15,43 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class TypeSpecSingle implements TypeSpec {
-    public static final TypeSpec OBJECT = new TypeSpecSingle("org.thoriumlang.Object");
-    public static final TypeSpec NONE = new TypeSpecSingle("org.thoriumlang.None");
+    public static final TypeSpec OBJECT = new TypeSpecSingle("org.thoriumlang.Object", Collections.emptyList());
+    public static final TypeSpec NONE = new TypeSpecSingle("org.thoriumlang.None", Collections.emptyList());
 
     private final String type;
+    private final List<TypeSpec> arguments;
 
-    public TypeSpecSingle(String type) {
+    public TypeSpecSingle(String type, List<TypeSpec> arguments) {
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
+        if (arguments == null) {
+            throw new NullPointerException("arguments cannot be null");
+        }
         this.type = type;
+        this.arguments = arguments;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeSingle(type);
+        return visitor.visitTypeSingle(type, arguments);
     }
 
     @Override
     public String toString() {
-        return type;
+        return String.format(
+                "%s[%s]",
+                type,
+                arguments.stream()
+                        .map(TypeSpec::toString)
+                        .collect(Collectors.joining(", "))
+        );
     }
 
     @Override
@@ -49,11 +63,12 @@ public class TypeSpecSingle implements TypeSpec {
             return false;
         }
         TypeSpecSingle that = (TypeSpecSingle) o;
-        return type.equals(that.type);
+        return type.equals(that.type) &&
+                arguments.equals(that.arguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type);
+        return Objects.hash(type, arguments);
     }
 }

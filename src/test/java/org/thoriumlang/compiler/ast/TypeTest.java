@@ -89,7 +89,7 @@ class TypeTest {
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("type")
+                                        new TypeSpecSingle("type", Collections.emptyList())
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
@@ -106,7 +106,7 @@ class TypeTest {
                         );
                     }
                 })
-        ).isEqualTo("name:[A]:org.thoriumlang.Object:[PRIVATE name [  ] (  ) : type]");
+        ).isEqualTo("name:[A]:org.thoriumlang.Object[]:[PRIVATE name [  ] (  ) : type[]]");
     }
 
     @Test
@@ -125,11 +125,11 @@ class TypeTest {
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("returnType")
+                                        new TypeSpecSingle("returnType", Collections.emptyList())
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[A, B] : org.thoriumlang.Object:\nPRIVATE name [  ] (  ) : returnType");
+        ).isEqualTo("TYPE name[A, B] : org.thoriumlang.Object[]:\nPRIVATE name [  ] (  ) : returnType[]");
     }
 
     @Test
@@ -145,12 +145,16 @@ class TypeTest {
                                         "name",
                                         Collections.emptyList(),
                                         Collections.singletonList(new Parameter(
-                                                "parameter", new TypeSpecSingle("type")
+                                                "parameter",
+                                                new TypeSpecSingle(
+                                                        "type",
+                                                        Collections.emptyList()
+                                                )
                                         )),
-                                        new TypeSpecSingle("returnType")
+                                        new TypeSpecSingle("returnType", Collections.emptyList())
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[] : org.thoriumlang.Object:\nPRIVATE name [  ] ( parameter: type ) : returnType");
+        ).isEqualTo("TYPE name[] : org.thoriumlang.Object[]:\nPRIVATE name [  ] ( parameter: type[] ) : returnType[]");
     }
 }

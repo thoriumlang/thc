@@ -6,4 +6,4 @@ USE a.b.c.D : D
 USE a.b.c.E : E
 USE a.b.c.D : DD
 USE a.b.c.E : EE
-TYPE T[] : org.thoriumlang.Object:
+TYPE T[] : org.thoriumlang.Object[]:

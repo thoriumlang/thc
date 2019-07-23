@@ -41,7 +41,13 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeSingle(String type) {
-        return type;
+    public String visitTypeSingle(String type, List<TypeSpec> arguments) {
+        return String.format(
+                "%s%s",
+                type,
+                arguments.isEmpty() ? "" : arguments.stream()
+                        .map(e -> e.accept(this))
+                        .collect(Collectors.joining(", ", "[", "]"))
+        );
     }
 }

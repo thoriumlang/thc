@@ -17,7 +17,12 @@ package org.thoriumlang.compiler.ast.algorithms;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.*;
+import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,11 +45,17 @@ class FlattenedTypesRootTest {
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TA"),
+                                                        new TypeSpecSingle("TA", Collections.emptyList()),
                                                         new TypeSpecIntersection(
                                                                 Arrays.asList(
-                                                                        new TypeSpecSingle("TB"),
-                                                                        new TypeSpecSingle("TC")
+                                                                        new TypeSpecSingle(
+                                                                                "TB",
+                                                                                Collections.emptyList()
+                                                                        ),
+                                                                        new TypeSpecSingle(
+                                                                                "TC",
+                                                                                Collections.emptyList()
+                                                                        )
                                                                 )
                                                         )
                                                 )
@@ -68,9 +79,9 @@ class FlattenedTypesRootTest {
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TA"),
-                                                        new TypeSpecSingle("TB"),
-                                                        new TypeSpecSingle("TC")
+                                                        new TypeSpecSingle("TA", Collections.emptyList()),
+                                                        new TypeSpecSingle("TB", Collections.emptyList()),
+                                                        new TypeSpecSingle("TC", Collections.emptyList())
                                                 )
                                         )
                                 )

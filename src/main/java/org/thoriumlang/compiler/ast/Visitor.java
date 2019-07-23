@@ -29,7 +29,7 @@ public interface Visitor<T> {
 
     T visitTypeUnion(List<TypeSpec> types);
 
-    T visitTypeSingle(String type);
+    T visitTypeSingle(String type, List<TypeSpec> arguments);
 
     T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType);
