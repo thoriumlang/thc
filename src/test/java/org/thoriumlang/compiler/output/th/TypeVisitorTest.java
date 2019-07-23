@@ -19,7 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.TypeParameter;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Collections;
@@ -31,7 +31,7 @@ class TypeVisitorTest {
                 new TypeVisitor().visitType(
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSingle.OBJECT, Collections.emptyList())
+                        TypeSpecSimple.OBJECT, Collections.emptyList())
         )
                 .isEqualTo("type name : org.thoriumlang.Object {}");
     }
@@ -42,14 +42,14 @@ class TypeVisitorTest {
                 new TypeVisitor().visitType(
                         "name",
                         Collections.singletonList(new TypeParameter("T")),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "m",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("type", Collections.emptyList())
+                                        new TypeSpecSimple("type", Collections.emptyList())
                                 )
                         )
                 )

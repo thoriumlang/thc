@@ -37,7 +37,7 @@ class TypeSpecUnionTest {
 
     @Test
     void accept() {
-        List<TypeSpec> typeSpecs = Collections.singletonList(new TypeSpecSingle("type", Collections.emptyList()));
+        List<TypeSpec> typeSpecs = Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()));
         Assertions.assertThat(
                 new TypeSpecUnion(typeSpecs).accept(new BaseVisitor<List<TypeSpec>>() {
                     @Override
@@ -52,7 +52,7 @@ class TypeSpecUnionTest {
     void _toString() {
         Assertions.assertThat(
                 new TypeSpecUnion(
-                        Collections.singletonList(new TypeSpecSingle("type", Collections.emptyList()))
+                        Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()))
                 ).toString()
         ).isEqualTo("u:[type[]]");
     }

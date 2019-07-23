@@ -27,7 +27,7 @@ class TypeTest {
     @Test
     void constructor_name() {
         try {
-            new Type(null, Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList());
+            new Type(null, Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,7 +40,7 @@ class TypeTest {
     @Test
     void constructor_typeParameters() {
         try {
-            new Type("name", null, TypeSpecSingle.OBJECT, Collections.emptyList());
+            new Type("name", null, TypeSpecSimple.OBJECT, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -66,7 +66,7 @@ class TypeTest {
     @Test
     void constructor_methods() {
         try {
-            new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, null);
+            new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -82,14 +82,14 @@ class TypeTest {
                 new Type(
                         "name",
                         Collections.singletonList(new TypeParameter("A")),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("type", Collections.emptyList())
+                                        new TypeSpecSimple("type", Collections.emptyList())
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
@@ -118,14 +118,14 @@ class TypeTest {
                                 new TypeParameter("A"),
                                 new TypeParameter("B")
                         ),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSingle("returnType", Collections.emptyList())
+                                        new TypeSpecSimple("returnType", Collections.emptyList())
                                 )
                         )
                 ).toString()
@@ -138,7 +138,7 @@ class TypeTest {
                 new Type(
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -146,12 +146,12 @@ class TypeTest {
                                         Collections.emptyList(),
                                         Collections.singletonList(new Parameter(
                                                 "parameter",
-                                                new TypeSpecSingle(
+                                                new TypeSpecSimple(
                                                         "type",
                                                         Collections.emptyList()
                                                 )
                                         )),
-                                        new TypeSpecSingle("returnType", Collections.emptyList())
+                                        new TypeSpecSimple("returnType", Collections.emptyList())
                                 )
                         )
                 ).toString()

@@ -19,7 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Type;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 
 import java.util.Collections;
 
@@ -34,7 +34,7 @@ class ThWalkerTest {
                                 new Type(
                                         "name",
                                         Collections.emptyList(),
-                                        TypeSpecSingle.OBJECT,
+                                        TypeSpecSimple.OBJECT,
                                         Collections.emptyList()
                                 )
                         )

@@ -21,7 +21,7 @@ import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Arrays;
@@ -36,7 +36,7 @@ class FlattenedTypesRootTest {
                 new Type(
                         "type",
                         Collections.emptyList(),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -45,14 +45,14 @@ class FlattenedTypesRootTest {
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TA", Collections.emptyList()),
+                                                        new TypeSpecSimple("TA", Collections.emptyList()),
                                                         new TypeSpecIntersection(
                                                                 Arrays.asList(
-                                                                        new TypeSpecSingle(
+                                                                        new TypeSpecSimple(
                                                                                 "TB",
                                                                                 Collections.emptyList()
                                                                         ),
-                                                                        new TypeSpecSingle(
+                                                                        new TypeSpecSimple(
                                                                                 "TC",
                                                                                 Collections.emptyList()
                                                                         )
@@ -70,7 +70,7 @@ class FlattenedTypesRootTest {
                 new Type(
                         "type",
                         Collections.emptyList(),
-                        TypeSpecSingle.OBJECT,
+                        TypeSpecSimple.OBJECT,
                         Collections.singletonList(
                                 new MethodSignature(
                                         Visibility.PRIVATE,
@@ -79,9 +79,9 @@ class FlattenedTypesRootTest {
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TA", Collections.emptyList()),
-                                                        new TypeSpecSingle("TB", Collections.emptyList()),
-                                                        new TypeSpecSingle("TC", Collections.emptyList())
+                                                        new TypeSpecSimple("TA", Collections.emptyList()),
+                                                        new TypeSpecSimple("TB", Collections.emptyList()),
+                                                        new TypeSpecSimple("TC", Collections.emptyList())
                                                 )
                                         )
                                 )

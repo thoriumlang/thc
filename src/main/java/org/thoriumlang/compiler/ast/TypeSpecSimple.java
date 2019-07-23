@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TypeSpecSingle implements TypeSpec {
-    public static final TypeSpec OBJECT = new TypeSpecSingle("org.thoriumlang.Object", Collections.emptyList());
-    public static final TypeSpec NONE = new TypeSpecSingle("org.thoriumlang.None", Collections.emptyList());
+public class TypeSpecSimple implements TypeSpec {
+    public static final TypeSpec OBJECT = new TypeSpecSimple("org.thoriumlang.Object", Collections.emptyList());
+    public static final TypeSpec NONE = new TypeSpecSimple("org.thoriumlang.None", Collections.emptyList());
 
     private final String type;
     private final List<TypeSpec> arguments;
 
-    public TypeSpecSingle(String type, List<TypeSpec> arguments) {
+    public TypeSpecSimple(String type, List<TypeSpec> arguments) {
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
@@ -62,7 +62,7 @@ public class TypeSpecSingle implements TypeSpec {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TypeSpecSingle that = (TypeSpecSingle) o;
+        TypeSpecSimple that = (TypeSpecSimple) o;
         return type.equals(that.type) &&
                 arguments.equals(that.arguments);
     }

@@ -19,7 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Parameter;
 import org.thoriumlang.compiler.ast.TypeParameter;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
@@ -43,16 +43,16 @@ class MethodSignatureVisitorTest {
                                         new TypeParameter("U")
                                 ),
                                 Arrays.asList(
-                                        new Parameter("p1", new TypeSpecSingle(
+                                        new Parameter("p1", new TypeSpecSimple(
                                                 "type1",
                                                 Collections.emptyList()
                                         )),
-                                        new Parameter("p2", new TypeSpecSingle(
+                                        new Parameter("p2", new TypeSpecSimple(
                                                 "type2",
                                                 Collections.emptyList()
                                         ))
                                 ),
-                                new TypeSpecSingle("type", Collections.emptyList()))
+                                new TypeSpecSimple("type", Collections.emptyList()))
         )
                 .isEqualTo("private m[T, U](p1: type1, p2: type2): type;");
     }

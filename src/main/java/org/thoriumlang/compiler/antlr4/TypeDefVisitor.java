@@ -20,7 +20,7 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,7 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
         if (ctx == null) {
-            return TypeSpecSingle.OBJECT;
+            return TypeSpecSimple.OBJECT;
         }
         return ctx.typeSpec().accept(new TypeSpecVisitor());
     }

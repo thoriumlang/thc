@@ -28,7 +28,7 @@ class RootTest {
             new Root(
                     null,
                     Collections.emptyList(),
-                    new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+                    new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -45,7 +45,7 @@ class RootTest {
             new Root(
                     "namespace",
                     null,
-                    new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+                    new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -75,7 +75,7 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+                        new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitRoot(String namespace, Type type, List<Use> uses) {
@@ -91,7 +91,7 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+                        new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
                 ).toString()
         ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name[] : org.thoriumlang.Object[]:");
     }

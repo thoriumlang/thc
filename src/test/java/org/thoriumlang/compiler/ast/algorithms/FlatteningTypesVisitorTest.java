@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
 
 import java.util.Arrays;
@@ -31,15 +31,15 @@ class FlatteningTypesVisitorTest {
 
         TypeSpecIntersection spec = new TypeSpecIntersection(
                 Arrays.asList(
-                        new TypeSpecSingle("TA", Collections.emptyList()),
+                        new TypeSpecSimple("TA", Collections.emptyList()),
                         new TypeSpecIntersection(
                                 Arrays.asList(
-                                        new TypeSpecSingle("TB", Collections.emptyList()),
-                                        new TypeSpecSingle("TC", Collections.emptyList()),
+                                        new TypeSpecSimple("TB", Collections.emptyList()),
+                                        new TypeSpecSimple("TC", Collections.emptyList()),
                                         new TypeSpecIntersection(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TD", Collections.emptyList()),
-                                                        new TypeSpecSingle("TE", Collections.emptyList())
+                                                        new TypeSpecSimple("TD", Collections.emptyList()),
+                                                        new TypeSpecSimple("TE", Collections.emptyList())
                                                 )
                                         ))
                         )
@@ -49,11 +49,11 @@ class FlatteningTypesVisitorTest {
         Assertions.assertThat(spec.accept(visitor))
                 .isEqualTo(new TypeSpecIntersection(
                         Arrays.asList(
-                                new TypeSpecSingle("TA", Collections.emptyList()),
-                                new TypeSpecSingle("TB", Collections.emptyList()),
-                                new TypeSpecSingle("TC", Collections.emptyList()),
-                                new TypeSpecSingle("TD", Collections.emptyList()),
-                                new TypeSpecSingle("TE", Collections.emptyList())
+                                new TypeSpecSimple("TA", Collections.emptyList()),
+                                new TypeSpecSimple("TB", Collections.emptyList()),
+                                new TypeSpecSimple("TC", Collections.emptyList()),
+                                new TypeSpecSimple("TD", Collections.emptyList()),
+                                new TypeSpecSimple("TE", Collections.emptyList())
                         )
                 ));
     }
@@ -64,15 +64,15 @@ class FlatteningTypesVisitorTest {
 
         TypeSpecUnion spec = new TypeSpecUnion(
                 Arrays.asList(
-                        new TypeSpecSingle("TA", Collections.emptyList()),
+                        new TypeSpecSimple("TA", Collections.emptyList()),
                         new TypeSpecUnion(
                                 Arrays.asList(
-                                        new TypeSpecSingle("TB", Collections.emptyList()),
-                                        new TypeSpecSingle("TC", Collections.emptyList()),
+                                        new TypeSpecSimple("TB", Collections.emptyList()),
+                                        new TypeSpecSimple("TC", Collections.emptyList()),
                                         new TypeSpecUnion(
                                                 Arrays.asList(
-                                                        new TypeSpecSingle("TD", Collections.emptyList()),
-                                                        new TypeSpecSingle("TE", Collections.emptyList())
+                                                        new TypeSpecSimple("TD", Collections.emptyList()),
+                                                        new TypeSpecSimple("TE", Collections.emptyList())
                                                 )
                                         ))
                         )
@@ -82,11 +82,11 @@ class FlatteningTypesVisitorTest {
         Assertions.assertThat(spec.accept(visitor))
                 .isEqualTo(new TypeSpecUnion(
                         Arrays.asList(
-                                new TypeSpecSingle("TA", Collections.emptyList()),
-                                new TypeSpecSingle("TB", Collections.emptyList()),
-                                new TypeSpecSingle("TC", Collections.emptyList()),
-                                new TypeSpecSingle("TD", Collections.emptyList()),
-                                new TypeSpecSingle("TE", Collections.emptyList())
+                                new TypeSpecSimple("TA", Collections.emptyList()),
+                                new TypeSpecSimple("TB", Collections.emptyList()),
+                                new TypeSpecSimple("TC", Collections.emptyList()),
+                                new TypeSpecSimple("TD", Collections.emptyList()),
+                                new TypeSpecSimple("TE", Collections.emptyList())
                         )
                 ));
     }

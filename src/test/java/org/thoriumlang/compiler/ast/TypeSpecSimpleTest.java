@@ -23,11 +23,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class TypeSpecSingleTest {
+class TypeSpecSimpleTest {
     @Test
     void constructor_type() {
         try {
-            new TypeSpecSingle(null, Collections.emptyList());
+            new TypeSpecSimple(null, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,7 +40,7 @@ class TypeSpecSingleTest {
     @Test
     void constructor_arguments() {
         try {
-            new TypeSpecSingle("type", null);
+            new TypeSpecSimple("type", null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -53,13 +53,13 @@ class TypeSpecSingleTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new TypeSpecSingle(
+                new TypeSpecSimple(
                         "type",
                         Arrays.asList(
-                                new TypeSpecSingle("A", Collections.singletonList(
-                                        new TypeSpecSingle("C", Collections.emptyList())
+                                new TypeSpecSimple("A", Collections.singletonList(
+                                        new TypeSpecSimple("C", Collections.emptyList())
                                 )),
-                                new TypeSpecSingle("B", Collections.emptyList())
+                                new TypeSpecSimple("B", Collections.emptyList())
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
@@ -79,11 +79,11 @@ class TypeSpecSingleTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                new TypeSpecSingle(
+                new TypeSpecSimple(
                         "type",
                         Arrays.asList(
-                                new TypeSpecSingle("A", Collections.emptyList()),
-                                new TypeSpecSingle("B", Collections.emptyList())
+                                new TypeSpecSimple("A", Collections.emptyList()),
+                                new TypeSpecSimple("B", Collections.emptyList())
                         )
                 ).toString()
         ).isEqualTo("type[A[], B[]]");

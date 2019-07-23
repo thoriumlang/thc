@@ -19,7 +19,7 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
 
     @Override
     public TypeSpec visitTypeSpecSimple(ThoriumParser.TypeSpecSimpleContext ctx) {
-        return new TypeSpecSingle(
+        return new TypeSpecSimple(
                 ctx.fqIdentifier().accept(fqIdentifierVisitor),
                 visitArguments(ctx.typeArguments())
         );
@@ -75,7 +75,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecSimple().accept(this),
-                            TypeSpecSingle.NONE
+                            TypeSpecSimple.NONE
                     )
             );
         }
@@ -84,7 +84,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpec().accept(this),
-                            TypeSpecSingle.NONE
+                            TypeSpecSimple.NONE
                     )
             );
         }
@@ -97,7 +97,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecUnion().accept(this),
-                            TypeSpecSingle.NONE
+                            TypeSpecSimple.NONE
                     )
             );
         }
@@ -106,7 +106,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
             return new TypeSpecIntersection(
                     Arrays.asList(
                             ctx.typeSpecIntersection().accept(this),
-                            TypeSpecSingle.NONE
+                            TypeSpecSimple.NONE
                     )
             );
         }

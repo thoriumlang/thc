@@ -27,7 +27,7 @@ class MethodSignatureTest {
     void constructor_visibility() {
         try {
             new MethodSignature(null, "name", Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSingle("test", Collections.emptyList()));
+                    new TypeSpecSimple("test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -41,7 +41,7 @@ class MethodSignatureTest {
     void constructor_name() {
         try {
             new MethodSignature(Visibility.PRIVATE, null, Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSingle("test", Collections.emptyList()));
+                    new TypeSpecSimple("test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -59,7 +59,7 @@ class MethodSignatureTest {
                     "name",
                     null,
                     Collections.emptyList(),
-                    new TypeSpecSingle("test", Collections.emptyList())
+                    new TypeSpecSimple("test", Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -78,7 +78,7 @@ class MethodSignatureTest {
                     "name",
                     Collections.emptyList(),
                     null,
-                    new TypeSpecSingle("test", Collections.emptyList())
+                    new TypeSpecSimple("test", Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -111,12 +111,12 @@ class MethodSignatureTest {
                         Collections.singletonList(new TypeParameter("T")),
                         Collections.singletonList(new Parameter(
                                 "name",
-                                new TypeSpecSingle(
+                                new TypeSpecSimple(
                                         "type",
                                         Collections.emptyList()
                                 )
                         )),
-                        new TypeSpecSingle("test", Collections.emptyList())
+                        new TypeSpecSimple("test", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitMethodSignature(Visibility visibility, String name,
@@ -147,9 +147,9 @@ class MethodSignatureTest {
                         Collections.singletonList(new TypeParameter("T")),
                         Collections.singletonList(new Parameter(
                                 "name",
-                                new TypeSpecSingle("type", Collections.emptyList())
+                                new TypeSpecSimple("type", Collections.emptyList())
                         )),
-                        new TypeSpecSingle("returnType", Collections.emptyList())
+                        new TypeSpecSimple("returnType", Collections.emptyList())
                 ).toString()
         ).isEqualTo("PRIVATE name [T] (name: type[]) : returnType[]");
     }

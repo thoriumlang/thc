@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.output.th;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.TypeSpecSingle;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,10 +28,10 @@ class TypeSpecVisitorTest {
         Assertions.assertThat(new TypeSpecVisitor().visitTypeSingle(
                 "type",
                 Arrays.asList(
-                        new TypeSpecSingle("A", Collections.singletonList(
-                                new TypeSpecSingle("B", Collections.emptyList())
+                        new TypeSpecSimple("A", Collections.singletonList(
+                                new TypeSpecSimple("B", Collections.emptyList())
                         )),
-                        new TypeSpecSingle("C", Collections.emptyList())
+                        new TypeSpecSimple("C", Collections.emptyList())
                 )
         ))
                 .isEqualTo("type[A[B], C]");
@@ -40,8 +40,8 @@ class TypeSpecVisitorTest {
     @Test
     void visitTypeUnion() {
         Assertions.assertThat(new TypeSpecVisitor().visitTypeUnion(Arrays.asList(
-                new TypeSpecSingle("TA", Collections.emptyList()),
-                new TypeSpecSingle("TB", Collections.emptyList())
+                new TypeSpecSimple("TA", Collections.emptyList()),
+                new TypeSpecSimple("TB", Collections.emptyList())
         )))
                 .isEqualTo("(TA & TB)");
     }
@@ -49,8 +49,8 @@ class TypeSpecVisitorTest {
     @Test
     void visitTypeIntersection() {
         Assertions.assertThat(new TypeSpecVisitor().visitTypeIntersection(Arrays.asList(
-                new TypeSpecSingle("TA", Collections.emptyList()),
-                new TypeSpecSingle("TB", Collections.emptyList())
+                new TypeSpecSimple("TA", Collections.emptyList()),
+                new TypeSpecSimple("TB", Collections.emptyList())
         )))
                 .isEqualTo("(TA | TB)");
     }

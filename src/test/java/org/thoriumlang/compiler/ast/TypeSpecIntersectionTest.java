@@ -22,7 +22,7 @@ class TypeSpecIntersectionTest {
 
     @Test
     void accept() {
-        List<TypeSpec> typeSpecs = Collections.singletonList(new TypeSpecSingle("type", Collections.emptyList()));
+        List<TypeSpec> typeSpecs = Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()));
         Assertions.assertThat(
                 new TypeSpecIntersection(typeSpecs).accept(new BaseVisitor<List<TypeSpec>>() {
                     @Override
@@ -37,7 +37,7 @@ class TypeSpecIntersectionTest {
     void _toString() {
         Assertions.assertThat(
                 new TypeSpecIntersection(
-                        Collections.singletonList(new TypeSpecSingle("type", Collections.emptyList()))
+                        Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()))
                 ).toString()
         ).isEqualTo("i:[type[]]");
     }

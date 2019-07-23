@@ -70,7 +70,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitTypeSingle(String type, List<TypeSpec> arguments) {
-        return new TypeSpecSingle(type, arguments);
+        return new TypeSpecSimple(type, arguments);
     }
 
     @Override

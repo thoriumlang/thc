@@ -26,7 +26,7 @@ class IdentityVisitorTest {
         Root root = new Root(
                 "namespace",
                 Collections.emptyList(), // FIXME
-                new Type("name", Collections.emptyList(), TypeSpecSingle.OBJECT, Collections.emptyList())
+                new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
         );
         Assertions.assertThat(root.accept(visitor()))
                 .isEqualTo(root);
@@ -37,7 +37,7 @@ class IdentityVisitorTest {
         Type type = new Type(
                 "name",
                 Collections.singletonList(new TypeParameter("T")),
-                TypeSpecSingle.OBJECT,
+                TypeSpecSimple.OBJECT,
                 Collections.emptyList()
         );
         Assertions.assertThat(type.accept(visitor()))
@@ -46,7 +46,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeIntersection() {
-        TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSingle(
+        TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSimple(
                 "type",
                 Collections.emptyList()
         )));
@@ -56,7 +56,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeUnion() {
-        TypeSpecUnion typeSpec = new TypeSpecUnion(Collections.singletonList(new TypeSpecSingle(
+        TypeSpecUnion typeSpec = new TypeSpecUnion(Collections.singletonList(new TypeSpecSimple(
                 "type",
                 Collections.emptyList()
         )));
@@ -66,7 +66,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeSingle() {
-        TypeSpecSingle typeSpec = new TypeSpecSingle(
+        TypeSpecSimple typeSpec = new TypeSpecSimple(
                 "type",
                 Collections.emptyList()
         );
@@ -81,7 +81,7 @@ class IdentityVisitorTest {
                 "name",
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new TypeSpecSingle(
+                new TypeSpecSimple(
                         "type",
                         Collections.emptyList()
                 )
@@ -92,7 +92,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitParameter() {
-        Parameter parameter = new Parameter("name", new TypeSpecSingle(
+        Parameter parameter = new Parameter("name", new TypeSpecSimple(
                 "type",
                 Collections.emptyList()
         ));
