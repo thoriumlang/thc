@@ -41,7 +41,7 @@ class TypeVisitor extends BaseVisitor<String> {
                                         "" :
                                         typeParameters.stream()
                                                 .map(TypeParameter::toString)
-                                                .collect(Collectors.joining(",", "[", "]")),
+                                                .collect(Collectors.joining(", ", "[", "]")),
                                 superType.accept(new TypeSpecVisitor())
                         );
                     }

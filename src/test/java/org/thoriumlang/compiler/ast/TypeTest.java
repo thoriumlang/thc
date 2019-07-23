@@ -100,7 +100,7 @@ class TypeTest {
                                 name,
                                 typeParameters.stream()
                                         .map(TypeParameter::toString)
-                                        .collect(Collectors.joining(",")),
+                                        .collect(Collectors.joining(", ")),
                                 superType,
                                 methods
                         );
@@ -129,7 +129,7 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[A,B] : org.thoriumlang.Object:\nPRIVATE name [  ] (  ) : returnType");
+        ).isEqualTo("TYPE name[A, B] : org.thoriumlang.Object:\nPRIVATE name [  ] (  ) : returnType");
     }
 
     @Test

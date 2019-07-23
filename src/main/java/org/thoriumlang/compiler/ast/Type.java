@@ -59,7 +59,7 @@ public class Type implements Visitable {
                 name,
                 typeParameters.stream()
                         .map(TypeParameter::toString)
-                        .collect(Collectors.joining(",")),
+                        .collect(Collectors.joining(", ")),
                 superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );
