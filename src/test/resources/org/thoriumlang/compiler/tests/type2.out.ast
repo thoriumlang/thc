@@ -1,3 +1,3 @@
 NAMESPACE org.thoriumlang.compiler.tests
 TYPE MyType[A, B] : Parent[o.A[], B[]]:
-PRIVATE add [ T, U ] ( a: T[] ) : T[]
+PRIVATE add [T, U] (a: T[]) : T[]

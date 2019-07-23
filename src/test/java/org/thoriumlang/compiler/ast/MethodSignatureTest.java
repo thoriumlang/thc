@@ -151,6 +151,6 @@ class MethodSignatureTest {
                         )),
                         new TypeSpecSingle("returnType", Collections.emptyList())
                 ).toString()
-        ).isEqualTo("PRIVATE name [ T ] ( name: type[] ) : returnType[]");
+        ).isEqualTo("PRIVATE name [T] (name: type[]) : returnType[]");
     }
 }

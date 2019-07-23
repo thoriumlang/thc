@@ -106,7 +106,7 @@ class TypeTest {
                         );
                     }
                 })
-        ).isEqualTo("name:[A]:org.thoriumlang.Object[]:[PRIVATE name [  ] (  ) : type[]]");
+        ).isEqualTo("name:[A]:org.thoriumlang.Object[]:[PRIVATE name [] () : type[]]");
     }
 
     @Test
@@ -129,7 +129,7 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[A, B] : org.thoriumlang.Object[]:\nPRIVATE name [  ] (  ) : returnType[]");
+        ).isEqualTo("TYPE name[A, B] : org.thoriumlang.Object[]:\nPRIVATE name [] () : returnType[]");
     }
 
     @Test
@@ -155,6 +155,6 @@ class TypeTest {
                                 )
                         )
                 ).toString()
-        ).isEqualTo("TYPE name[] : org.thoriumlang.Object[]:\nPRIVATE name [  ] ( parameter: type[] ) : returnType[]");
+        ).isEqualTo("TYPE name[] : org.thoriumlang.Object[]:\nPRIVATE name [] (parameter: type[]) : returnType[]");
     }
 }
