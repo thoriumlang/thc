@@ -1,7 +1,7 @@
 NAMESPACE org.thoriumlang.compiler.tests
-TYPE MyType[] : org.thoriumlang.Object[]:
-PRIVATE a [] () : i:[D[], org.thoriumlang.None[], C[], u:[B[], i:[A[], org.thoriumlang.None[]]]]
-PRIVATE b [] () : u:[A[], B[]]
+NAMESPACE TYPE MyType[] : org.thoriumlang.Object[]:
+PUBLIC a [] () : i:[D[], org.thoriumlang.None[], C[], u:[B[], i:[A[], org.thoriumlang.None[]]]]
+NAMESPACE b [] () : u:[A[], B[]]
 PRIVATE c [] () : u:[C[], i:[A[], org.thoriumlang.None[]]]
 PRIVATE d [] () : i:[A[], org.thoriumlang.None[]]
 PRIVATE e [] () : i:[u:[A[], B[]], org.thoriumlang.None[]]

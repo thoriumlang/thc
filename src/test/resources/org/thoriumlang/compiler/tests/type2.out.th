@@ -1,5 +1,5 @@
 // namespace org.thoriumlang.compiler.tests
 
-type MyType[A, B] : Parent[o.A, B] {
+public type MyType[A, B] : Parent[o.A, B] {
   private add[T, U](a: T): T;
 }

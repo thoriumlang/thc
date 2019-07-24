@@ -51,7 +51,7 @@ useAs
     ;
 
 typeDef
-    : TYPE IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( methodSignature ';' )* '}'
+    : visibility=( NAMESPACE | PUBLIC )? TYPE IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( methodSignature ';' )* '}'
     ;
 
 typeParameterDef

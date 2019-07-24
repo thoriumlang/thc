@@ -20,12 +20,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Type implements Visitable {
+    private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
     private final TypeSpec superType;
     private final List<MethodSignature> methods;
 
-    public Type(String name, List<TypeParameter> typeParameters, TypeSpec superType, List<MethodSignature> methods) {
+    public Type(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
+            List<MethodSignature> methods) {
+        if (visibility == null) {
+            throw new NullPointerException("visibility cannot be null");
+        }
         if (name == null) {
             throw new NullPointerException("name cannot be null");
         }
@@ -38,6 +43,7 @@ public class Type implements Visitable {
         if (methods == null) {
             throw new NullPointerException("methods cannot be null");
         }
+        this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
         this.superType = superType;
@@ -46,7 +52,7 @@ public class Type implements Visitable {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(name, typeParameters, superType, methods);
+        return visitor.visitType(visibility, name, typeParameters, superType, methods);
     }
 
     @Override
@@ -55,7 +61,8 @@ public class Type implements Visitable {
                 .map(MethodSignature::toString)
                 .collect(Collectors.joining(String.format("%n")));
 
-        return String.format("TYPE %s[%s] : %s:%s",
+        return String.format("%s TYPE %s[%s] : %s:%s",
+                visibility,
                 name,
                 typeParameters.stream()
                         .map(TypeParameter::toString)
@@ -74,7 +81,8 @@ public class Type implements Visitable {
             return false;
         }
         Type type = (Type) o;
-        return name.equals(type.name) &&
+        return visibility == type.visibility &&
+                name.equals(type.name) &&
                 typeParameters.equals(type.typeParameters) &&
                 superType.equals(type.superType) &&
                 methods.equals(type.methods);
@@ -82,6 +90,6 @@ public class Type implements Visitable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, typeParameters, superType, methods);
+        return Objects.hash(visibility, name, typeParameters, superType, methods);
     }
 }

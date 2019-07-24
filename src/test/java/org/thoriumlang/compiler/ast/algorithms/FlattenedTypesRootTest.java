@@ -34,6 +34,7 @@ class FlattenedTypesRootTest {
                 "namespace",
                 Collections.emptyList(),
                 new Type(
+                        Visibility.PUBLIC,
                         "type",
                         Collections.emptyList(),
                         TypeSpecSimple.OBJECT,
@@ -68,6 +69,7 @@ class FlattenedTypesRootTest {
                 "namespace",
                 Collections.emptyList(),
                 new Type(
+                        Visibility.PUBLIC,
                         "type",
                         Collections.emptyList(),
                         TypeSpecSimple.OBJECT,

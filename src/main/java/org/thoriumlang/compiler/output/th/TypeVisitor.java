@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.tree.BasePrintableWrapper;
 import org.thoriumlang.compiler.tree.Node;
 import org.thoriumlang.compiler.tree.PrintableWrapper;
@@ -28,14 +29,15 @@ import java.util.stream.Collectors;
 
 class TypeVisitor extends BaseVisitor<String> {
     @Override
-    public String visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType,
+    public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
             List<MethodSignature> methods) {
         Node<PrintableWrapper> typeNode = new Node<>(
                 new BasePrintableWrapper() {
                     @Override
                     public String startString() {
                         return String.format(
-                                "type %s%s : %s {",
+                                "%s type %s%s : %s {",
+                                visibility.name().toLowerCase(),
                                 name,
                                 typeParameters.isEmpty() ?
                                         "" :

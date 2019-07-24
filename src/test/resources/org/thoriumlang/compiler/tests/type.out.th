@@ -1,8 +1,8 @@
 // namespace org.thoriumlang.compiler.tests
 
-type MyType : org.thoriumlang.Object {
-  private a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
-  private b(): (A & B);
+namespace type MyType : org.thoriumlang.Object {
+  public a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
+  namespace b(): (A & B);
   private c(): (C & (A | org.thoriumlang.None));
   private d(): (A | org.thoriumlang.None);
   private e(): ((A & B) | org.thoriumlang.None);

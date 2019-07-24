@@ -28,7 +28,13 @@ class RootTest {
             new Root(
                     null,
                     Collections.emptyList(),
-                    new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
+                    new Type(
+                            Visibility.PUBLIC,
+                            "name",
+                            Collections.emptyList(),
+                            TypeSpecSimple.OBJECT,
+                            Collections.emptyList()
+                    )
             );
         }
         catch (NullPointerException e) {
@@ -45,7 +51,13 @@ class RootTest {
             new Root(
                     "namespace",
                     null,
-                    new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
+                    new Type(
+                            Visibility.PUBLIC,
+                            "name",
+                            Collections.emptyList(),
+                            TypeSpecSimple.OBJECT,
+                            Collections.emptyList()
+                    )
             );
         }
         catch (NullPointerException e) {
@@ -75,14 +87,20 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
+                        new Type(
+                                Visibility.NAMESPACE,
+                                "name",
+                                Collections.emptyList(),
+                                TypeSpecSimple.OBJECT,
+                                Collections.emptyList()
+                        )
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitRoot(String namespace, Type type, List<Use> uses) {
                         return namespace + ":" + uses + ":" + type;
                     }
                 })
-        ).isEqualTo("namespace:[USE from : from]:TYPE name[] : org.thoriumlang.Object[]:");
+        ).isEqualTo("namespace:[USE from : from]:NAMESPACE TYPE name[] : org.thoriumlang.Object[]:");
     }
 
     @Test
@@ -91,8 +109,14 @@ class RootTest {
                 new Root(
                         "namespace",
                         Collections.singletonList(new Use("from")),
-                        new Type("name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList())
+                        new Type(
+                                Visibility.PUBLIC,
+                                "name",
+                                Collections.emptyList(),
+                                TypeSpecSimple.OBJECT,
+                                Collections.emptyList()
+                        )
                 ).toString()
-        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nTYPE name[] : org.thoriumlang.Object[]:");
+        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nPUBLIC TYPE name[] : org.thoriumlang.Object[]:");
     }
 }

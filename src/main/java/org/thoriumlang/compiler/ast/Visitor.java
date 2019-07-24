@@ -23,7 +23,8 @@ public interface Visitor<T> {
 
     T visitUse(String from, String to);
 
-    T visitType(String name, List<TypeParameter> typeParameters, TypeSpec superType, List<MethodSignature> methods);
+    T visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
+            List<MethodSignature> methods);
 
     T visitTypeIntersection(List<TypeSpec> types);
 

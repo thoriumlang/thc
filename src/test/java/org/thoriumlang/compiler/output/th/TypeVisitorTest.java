@@ -29,17 +29,19 @@ class TypeVisitorTest {
     void visitEmptyType() {
         Assertions.assertThat(
                 new TypeVisitor().visitType(
+                        Visibility.NAMESPACE,
                         "name",
                         Collections.emptyList(),
                         TypeSpecSimple.OBJECT, Collections.emptyList())
         )
-                .isEqualTo("type name : org.thoriumlang.Object {}");
+                .isEqualTo("namespace type name : org.thoriumlang.Object {}");
     }
 
     @Test
     void visitNonEmptyType() {
         Assertions.assertThat(
                 new TypeVisitor().visitType(
+                        Visibility.PRIVATE,
                         "name",
                         Collections.singletonList(new TypeParameter("T")),
                         TypeSpecSimple.OBJECT,
@@ -54,6 +56,6 @@ class TypeVisitorTest {
                         )
                 )
         )
-                .isEqualTo("type name[T] : org.thoriumlang.Object {\n  private m(): type;\n}");
+                .isEqualTo("private type name[T] : org.thoriumlang.Object {\n  private m(): type;\n}");
     }
 }

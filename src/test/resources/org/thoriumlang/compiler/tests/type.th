@@ -2,9 +2,9 @@ type MyType {
     /**
      * block comment
      */
-    a(): ((A?&B)|C)?|(D);
+    public a(): ((A?&B)|C)?|(D);
     // inline comment
-    b(): A&B;
+    namespace b(): A&B;
     c(): A?&C;
     d(): ((A?)?)?;
     e(): (A&B)?;

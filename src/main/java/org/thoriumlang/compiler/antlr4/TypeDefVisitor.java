@@ -21,6 +21,7 @@ import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +34,7 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
     @Override
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
         return new Type(
+                visibility(ctx),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 typeParameters(ctx.typeParameterDef()),
                 implementsSpec(ctx.implementsSpec()),
@@ -40,6 +42,12 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
                         .map(method -> method.accept(methodSignatureVisitor))
                         .collect(Collectors.toList())
         );
+    }
+
+    private Visibility visibility(ThoriumParser.TypeDefContext ctx) {
+        return ctx.visibility == null ?
+                Visibility.NAMESPACE :
+                Visibility.valueOf(ctx.visibility.getText().toUpperCase());
     }
 
     private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {

@@ -44,7 +44,9 @@ public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> 
     }
 
     private Visibility visibility(ThoriumParser.MethodSignatureContext ctx) {
-        return ctx.visibility == null ? Visibility.PRIVATE : Visibility.valueOf(ctx.visibility.getText().toUpperCase());
+        return ctx.visibility == null ?
+                Visibility.PRIVATE :
+                Visibility.valueOf(ctx.visibility.getText().toUpperCase());
     }
 
     private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Collections;
 
@@ -32,6 +33,7 @@ class ThWalkerTest {
                                 "namespace",
                                 Collections.emptyList(),
                                 new Type(
+                                        Visibility.PUBLIC,
                                         "name",
                                         Collections.emptyList(),
                                         TypeSpecSimple.OBJECT,
@@ -40,6 +42,6 @@ class ThWalkerTest {
                         )
                 ).walk()
         )
-                .isEqualTo("// namespace namespace\n\ntype name : org.thoriumlang.Object {}");
+                .isEqualTo("// namespace namespace\n\npublic type name : org.thoriumlang.Object {}");
     }
 }
