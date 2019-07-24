@@ -28,8 +28,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
-    private static final MethodSignatureVisitor methodSignatureVisitor = new MethodSignatureVisitor();
-    private static final TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor();
+    public static final TypeDefVisitor INSTANCE = new TypeDefVisitor();
+
+    private TypeDefVisitor() {
+        // nothing
+    }
 
     @Override
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
@@ -39,7 +42,7 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
                 typeParameters(ctx.typeParameterDef()),
                 implementsSpec(ctx.implementsSpec()),
                 ctx.methodSignature().stream()
-                        .map(method -> method.accept(methodSignatureVisitor))
+                        .map(method -> method.accept(MethodSignatureVisitor.INSTANCE))
                         .collect(Collectors.toList())
         );
     }
@@ -54,13 +57,13 @@ public class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
         if (ctx == null || ctx.IDENTIFIER() == null) {
             return Collections.emptyList();
         }
-        return ctx.accept(typeParameterDefVisitor);
+        return ctx.accept(TypeParameterDefVisitor.INSTANCE);
     }
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
         if (ctx == null) {
             return TypeSpecSimple.OBJECT;
         }
-        return ctx.typeSpec().accept(new TypeSpecVisitor());
+        return ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE);
     }
 }

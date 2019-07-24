@@ -24,6 +24,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeParameterDefVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
+    public static final TypeParameterDefVisitor INSTANCE = new TypeParameterDefVisitor();
+
+    private TypeParameterDefVisitor() {
+        // nothing
+    }
+
     @Override
     public List<TypeParameter> visitTypeParameterDef(ThoriumParser.TypeParameterDefContext ctx) {
         if (ctx.IDENTIFIER() == null) {

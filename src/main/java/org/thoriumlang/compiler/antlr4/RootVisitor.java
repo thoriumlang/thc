@@ -31,14 +31,13 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
 
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
-        UseVisitor useVisitor = new UseVisitor();
         return new Root(
                 namespace,
                 ctx.use().stream()
-                        .map(u -> u.accept(useVisitor))
+                        .map(u -> u.accept(UseVisitor.INSTANCE))
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList()),
-                ctx.typeDef().accept(new TypeDefVisitor())
+                ctx.typeDef().accept(TypeDefVisitor.INSTANCE)
         );
     }
 }

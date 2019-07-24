@@ -21,6 +21,12 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import java.util.stream.Collectors;
 
 public class FqIdentifierVisitor extends ThoriumBaseVisitor<String> {
+    public static final FqIdentifierVisitor INSTANCE = new FqIdentifierVisitor();
+
+    private FqIdentifierVisitor() {
+        // nothing
+    }
+
     @Override
     public String visitFqIdentifier(ThoriumParser.FqIdentifierContext ctx) {
         return ctx.IDENTIFIER().stream()

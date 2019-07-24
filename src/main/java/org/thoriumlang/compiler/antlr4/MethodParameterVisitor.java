@@ -19,12 +19,18 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Parameter;
 
-public class MethodParameterVisitor  extends ThoriumBaseVisitor<Parameter> {
+public class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
+    public static final MethodParameterVisitor INSTANCE = new MethodParameterVisitor();
+
+    private MethodParameterVisitor() {
+        // nothing
+    }
+
     @Override
     public Parameter visitMethodParameterDef(ThoriumParser.MethodParameterDefContext ctx) {
         return new Parameter(
                 ctx.IDENTIFIER().getSymbol().getText(),
-                ctx.typeSpec().accept(new TypeSpecVisitor())
+                ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE)
         );
     }
 }
