@@ -102,6 +102,14 @@ methodParameterDef
     : IDENTIFIER ':' typeSpec
     ;
 
+methodDef
+    : visibility=( PRIVATE | NAMESPACE | PUBLIC )? name=IDENTIFIER
+      ( '[' typeParameterDef ']' )?
+      '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
+      ( ':' returnType=typeSpec )?
+      '{' '}'
+    ;
+
 constOrVarDef
     : VAL? IDENTIFIER ( ':' typeSpec )? '=' expression ';'
     | VAR IDENTIFIER ( ':' typeSpec )? ( '=' expression )? ';'
