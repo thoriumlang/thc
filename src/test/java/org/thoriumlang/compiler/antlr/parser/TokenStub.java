@@ -18,8 +18,10 @@ package org.thoriumlang.compiler.antlr.parser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
+import org.junit.jupiter.api.Tag;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
+@Tag("parser")
 class TokenStub implements Token {
     private final String text;
     private final int type;

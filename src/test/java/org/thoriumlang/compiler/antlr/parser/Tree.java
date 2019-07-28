@@ -26,6 +26,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +34,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
- class Tree {
+@Tag("parser")
+class Tree {
     private final List<Token> tokens;
 
      Tree(Token... tokens) {
