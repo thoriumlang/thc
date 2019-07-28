@@ -38,11 +38,11 @@ import java.util.List;
 class Tree {
     private final List<Token> tokens;
 
-     Tree(Token... tokens) {
+    Tree(Token... tokens) {
         this.tokens = Arrays.asList(tokens);
     }
 
-     String serialize(String ruleName) {
+    String serialize(String ruleName) {
         ThoriumParser p = new ThoriumParser(
                 new CommonTokenStream(
                         new ListTokenSource(tokens)
@@ -51,22 +51,26 @@ class Tree {
 
         p.addErrorListener(new ANTLRErrorListener() {
             @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+                    int charPositionInLine, String msg, RecognitionException e) {
                 Assertions.fail("syntaxError");
             }
 
             @Override
-            public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
+            public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
+                    BitSet ambigAlts, ATNConfigSet configs) {
                 // nothing
             }
 
             @Override
-            public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs) {
+            public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
+                    BitSet conflictingAlts, ATNConfigSet configs) {
                 // nothing
             }
 
             @Override
-            public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs) {
+            public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
+                    int prediction, ATNConfigSet configs) {
                 // nothing
             }
         });
@@ -74,20 +78,22 @@ class Tree {
         try {
             try {
                 return ((ParserRuleContext) (ThoriumParser.class.getMethod(ruleName).invoke(p))).toStringTree(p);
-            } catch (InvocationTargetException e) {
+            }
+            catch (InvocationTargetException e) {
                 if (e.getCause() instanceof AssertionError) {
                     throw (AssertionError) e.getCause();
                 }
                 Assertions.fail(e.getMessage());
                 return null;
             }
-        } catch (NoSuchMethodException | IllegalAccessException e) {
+        }
+        catch (NoSuchMethodException | IllegalAccessException e) {
             Assertions.fail(String.format("'%s' is not a valid rule name", ruleName));
             return null;
         }
     }
 
-     String serialize() {
+    String serialize() {
         return serialize("root");
     }
 }

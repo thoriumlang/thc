@@ -52,7 +52,7 @@ class NodeTest {
                 .isEqualTo("root{\n  child1{\n    child1.1\n  }\n  child2\n}");
     }
 
-   static class Block implements PrintableWrapper {
+    static class Block implements PrintableWrapper {
         private final String string;
 
         Block(String string) {

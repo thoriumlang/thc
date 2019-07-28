@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.tree;
 
-public abstract class BasePrintableWrapper implements PrintableWrapper{
+public abstract class BasePrintableWrapper implements PrintableWrapper {
     @Override
     public String startString() {
         return "";

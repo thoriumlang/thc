@@ -44,5 +44,5 @@ class TypeParameterDefTest {
                         token("V", ThoriumLexer.IDENTIFIER)
                 ).serialize("typeParameterDef")
         ).isEqualTo("(typeParameterDef T , U , V)");
-     }
+    }
 }

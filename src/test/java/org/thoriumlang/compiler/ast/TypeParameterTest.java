@@ -18,9 +18,6 @@ package org.thoriumlang.compiler.ast;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 class TypeParameterTest {
     @Test
     void constructor_name() {

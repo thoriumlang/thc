@@ -45,22 +45,26 @@ class Tokens {
         ThoriumLexer lexer = new ThoriumLexer(cStream);
         lexer.addErrorListener(new ANTLRErrorListener() {
             @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+                    int charPositionInLine, String msg, RecognitionException e) {
                 Assertions.fail("syntaxError");
             }
 
             @Override
-            public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact, BitSet ambigAlts, ATNConfigSet configs) {
+            public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, boolean exact,
+                    BitSet ambigAlts, ATNConfigSet configs) {
                 Assertions.fail("reportAmbiguity");
             }
 
             @Override
-            public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet conflictingAlts, ATNConfigSet configs) {
+            public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
+                    BitSet conflictingAlts, ATNConfigSet configs) {
                 Assertions.fail("reportAttemptingFullContext");
             }
 
             @Override
-            public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs) {
+            public void reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
+                    int prediction, ATNConfigSet configs) {
                 Assertions.fail("reportContextSensitivity");
             }
         });

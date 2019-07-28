@@ -18,8 +18,6 @@ package org.thoriumlang.compiler.ast;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
 class UseTest {
     @Test
     void constructor_from1() {

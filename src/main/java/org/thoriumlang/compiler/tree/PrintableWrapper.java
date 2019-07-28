@@ -17,6 +17,8 @@ package org.thoriumlang.compiler.tree;
 
 public interface PrintableWrapper {
     String startString();
+
     String toString();
+
     String endString();
 }

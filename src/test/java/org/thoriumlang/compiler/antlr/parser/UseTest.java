@@ -105,6 +105,7 @@ class UseTest {
                         token("}"),
                         token(";")
                 ).serialize("use")
-        ).isEqualTo("(use use (fqIdentifier a . b) . { (useAs (fqIdentifier c . f) : d) , (useAs (fqIdentifier e)) } ;)");
+        ).isEqualTo(
+                "(use use (fqIdentifier a . b) . { (useAs (fqIdentifier c . f) : d) , (useAs (fqIdentifier e)) } ;)");
     }
 }

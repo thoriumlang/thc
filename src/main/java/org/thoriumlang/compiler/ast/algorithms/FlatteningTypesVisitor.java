@@ -15,7 +15,12 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
-import org.thoriumlang.compiler.ast.*;
+import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.IdentityVisitor;
+import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.Visitable;
 
 import java.util.Collection;
 import java.util.List;

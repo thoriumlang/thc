@@ -30,7 +30,7 @@ class ExpressionTest {
         Assertions.assertThat(
                 new Tree(
                         token("1", ThoriumLexer.NUMBER)
-                        ).serialize("expression")
+                ).serialize("expression")
         ).isEqualTo("(expression 1)");
     }
 
@@ -87,11 +87,11 @@ class ExpressionTest {
                 new Tree(
                         token("a", ThoriumLexer.IDENTIFIER),
                         token("."),
-                        token("m1",ThoriumLexer.IDENTIFIER ),
+                        token("m1", ThoriumLexer.IDENTIFIER),
                         token("("),
                         token(")"),
                         token("?."),
-                        token("m2",ThoriumLexer.IDENTIFIER ),
+                        token("m2", ThoriumLexer.IDENTIFIER),
                         token("("),
                         token(")")
                 ).serialize("expression")
