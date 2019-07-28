@@ -66,7 +66,7 @@ implementsSpec
     ;
 
 classDef
-    : CLASS IDENTIFIER '{' '}'
+    : visibility=( NAMESPACE | PUBLIC )? CLASS IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' '}'
     ;
 
 typeSpec
