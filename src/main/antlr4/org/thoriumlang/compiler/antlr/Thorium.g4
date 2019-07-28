@@ -93,7 +93,7 @@ typeSpecIntersection
     ;
 
 methodSignature
-    : visibility=( PRIVATE | NAMESPACE | PUBLIC )? name=IDENTIFIER
+    : visibility=( NAMESPACE | PUBLIC )? name=IDENTIFIER
       ( '[' typeParameterDef ']' )?
       '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
       ':' returnType=typeSpec

@@ -39,20 +39,6 @@ class MethodSignatureTest {
     }
 
     @Test
-    void privateMethodSignature() {
-        Assertions.assertThat(
-                new Tree(
-                        token("private", ThoriumLexer.PRIVATE),
-                        token("methodName", ThoriumLexer.IDENTIFIER),
-                        token("("),
-                        token(")"),
-                        token(":"),
-                        token("typeName", ThoriumLexer.IDENTIFIER)
-                ).serialize("methodSignature")
-        ).isEqualTo("(methodSignature private methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
-    }
-
-    @Test
     void namespaceMethodSignature() {
         Assertions.assertThat(
                 new Tree(
