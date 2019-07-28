@@ -39,8 +39,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitType(Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType,
-            List<MethodSignature> methods) {
+            TypeSpec superType, List<MethodSignature> methods) {
         return new Type(
                 visibility,
                 name,
@@ -77,8 +76,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
-            List<Parameter> parameters,
-            TypeSpec returnType) {
+            List<Parameter> parameters, TypeSpec returnType) {
         return new MethodSignature(
                 visibility,
                 name,
