@@ -59,4 +59,6 @@ public interface Visitor<T> {
             List<Value> methodArguments);
 
     T visitNestedValue(Value outer, Value inner);
+
+    T visitStatement(Value value, boolean isLast);
 }

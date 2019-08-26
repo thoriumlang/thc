@@ -202,6 +202,13 @@ class IdentityVisitorTest {
                 .isEqualTo(value);
     }
 
+    @Test
+    void visitStatement() {
+        Statement statement = new Statement(BooleanValue.TRUE, false);
+        Assertions.assertThat(statement.accept(visitor()))
+                .isEqualTo(statement);
+    }
+
     private IdentityVisitor visitor() {
         return new IdentityVisitor() {
         };

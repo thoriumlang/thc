@@ -148,4 +148,9 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     public Visitable visitNestedValue(Value outer, Value inner) {
         return new NestedValue(outer, inner);
     }
+
+    @Override
+    public Visitable visitStatement(Value value, boolean isLast) {
+        return new Statement(value, isLast);
+    }
 }

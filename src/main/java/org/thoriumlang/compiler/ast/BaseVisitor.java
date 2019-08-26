@@ -115,4 +115,9 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     public T visitNestedValue(Value outer, Value inner) {
         return null;
     }
+
+    @Override
+    public T visitStatement(Value value, boolean isLast) {
+        return null;
+    }
 }
