@@ -52,6 +52,35 @@ class IdentityVisitorTest {
     }
 
     @Test
+    void visitClass() {
+        Class clazz = new Class(
+                Visibility.NAMESPACE,
+                "name",
+                Collections.singletonList(new TypeParameter("T")),
+                TypeSpecSimple.OBJECT,
+                Collections.singletonList(
+                        new Method(
+                                new MethodSignature(
+                                        Visibility.NAMESPACE,
+                                        "method",
+                                        Collections.emptyList(),
+                                        Collections.emptyList(),
+                                        TypeSpecSimple.NONE
+                                ),
+                                Collections.singletonList(
+                                        new Statement(
+                                                BooleanValue.TRUE,
+                                                false
+                                        )
+                                )
+                        )
+                )
+        );
+        Assertions.assertThat(clazz.accept(visitor()))
+                .isEqualTo(clazz);
+    }
+
+    @Test
     void visitTypeIntersection() {
         TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSimple(
                 "type",

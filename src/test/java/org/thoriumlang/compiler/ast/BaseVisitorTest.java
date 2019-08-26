@@ -44,6 +44,14 @@ class BaseVisitorTest {
     }
 
     @Test
+    void visitClass() {
+        Assertions.assertThat(
+                visitor().visitClass(null, null, null, null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
     void visitTypeIntersection() {
         Assertions.assertThat(
                 visitor().visitTypeIntersection(null)

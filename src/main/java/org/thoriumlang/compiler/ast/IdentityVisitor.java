@@ -52,6 +52,18 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
+    public Visitable visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<Method> methods) {
+        return new Class(
+                visibility,
+                name,
+                typeParameters,
+                superType,
+                methods
+        );
+    }
+
+    @Override
     public Visitable visitTypeIntersection(List<TypeSpec> types) {
         return new TypeSpecIntersection(
                 types.stream()

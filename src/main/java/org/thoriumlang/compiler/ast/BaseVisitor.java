@@ -35,6 +35,12 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
+    public T visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<Method> methods) {
+        return null;
+    }
+
+    @Override
     public T visitTypeIntersection(List<TypeSpec> types) {
         return null;
     }
