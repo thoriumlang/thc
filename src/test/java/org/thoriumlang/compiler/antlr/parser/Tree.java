@@ -38,8 +38,12 @@ import java.util.List;
 class Tree {
     private final List<Token> tokens;
 
+    Tree(List<Token> tokens) {
+        this.tokens = tokens;
+    }
+
     Tree(Token... tokens) {
-        this.tokens = Arrays.asList(tokens);
+        this(Arrays.asList(tokens));
     }
 
     String serialize(String ruleName) {

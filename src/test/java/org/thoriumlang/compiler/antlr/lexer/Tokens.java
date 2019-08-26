@@ -33,14 +33,14 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 
-class Tokens {
+public class Tokens {
     private final String string;
 
-    Tokens(String string) {
+    public Tokens(String string) {
         this.string = string;
     }
 
-    List<Token> parse() {
+    public List<Token> parse() {
         CharStream cStream = CharStreams.fromString(string);
         ThoriumLexer lexer = new ThoriumLexer(cStream);
         lexer.addErrorListener(new ANTLRErrorListener() {

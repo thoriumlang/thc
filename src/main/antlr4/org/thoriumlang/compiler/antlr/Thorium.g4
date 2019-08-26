@@ -112,15 +112,32 @@ methodDef
       '{' '}'
     ;
 
-constOrVarDef
-    : VAL? IDENTIFIER ( ':' typeSpec )? '=' expression ';'
-    | VAR IDENTIFIER ( ':' typeSpec )? ( '=' expression )? ';'
+value
+    : '(' value ')'
+    | indirectValue
+    | directValue
+    | assignmentValue
+    ;
+assignmentValue
+    : indirectValue '.' IDENTIFIER '=' value
+    | VAL? valName=IDENTIFIER ( ':' typeSpec )? '=' value
+    | VAR varName=IDENTIFIER ( ':' typeSpec )? ( '=' value )?
+    ;
+directValue
+    : numberValue=NUMBER
+    | stringValue=STRING
+    | booleanValue=BOOLEAN
+    | noneValue=NONE
+    ;
+indirectValue
+    : THIS
+    | IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
+    | indirectValue ( '.' | '?.' ) IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
+    | directValue ( '.' | '?.' ) IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
     ;
 
-expression
-    : NUMBER | STRING | BOOLEAN | NONE | IDENTIFIER
-    | '(' expression ')'
-    | expression ( '.' | '?.' ) IDENTIFIER '(' ')'
+methodArguments
+    : value ( ',' value )*
     ;
 
 ERRCHAR
