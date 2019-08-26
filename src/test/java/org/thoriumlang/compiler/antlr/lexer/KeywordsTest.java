@@ -36,11 +36,13 @@ class KeywordsTest {
             .put("namespace", ThoriumLexer.NAMESPACE)
             .put("val", ThoriumLexer.VAL)
             .put("var", ThoriumLexer.VAR)
+            .put("return", ThoriumLexer.RETURN)
+            .put("this", ThoriumLexer.THIS)
             .build();
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "use", "class", "type", "private", "public", "namespace", "val", "var"
+            "use", "class", "type", "private", "public", "namespace", "val", "var", "return", "this"
     })
     void validKeywords(String text) {
         Assertions.assertThat(new Tokens(text).parse())

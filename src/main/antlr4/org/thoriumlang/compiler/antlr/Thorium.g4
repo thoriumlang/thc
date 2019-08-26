@@ -25,6 +25,8 @@ VAL : 'val' ;
 VAR : 'var' ;
 BOOLEAN : 'true' | 'false' ;
 NONE : 'none' ;
+RETURN : 'return' ;
+THIS : 'this' ;
 
 NUMBER : ( [0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )? ;
 STRING : '"' ( ~[\\"\r\n] | '\\"' )* '"' ;
