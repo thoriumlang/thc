@@ -120,4 +120,9 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     public T visitStatement(Value value, boolean isLast) {
         return null;
     }
+
+    @Override
+    public T visitMethod(MethodSignature signature, List<Statement> statements) {
+        return null;
+    }
 }

@@ -153,4 +153,9 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     public Visitable visitStatement(Value value, boolean isLast) {
         return new Statement(value, isLast);
     }
+
+    @Override
+    public Visitable visitMethod(MethodSignature signature, List<Statement> statements) {
+        return new Method(signature, statements);
+    }
 }

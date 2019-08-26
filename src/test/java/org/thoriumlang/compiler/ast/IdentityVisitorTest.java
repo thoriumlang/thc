@@ -209,6 +209,22 @@ class IdentityVisitorTest {
                 .isEqualTo(statement);
     }
 
+    @Test
+    void visitMethod() {
+        Method method = new Method(
+                new MethodSignature(
+                        Visibility.NAMESPACE,
+                        "method",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        TypeSpecSimple.NONE
+                ),
+                Collections.singletonList(new Statement(BooleanValue.TRUE, false))
+        );
+        Assertions.assertThat(method.accept(visitor()))
+                .isEqualTo(method);
+    }
+
     private IdentityVisitor visitor() {
         return new IdentityVisitor() {
         };

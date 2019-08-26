@@ -179,6 +179,14 @@ class BaseVisitorTest {
                 .isEqualTo(null);
     }
 
+    @Test
+    void visitMethod() {
+        Assertions.assertThat(
+                visitor().visitMethod(null, null)
+        )
+                .isEqualTo(null);
+    }
+
     private BaseVisitor<Object> visitor() {
         return new BaseVisitor<Object>() {
         };

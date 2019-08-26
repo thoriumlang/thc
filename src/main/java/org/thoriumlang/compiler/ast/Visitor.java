@@ -61,4 +61,6 @@ public interface Visitor<T> {
     T visitNestedValue(Value outer, Value inner);
 
     T visitStatement(Value value, boolean isLast);
+
+    T visitMethod(MethodSignature signature, List<Statement> statements);
 }
