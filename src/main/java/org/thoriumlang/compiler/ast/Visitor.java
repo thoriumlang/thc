@@ -63,4 +63,8 @@ public interface Visitor<T> {
     T visitStatement(Value value, boolean isLast);
 
     T visitMethod(MethodSignature signature, List<Statement> statements);
+
+    T visitVarAttribute(String identifier, TypeSpec type, Value value);
+
+    T visitValAttribute(String identifier, TypeSpec type, Value value);
 }

@@ -125,4 +125,14 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     public T visitMethod(MethodSignature signature, List<Statement> statements) {
         return null;
     }
+
+    @Override
+    public T visitVarAttribute(String identifier, TypeSpec type, Value value) {
+        return null;
+    }
+
+    @Override
+    public T visitValAttribute(String identifier, TypeSpec type, Value value) {
+        return null;
+    }
 }

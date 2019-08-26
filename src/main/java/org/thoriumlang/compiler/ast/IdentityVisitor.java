@@ -158,4 +158,14 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     public Visitable visitMethod(MethodSignature signature, List<Statement> statements) {
         return new Method(signature, statements);
     }
+
+    @Override
+    public Visitable visitVarAttribute(String identifier, TypeSpec type, Value value) {
+        return new VarAttribute(identifier, type, value);
+    }
+
+    @Override
+    public Visitable visitValAttribute(String identifier, TypeSpec type, Value value) {
+        return new ValAttribute(identifier, type, value);
+    }
 }

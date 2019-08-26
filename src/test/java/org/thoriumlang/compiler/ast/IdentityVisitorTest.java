@@ -225,6 +225,28 @@ class IdentityVisitorTest {
                 .isEqualTo(method);
     }
 
+    @Test
+    void visitVarAttribute() {
+        VarAttribute varAttribute = new VarAttribute(
+                "identifier",
+                TypeSpecSimple.NONE,
+                NoneValue.INSTANCE
+        );
+        Assertions.assertThat(varAttribute.accept(visitor()))
+                .isEqualTo(varAttribute);
+    }
+
+    @Test
+    void visitValAttribute() {
+        ValAttribute valAttribute = new ValAttribute(
+                "identifier",
+                TypeSpecSimple.NONE,
+                NoneValue.INSTANCE
+        );
+        Assertions.assertThat(valAttribute.accept(visitor()))
+                .isEqualTo(valAttribute);
+    }
+
     private IdentityVisitor visitor() {
         return new IdentityVisitor() {
         };
