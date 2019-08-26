@@ -109,7 +109,12 @@ methodDef
       ( '[' typeParameterDef ']' )?
       '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
       ( ':' returnType=typeSpec )?
-      '{' '}'
+      '{' statement* '}'
+    ;
+
+statement
+    : RETURN value ';'
+    | value ';'
     ;
 
 value

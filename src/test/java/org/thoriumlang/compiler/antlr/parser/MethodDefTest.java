@@ -103,7 +103,7 @@ class MethodDefTest {
     }
 
     @Test
-    void methodSignatureWithTypeParameters() {
+    void methodDefWithTypeParameters() {
         Assertions.assertThat(
                 new Tree(
                         token("methodName", ThoriumLexer.IDENTIFIER),
@@ -121,7 +121,7 @@ class MethodDefTest {
     }
 
     @Test
-    void methodSignatureWithReturnType() {
+    void methodDefWithReturnType() {
         Assertions.assertThat(
                 new Tree(
                         token("methodName", ThoriumLexer.IDENTIFIER),
@@ -133,5 +133,31 @@ class MethodDefTest {
                         token("}")
                 ).serialize("methodDef")
         ).isEqualTo("(methodDef methodName ( ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))) { })");
+    }
+
+    @Test
+    void nonEmptyMethodDef() {
+        Assertions.assertThat(
+                new Tree(
+                        token("methodName", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token("{"),
+                        token("return", ThoriumLexer.RETURN),
+                        token("Something", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token("."),
+                        token("method", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token("true", ThoriumLexer.BOOLEAN),
+                        token(")"),
+                        token(";"),
+                        token("}")
+                ).serialize("methodDef")
+        ).isEqualTo("(methodDef methodName ( ) { " +
+                "(statement return (value (indirectValue (indirectValue Something ( )) " +
+                ". method ( (methodArguments (value (directValue true))) ))) ;) " +
+                "})");
     }
 }
