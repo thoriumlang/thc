@@ -68,7 +68,11 @@ implementsSpec
     ;
 
 classDef
-    : visibility=( NAMESPACE | PUBLIC )? CLASS IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' '}'
+    : visibility=( NAMESPACE | PUBLIC )? CLASS IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( attributeDef | methodDef )* '}'
+    ;
+
+attributeDef
+    : ( VAL | VAR ) name=IDENTIFIER ':' typeSpec ( '=' value )? ';'
     ;
 
 typeSpec

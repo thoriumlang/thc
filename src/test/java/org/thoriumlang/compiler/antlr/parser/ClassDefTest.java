@@ -74,12 +74,36 @@ class ClassDefTest {
                         token("public", ThoriumLexer.PUBLIC),
                         token("class", ThoriumLexer.CLASS),
                         token("Identifier", ThoriumLexer.IDENTIFIER),
-                        token("["),
-                        token("TA", ThoriumLexer.IDENTIFIER),
-                        token("]"),
                         token("{"),
                         token("}")
                 ).serialize("classDef")
-        ).isEqualTo("(classDef public class Identifier [ (typeParameterDef TA) ] { })");
+        ).isEqualTo("(classDef public class Identifier { })");
+    }
+
+    @Test
+    void nonEmptyClass() {
+        Assertions.assertThat(
+                new Tree(
+                        token("public", ThoriumLexer.PUBLIC),
+                        token("class", ThoriumLexer.CLASS),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token("{"),
+                        token("val", ThoriumLexer.VAL),
+                        token("Identifier", ThoriumLexer.IDENTIFIER),
+                        token(":"),
+                        token("T", ThoriumLexer.IDENTIFIER),
+                        token(";"),
+                        token("method", ThoriumLexer.IDENTIFIER),
+                        token("("),
+                        token(")"),
+                        token("{"),
+                        token("}"),
+                        token("}")
+                ).serialize("classDef")
+        ).isEqualTo("(classDef public class Identifier { " +
+                "(attributeDef val Identifier : (typeSpec (typeSpecSimple (fqIdentifier T))) ;) " +
+                "(methodDef method ( ) { }) " +
+                "})"
+        );
     }
 }
