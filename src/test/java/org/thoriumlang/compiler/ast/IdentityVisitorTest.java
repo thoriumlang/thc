@@ -114,6 +114,94 @@ class IdentityVisitorTest {
                 .isEqualTo(parameter);
     }
 
+    @Test
+    void visitStringValue() {
+        Value value = new StringValue("value");
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitNumberValue() {
+        Value value = new NumberValue(1);
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitBooleanValue() {
+        Assertions.assertThat(BooleanValue.TRUE.accept(visitor()))
+                .isEqualTo(BooleanValue.TRUE);
+        Assertions.assertThat(BooleanValue.FALSE.accept(visitor()))
+                .isEqualTo(BooleanValue.FALSE);
+    }
+
+    @Test
+    void visitNoneValue() {
+        Value value = NoneValue.INSTANCE;
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+
+    @Test
+    void visitIdentifierValue() {
+        Value value = new IdentifierValue("id");
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitVarAssignmentValue() {
+        Value value = new VarAssignmentValue(
+                "identifier",
+                new TypeSpecSimple("T", Collections.emptyList()),
+                NoneValue.INSTANCE
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitValAssignmentValue() {
+        Value value = new ValAssignmentValue(
+                "identifier",
+                new TypeSpecSimple("T", Collections.emptyList()),
+                NoneValue.INSTANCE
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitIndirectAssignmentValue() {
+        Value value = new IndirectAssignmentValue(
+                NoneValue.INSTANCE,
+                "identifier",
+                NoneValue.INSTANCE
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitMethodCallValue() {
+        Value value = new MethodCallValue(
+                "identifier",
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
+    @Test
+    void visitNestedValue() {
+        Value value = new NestedValue(BooleanValue.TRUE, BooleanValue.FALSE);
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value);
+    }
+
     private IdentityVisitor visitor() {
         return new IdentityVisitor() {
         };

@@ -97,4 +97,55 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     public Visitable visitTypeParameter(String name) {
         return new TypeParameter(name);
     }
+
+    @Override
+    public Visitable visitStringValue(String value) {
+        return new StringValue(value);
+    }
+
+    @Override
+    public Visitable visitNumberValue(Integer value) {
+        return new NumberValue(value);
+    }
+
+    @Override
+    public Visitable visitBooleanValue(Boolean value) {
+        return value ? BooleanValue.TRUE : BooleanValue.FALSE;
+    }
+
+    @Override
+    public Visitable visitNoneValue() {
+        return NoneValue.INSTANCE;
+    }
+
+    @Override
+    public Visitable visitIdentifierValue(String value) {
+        return new IdentifierValue(value);
+    }
+
+    @Override
+    public Visitable visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+        return new VarAssignmentValue(identifier, type, value);
+    }
+
+    @Override
+    public Visitable visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+        return new ValAssignmentValue(identifier, type, value);
+    }
+
+    @Override
+    public Visitable visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+        return new IndirectAssignmentValue(indirectValue, identifier, value);
+    }
+
+    @Override
+    public Visitable visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+            List<Value> methodArguments) {
+        return new MethodCallValue(methodName, typeArguments, methodArguments);
+    }
+
+    @Override
+    public Visitable visitNestedValue(Value outer, Value inner) {
+        return new NestedValue(outer, inner);
+    }
 }

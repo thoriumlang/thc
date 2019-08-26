@@ -64,4 +64,55 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     public T visitTypeParameter(String name) {
         return null;
     }
+
+    @Override
+    public T visitStringValue(String value) {
+        return null;
+    }
+
+    @Override
+    public T visitNumberValue(Integer value) {
+        return null;
+    }
+
+    @Override
+    public T visitBooleanValue(Boolean value) {
+        return null;
+    }
+
+    @Override
+    public T visitNoneValue() {
+        return null;
+    }
+
+    @Override
+    public T visitIdentifierValue(String value) {
+        return null;
+    }
+
+    @Override
+    public T visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+        return null;
+    }
+
+    @Override
+    public T visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+        return null;
+    }
+
+    @Override
+    public T visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+        return null;
+    }
+
+    @Override
+    public T visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+            List<Value> methodArguments) {
+        return null;
+    }
+
+    @Override
+    public T visitNestedValue(Value outer, Value inner) {
+        return null;
+    }
 }

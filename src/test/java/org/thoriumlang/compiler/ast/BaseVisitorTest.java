@@ -91,6 +91,86 @@ class BaseVisitorTest {
                 .isEqualTo(null);
     }
 
+    @Test
+    void visitStringValue() {
+        Assertions.assertThat(
+                visitor().visitStringValue(null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitNumberValue() {
+        Assertions.assertThat(
+                visitor().visitNumberValue(null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitBooleanValue() {
+        Assertions.assertThat(
+                visitor().visitBooleanValue(null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitNoneValue() {
+        Assertions.assertThat(
+                visitor().visitNoneValue()
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitIdentifierValue() {
+        Assertions.assertThat(
+                visitor().visitIdentifierValue(null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitVarAssignmentValue() {
+        Assertions.assertThat(
+                visitor().visitVarAssignmentValue(null, null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitValAssignmentValue() {
+        Assertions.assertThat(
+                visitor().visitValAssignmentValue(null, null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitIndirectAssignmentValue() {
+        Assertions.assertThat(
+                visitor().visitIndirectAssignmentValue(null, null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitMethodCallValue() {
+        Assertions.assertThat(
+                visitor().visitMethodCallValue(null, null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitNestedValue() {
+        Assertions.assertThat(
+                visitor().visitNestedValue(null, null)
+        )
+                .isEqualTo(null);
+    }
+
     private BaseVisitor<Object> visitor() {
         return new BaseVisitor<Object>() {
         };

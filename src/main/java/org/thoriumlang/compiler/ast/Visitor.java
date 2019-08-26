@@ -38,4 +38,25 @@ public interface Visitor<T> {
     T visitParameter(String name, TypeSpec type);
 
     T visitTypeParameter(String name);
+
+    T visitStringValue(String value);
+
+    T visitNumberValue(Integer value);
+
+    T visitBooleanValue(Boolean value);
+
+    T visitNoneValue();
+
+    T visitIdentifierValue(String value);
+
+    T visitVarAssignmentValue(String identifier, TypeSpec type, Value value);
+
+    T visitValAssignmentValue(String identifier, TypeSpec type, Value value);
+
+    T visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value);
+
+    T visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+            List<Value> methodArguments);
+
+    T visitNestedValue(Value outer, Value inner);
 }
