@@ -121,7 +121,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitBooleanValue(Boolean value) {
+    public Visitable visitBooleanValue(boolean value) {
         return value ? BooleanValue.TRUE : BooleanValue.FALSE;
     }
 

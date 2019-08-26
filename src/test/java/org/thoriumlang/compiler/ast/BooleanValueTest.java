@@ -25,7 +25,7 @@ class BooleanValueTest {
                 BooleanValue.TRUE
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
-                            public Boolean visitBooleanValue(Boolean value) {
+                            public Boolean visitBooleanValue(boolean value) {
                                 return value;
                             }
                         })
@@ -38,7 +38,7 @@ class BooleanValueTest {
                 BooleanValue.FALSE
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
-                            public Boolean visitBooleanValue(Boolean value) {
+                            public Boolean visitBooleanValue(boolean value) {
                                 return value;
                             }
                         })

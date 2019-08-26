@@ -118,7 +118,7 @@ class BaseVisitorTest {
     @Test
     void visitBooleanValue() {
         Assertions.assertThat(
-                visitor().visitBooleanValue(null)
+                visitor().visitBooleanValue(false)
         )
                 .isEqualTo(null);
     }

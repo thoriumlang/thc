@@ -82,7 +82,7 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitBooleanValue(Boolean value) {
+    public T visitBooleanValue(boolean value) {
         return null;
     }
 
