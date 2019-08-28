@@ -43,8 +43,10 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
         return new Type(
                 visibility,
                 name,
-                typeParameters,
-                superType,
+                typeParameters.stream()
+                        .map(p -> (TypeParameter) p.accept(this))
+                        .collect(Collectors.toList()),
+                (TypeSpec) superType.accept(this),
                 methods.stream()
                         .map(m -> (MethodSignature) m.accept(this))
                         .collect(Collectors.toList())
@@ -57,9 +59,13 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
         return new Class(
                 visibility,
                 name,
-                typeParameters,
-                superType,
-                methods
+                typeParameters.stream()
+                        .map(p -> (TypeParameter) p.accept(this))
+                        .collect(Collectors.toList()),
+                (TypeSpec) superType.accept(this),
+                methods.stream()
+                        .map(m -> (Method) m.accept(this))
+                        .collect(Collectors.toList())
         );
     }
 
@@ -83,7 +89,12 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitTypeSingle(String type, List<TypeSpec> arguments) {
-        return new TypeSpecSimple(type, arguments);
+        return new TypeSpecSimple(
+                type,
+                arguments.stream()
+                        .map(a -> (TypeSpec) a.accept(this))
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
@@ -92,7 +103,9 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
         return new MethodSignature(
                 visibility,
                 name,
-                typeParameters,
+                typeParameters.stream()
+                        .map(p -> (TypeParameter) p.accept(this))
+                        .collect(Collectors.toList()),
                 parameters.stream()
                         .map(p -> (Parameter) p.accept(this))
                         .collect(Collectors.toList()),
@@ -102,7 +115,10 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitParameter(String name, TypeSpec type) {
-        return new Parameter(name, (TypeSpec) type.accept(this));
+        return new Parameter(
+                name,
+                (TypeSpec) type.accept(this)
+        );
     }
 
     @Override
@@ -137,47 +153,86 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
-        return new VarAssignmentValue(identifier, type, value);
+        return new VarAssignmentValue(
+                identifier,
+                (TypeSpec) type.accept(this),
+                (Value) value.accept(this)
+        );
     }
 
     @Override
     public Visitable visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
-        return new ValAssignmentValue(identifier, type, value);
+        return new ValAssignmentValue(
+                identifier,
+                (TypeSpec) type.accept(this),
+                (Value) value.accept(this)
+        );
     }
 
     @Override
     public Visitable visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
-        return new IndirectAssignmentValue(indirectValue, identifier, value);
+        return new IndirectAssignmentValue(
+                (Value) indirectValue.accept(this),
+                identifier,
+                (Value) value.accept(this)
+        );
     }
 
     @Override
     public Visitable visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
-        return new MethodCallValue(methodName, typeArguments, methodArguments);
+        return new MethodCallValue(
+                methodName,
+                typeArguments.stream()
+                        .map(a -> (TypeSpec) a.accept(this))
+                        .collect(Collectors.toList()),
+                methodArguments.stream()
+                        .map(v -> (Value) v.accept(this))
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
     public Visitable visitNestedValue(Value outer, Value inner) {
-        return new NestedValue(outer, inner);
+        return new NestedValue(
+                (Value) outer.accept(this),
+                (Value) inner.accept(this)
+        );
     }
 
     @Override
     public Visitable visitStatement(Value value, boolean isLast) {
-        return new Statement(value, isLast);
+        return new Statement(
+                (Value) value.accept(this),
+                isLast
+        );
     }
 
     @Override
     public Visitable visitMethod(MethodSignature signature, List<Statement> statements) {
-        return new Method(signature, statements);
+        return new Method(
+                (MethodSignature) signature.accept(this),
+                statements.stream()
+                        .map(s -> (Statement) s.accept(this))
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override
     public Visitable visitVarAttribute(String identifier, TypeSpec type, Value value) {
-        return new VarAttribute(identifier, type, value);
+        return new VarAttribute(
+                identifier,
+                (TypeSpec) type.accept(this),
+                (Value) value.accept(this)
+        );
     }
 
     @Override
     public Visitable visitValAttribute(String identifier, TypeSpec type, Value value) {
-        return new ValAttribute(identifier, type, value);
+        return new ValAttribute(
+                identifier,
+                (TypeSpec) type.accept(this),
+                (Value) value.accept(this)
+        );
     }
 }
