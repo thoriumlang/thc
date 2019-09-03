@@ -45,7 +45,7 @@ public class ValAttribute implements Visitable{
 
     @Override
     public String toString() {
-        return String.format("VAL %s:%s = %s", type, identifier, value);
+        return String.format("VAL %s: %s = %s", identifier, type, value);
     }
 
     @Override

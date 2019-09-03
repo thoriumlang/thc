@@ -75,6 +75,6 @@ public class ValAttributeTest {
     void _toString() {
         Assertions.assertThat(
                 new ValAttribute("identifier", TypeSpecSimple.NONE, NoneValue.INSTANCE).toString()
-        ).isEqualTo("VAL org.thoriumlang.None[]:identifier = none");
+        ).isEqualTo("VAL identifier: org.thoriumlang.None[] = none");
     }
 }

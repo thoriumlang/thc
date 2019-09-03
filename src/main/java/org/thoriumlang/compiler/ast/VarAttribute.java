@@ -45,7 +45,7 @@ public class VarAttribute implements Value {
 
     @Override
     public String toString() {
-        return String.format("VAR %s:%s = %s", type, identifier, value);
+        return String.format("VAR %s: %s = %s", identifier, type, value);
     }
 
     @Override

@@ -75,6 +75,6 @@ class VarAttributeTest {
     void _toString() {
         Assertions.assertThat(
                 new VarAttribute("identifier", TypeSpecSimple.NONE, NoneValue.INSTANCE).toString()
-        ).isEqualTo("VAR org.thoriumlang.None[]:identifier = none");
+        ).isEqualTo("VAR identifier: org.thoriumlang.None[] = none");
     }
 }
