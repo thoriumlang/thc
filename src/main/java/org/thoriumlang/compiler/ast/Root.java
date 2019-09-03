@@ -22,26 +22,44 @@ import java.util.stream.Collectors;
 public class Root implements Visitable {
     private final String namespace;
     private final List<Use> uses;
-    private final Type type;
+    private final TopLevel topLevel;
+    private final TopLevelVisitor topLevelVisitor;
 
-    public Root(String namespace, List<Use> uses, Type type) {
+    public Root(String namespace, List<Use> uses, Class topLevel) {
         if (namespace == null) {
             throw new NullPointerException("namespace cannot be null");
         }
         if (uses == null) {
             throw new NullPointerException("uses cannot be null");
         }
-        if (type == null) {
-            throw new NullPointerException("type cannot be null");
+        if (topLevel == null) {
+            throw new NullPointerException("topLevel cannot be null");
         }
         this.namespace = namespace;
         this.uses = uses;
-        this.type = type;
+        this.topLevel = topLevel;
+        this.topLevelVisitor = TopLevelClassVisitor.INSTANCE;
+    }
+
+    public Root(String namespace, List<Use> uses, Type topLevel) {
+        if (namespace == null) {
+            throw new NullPointerException("namespace cannot be null");
+        }
+        if (uses == null) {
+            throw new NullPointerException("uses cannot be null");
+        }
+        if (topLevel == null) {
+            throw new NullPointerException("topLevel cannot be null");
+        }
+        this.namespace = namespace;
+        this.uses = uses;
+        this.topLevel = topLevel;
+        this.topLevelVisitor = TopLevelTypeVisitor.INSTANCE;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitRoot(namespace, type, uses);
+        return topLevelVisitor.visit(visitor, namespace, uses, topLevel);
     }
 
     @Override
@@ -53,7 +71,7 @@ public class Root implements Visitable {
         return String.format("NAMESPACE %s%n%s%s",
                 namespace,
                 use.isEmpty() ? "" : String.format("%s%n", use),
-                type.toString()
+                topLevel.toString()
         );
     }
 
@@ -68,11 +86,39 @@ public class Root implements Visitable {
         Root root = (Root) o;
         return namespace.equals(root.namespace) &&
                 uses.equals(root.uses) &&
-                type.equals(root.type);
+                topLevel.equals(root.topLevel);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace, uses, type);
+        return Objects.hash(namespace, uses, topLevel);
+    }
+
+    private interface TopLevelVisitor {
+        <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel);
+    }
+
+    private static class TopLevelTypeVisitor implements TopLevelVisitor {
+        public static final TopLevelVisitor INSTANCE = new TopLevelTypeVisitor();
+
+        private TopLevelTypeVisitor() {
+            // singleton
+        }
+
+        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
+            return visitor.visitRoot(namespace, (Type) topLevel, uses);
+        }
+    }
+
+    private static class TopLevelClassVisitor implements TopLevelVisitor {
+        public static final TopLevelVisitor INSTANCE = new TopLevelClassVisitor();
+
+        private TopLevelClassVisitor() {
+            // singleton
+        }
+
+        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
+            return visitor.visitRoot(namespace, (Class) topLevel, uses);
+        }
     }
 }

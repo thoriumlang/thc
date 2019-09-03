@@ -20,9 +20,17 @@ import org.junit.jupiter.api.Test;
 
 class BaseVisitorTest {
     @Test
-    void visitRoot() {
+    void visitRoot_type() {
         Assertions.assertThat(
-                visitor().visitRoot(null, null, null)
+                visitor().visitRoot(null, (Type) null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitRoot_clazz() {
+        Assertions.assertThat(
+                visitor().visitRoot(null, (Class) null, null)
         )
                 .isEqualTo(null);
     }

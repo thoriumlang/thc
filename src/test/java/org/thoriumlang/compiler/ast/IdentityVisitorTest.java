@@ -22,11 +22,28 @@ import java.util.Collections;
 
 class IdentityVisitorTest {
     @Test
-    void visitRoot() {
+    void visitRoot_type() {
         Root root = new Root(
                 "namespace",
                 Collections.emptyList(), // FIXME
                 new Type(
+                        Visibility.PRIVATE,
+                        "name",
+                        Collections.emptyList(),
+                        TypeSpecSimple.OBJECT,
+                        Collections.emptyList()
+                )
+        );
+        Assertions.assertThat(root.accept(visitor()))
+                .isEqualTo(root);
+    }
+
+    @Test
+    void visitRoot_clazz() {
+        Root root = new Root(
+                "namespace",
+                Collections.emptyList(), // FIXME
+                new Class(
                         Visibility.PRIVATE,
                         "name",
                         Collections.emptyList(),

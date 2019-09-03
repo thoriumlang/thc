@@ -69,20 +69,33 @@ class RootTest {
     }
 
     @Test
-    void constructor_type() {
+    void constructor_clazz() {
         try {
-            new Root("namespace", Collections.emptyList(), null);
+            new Root("namespace", Collections.emptyList(), (Class) null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
-                    .isEqualTo("type cannot be null");
+                    .isEqualTo("topLevel cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
     }
 
     @Test
-    void accept() {
+    void constructor_type() {
+        try {
+            new Root("namespace", Collections.emptyList(), (Type) null);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("topLevel cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
+    void accept_type() {
         Assertions.assertThat(
                 new Root(
                         "namespace",
@@ -104,7 +117,29 @@ class RootTest {
     }
 
     @Test
-    void _toString() {
+    void accept_clazz() {
+        Assertions.assertThat(
+                new Root(
+                        "namespace",
+                        Collections.singletonList(new Use("from")),
+                        new Class(
+                                Visibility.NAMESPACE,
+                                "name",
+                                Collections.emptyList(),
+                                TypeSpecSimple.OBJECT,
+                                Collections.emptyList()
+                        )
+                ).accept(new BaseVisitor<String>() {
+                    @Override
+                    public String visitRoot(String namespace, Class clazz, List<Use> uses) {
+                        return namespace + ":" + uses + ":" + clazz;
+                    }
+                })
+        ).isEqualTo("namespace:[USE from : from]:NAMESPACE CLASS name[] : org.thoriumlang.Object[]:");
+    }
+
+    @Test
+    void _toString_type() {
         Assertions.assertThat(
                 new Root(
                         "namespace",
@@ -118,5 +153,22 @@ class RootTest {
                         )
                 ).toString()
         ).isEqualTo("NAMESPACE namespace\nUSE from : from\nPUBLIC TYPE name[] : org.thoriumlang.Object[]:");
+    }
+
+    @Test
+    void _toString_clazz() {
+        Assertions.assertThat(
+                new Root(
+                        "namespace",
+                        Collections.singletonList(new Use("from")),
+                        new Class(
+                                Visibility.PUBLIC,
+                                "name",
+                                Collections.emptyList(),
+                                TypeSpecSimple.OBJECT,
+                                Collections.emptyList()
+                        )
+                ).toString()
+        ).isEqualTo("NAMESPACE namespace\nUSE from : from\nPUBLIC CLASS name[] : org.thoriumlang.Object[]:");
     }
 }
