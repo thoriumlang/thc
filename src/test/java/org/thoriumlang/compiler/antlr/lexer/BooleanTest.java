@@ -18,21 +18,26 @@ package org.thoriumlang.compiler.antlr.lexer;
 import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 
 @Tag("lexer")
 class BooleanTest {
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "true", "false"
-    })
-    void validBooleans(String string) {
-        Assertions.assertThat(new Tokens(string).parse())
+    @Test
+    void validTrue() {
+        Assertions.assertThat(new Tokens("true").parse())
                 .hasSize(1)
                 .element(0)
                 .extracting(Token::getType, Token::getText)
-                .containsExactly(ThoriumLexer.BOOLEAN, string);
+                .containsExactly(ThoriumLexer.TRUE, "true");
+    }
+
+    @Test
+    void validFalse() {
+        Assertions.assertThat(new Tokens("false").parse())
+                .hasSize(1)
+                .element(0)
+                .extracting(Token::getType, Token::getText)
+                .containsExactly(ThoriumLexer.FALSE, "false");
     }
 }

@@ -150,7 +150,7 @@ class MethodDefTest {
                         token("."),
                         token("method", ThoriumLexer.IDENTIFIER),
                         token("("),
-                        token("true", ThoriumLexer.BOOLEAN),
+                        token("true", ThoriumLexer.TRUE),
                         token(")"),
                         token(";"),
                         token("}")

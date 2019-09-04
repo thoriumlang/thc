@@ -23,7 +23,8 @@ PUBLIC : 'public' ;
 NAMESPACE : 'namespace' ;
 VAL : 'val' ;
 VAR : 'var' ;
-BOOLEAN : 'true' | 'false' ;
+TRUE : 'true' ;
+FALSE : 'false' ;
 NONE : 'none' ;
 RETURN : 'return' ;
 THIS : 'this' ;
@@ -133,10 +134,10 @@ assignmentValue
     | VAR varName=IDENTIFIER ( ':' typeSpec )? ( '=' value )?
     ;
 directValue
-    : numberValue=NUMBER
-    | stringValue=STRING
-    | booleanValue=BOOLEAN
-    | noneValue=NONE
+    : NUMBER
+    | STRING
+    | TRUE | FALSE
+    | NONE
     ;
 indirectValue
     : THIS
