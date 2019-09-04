@@ -45,7 +45,7 @@ public interface Visitor<T> {
 
     T visitStringValue(String value);
 
-    T visitNumberValue(Integer value);
+    T visitNumberValue(String value);
 
     T visitBooleanValue(boolean value);
 

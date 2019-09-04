@@ -35,20 +35,20 @@ class NumberValueTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new NumberValue(1)
-                        .accept(new BaseVisitor<Integer>() {
+                new NumberValue("1")
+                        .accept(new BaseVisitor<String>() {
                             @Override
-                            public Integer visitNumberValue(Integer value) {
+                            public String visitNumberValue(String value) {
                                 return value;
                             }
                         })
-        ).isEqualTo(1);
+        ).isEqualTo("1");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new NumberValue(1).toString()
+                new NumberValue("1").toString()
         ).isEqualTo("1");
     }
 }

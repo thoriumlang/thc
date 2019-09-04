@@ -18,9 +18,9 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class NumberValue implements Value {
-    private final Integer value;
+    private final String value;
 
-    public NumberValue(Integer value) {
+    public NumberValue(String value) {
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
@@ -34,7 +34,7 @@ public class NumberValue implements Value {
 
     @Override
     public String toString() {
-        return value.toString();
+        return value;
     }
 
     @Override

@@ -62,7 +62,7 @@ class IndirectAssignmentValueTest {
     void accept() {
         Assertions.assertThat(
                 new IndirectAssignmentValue(
-                        new NumberValue(1),
+                        new NumberValue("1"),
                         "identifier",
                         NoneValue.INSTANCE
                 )

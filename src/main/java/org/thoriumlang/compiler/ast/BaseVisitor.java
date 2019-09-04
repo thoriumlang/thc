@@ -82,7 +82,7 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitNumberValue(Integer value) {
+    public T visitNumberValue(String value) {
         return null;
     }
 

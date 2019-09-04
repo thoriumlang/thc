@@ -173,7 +173,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitNumberValue() {
-        Value value = new NumberValue(1);
+        Value value = new NumberValue("1");
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value);
     }

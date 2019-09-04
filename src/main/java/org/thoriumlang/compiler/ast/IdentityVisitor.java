@@ -146,7 +146,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitNumberValue(Integer value) {
+    public Visitable visitNumberValue(String value) {
         return new NumberValue(value);
     }
 
