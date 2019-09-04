@@ -66,7 +66,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
 
     @Override
     public Visitable visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<Method> methods) {
+            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
         return new Class(
                 visibility,
                 name,
@@ -76,6 +76,9 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
                 (TypeSpec) superType.accept(this),
                 methods.stream()
                         .map(m -> (Method) m.accept(this))
+                        .collect(Collectors.toList()),
+                attributes.stream()
+                        .map(a -> (Attribute) a.accept(this))
                         .collect(Collectors.toList())
         );
     }

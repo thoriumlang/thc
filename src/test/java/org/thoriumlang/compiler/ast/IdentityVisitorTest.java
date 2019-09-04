@@ -48,6 +48,7 @@ class IdentityVisitorTest {
                         "name",
                         Collections.emptyList(),
                         TypeSpecSimple.OBJECT,
+                        Collections.emptyList(),
                         Collections.emptyList()
                 )
         );
@@ -91,6 +92,9 @@ class IdentityVisitorTest {
                                         )
                                 )
                         )
+                ),
+                Collections.singletonList(
+                        new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
                 )
         );
         Assertions.assertThat(clazz.accept(visitor()))

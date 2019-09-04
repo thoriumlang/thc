@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class ValAttribute implements Visitable{
+public class ValAttribute implements Value, Attribute {
     private final String identifier;
     private final TypeSpec type;
     private final Value value;

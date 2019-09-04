@@ -28,7 +28,7 @@ public interface Visitor<T> {
             List<MethodSignature> methods);
 
     T visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<Method> methods);
+            TypeSpec superType, List<Method> methods, List<Attribute> attributes);
 
     T visitTypeIntersection(List<TypeSpec> types);
 

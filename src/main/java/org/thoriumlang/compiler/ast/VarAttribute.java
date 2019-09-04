@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class VarAttribute implements Value {
+public class VarAttribute implements Value, Attribute {
     private final String identifier;
     private final TypeSpec type;
     private final Value value;

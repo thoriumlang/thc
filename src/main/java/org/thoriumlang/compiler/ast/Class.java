@@ -25,9 +25,10 @@ public class Class implements Visitable, TopLevel {
     private final List<TypeParameter> typeParameters;
     private final TypeSpec superType;
     private final List<Method> methods;
+    private final List<Attribute> attributes;
 
     public Class(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<Method> methods) {
+            List<Method> methods, List<Attribute> attributes) {
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -43,32 +44,40 @@ public class Class implements Visitable, TopLevel {
         if (methods == null) {
             throw new NullPointerException("methods cannot be null");
         }
+        if (attributes == null) {
+            throw new NullPointerException("attributes cannot be null");
+        }
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
         this.superType = superType;
         this.methods = methods;
+        this.attributes = attributes;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitClass(visibility, name, typeParameters, superType, methods);
+        return visitor.visitClass(visibility, name, typeParameters, superType, methods, attributes);
     }
 
     @Override
     public String toString() {
-        String method = methods.stream()
+        String serializedMethods = methods.stream()
                 .map(Method::toString)
                 .collect(Collectors.joining(String.format("%n")));
+        String serializedAttributes = attributes.stream()
+                .map(Attribute::toString)
+                .collect(Collectors.joining(String.format("%n")));
 
-        return String.format("%s CLASS %s[%s] : %s:%s",
+        return String.format("%s CLASS %s[%s] : %s:%s%s",
                 visibility,
                 name,
                 typeParameters.stream()
                         .map(TypeParameter::toString)
                         .collect(Collectors.joining(", ")),
                 superType.toString(),
-                method.isEmpty() ? "" : String.format("%n%s", method)
+                serializedAttributes.isEmpty() ? "" : String.format("%n%s", serializedAttributes),
+                serializedMethods.isEmpty() ? "" : String.format("%n%s", serializedMethods)
         );
     }
 
@@ -85,11 +94,12 @@ public class Class implements Visitable, TopLevel {
                 name.equals(aClass.name) &&
                 typeParameters.equals(aClass.typeParameters) &&
                 superType.equals(aClass.superType) &&
-                methods.equals(aClass.methods);
+                methods.equals(aClass.methods) &&
+                attributes.equals(aClass.attributes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(visibility, name, typeParameters, superType, methods);
+        return Objects.hash(visibility, name, typeParameters, superType, methods, attributes);
     }
 }

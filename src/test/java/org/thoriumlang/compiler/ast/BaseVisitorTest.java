@@ -54,7 +54,7 @@ class BaseVisitorTest {
     @Test
     void visitClass() {
         Assertions.assertThat(
-                visitor().visitClass(null, null, null, null, null)
+                visitor().visitClass(null, null, null, null, null, null)
         )
                 .isEqualTo(null);
     }

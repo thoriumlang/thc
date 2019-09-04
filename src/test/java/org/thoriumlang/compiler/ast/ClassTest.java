@@ -27,7 +27,13 @@ class ClassTest {
     @Test
     void constructor_visibility() {
         try {
-            new Class(null, "name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Class(
+                    null,
+                    "name",
+                    Collections.emptyList(),
+                    TypeSpecSimple.OBJECT,
+                    Collections.emptyList(),
+                    Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,7 +46,13 @@ class ClassTest {
     @Test
     void constructor_name() {
         try {
-            new Class(Visibility.PUBLIC, null, Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Class(
+                    Visibility.PUBLIC,
+                    null,
+                    Collections.emptyList(),
+                    TypeSpecSimple.OBJECT,
+                    Collections.emptyList(),
+                    Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -53,7 +65,13 @@ class ClassTest {
     @Test
     void constructor_typeParameters() {
         try {
-            new Class(Visibility.PUBLIC, "name", null, TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Class(
+                    Visibility.PUBLIC,
+                    "name",
+                    null,
+                    TypeSpecSimple.OBJECT,
+                    Collections.emptyList(),
+                    Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -66,7 +84,13 @@ class ClassTest {
     @Test
     void constructor_implements() {
         try {
-            new Class(Visibility.PUBLIC, "name", Collections.emptyList(), null, Collections.emptyList());
+            new Class(
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    null,
+                    Collections.emptyList(),
+                    Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -79,11 +103,36 @@ class ClassTest {
     @Test
     void constructor_methods() {
         try {
-            new Class(Visibility.PUBLIC, "name", Collections.emptyList(), TypeSpecSimple.OBJECT, null);
+            new Class(
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    TypeSpecSimple.OBJECT,
+                    null,
+                    Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("methods cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
+    void constructor_attributes() {
+        try {
+            new Class(
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    TypeSpecSimple.OBJECT,
+                    Collections.emptyList(),
+                    null);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("attributes cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -113,25 +162,35 @@ class ClassTest {
                                                 )
                                         )
                                 )
+                        ),
+                        Collections.singletonList(
+                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
                     public String visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
-                            TypeSpec superType, List<Method> methods) {
-                        return String.format("%s:%s:[%s]:%s:{ %s }",
+                            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
+                        return String.format("%s:%s:[%s]:%s:{ %s ; %s }",
                                 visibility,
                                 name,
                                 typeParameters.stream()
                                         .map(TypeParameter::toString)
                                         .collect(Collectors.joining(", ")),
                                 superType,
+                                attributes.stream()
+                                        .map(Attribute::toString)
+                                        .collect(Collectors.joining(", ")),
                                 methods.stream()
                                         .map(Method::toString)
                                         .collect(Collectors.joining(", "))
                         );
                     }
                 })
-        ).isEqualTo("PUBLIC:name:[A]:org.thoriumlang.Object[]:{ PRIVATE name [] () : type[] { none:true } }");
+        ).isEqualTo("PUBLIC:name:[A]:org.thoriumlang.Object[]:{ " +
+                "VAR attribute: org.thoriumlang.None[] = none ; " +
+                "PRIVATE name [] () : type[] { none:true } " +
+                "}"
+        );
     }
 
     @Test
@@ -161,10 +220,14 @@ class ClassTest {
                                                 )
                                         )
                                 )
+                        ),
+                        Collections.singletonList(
+                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
                         )
                 ).toString()
-        ).isEqualTo(
-                "PUBLIC CLASS name[A, B] : org.thoriumlang.Object[]:\nPRIVATE name [] () : returnType[] { true:false }"
+        ).isEqualTo("PUBLIC CLASS name[A, B] : org.thoriumlang.Object[]:\n" +
+                "VAR attribute: org.thoriumlang.None[] = none\n" +
+                "PRIVATE name [] () : returnType[] { true:false }"
         );
     }
 
@@ -192,9 +255,14 @@ class ClassTest {
                                                 )
                                         )
                                 )
+                        ),
+                        Collections.singletonList(
+                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
                         )
                 ).toString()
-        ).isEqualTo(
-                "NAMESPACE CLASS name[] : org.thoriumlang.Object[]:\nPRIVATE name [] () : returnType[] { true:false }");
+        ).isEqualTo("NAMESPACE CLASS name[] : org.thoriumlang.Object[]:\n" +
+                "VAR attribute: org.thoriumlang.None[] = none\n" +
+                "PRIVATE name [] () : returnType[] { true:false }"
+        );
     }
 }

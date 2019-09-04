@@ -127,6 +127,7 @@ class RootTest {
                                 "name",
                                 Collections.emptyList(),
                                 TypeSpecSimple.OBJECT,
+                                Collections.emptyList(),
                                 Collections.emptyList()
                         )
                 ).accept(new BaseVisitor<String>() {
@@ -166,6 +167,7 @@ class RootTest {
                                 "name",
                                 Collections.emptyList(),
                                 TypeSpecSimple.OBJECT,
+                                Collections.emptyList(),
                                 Collections.emptyList()
                         )
                 ).toString()
