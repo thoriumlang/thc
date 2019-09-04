@@ -37,7 +37,8 @@ class IntegrationTest {
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/type2",
-            "/org/thoriumlang/compiler/tests/use"
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class"
     })
     void ast(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path);

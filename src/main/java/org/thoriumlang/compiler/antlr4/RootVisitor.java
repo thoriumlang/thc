@@ -18,8 +18,10 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.Use;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
@@ -31,13 +33,27 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
 
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
-        return new Root(
-                namespace,
-                ctx.use().stream()
-                        .map(u -> u.accept(UseVisitor.INSTANCE))
-                        .flatMap(Collection::stream)
-                        .collect(Collectors.toList()),
-                ctx.typeDef().accept(TypeDefVisitor.INSTANCE)
-        );
+        if (ctx.typeDef() != null) {
+            return new Root(
+                    namespace,
+                    visitUse(ctx),
+                    ctx.typeDef().accept(TypeDefVisitor.INSTANCE)
+            );
+        }
+        if (ctx.classDef() != null) {
+            return new Root(
+                    namespace,
+                    visitUse(ctx),
+                    ctx.classDef().accept(ClassDefVisitor.INSTANCE)
+            );
+        }
+        throw new IllegalStateException("No root node found");
+    }
+
+    private List<Use> visitUse(ThoriumParser.RootContext ctx) {
+        return ctx.use().stream()
+                .map(u -> u.accept(UseVisitor.INSTANCE))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }

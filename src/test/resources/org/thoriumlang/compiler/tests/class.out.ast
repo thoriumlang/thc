@@ -1,0 +1,15 @@
+NAMESPACE org.thoriumlang.compiler.tests
+NAMESPACE CLASS Classname[] : org.thoriumlang.Object[]:
+VAL attribute: Type[] = none
+VAR noneVar: Number[] = none
+VAR pi: Number[] = 3.14
+VAR hello: String[] = "Hello"
+VAR t: Boolean[] = true
+VAR f: Boolean[] = false
+VAR th: Number[] = this
+VAR ref: Number[] = identifier
+VAR methodCall: Number[] = methodName[]()
+VAR nested: Number[] = a.b
+VAR nestedCall: Number[] = a.b[]()
+VAR attrOnDirect: Number[] = 3.a
+VAR pi2: Number[] = 3.14.times[](2)

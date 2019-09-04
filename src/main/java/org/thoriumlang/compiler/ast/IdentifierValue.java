@@ -18,6 +18,8 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class IdentifierValue implements Value {
+    public static final Value THIS = new IdentifierValue("this");
+
     private final String value;
 
     public IdentifierValue(String value) {

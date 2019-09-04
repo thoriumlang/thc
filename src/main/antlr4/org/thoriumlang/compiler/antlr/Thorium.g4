@@ -141,9 +141,12 @@ directValue
     ;
 indirectValue
     : THIS
-    | IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
-    | indirectValue ( '.' | '?.' ) IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
-    | directValue ( '.' | '?.' ) IDENTIFIER ( ( '[' typeArguments ']' )? '(' methodArguments? ')' )?
+    | IDENTIFIER
+    | methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
+    | indirectValue ( '.' | '?.' ) IDENTIFIER
+    | indirectValue ( '.' | '?.' ) methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
+    | directValue ( '.' | '?.' ) IDENTIFIER
+    | directValue ( '.' | '?.' ) methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
     ;
 
 methodArguments
