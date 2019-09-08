@@ -19,14 +19,18 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Method;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NoneValue;
+import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
+import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     public static final MethodDefVisitor INSTANCE = new MethodDefVisitor();
+    private static final Statement NONE_LAST_STATEMENT = new Statement(NoneValue.INSTANCE, true);
 
     private MethodDefVisitor() {
         // nothing
@@ -48,7 +52,14 @@ public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                 TypeSpecSimple.NONE :
                                 ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE)
                 ),
-                Collections.emptyList()
+                Lists.append(
+                        Lists.withoutLast(ctx.statement()).stream()
+                                .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_NOT_LAST))
+                                .collect(Collectors.toList()),
+                        Lists.last(ctx.statement())
+                                .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_LAST))
+                                .orElse(NONE_LAST_STATEMENT)
+                )
         );
     }
 }

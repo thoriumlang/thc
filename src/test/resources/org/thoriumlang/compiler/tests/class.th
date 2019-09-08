@@ -16,4 +16,19 @@ class Classname {
     public method1(): None {}
     private method2(p1: String, p2: Integer): Integer {}
     private method3[T](): Integer {}
+    private method4[T](): Integer { none; }
+    private method5[T](): Integer { none; none; }
+    private method6[T](): Integer { return none; none; }
+    private method7[T](): Integer { 1; }
+    private fibo(i: Integer) {
+        If(i.eq(0))
+            .then(0)
+            .else(
+                If(1)
+                    .then(1)
+                    .else(
+                        fibo(i.minus(1)).plus(fibo(i.minus(2)))
+                    )
+            );
+    }
 }
