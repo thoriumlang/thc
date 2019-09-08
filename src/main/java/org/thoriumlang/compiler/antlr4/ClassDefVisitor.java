@@ -41,7 +41,11 @@ public class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                 ctx.IDENTIFIER().getSymbol().getText(),
                 typeParameters(ctx.typeParameterDef()),
                 implementsSpec(ctx.implementsSpec()),
-                Collections.emptyList(),
+                ctx.methodDef() == null ?
+                        Collections.emptyList() :
+                        ctx.methodDef().stream()
+                                .map(m -> m.accept(MethodDefVisitor.INSTANCE))
+                                .collect(Collectors.toList()),
                 ctx.attributeDef() == null ?
                         Collections.emptyList() :
                         ctx.attributeDef().stream()
