@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.output.th;
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.TypeSpec;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     public String visitTypeIntersection(List<TypeSpec> types) {
         return String.format("(%s)",
                 types.stream()
+                        .sorted(Comparator.comparing(Object::toString))
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(" | "))
         );
@@ -35,6 +37,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     public String visitTypeUnion(List<TypeSpec> types) {
         return String.format("(%s)",
                 types.stream()
+                        .sorted(Comparator.comparing(Object::toString))
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(" & "))
         );

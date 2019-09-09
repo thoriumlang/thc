@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Tag("integration")
@@ -41,7 +42,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/class"
     })
     void ast(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path);
+        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
         Assertions
                 .assertThat(
                         new AST(sourceFile.inputStream(), sourceFile.namespace())
@@ -58,10 +59,10 @@ class IntegrationTest {
                 );
     }
 
-    private SourceFile sourceFile(String path) throws URISyntaxException, IOException {
+    private SourceFile sourceFile(String path, Function<String, String> filenameGenerator) throws URISyntaxException, IOException {
         return new SourceFiles(
                 Paths.get(IntegrationTest.class.getResource("/").toURI()),
-                (p, bfa) -> p.getFileName().toString().equals(sourceFilename(path))
+                (p, bfa) -> p.getFileName().toString().equals(filenameGenerator.apply(path))
         ).files().get(0);
     }
 
@@ -76,7 +77,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/use"
     })
     void thorium(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path);
+        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
         Assertions
                 .assertThat(
                         new ThWalker(
@@ -92,5 +93,34 @@ class IntegrationTest {
                                 .lines()
                                 .collect(Collectors.joining("\n"))
                 );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
+            "/org/thoriumlang/compiler/tests/use"
+    })
+    void generatedThorium(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);
+        Assertions
+                .assertThat(
+                        new ThWalker(
+                                new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
+                        ).walk()
+                )
+                .isEqualTo(
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        IntegrationTest.class.getResourceAsStream(path + ".out.th")
+                                )
+                        )
+                                .lines()
+                                .collect(Collectors.joining("\n"))
+                );
+    }
+
+    private String generatedSourceFilename(String path) {
+        return path.substring(path.lastIndexOf("/") + 1) + ".out.th";
     }
 }

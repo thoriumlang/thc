@@ -1,16 +1,16 @@
 // namespace org.thoriumlang.compiler.tests
 
 namespace type MyType : org.thoriumlang.Object {
-  public a(): (D | org.thoriumlang.None | C | (B & (A | org.thoriumlang.None)));
+  public a(): (C | D | org.thoriumlang.None | (B & (A | org.thoriumlang.None)));
   namespace b(): (A & B);
-  private c(): (C & (A | org.thoriumlang.None));
-  private d(): (A | org.thoriumlang.None);
-  private e(): ((A & B) | org.thoriumlang.None);
-  private f(): (A | org.thoriumlang.None);
-  private g(): (A & B & C & D);
-  private h(): (A | B | C | D);
-  private i(i: Integer): None;
-  private j(i: (Integer | org.thoriumlang.None)): None;
-  private k(i: (Integer | org.thoriumlang.None), j: (A & (B | org.thoriumlang.None))): None;
-  private l(i: (Integer | None)): (A | org.thoriumlang.None);
+  namespace c(): (C & (A | org.thoriumlang.None));
+  namespace d(): (A | org.thoriumlang.None);
+  namespace e(): (org.thoriumlang.None | (A & B));
+  namespace f(): (A | org.thoriumlang.None);
+  namespace g(): (A & B & C & D);
+  namespace h(): (A | B | C | D);
+  namespace i(i: Integer): None;
+  namespace j(i: (Integer | org.thoriumlang.None)): None;
+  namespace k(i: (Integer | org.thoriumlang.None), j: (A & (B | org.thoriumlang.None))): None;
+  namespace l(i: (Integer | None)): (A | org.thoriumlang.None);
 }

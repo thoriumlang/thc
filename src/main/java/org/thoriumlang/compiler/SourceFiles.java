@@ -29,9 +29,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SourceFiles {
-    private static final BiPredicate<Path, BasicFileAttributes> thRootMatcher = (path, basicFileAttributes) ->
+    private static final BiPredicate<Path, BasicFileAttributes> thSourcesMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th");
-    private static final BiPredicate<Path, BasicFileAttributes> thSourceMatcher = (path, basicFileAttributes) ->
+    private static final BiPredicate<Path, BasicFileAttributes> thRootMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches("\\.throot");
 
     private final Path root;
@@ -56,7 +56,7 @@ public class SourceFiles {
         try (Stream<Path> sources = Files.find(
                 root,
                 999,
-                (p, bfa) -> thRootMatcher.test(p, bfa) && filter.test(p, bfa)
+                (p, bfa) -> thSourcesMatcher.test(p, bfa) && filter.test(p, bfa)
         )) {
             return sources
                     .map(p -> new SourceFile(
@@ -76,14 +76,15 @@ public class SourceFiles {
         if (!thRoots.contains(path.toString())) {
             return namespace(path.getParent(), fullPath, thRoots);
         }
-        return fullPath.substring(path.toString().length())
+        return fullPath
+                .substring(0, fullPath.lastIndexOf('/'))
+                .substring(path.toString().length())
                 .replace(File.separator, ".")
-                .replaceFirst("^\\.", "")
-                .replaceFirst("\\.[^\\.]+\\.th$", "");
+                .replaceFirst("^\\.", "");
     }
 
     private List<String> findThRoots() throws IOException {
-        try (Stream<Path> paths = Files.find(root, 999, thSourceMatcher)) {
+        try (Stream<Path> paths = Files.find(root, 999, thRootMatcher)) {
             return paths
                     .map(p -> p.getParent().toString())
                     .collect(Collectors.toList());

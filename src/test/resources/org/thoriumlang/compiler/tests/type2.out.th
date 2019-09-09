@@ -1,5 +1,5 @@
 // namespace org.thoriumlang.compiler.tests
 
 public type MyType[A, B] : Parent[o.A, B] {
-  private add[T, U](a: T): T;
+  namespace add[T, U](a: T): T;
 }
