@@ -37,7 +37,7 @@ class TypeVisitor extends BaseVisitor<String> {
     public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
             List<MethodSignature> methods) {
         return String.format(
-                "%s type %s%s : %s {%n%s%n}",
+                "%s type %s%s : %s {%s}",
                 visibility.name().toLowerCase(),
                 name,
                 typeParameters.isEmpty() ?
@@ -46,10 +46,14 @@ class TypeVisitor extends BaseVisitor<String> {
                                 .map(TypeParameter::toString)
                                 .collect(Collectors.joining(", ", "[", "]")),
                 superType.accept(typeSpecVisitor),
-                methods.stream()
-                        .map(m -> m.accept(methodSignatureVisitor))
-                        .map(Indent.INSTANCE)
-                        .collect(Collectors.joining("\n"))
+                methods.isEmpty() ?
+                        "\n" :
+                        String.format("%n%s%n",
+                                methods.stream()
+                                        .map(m -> m.accept(methodSignatureVisitor))
+                                        .map(Indent.INSTANCE)
+                                        .collect(Collectors.joining("\n"))
+                        )
         );
     }
 }
