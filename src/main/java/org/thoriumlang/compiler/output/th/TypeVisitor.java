@@ -20,52 +20,36 @@ import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Visibility;
-import org.thoriumlang.compiler.tree.BasePrintableWrapper;
-import org.thoriumlang.compiler.tree.Node;
-import org.thoriumlang.compiler.tree.PrintableWrapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeVisitor extends BaseVisitor<String> {
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final MethodSignatureVisitor methodSignatureVisitor;
+
+    TypeVisitor(TypeSpecVisitor typeSpecVisitor, MethodSignatureVisitor methodSignatureVisitor) {
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.methodSignatureVisitor = methodSignatureVisitor;
+    }
+
     @Override
     public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
             List<MethodSignature> methods) {
-        Node<PrintableWrapper> typeNode = new Node<>(
-                new BasePrintableWrapper() {
-                    @Override
-                    public String startString() {
-                        return String.format(
-                                "%s type %s%s : %s {",
-                                visibility.name().toLowerCase(),
-                                name,
-                                typeParameters.isEmpty() ?
-                                        "" :
-                                        typeParameters.stream()
-                                                .map(TypeParameter::toString)
-                                                .collect(Collectors.joining(", ", "[", "]")),
-                                superType.accept(new TypeSpecVisitor())
-                        );
-                    }
-
-                    @Override
-                    public String toString() {
-                        if (methods.isEmpty()) {
-                            return startString() + endString();
-                        }
-                        return "";
-                    }
-
-                    @Override
-                    public String endString() {
-                        return "}";
-                    }
-                }
+        return String.format(
+                "%s type %s%s : %s {%n%s%n}",
+                visibility.name().toLowerCase(),
+                name,
+                typeParameters.isEmpty() ?
+                        "" :
+                        typeParameters.stream()
+                                .map(TypeParameter::toString)
+                                .collect(Collectors.joining(", ", "[", "]")),
+                superType.accept(typeSpecVisitor),
+                methods.stream()
+                        .map(m -> m.accept(methodSignatureVisitor))
+                        .map(Indent.INSTANCE)
+                        .collect(Collectors.joining("\n"))
         );
-
-        MethodSignatureVisitor methodSignatureVisitor = new MethodSignatureVisitor(typeNode);
-        methods.forEach(m -> m.accept(methodSignatureVisitor));
-
-        return typeNode.toString();
     }
 }

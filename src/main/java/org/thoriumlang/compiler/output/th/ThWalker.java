@@ -20,12 +20,27 @@ import org.thoriumlang.compiler.output.Walker;
 
 public class ThWalker implements Walker<String> {
     private final Root root;
+    private final RootVisitor visitor;
 
     public ThWalker(Root root) {
         this.root = root;
+
+        TypeSpecVisitor typeSpecVisitor = new TypeSpecVisitor();
+        this.visitor = new RootVisitor(
+                new UseVisitor(),
+                new TypeVisitor(
+                        typeSpecVisitor,
+                        new MethodSignatureVisitor(
+                                new TypeSpecVisitor(),
+                                new TypeParameterVisitor(),
+                                new ParameterVisitor(typeSpecVisitor)
+                        )
+                )
+        );
     }
 
+    @Override
     public String walk() {
-        return root.accept(new RootVisitor());
+        return root.accept(visitor);
     }
 }

@@ -20,43 +20,37 @@ import org.thoriumlang.compiler.ast.Parameter;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Visibility;
-import org.thoriumlang.compiler.tree.BasePrintableWrapper;
-import org.thoriumlang.compiler.tree.Node;
-import org.thoriumlang.compiler.tree.PrintableWrapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodSignatureVisitor extends BaseVisitor<String> {
-    private final Node<PrintableWrapper> parent;
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final TypeParameterVisitor typeParameterVisitor;
+    private final ParameterVisitor parameterVisitor;
 
-    MethodSignatureVisitor(Node<PrintableWrapper> parent) {
-        this.parent = parent;
+    MethodSignatureVisitor(TypeSpecVisitor typeSpecVisitor, TypeParameterVisitor typeParameterVisitor,
+            ParameterVisitor parameterVisitor) {
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.typeParameterVisitor = typeParameterVisitor;
+        this.parameterVisitor = parameterVisitor;
     }
 
     @Override
     public String visitMethodSignature(Visibility visibility, String name,
             List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
-
-        return new Node<>(
-                parent,
-                new BasePrintableWrapper() {
-                    @Override
-                    public String toString() {
-                        return String.format("%s %s%s(%s): %s;",
-                                visibility.name().toLowerCase(),
-                                name,
-                                typeParameters.isEmpty() ?
-                                        "" :
-                                        typeParameters.stream()
-                                                .map(p -> p.accept(new TypeParameterVisitor()))
-                                                .collect(Collectors.joining(", ", "[", "]")),
-                                parameters.stream()
-                                        .map(p -> p.accept(new ParameterVisitor()))
-                                        .collect(Collectors.joining(", ")),
-                                returnType.accept(new TypeSpecVisitor()));
-                    }
-                }
-        ).toString();
+        return String.format("%s %s%s(%s): %s;",
+                visibility.name().toLowerCase(),
+                name,
+                typeParameters.isEmpty() ?
+                        "" :
+                        typeParameters.stream()
+                                .map(p -> p.accept(typeParameterVisitor))
+                                .collect(Collectors.joining(", ", "[", "]")),
+                parameters.stream()
+                        .map(p -> p.accept(parameterVisitor))
+                        .collect(Collectors.joining(", ")),
+                returnType.accept(typeSpecVisitor)
+        );
     }
 }

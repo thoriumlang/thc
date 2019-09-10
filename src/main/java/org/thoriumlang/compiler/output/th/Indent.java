@@ -15,19 +15,22 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-class UseVisitorTest {
-    @Test
-    void visitUse() {
-        Assertions.assertThat(new UseVisitor().visitUse("from", "to"))
-                .isEqualTo("use from : to;");
+class Indent implements Function<String, String> {
+    public static final Indent INSTANCE = new Indent("  ");
+    private final String level;
+
+    Indent(String indent) {
+        this.level = indent;
     }
 
-    @Test
-    void visitUseWildcard() {
-        Assertions.assertThat(new UseVisitor().visitUse("from", "*"))
-                .isEqualTo("use from;");
+    @Override
+    public String apply(String string) {
+        return Arrays.stream(string.split("\n"))
+                .map(s -> level + s)
+                .collect(Collectors.joining("\n"));
     }
 }
