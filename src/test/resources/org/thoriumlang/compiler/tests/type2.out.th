@@ -2,4 +2,5 @@
 
 public type MyType[A, B] : Parent[o.A, B] {
   namespace add[T, U](a: T): T;
+  namespace add[T, U](a: T[U]): T[U];
 }
