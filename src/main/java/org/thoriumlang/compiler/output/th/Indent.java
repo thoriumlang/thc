@@ -16,10 +16,10 @@
 package org.thoriumlang.compiler.output.th;
 
 import java.util.Arrays;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-class Indent implements Function<String, String> {
+class Indent implements UnaryOperator<String> {
     public static final Indent INSTANCE = new Indent("  ");
     private final String level;
 
