@@ -1,0 +1,28 @@
+NAMESPACE org.thoriumlang.compiler.tests
+NAMESPACE CLASS Class[T] : S[]:
+PRIVATE emptyMethod [] () : org.thoriumlang.None[] { none:true }
+PRIVATE method1 [] () : org.thoriumlang.None[] { true:true }
+PRIVATE method2 [] () : org.thoriumlang.None[] { false:true }
+PRIVATE method3 [] () : org.thoriumlang.None[] { "string":true }
+PRIVATE method4 [] () : org.thoriumlang.None[] { VAL org.thoriumlang.Object[]:a = 1:true }
+PRIVATE method5 [] () : org.thoriumlang.None[] { VAR org.thoriumlang.Object[]:a = 1:true }
+PRIVATE method6 [] () : org.thoriumlang.None[] { VAL org.thoriumlang.Object[]:a = 1:true }
+PRIVATE method7 [] () : org.thoriumlang.None[] { a[]():true }
+PRIVATE method8 [] () : org.thoriumlang.None[] { a.a[]():true }
+PRIVATE method9 [] () : org.thoriumlang.None[] { a.a:true }
+PRIVATE method10 [] () : org.thoriumlang.None[] { a:true }
+PRIVATE method11 [] () : org.thoriumlang.None[] { VAL Type[]:attribute = s:true }
+PRIVATE method12 [] () : org.thoriumlang.None[] { VAR Number[]:noneVar = none:true }
+PRIVATE method13 [] () : org.thoriumlang.None[] { VAR Number[]:pi = 3.14:true }
+PRIVATE method14 [] () : org.thoriumlang.None[] { VAR String[]:hello = "Hello":true }
+PRIVATE method15 [] () : org.thoriumlang.None[] { VAR Boolean[]:t = true:true }
+PRIVATE method16 [] () : org.thoriumlang.None[] { VAR Boolean[]:f = false:true }
+PRIVATE method17 [] () : org.thoriumlang.None[] { VAR Number[]:th = this:true }
+PRIVATE method18 [] () : org.thoriumlang.None[] { VAR Number[]:ref = identifier:true }
+PRIVATE method19 [] () : org.thoriumlang.None[] { VAR Number[]:methodCall = methodName[]():true }
+PRIVATE method20 [] () : org.thoriumlang.None[] { VAR Number[]:nested = a.b:true }
+PRIVATE method21 [] () : org.thoriumlang.None[] { VAR Number[]:nestedCall = a.b[]():true }
+PRIVATE method22 [] () : org.thoriumlang.None[] { VAR Number[]:attrOnDirect = 3.a:true }
+PRIVATE method23 [] () : org.thoriumlang.None[] { VAR Number[]:pi2 = 3.14.times[](2):true }
+PRIVATE method24 [] () : org.thoriumlang.None[] { 1:true }
+PRIVATE method25 [] () : org.thoriumlang.None[] { INDIRECT a.a = 1:true }

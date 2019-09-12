@@ -1,0 +1,78 @@
+class Class[T]: S {
+    emptyMethod() {}
+    method1() {
+      true;
+    }
+    method2() {
+      false;
+    }
+    method3() {
+      "string";
+    }
+    method4() {
+      a = 1;
+    }
+    method5() {
+      var a = 1;
+    }
+    method6() {
+      val a = 1;
+    }
+    method7() {
+      a();
+    }
+    method8() {
+      a.a();
+    }
+    method9() {
+      a.a;
+    }
+    method10() {
+      a;
+    }
+    method11() {
+      val attribute: Type = s;
+    }
+    method12() {
+      var noneVar: Number = none;
+    }
+    method13() {
+      var pi: Number = 3.14;
+    }
+    method14() {
+      var hello: String = "Hello";
+    }
+    method15() {
+      var t: Boolean = true;
+    }
+    method16() {
+      var f: Boolean = false;
+    }
+    method17() {
+      var th: Number = this;
+    }
+    method18() {
+      var ref: Number = identifier;
+    }
+    method19() {
+      var methodCall: Number = methodName();
+    }
+    method20() {
+      var nested: Number = a.b;
+    }
+    method21() {
+      var nestedCall: Number = a.b();
+    }
+    method22() {
+      var attrOnDirect: Number = 3.a;
+    }
+    method23() {
+      var pi2: Number = 3.14.times(2);
+    }
+    method24() {
+      (1);
+    }
+    method25() {
+      a.a = 1;
+    }
+}

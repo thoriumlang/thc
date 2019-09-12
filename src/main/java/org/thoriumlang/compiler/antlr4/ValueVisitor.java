@@ -19,13 +19,17 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.BooleanValue;
 import org.thoriumlang.compiler.ast.IdentifierValue;
+import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.MethodCallValue;
 import org.thoriumlang.compiler.ast.NestedValue;
 import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.NumberValue;
 import org.thoriumlang.compiler.ast.StringValue;
 import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.Value;
+import org.thoriumlang.compiler.ast.VarAssignmentValue;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +57,7 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
         }
 
         if (ctx.assignmentValue() != null) {
-            ctx.assignmentValue().accept(this);
+            return ctx.assignmentValue().accept(this);
         }
 
         throw new IllegalStateException("No actual value found");
@@ -61,7 +65,31 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
 
     @Override
     public Value visitAssignmentValue(ThoriumParser.AssignmentValueContext ctx) {
-        return NoneValue.INSTANCE;
+        if (ctx.indirectValue() != null) {
+            return new IndirectAssignmentValue(
+                    ctx.indirectValue().accept(ValueVisitor.INSTANCE),
+                    ctx.IDENTIFIER().getSymbol().getText(),
+                    ctx.value().accept(ValueVisitor.INSTANCE)
+            );
+        }
+        if (ctx.VAR() != null) {
+            return new VarAssignmentValue(
+                    ctx.IDENTIFIER().getSymbol().getText(),
+                    ctx.typeSpec() == null ?
+                            TypeSpecSimple.OBJECT :
+                            ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                    ctx.value() == null ?
+                            NoneValue.INSTANCE :
+                            ctx.value().accept(ValueVisitor.INSTANCE)
+            );
+        }
+        return new ValAssignmentValue(
+                ctx.IDENTIFIER().getSymbol().getText(),
+                ctx.typeSpec() == null ?
+                        TypeSpecSimple.OBJECT :
+                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                ctx.value().accept(ValueVisitor.INSTANCE)
+        );
     }
 
     @Override

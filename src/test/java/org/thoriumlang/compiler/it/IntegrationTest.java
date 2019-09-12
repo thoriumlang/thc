@@ -39,7 +39,9 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/type2",
             "/org/thoriumlang/compiler/tests/use",
-            "/org/thoriumlang/compiler/tests/class"
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes"
     })
     void ast(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::sourceFilename);

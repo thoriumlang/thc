@@ -40,7 +40,7 @@ public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     public Method visitMethodDef(ThoriumParser.MethodDefContext ctx) {
         return new Method(
                 new MethodSignature(
-                        Visibility.valueOf(ctx.visibility.getText().toUpperCase()),
+                        visibility(ctx),
                         ctx.IDENTIFIER().getSymbol().getText(),
                         ctx.typeParameterDef() == null ?
                                 Collections.emptyList() :
@@ -61,5 +61,11 @@ public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                 .orElse(NONE_LAST_STATEMENT)
                 )
         );
+    }
+
+    private Visibility visibility(ThoriumParser.MethodDefContext ctx) {
+        return ctx.visibility == null ?
+                Visibility.PRIVATE :
+                Visibility.valueOf(ctx.visibility.getText().toUpperCase());
     }
 }
