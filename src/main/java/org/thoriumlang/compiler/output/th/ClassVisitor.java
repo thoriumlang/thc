@@ -15,29 +15,33 @@
  */
 package org.thoriumlang.compiler.output.th;
 
+import org.thoriumlang.compiler.ast.Attribute;
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.Method;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-class TypeVisitor extends BaseVisitor<String> {
+class ClassVisitor extends BaseVisitor<String> {
     private final TypeSpecVisitor typeSpecVisitor;
-    private final MethodSignatureVisitor methodSignatureVisitor;
+    private final AttributeVisitor attributeVisitor;
+    private final MethodVisitor methodVisitor;
 
-    TypeVisitor(TypeSpecVisitor typeSpecVisitor, MethodSignatureVisitor methodSignatureVisitor) {
+    ClassVisitor(TypeSpecVisitor typeSpecVisitor, AttributeVisitor attributeVisitor, MethodVisitor methodVisitor) {
         this.typeSpecVisitor = typeSpecVisitor;
-        this.methodSignatureVisitor = methodSignatureVisitor;
+        this.attributeVisitor = attributeVisitor;
+        this.methodVisitor = methodVisitor;
     }
 
     @Override
-    public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<MethodSignature> methods) {
+    public String visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
+            List<Method> methods, List<Attribute> attributes) {
         return String.format(
-                "%s type %s%s : %s {%s}",
+                "%s class %s%s : %s {%s}",
                 visibility.name().toLowerCase(),
                 name,
                 typeParameters.isEmpty() ?
@@ -46,15 +50,20 @@ class TypeVisitor extends BaseVisitor<String> {
                                 .map(TypeParameter::toString)
                                 .collect(Collectors.joining(", ", "[", "]")),
                 superType.accept(typeSpecVisitor),
-                methods.isEmpty() ?
-                        "\n" :
-                        String.format("%n%s%n",
-                                methods.stream()
-                                        .map(m -> m.accept(methodSignatureVisitor))
-                                        .map(s -> s + ";")
+                Stream
+                        .of(
+                                attributes.stream()
+                                        .map(a -> a.accept(attributeVisitor))
                                         .map(Indent.INSTANCE)
-                                        .collect(Collectors.joining("\n"))
+                                        .map(s -> s + ";")
+                                        .collect(Collectors.joining("\n")),
+                                methods.stream()
+                                        .map(m -> m.accept(methodVisitor))
+                                        .map(Indent.INSTANCE)
+                                        .collect(Collectors.joining("\n\n"))
                         )
+                        .filter(s -> !s.isEmpty())
+                        .collect(Collectors.joining("\n\n", "\n", "\n"))
         );
     }
 }

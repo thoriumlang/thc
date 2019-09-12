@@ -1,0 +1,55 @@
+// namespace org.thoriumlang.compiler.tests
+
+namespace class Classname : org.thoriumlang.Object {
+  val attribute: Type = none;
+  var noneVar: Number = none;
+  var pi: Number = 3.14;
+  var hello: String = "Hello";
+  var t: Boolean = true;
+  var f: Boolean = false;
+  var th: Number = this;
+  var ref: Number = identifier;
+  var methodCall: Number = methodName();
+  var nested: Number = a.b;
+  var nestedCall: Number = a.b();
+  var attrOnDirect: Number = 3.a;
+  var pi2: Number = 3.14.times(2);
+
+  public method0(): org.thoriumlang.None {
+    return none;
+  }
+
+  public method1(): None {
+    return none;
+  }
+
+  private method2(p1: String, p2: Integer): Integer {
+    return none;
+  }
+
+  private method3[T](): Integer {
+    return none;
+  }
+
+  private method4[T](): Integer {
+    return none;
+  }
+
+  private method5[T](): Integer {
+    none;
+    return none;
+  }
+
+  private method6[T](): Integer {
+    return none;
+    return none;
+  }
+
+  private method7[T](): Integer {
+    return 1;
+  }
+
+  private fibo(i: Integer): Integer {
+    return If(i.eq(0)).then(0).else(If(i.eq(1)).then(1).else(fibo(i.minus(1)).plus(fibo(i.minus(2)))));
+  }
+}

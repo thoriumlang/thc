@@ -1,0 +1,107 @@
+// namespace org.thoriumlang.compiler.tests
+
+namespace class Class[T] : S {
+  private emptyMethod(): org.thoriumlang.None {
+    return none;
+  }
+
+  private method1(): org.thoriumlang.None {
+    return true;
+  }
+
+  private method2(): org.thoriumlang.None {
+    return false;
+  }
+
+  private method3(): org.thoriumlang.None {
+    return "string";
+  }
+
+  private method4(): org.thoriumlang.None {
+    return val a: org.thoriumlang.Object = 1;
+  }
+
+  private method5(): org.thoriumlang.None {
+    return var a: org.thoriumlang.Object = 1;
+  }
+
+  private method6(): org.thoriumlang.None {
+    return val a: org.thoriumlang.Object = 1;
+  }
+
+  private method7(): org.thoriumlang.None {
+    return a();
+  }
+
+  private method8(): org.thoriumlang.None {
+    return a.a();
+  }
+
+  private method9(): org.thoriumlang.None {
+    return a.a;
+  }
+
+  private method10(): org.thoriumlang.None {
+    return a;
+  }
+
+  private method11(): org.thoriumlang.None {
+    return val attribute: Type = s;
+  }
+
+  private method12(): org.thoriumlang.None {
+    return var noneVar: Number = none;
+  }
+
+  private method13(): org.thoriumlang.None {
+    return var pi: Number = 3.14;
+  }
+
+  private method14(): org.thoriumlang.None {
+    return var hello: String = "Hello";
+  }
+
+  private method15(): org.thoriumlang.None {
+    return var t: Boolean = true;
+  }
+
+  private method16(): org.thoriumlang.None {
+    return var f: Boolean = false;
+  }
+
+  private method17(): org.thoriumlang.None {
+    return var th: Number = this;
+  }
+
+  private method18(): org.thoriumlang.None {
+    return var ref: Number = identifier;
+  }
+
+  private method19(): org.thoriumlang.None {
+    return var methodCall: Number = methodName();
+  }
+
+  private method20(): org.thoriumlang.None {
+    return var nested: Number = a.b;
+  }
+
+  private method21(): org.thoriumlang.None {
+    return var nestedCall: Number = a.b();
+  }
+
+  private method22(): org.thoriumlang.None {
+    return var attrOnDirect: Number = 3.a;
+  }
+
+  private method23(): org.thoriumlang.None {
+    return var pi2: Number = 3.14.times(2);
+  }
+
+  private method24(): org.thoriumlang.None {
+    return 1;
+  }
+
+  private method25(): org.thoriumlang.None {
+    return a.a = 1;
+  }
+}

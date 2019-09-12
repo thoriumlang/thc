@@ -76,7 +76,10 @@ class IntegrationTest {
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/type2",
-            "/org/thoriumlang/compiler/tests/use"
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes"
     })
     void thorium(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::sourceFilename);
@@ -101,7 +104,10 @@ class IntegrationTest {
     @ValueSource(strings = {
             "/org/thoriumlang/compiler/tests/type",
             "/org/thoriumlang/compiler/tests/type2",
-            "/org/thoriumlang/compiler/tests/use"
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes"
     })
     void generatedThorium(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);

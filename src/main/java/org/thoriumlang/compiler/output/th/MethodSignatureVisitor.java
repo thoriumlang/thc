@@ -39,7 +39,7 @@ class MethodSignatureVisitor extends BaseVisitor<String> {
     @Override
     public String visitMethodSignature(Visibility visibility, String name,
             List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
-        return String.format("%s %s%s(%s): %s;",
+        return String.format("%s %s%s(%s): %s",
                 visibility.name().toLowerCase(),
                 name,
                 typeParameters.isEmpty() ?

@@ -15,22 +15,20 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import java.util.Arrays;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.Value;
 
-class Indent implements Function<String, String> {
-    public static final Indent INSTANCE = new Indent("  ");
-    private final String level;
+class StatementVisitor extends BaseVisitor<String> {
+    private final ValueVisitor valueVisitor;
 
-    private Indent(String indent) {
-        this.level = indent;
+    StatementVisitor(ValueVisitor valueVisitor) {
+        this.valueVisitor = valueVisitor;
     }
 
     @Override
-    public String apply(String string) {
-        return Arrays.stream(string.split("\n"))
-                .map(s -> level + s)
-                .collect(Collectors.joining("\n"));
+    public String visitStatement(Value value, boolean isLast) {
+        return isLast ?
+                "return " + value.accept(valueVisitor) :
+                value.accept(valueVisitor);
     }
 }

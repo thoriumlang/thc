@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.Class;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.Use;
 
@@ -25,21 +26,38 @@ import java.util.stream.Collectors;
 class RootVisitor extends BaseVisitor<String> {
     private final TypeVisitor typeVisitor;
     private final UseVisitor useVisitor;
+    private final ClassVisitor classVisitor;
 
-    RootVisitor(UseVisitor useVisitor, TypeVisitor typeVisitor) {
+    RootVisitor(UseVisitor useVisitor, TypeVisitor typeVisitor,
+            ClassVisitor classVisitor) {
         this.useVisitor = useVisitor;
         this.typeVisitor = typeVisitor;
+        this.classVisitor = classVisitor;
     }
 
     @Override
     public String visitRoot(String namespace, Type type, List<Use> uses) {
-        String use = uses.stream()
-                .map(u -> u.accept(useVisitor))
-                .collect(Collectors.joining("\n"));
+        String use = use(uses);
         return String.format("// namespace %s%n%n%s%s",
                 namespace,
                 use.isEmpty() ? "" : String.format("%s%n%n", use),
                 type.accept(typeVisitor)
+        );
+    }
+
+    private String use(List<Use> uses) {
+        return uses.stream()
+                    .map(u -> u.accept(useVisitor))
+                    .collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public String visitRoot(String namespace, Class clazz, List<Use> uses) {
+        String use = use(uses);
+        return String.format("// namespace %s%n%n%s%s",
+                namespace,
+                use.isEmpty() ? "" : String.format("%s%n%n", use),
+                clazz.accept(classVisitor)
         );
     }
 }
