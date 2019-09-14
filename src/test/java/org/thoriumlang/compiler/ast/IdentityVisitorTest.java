@@ -142,6 +142,13 @@ class IdentityVisitorTest {
     }
 
     @Test
+    void visitTypeInferred() {
+        TypeSpecInferred typeSpec = TypeSpecInferred.INSTANCE;
+        Assertions.assertThat(typeSpec.accept(visitor()))
+                .isEqualTo(typeSpec);
+    }
+
+    @Test
     void visitMethodSignature() {
         MethodSignature methodSignature = new MethodSignature(
                 Visibility.PRIVATE,

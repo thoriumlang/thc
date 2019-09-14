@@ -63,4 +63,9 @@ class TypeSpecVisitor extends BaseVisitor<String> {
                 returnType.accept(this)
         );
     }
+
+    @Override
+    public String visitTypeInferred() {
+        return "";
+    }
 }

@@ -23,4 +23,5 @@ namespace class ClassAttributes : org.thoriumlang.Object {
     a.add(b);
     return 1;
   };
+  val attributeWithoutType = 1;
 }

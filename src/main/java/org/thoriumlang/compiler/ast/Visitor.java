@@ -38,6 +38,8 @@ public interface Visitor<T> {
 
     T visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType);
 
+    T visitTypeInferred();
+
     T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType);
 

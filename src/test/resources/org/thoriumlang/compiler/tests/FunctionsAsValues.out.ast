@@ -1,10 +1,10 @@
 NAMESPACE org.thoriumlang.compiler.tests
 NAMESPACE CLASS None[] : org.thoriumlang.Object[]:
-VAL hash: org.thoriumlang.None[] = []():org.thoriumlang.None[] { 0:true }
-VAL str: org.thoriumlang.None[] = []():org.thoriumlang.None[] { "none":true }
-VAL eq: org.thoriumlang.None[] = [](o: Object[]):org.thoriumlang.None[] { "return default":true }
-VAL is: org.thoriumlang.None[] = [](t: Type[]):org.thoriumlang.None[] { "return default":true }
-VAL match: (Object[]):Boolean[] = [](o: Object[]):org.thoriumlang.None[] { Case[](o).when[](none,true).otherwise[](false):true }
-PRIVATE adder [] (i: Integer[]) : org.thoriumlang.None[] { [](j: Integer[]):org.thoriumlang.None[] { i.add[](j):true }:true }
-PRIVATE adder2 [] (i: Integer[]) : org.thoriumlang.None[] { [A](j: Integer[]):String[] { i.add[](j):true }:true }
-PRIVATE adder [A] (f: (B[];C[]):D[], x: E[]) : (F[]):G[] { [](y: H[]):org.thoriumlang.None[] { f[](x,y):true }:true }
+VAL hash: inferred = []():inferred { 0:true }
+VAL str: inferred = []():inferred { "none":true }
+VAL eq: inferred = [](o: Object[]):inferred { "return default":true }
+VAL is: inferred = [](t: Type[]):inferred { "return default":true }
+VAL match: (Object[]):Boolean[] = [](o: Object[]):inferred { Case[](o).when[](none,true).otherwise[](false):true }
+PRIVATE adder [] (i: Integer[]) : inferred { [](j: Integer[]):inferred { i.add[](j):true }:true }
+PRIVATE adder2 [] (i: Integer[]) : inferred { [A](j: Integer[]):String[] { i.add[](j):true }:true }
+PRIVATE adder [A] (f: (B[];C[]):D[], x: E[]) : (F[]):G[] { [](y: H[]):inferred { f[](x,y):true }:true }

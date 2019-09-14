@@ -30,18 +30,25 @@ class AttributeVisitor extends BaseVisitor<String> {
 
     @Override
     public String visitVarAttribute(String identifier, TypeSpec type, Value value) {
-        return String.format("var %s: %s = %s",
+        return String.format("var %s%s = %s",
                 identifier,
-                type.accept(typeSpecVisitor),
+                type(type),
                 value.accept(valueVisitor)
         );
     }
 
+    private String type(TypeSpec typeSpec) {
+        String type = typeSpec.accept(typeSpecVisitor);
+        return type.isEmpty() ?
+                "" :
+                String.format(": %s", type);
+    }
+
     @Override
     public String visitValAttribute(String identifier, TypeSpec type, Value value) {
-        return String.format("val %s: %s = %s",
+        return String.format("val %s%s = %s",
                 identifier,
-                type.accept(typeSpecVisitor),
+                type(type),
                 value.accept(valueVisitor)
         );
     }

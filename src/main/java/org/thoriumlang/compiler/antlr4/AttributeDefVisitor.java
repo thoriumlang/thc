@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Attribute;
 import org.thoriumlang.compiler.ast.NoneValue;
+import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
@@ -45,7 +46,7 @@ public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
         return new ValAttribute(
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
-                        TypeSpecSimple.NONE :
+                        TypeSpecInferred.INSTANCE :
                         ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
                 ctx.value() == null ?
                         NoneValue.INSTANCE :

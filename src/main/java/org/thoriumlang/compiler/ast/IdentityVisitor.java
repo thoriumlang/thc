@@ -122,6 +122,11 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
+    public Visitable visitTypeInferred() {
+        return TypeSpecInferred.INSTANCE;
+    }
+
+    @Override
     public Visitable visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return new MethodSignature(

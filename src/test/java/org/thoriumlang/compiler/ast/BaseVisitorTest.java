@@ -92,6 +92,14 @@ class BaseVisitorTest {
     }
 
     @Test
+    void visitTypeInferred() {
+        Assertions.assertThat(
+                visitor().visitTypeInferred()
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
     void visitMethodSignature() {
         Assertions.assertThat(
                 visitor().visitMethodSignature(null, null, null, null, null)

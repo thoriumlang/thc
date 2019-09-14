@@ -28,6 +28,7 @@ import org.thoriumlang.compiler.ast.NumberValue;
 import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.StringValue;
 import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.Value;
@@ -80,7 +81,7 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         .map(p -> p.accept(MethodParameterVisitor.INSTANCE))
                         .collect(Collectors.toList()),
                 ctx.typeSpec() == null ?
-                        TypeSpecSimple.NONE :
+                        TypeSpecInferred.INSTANCE :
                         ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
                 ctx.value() != null ?
                         Collections.singletonList(new Statement(ctx.value().accept(this), true)) :
@@ -108,7 +109,7 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
             return new VarAssignmentValue(
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec() == null ?
-                            TypeSpecSimple.OBJECT :
+                            TypeSpecInferred.INSTANCE :
                             ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
                     ctx.value() == null ?
                             NoneValue.INSTANCE :
@@ -118,7 +119,7 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
         return new ValAssignmentValue(
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
-                        TypeSpecSimple.OBJECT :
+                        TypeSpecInferred.INSTANCE :
                         ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
                 ctx.value().accept(ValueVisitor.INSTANCE)
         );

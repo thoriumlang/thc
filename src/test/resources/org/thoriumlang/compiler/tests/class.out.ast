@@ -13,7 +13,7 @@ VAR nested: Number[] = a.b
 VAR nestedCall: Number[] = a.b[]()
 VAR attrOnDirect: Number[] = 3.a
 VAR pi2: Number[] = 3.14.times[](2)
-PUBLIC method0 [] () : org.thoriumlang.None[] { none:true }
+PUBLIC method0 [] () : inferred { none:true }
 PUBLIC method1 [] () : None[] { none:true }
 PRIVATE method2 [] (p1: String[], p2: Integer[]) : Integer[] { none:true }
 PRIVATE method3 [T] () : Integer[] { none:true }

@@ -66,6 +66,11 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
+    public T visitTypeInferred() {
+        return null;
+    }
+
+    @Override
     public T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return null;

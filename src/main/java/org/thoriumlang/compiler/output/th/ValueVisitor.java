@@ -71,18 +71,25 @@ class ValueVisitor extends BaseVisitor<String> {
 
     @Override
     public String visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
-        return String.format("var %s: %s = %s",
+        return String.format("var %s%s = %s",
                 identifier,
-                type.accept(typeSpecVisitor),
+                type(type),
                 value.accept(this)
         );
     }
 
+    private String type(TypeSpec typeSpec) {
+        String type = typeSpec.accept(typeSpecVisitor);
+        return type.isEmpty()?
+                "":
+                String.format(": %s", type);
+    }
+
     @Override
     public String visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
-        return String.format("val %s: %s = %s",
+        return String.format("val %s%s = %s",
                 identifier,
-                type.accept(typeSpecVisitor),
+                type(type),
                 value.accept(this)
         );
     }
@@ -121,7 +128,7 @@ class ValueVisitor extends BaseVisitor<String> {
     @Override
     public String visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
-        return String.format("%s(%s): %s => {%n%s%n}",
+        return String.format("%s(%s)%s => {%n%s%n}",
                 typeParameters.isEmpty() ?
                         "" :
                         typeParameters.stream()
@@ -130,7 +137,7 @@ class ValueVisitor extends BaseVisitor<String> {
                 parameters.stream()
                         .map(p -> p.accept(parameterVisitor))
                         .collect(Collectors.joining(", ")),
-                returnType.accept(typeSpecVisitor),
+                type(returnType),
                 statements.stream()
                         .map(s -> s.accept(this))
                         .map(Indent.INSTANCE)

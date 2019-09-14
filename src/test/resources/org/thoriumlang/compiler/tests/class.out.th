@@ -15,7 +15,7 @@ namespace class Classname : org.thoriumlang.Object {
   var attrOnDirect: Number = 3.a;
   var pi2: Number = 3.14.times(2);
 
-  public method0(): org.thoriumlang.None {
+  public method0() {
     return none;
   }
 
