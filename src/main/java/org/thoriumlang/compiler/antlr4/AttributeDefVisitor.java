@@ -20,7 +20,6 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Attribute;
 import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
 

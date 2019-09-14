@@ -21,7 +21,6 @@ import org.thoriumlang.compiler.ast.Method;
 import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 import org.thoriumlang.compiler.collections.Lists;
 

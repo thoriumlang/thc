@@ -29,7 +29,6 @@ import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.StringValue;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.Value;
 import org.thoriumlang.compiler.ast.VarAssignmentValue;
