@@ -53,4 +53,14 @@ class TypeSpecVisitor extends BaseVisitor<String> {
                         .collect(Collectors.joining(", ", "[", "]"))
         );
     }
+
+    @Override
+    public String visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+        return String.format("(%s): %s",
+                arguments.stream()
+                        .map(t -> t.accept(this))
+                        .collect(Collectors.joining(", ")),
+                returnType.accept(this)
+        );
+    }
 }

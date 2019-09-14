@@ -73,15 +73,17 @@ classDef
     ;
 
 attributeDef
-    : ( VAL | VAR ) name=IDENTIFIER ':' typeSpec ( '=' value )? ';'
+    : VAR name=IDENTIFIER ':' typeSpec ( '=' value )? ';'
+    | VAL? name=IDENTIFIER ( ':' typeSpec )? ( '=' value )? ';'
     ;
 
 typeSpec
     : typeSpecSimple
-    | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')'
+    | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection  | typeSpecFunction | typeSpec ) ')'
     | typeSpecOptional
     | typeSpecUnion
     | typeSpecIntersection
+    | typeSpecFunction
     ;
 typeSpecSimple
     : fqIdentifier ( '[' typeArguments ']' )?
@@ -97,6 +99,9 @@ typeSpecUnion
 typeSpecIntersection
     :       ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' )
       ( '|' ( typeSpecSimple | typeSpecOptional | '(' ( typeSpecSimple | typeSpecOptional | typeSpecUnion | typeSpecIntersection | typeSpec ) ')' ) )+
+    ;
+typeSpecFunction
+    : '(' typeArguments? ')' ':' returnType=typeSpec
     ;
 
 methodSignature
@@ -127,6 +132,7 @@ value
     | indirectValue
     | directValue
     | assignmentValue
+    | functionValue
     ;
 assignmentValue
     : indirectValue '.' IDENTIFIER '=' value
@@ -147,6 +153,12 @@ indirectValue
     | indirectValue ( '.' | '?.' ) methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
     | directValue ( '.' | '?.' ) IDENTIFIER
     | directValue ( '.' | '?.' ) methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
+    ;
+functionValue
+    : ( '[' typeParameterDef ']' )?
+      '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
+      ( ':' typeSpec )?
+      ( '=>' value | '=>' '{' statement* '}' )
     ;
 
 methodArguments

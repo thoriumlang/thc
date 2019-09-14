@@ -23,13 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodVisitor extends BaseVisitor<String> {
-
     private final MethodSignatureVisitor methodSignatureVisitor;
-    private final StatementVisitor statementVisitor;
+    private final ValueVisitor valueVisitor;
 
-    MethodVisitor(MethodSignatureVisitor methodSignatureVisitor, StatementVisitor statementVisitor) {
+    MethodVisitor(MethodSignatureVisitor methodSignatureVisitor, ValueVisitor valueVisitor) {
         this.methodSignatureVisitor = methodSignatureVisitor;
-        this.statementVisitor = statementVisitor;
+        this.valueVisitor = valueVisitor;
     }
 
     @Override
@@ -37,7 +36,7 @@ class MethodVisitor extends BaseVisitor<String> {
         return String.format("%s {%n%s%n}",
                 signature.accept(methodSignatureVisitor),
                 statements.stream()
-                        .map(s -> s.accept(statementVisitor))
+                        .map(s -> s.accept(valueVisitor))
                         .map(Indent.INSTANCE)
                         .map(s -> s + ";")
                         .collect(Collectors.joining("\n"))

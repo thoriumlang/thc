@@ -1307,4 +1307,28 @@ class TypeSpecTest {
                 .isEqualTo(
                         "(typeSpec (typeSpecUnion (typeSpecOptional ( (typeSpecUnion ( (typeSpecIntersection (typeSpecOptional (typeSpecSimple (fqIdentifier TA)) ?) | (typeSpecSimple (fqIdentifier TB))) ) & (typeSpecSimple (fqIdentifier TC))) ) ?) & ( (typeSpecSimple (fqIdentifier TD)) )))");
     }
+
+    @Test
+    void function() {
+        Assertions.assertThat(
+                new Tree(
+                        token("("),
+                        token("TA", ThoriumLexer.IDENTIFIER),
+                        token(","),
+                        token("TB", ThoriumLexer.IDENTIFIER),
+                        token(")"),
+                        token(":"),
+                        token("TC", ThoriumLexer.IDENTIFIER),
+                        token("|"),
+                        token("TD", ThoriumLexer.IDENTIFIER)
+                ).serialize("typeSpec")
+        )
+                .contains("TA", "TB", "TC", "TD")
+                .isEqualTo("(typeSpec (typeSpecFunction ( " +
+                        "(typeArguments (typeSpec (typeSpecSimple (fqIdentifier TA))) ," +
+                        " (typeSpec (typeSpecSimple (fqIdentifier TB)))) ) " +
+                        ": (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier TC)) " +
+                        "| (typeSpecSimple (fqIdentifier TD))))))"
+                );
+    }
 }

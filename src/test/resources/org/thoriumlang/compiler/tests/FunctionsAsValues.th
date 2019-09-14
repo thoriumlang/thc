@@ -1,0 +1,22 @@
+class None {
+  val hash = () => 0;
+  val str = () => "none";
+  val eq = (o: Object) => "return default";
+  is = (t: Type) => "return default";
+  match: (Object): Boolean = (o: Object) => Case(o)
+                                              .when(none, true)
+                                              .otherwise(false);
+
+  adder(i: Integer) {
+    (j: Integer) => i.add(j);
+  }
+
+  adder2(i: Integer) {
+    [A](j: Integer): String => i.add(j);
+  }
+
+  adder[A](f: (B, C): D, x: E): (F): G {
+    (y: H) => f(x, y);
+  }
+
+}

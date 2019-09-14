@@ -15,29 +15,38 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class Statement implements Visitable {
-    public static final Statement NONE_LAST_STATEMENT = new Statement(NoneValue.INSTANCE, true);
-    private final Value value;
-    private final boolean last;
+public class TypeSpecFunction implements TypeSpec {
+    private final List<TypeSpec> arguments;
+    private final TypeSpec returnType;
 
-    public Statement(Value value, boolean last) {
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
+    public TypeSpecFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+        if (arguments == null) {
+            throw new NullPointerException("arguments cannot be null");
         }
-        this.value = value;
-        this.last = last;
+        if (returnType == null) {
+            throw new NullPointerException("returnType cannot be null");
+        }
+        this.arguments = arguments;
+        this.returnType = returnType;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStatement(value, last);
+        return visitor.visitTypeFunction(arguments, returnType);
     }
 
     @Override
     public String toString() {
-        return String.format("%s:%s", value, last);
+        return String.format("(%s):%s",
+                arguments.stream().
+                        map(TypeSpec::toString)
+                        .collect(Collectors.joining(";")),
+                returnType.toString()
+        );
     }
 
     @Override
@@ -48,13 +57,13 @@ public class Statement implements Visitable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Statement statement = (Statement) o;
-        return last == statement.last &&
-                value.equals(statement.value);
+        TypeSpecFunction that = (TypeSpecFunction) o;
+        return arguments.equals(that.arguments) &&
+                returnType.equals(that.returnType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, last);
+        return Objects.hash(arguments, returnType);
     }
 }

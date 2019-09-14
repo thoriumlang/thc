@@ -1,0 +1,37 @@
+// namespace org.thoriumlang.compiler.tests
+
+namespace class None : org.thoriumlang.Object {
+  val hash: org.thoriumlang.None = (): org.thoriumlang.None => {
+    return 0;
+  };
+  val str: org.thoriumlang.None = (): org.thoriumlang.None => {
+    return "none";
+  };
+  val eq: org.thoriumlang.None = (o: Object): org.thoriumlang.None => {
+    return "return default";
+  };
+  val is: org.thoriumlang.None = (t: Type): org.thoriumlang.None => {
+    return "return default";
+  };
+  val match: (Object): Boolean = (o: Object): org.thoriumlang.None => {
+    return Case(o).when(none, true).otherwise(false);
+  };
+
+  private adder(i: Integer): org.thoriumlang.None {
+    return (j: Integer): org.thoriumlang.None => {
+      return i.add(j);
+    };
+  }
+
+  private adder2(i: Integer): org.thoriumlang.None {
+    return [A](j: Integer): String => {
+      return i.add(j);
+    };
+  }
+
+  private adder[A](f: (B, C): D, x: E): (F): G {
+    return (y: H): org.thoriumlang.None => {
+      return f(x, y);
+    };
+  }
+}

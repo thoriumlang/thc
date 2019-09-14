@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
@@ -52,6 +53,9 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         }
         if (ctx.typeSpecIntersection() != null) {
             return ctx.typeSpecIntersection().accept(this);
+        }
+        if (ctx.typeSpecFunction() != null) {
+            return ctx.typeSpecFunction().accept(this);
         }
         throw new IllegalStateException("Missing branch");
     }
@@ -186,5 +190,13 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         );
 
         return new TypeSpecIntersection(types);
+    }
+
+    @Override
+    public TypeSpec visitTypeSpecFunction(ThoriumParser.TypeSpecFunctionContext ctx) {
+        return new TypeSpecFunction(
+                visitArguments(ctx.typeArguments()),
+                ctx.typeSpec().accept(this)
+        );
     }
 }

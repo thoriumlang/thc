@@ -15,3 +15,5 @@ VAR attrOnDirect: Number[] = 3.a
 VAR pi2: Number[] = 3.14.times[](2)
 VAL a: Number[] = 1
 VAL b: Number[] = 2
+VAL add: (A[];B[]):C[] = [](a: A[];b: B[]):C[] { a.add[](b):true }
+VAL add2: (A[];B[]):C[] = [](a: A[];b: B[]):C[] { a.add[](b):false;1:true }

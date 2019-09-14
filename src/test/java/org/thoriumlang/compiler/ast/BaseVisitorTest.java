@@ -84,6 +84,14 @@ class BaseVisitorTest {
     }
 
     @Test
+    void visitTypeFunction() {
+        Assertions.assertThat(
+                visitor().visitTypeFunction(null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
     void visitMethodSignature() {
         Assertions.assertThat(
                 visitor().visitMethodSignature(null, null, null, null, null)
@@ -183,6 +191,14 @@ class BaseVisitorTest {
     void visitNestedValue() {
         Assertions.assertThat(
                 visitor().visitNestedValue(null, null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitFunctionValue() {
+        Assertions.assertThat(
+                visitor().visitFunctionValue(null, null, null, null)
         )
                 .isEqualTo(null);
     }

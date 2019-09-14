@@ -41,7 +41,8 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/use",
             "/org/thoriumlang/compiler/tests/class",
             "/org/thoriumlang/compiler/tests/ClassMethods",
-            "/org/thoriumlang/compiler/tests/ClassAttributes"
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void ast(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::sourceFilename);
@@ -79,7 +80,8 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/use",
             "/org/thoriumlang/compiler/tests/class",
             "/org/thoriumlang/compiler/tests/ClassMethods",
-            "/org/thoriumlang/compiler/tests/ClassAttributes"
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void thorium(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::sourceFilename);
@@ -107,7 +109,8 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/use",
             "/org/thoriumlang/compiler/tests/class",
             "/org/thoriumlang/compiler/tests/ClassMethods",
-            "/org/thoriumlang/compiler/tests/ClassAttributes"
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void generatedThorium(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);

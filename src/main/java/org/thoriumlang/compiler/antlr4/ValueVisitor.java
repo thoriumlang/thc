@@ -18,18 +18,21 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.BooleanValue;
+import org.thoriumlang.compiler.ast.FunctionValue;
 import org.thoriumlang.compiler.ast.IdentifierValue;
 import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.MethodCallValue;
 import org.thoriumlang.compiler.ast.NestedValue;
 import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.NumberValue;
+import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.StringValue;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.Value;
 import org.thoriumlang.compiler.ast.VarAssignmentValue;
+import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +63,36 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
             return ctx.assignmentValue().accept(this);
         }
 
+        if (ctx.functionValue() != null) {
+            return ctx.functionValue().accept(this);
+        }
+
         throw new IllegalStateException("No actual value found");
+    }
+
+    @Override
+    public Value visitFunctionValue(ThoriumParser.FunctionValueContext ctx) {
+        return new FunctionValue(
+                ctx.typeParameterDef() == null ?
+                        Collections.emptyList() :
+                        ctx.typeParameterDef().accept(TypeParameterDefVisitor.INSTANCE),
+                ctx.methodParameterDef().stream()
+                        .map(p -> p.accept(MethodParameterVisitor.INSTANCE))
+                        .collect(Collectors.toList()),
+                ctx.typeSpec() == null ?
+                        TypeSpecSimple.NONE :
+                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                ctx.value() != null ?
+                        Collections.singletonList(new Statement(ctx.value().accept(this), true)) :
+                        Lists.append(
+                                Lists.withoutLast(ctx.statement()).stream()
+                                        .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_NOT_LAST))
+                                        .collect(Collectors.toList()),
+                                Lists.last(ctx.statement())
+                                        .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_LAST))
+                                        .orElse(Statement.NONE_LAST_STATEMENT)
+                        )
+        );
     }
 
     @Override

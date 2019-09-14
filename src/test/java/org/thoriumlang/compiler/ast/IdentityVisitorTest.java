@@ -132,6 +132,16 @@ class IdentityVisitorTest {
     }
 
     @Test
+    void visitTypeFunction() {
+        TypeSpecFunction typeSpec = new TypeSpecFunction(
+                Collections.singletonList(TypeSpecSimple.NONE),
+                TypeSpecSimple.OBJECT
+        );
+        Assertions.assertThat(typeSpec.accept(visitor()))
+                .isEqualTo(typeSpec);
+    }
+
+    @Test
     void visitMethodSignature() {
         MethodSignature methodSignature = new MethodSignature(
                 Visibility.PRIVATE,

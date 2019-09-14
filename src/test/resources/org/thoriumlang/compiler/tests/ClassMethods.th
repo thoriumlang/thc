@@ -1,5 +1,6 @@
 class Class[T]: S {
     emptyMethod() {}
+    emptyMethod1(a:A, b:B):C {}
     method1() {
       true;
     }

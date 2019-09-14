@@ -61,6 +61,11 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
+    public T visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+        return null;
+    }
+
+    @Override
     public T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return null;
@@ -124,6 +129,12 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
 
     @Override
     public T visitNestedValue(Value outer, Value inner) {
+        return null;
+    }
+
+    @Override
+    public T visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType,
+            List<Statement> statements) {
         return null;
     }
 

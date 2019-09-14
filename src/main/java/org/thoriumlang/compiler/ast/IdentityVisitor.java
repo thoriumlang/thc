@@ -112,6 +112,16 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
+    public Visitable visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+        return new TypeSpecFunction(
+                arguments.stream()
+                        .map(t -> (TypeSpec) t.accept(this))
+                        .collect(Collectors.toList()),
+                (TypeSpec) returnType.accept(this)
+        );
+    }
+
+    @Override
     public Visitable visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return new MethodSignature(
@@ -211,6 +221,23 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
         return new NestedValue(
                 (Value) outer.accept(this),
                 (Value) inner.accept(this)
+        );
+    }
+
+    @Override
+    public Visitable visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
+            TypeSpec returnType, List<Statement> statements) {
+        return new FunctionValue(
+                typeParameters.stream()
+                        .map(t -> (TypeParameter) t.accept(this))
+                        .collect(Collectors.toList()),
+                parameters.stream()
+                        .map(p -> (Parameter) p.accept(this))
+                        .collect(Collectors.toList()),
+                (TypeSpec) returnType.accept(this),
+                statements.stream()
+                        .map(s -> (Statement) s.accept(this))
+                        .collect(Collectors.toList())
         );
     }
 

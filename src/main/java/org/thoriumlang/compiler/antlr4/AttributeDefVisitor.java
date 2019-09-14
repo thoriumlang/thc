@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Attribute;
 import org.thoriumlang.compiler.ast.NoneValue;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
 
@@ -31,15 +32,6 @@ public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
 
     @Override
     public Attribute visitAttributeDef(ThoriumParser.AttributeDefContext ctx) {
-        if (ctx.VAL() != null) {
-            return new ValAttribute(
-                    ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
-                    ctx.value() == null ?
-                            NoneValue.INSTANCE :
-                            ctx.value().accept(ValueVisitor.INSTANCE)
-            );
-        }
         if (ctx.VAR() != null) {
             return new VarAttribute(
                     ctx.IDENTIFIER().getSymbol().getText(),
@@ -49,6 +41,15 @@ public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                             ctx.value().accept(ValueVisitor.INSTANCE)
             );
         }
-        throw new IllegalStateException("Attribute is none of [VAL, VAR]");
+
+        return new ValAttribute(
+                ctx.IDENTIFIER().getSymbol().getText(),
+                ctx.typeSpec() == null ?
+                        TypeSpecSimple.NONE :
+                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                ctx.value() == null ?
+                        NoneValue.INSTANCE :
+                        ctx.value().accept(ValueVisitor.INSTANCE)
+        );
     }
 }

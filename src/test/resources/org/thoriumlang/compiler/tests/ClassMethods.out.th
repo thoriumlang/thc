@@ -5,6 +5,10 @@ namespace class Class[T] : S {
     return none;
   }
 
+  private emptyMethod1(a: A, b: B): C {
+    return none;
+  }
+
   private method1(): org.thoriumlang.None {
     return true;
   }

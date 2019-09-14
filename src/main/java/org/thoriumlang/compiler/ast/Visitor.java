@@ -36,6 +36,8 @@ public interface Visitor<T> {
 
     T visitTypeSingle(String type, List<TypeSpec> arguments);
 
+    T visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType);
+
     T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType);
 
@@ -63,6 +65,9 @@ public interface Visitor<T> {
             List<Value> methodArguments);
 
     T visitNestedValue(Value outer, Value inner);
+
+    T visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType,
+            List<Statement> statements);
 
     T visitStatement(Value value, boolean isLast);
 

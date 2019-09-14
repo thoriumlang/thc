@@ -1,6 +1,7 @@
 NAMESPACE org.thoriumlang.compiler.tests
 NAMESPACE CLASS Class[T] : S[]:
 PRIVATE emptyMethod [] () : org.thoriumlang.None[] { none:true }
+PRIVATE emptyMethod1 [] (a: A[], b: B[]) : C[] { none:true }
 PRIVATE method1 [] () : org.thoriumlang.None[] { true:true }
 PRIVATE method2 [] () : org.thoriumlang.None[] { false:true }
 PRIVATE method3 [] () : org.thoriumlang.None[] { "string":true }

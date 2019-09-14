@@ -26,13 +26,17 @@ public class ThWalker implements Walker<String> {
         this.root = root;
 
         TypeSpecVisitor typeSpecVisitor = new TypeSpecVisitor();
+        TypeParameterVisitor typeParameterVisitor = new TypeParameterVisitor();
+        ParameterVisitor parameterVisitor = new ParameterVisitor(typeSpecVisitor);
         MethodSignatureVisitor methodSignatureVisitor = new MethodSignatureVisitor(
-                new TypeSpecVisitor(),
-                new TypeParameterVisitor(),
-                new ParameterVisitor(typeSpecVisitor)
+                typeSpecVisitor,
+                typeParameterVisitor,
+                parameterVisitor
         );
         ValueVisitor valueVisitor = new ValueVisitor(
-                typeSpecVisitor
+                typeSpecVisitor,
+                typeParameterVisitor,
+                parameterVisitor
         );
         this.visitor = new RootVisitor(
                 new UseVisitor(),
@@ -48,9 +52,7 @@ public class ThWalker implements Walker<String> {
                         ),
                         new MethodVisitor(
                                 methodSignatureVisitor,
-                                new StatementVisitor(
-                                        valueVisitor
-                                )
+                                valueVisitor
                         )
                 )
         );
