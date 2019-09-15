@@ -26,10 +26,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
-    public static final MethodSignatureVisitor INSTANCE = new MethodSignatureVisitor();
+    private final MethodParameterVisitor methodParameterVisitor;
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final TypeParameterDefVisitor typeParameterDefVisitor;
 
-    private MethodSignatureVisitor() {
-        // nothing
+    public MethodSignatureVisitor(MethodParameterVisitor methodParameterVisitor,
+            TypeSpecVisitor typeSpecVisitor,
+            TypeParameterDefVisitor typeParameterDefVisitor) {
+        this.methodParameterVisitor = methodParameterVisitor;
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.typeParameterDefVisitor = typeParameterDefVisitor;
     }
 
     @Override
@@ -40,9 +46,9 @@ public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> 
                 ctx.name.getText(),
                 typeParameters(ctx.typeParameterDef()),
                 ctx.methodParameterDef().stream()
-                        .map(p -> p.accept(MethodParameterVisitor.INSTANCE))
+                        .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
-                ctx.returnType.accept(TypeSpecVisitor.INSTANCE)
+                ctx.returnType.accept(typeSpecVisitor)
         );
     }
 
@@ -56,6 +62,6 @@ public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> 
         if (ctx == null || ctx.IDENTIFIER() == null) {
             return Collections.emptyList();
         }
-        return ctx.accept(TypeParameterDefVisitor.INSTANCE);
+        return ctx.accept(typeParameterDefVisitor);
     }
 }

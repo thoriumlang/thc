@@ -24,10 +24,12 @@ import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
 
 public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
-    public static final AttributeDefVisitor INSTANCE = new AttributeDefVisitor();
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final ValueVisitor valueVisitor;
 
-    private AttributeDefVisitor() {
-        // nothing
+    public AttributeDefVisitor(TypeSpecVisitor typeSpecVisitor, ValueVisitor valueVisitor) {
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.valueVisitor = valueVisitor;
     }
 
     @Override
@@ -35,10 +37,10 @@ public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
         if (ctx.VAR() != null) {
             return new VarAttribute(
                     ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                    ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
                             NoneValue.INSTANCE :
-                            ctx.value().accept(ValueVisitor.INSTANCE)
+                            ctx.value().accept(valueVisitor)
             );
         }
 
@@ -46,10 +48,10 @@ public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
                         TypeSpecInferred.INSTANCE :
-                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                        ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() == null ?
                         NoneValue.INSTANCE :
-                        ctx.value().accept(ValueVisitor.INSTANCE)
+                        ctx.value().accept(valueVisitor)
         );
     }
 }

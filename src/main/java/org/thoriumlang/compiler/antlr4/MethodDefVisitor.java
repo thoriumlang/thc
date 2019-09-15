@@ -28,10 +28,22 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
-    public static final MethodDefVisitor INSTANCE = new MethodDefVisitor();
+    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final MethodParameterVisitor methodParameterVisitor;
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final StatementVisitor statementVisitorForNotLast;
+    private final StatementVisitor statementVisitorForLast;
 
-    private MethodDefVisitor() {
-        // nothing
+    public MethodDefVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+            MethodParameterVisitor methodParameterVisitor,
+            TypeSpecVisitor typeSpecVisitor,
+            StatementVisitor statementVisitorForNotLast,
+            StatementVisitor statementVisitorForLast) {
+        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.methodParameterVisitor = methodParameterVisitor;
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.statementVisitorForNotLast = statementVisitorForNotLast;
+        this.statementVisitorForLast = statementVisitorForLast;
     }
 
     @Override
@@ -42,20 +54,20 @@ public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                         ctx.IDENTIFIER().getSymbol().getText(),
                         ctx.typeParameterDef() == null ?
                                 Collections.emptyList() :
-                                ctx.typeParameterDef().accept(TypeParameterDefVisitor.INSTANCE),
+                                ctx.typeParameterDef().accept(typeParameterDefVisitor),
                         ctx.methodParameterDef().stream()
-                                .map(p -> p.accept(MethodParameterVisitor.INSTANCE))
+                                .map(p -> p.accept(methodParameterVisitor))
                                 .collect(Collectors.toList()),
                         ctx.typeSpec() == null ?
                                 TypeSpecInferred.INSTANCE :
-                                ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE)
+                                ctx.typeSpec().accept(typeSpecVisitor)
                 ),
                 Lists.append(
                         Lists.withoutLast(ctx.statement()).stream()
-                                .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_NOT_LAST))
+                                .map(s -> s.accept(statementVisitorForNotLast))
                                 .collect(Collectors.toList()),
                         Lists.last(ctx.statement())
-                                .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_LAST))
+                                .map(s -> s.accept(statementVisitorForLast))
                                 .orElse(Statement.NONE_LAST_STATEMENT)
                 )
         );

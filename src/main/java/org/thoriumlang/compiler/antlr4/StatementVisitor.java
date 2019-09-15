@@ -20,18 +20,24 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Statement;
 
 public class StatementVisitor extends ThoriumBaseVisitor<Statement> {
-    public static final StatementVisitor INSTANCE_FOR_LAST = new StatementVisitor(true);
-    public static final StatementVisitor INSTANCE_FOR_NOT_LAST = new StatementVisitor(false);
     private final boolean last;
+    private ValueVisitor valueVisitor;
 
-    private StatementVisitor(boolean last) {
+    public StatementVisitor(boolean last) {
         this.last = last;
+    }
+
+    public void setValueVisitor(ValueVisitor valueVisitor) {
+        this.valueVisitor = valueVisitor;
     }
 
     @Override
     public Statement visitStatement(ThoriumParser.StatementContext ctx) {
+        if (valueVisitor == null) {
+            throw new IllegalStateException("value visitor not set; call setValueVisitor()");
+        }
         return new Statement(
-                ctx.value().accept(ValueVisitor.INSTANCE),
+                ctx.value().accept(valueVisitor),
                 last || isReturnStatement(ctx)
         );
     }

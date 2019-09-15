@@ -31,10 +31,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
-    public static final TypeSpecVisitor INSTANCE = new TypeSpecVisitor();
+    private final FqIdentifierVisitor fqIdentifierVisitor;
 
-    private TypeSpecVisitor() {
-        // nothing
+    public TypeSpecVisitor(FqIdentifierVisitor fqIdentifierVisitor) {
+        this.fqIdentifierVisitor = fqIdentifierVisitor;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpecSimple(ThoriumParser.TypeSpecSimpleContext ctx) {
         return new TypeSpecSimple(
-                ctx.fqIdentifier().accept(FqIdentifierVisitor.INSTANCE),
+                ctx.fqIdentifier().accept(fqIdentifierVisitor),
                 visitArguments(ctx.typeArguments())
         );
     }

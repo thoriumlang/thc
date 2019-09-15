@@ -39,10 +39,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ValueVisitor extends ThoriumBaseVisitor<Value> {
-    public static final ValueVisitor INSTANCE = new ValueVisitor();
+    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final MethodParameterVisitor methodParameterVisitor;
+    private final TypeSpecVisitor typeSpecVisitor;
+    private final StatementVisitor statementVisitorForNotLast;
+    private final StatementVisitor statementVisitorForLast;
 
-    private ValueVisitor() {
-        // nothing
+    public ValueVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+            MethodParameterVisitor methodParameterVisitor,
+            TypeSpecVisitor typeSpecVisitor,
+            StatementVisitor statementVisitorForNotLast,
+            StatementVisitor statementVisitorForLast) {
+        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.methodParameterVisitor = methodParameterVisitor;
+        this.typeSpecVisitor = typeSpecVisitor;
+        this.statementVisitorForNotLast = statementVisitorForNotLast;
+        this.statementVisitorForLast = statementVisitorForLast;
     }
 
     @Override
@@ -75,21 +87,21 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
         return new FunctionValue(
                 ctx.typeParameterDef() == null ?
                         Collections.emptyList() :
-                        ctx.typeParameterDef().accept(TypeParameterDefVisitor.INSTANCE),
+                        ctx.typeParameterDef().accept(typeParameterDefVisitor),
                 ctx.methodParameterDef().stream()
-                        .map(p -> p.accept(MethodParameterVisitor.INSTANCE))
+                        .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
                 ctx.typeSpec() == null ?
                         TypeSpecInferred.INSTANCE :
-                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                        ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() != null ?
                         Collections.singletonList(new Statement(ctx.value().accept(this), true)) :
                         Lists.append(
                                 Lists.withoutLast(ctx.statement()).stream()
-                                        .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_NOT_LAST))
+                                        .map(s -> s.accept(statementVisitorForNotLast))
                                         .collect(Collectors.toList()),
                                 Lists.last(ctx.statement())
-                                        .map(s -> s.accept(StatementVisitor.INSTANCE_FOR_LAST))
+                                        .map(s -> s.accept(statementVisitorForLast))
                                         .orElse(Statement.NONE_LAST_STATEMENT)
                         )
         );
@@ -99,9 +111,9 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
     public Value visitAssignmentValue(ThoriumParser.AssignmentValueContext ctx) {
         if (ctx.indirectValue() != null) {
             return new IndirectAssignmentValue(
-                    ctx.indirectValue().accept(ValueVisitor.INSTANCE),
+                    ctx.indirectValue().accept(this),
                     ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.value().accept(ValueVisitor.INSTANCE)
+                    ctx.value().accept(this)
             );
         }
         if (ctx.VAR() != null) {
@@ -109,18 +121,18 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec() == null ?
                             TypeSpecInferred.INSTANCE :
-                            ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
+                            ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
                             NoneValue.INSTANCE :
-                            ctx.value().accept(ValueVisitor.INSTANCE)
+                            ctx.value().accept(this)
             );
         }
         return new ValAssignmentValue(
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
                         TypeSpecInferred.INSTANCE :
-                        ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE),
-                ctx.value().accept(ValueVisitor.INSTANCE)
+                        ctx.typeSpec().accept(typeSpecVisitor),
+                ctx.value().accept(this)
         );
     }
 
@@ -209,7 +221,7 @@ public class ValueVisitor extends ThoriumBaseVisitor<Value> {
         return ctx.typeArguments() == null ?
                 Collections.emptyList() :
                 ctx.typeArguments().typeSpec().stream()
-                        .map(ts -> ts.accept(TypeSpecVisitor.INSTANCE))
+                        .map(ts -> ts.accept(typeSpecVisitor))
                         .collect(Collectors.toList());
     }
 

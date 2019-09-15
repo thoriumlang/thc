@@ -20,17 +20,17 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Parameter;
 
 public class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
-    public static final MethodParameterVisitor INSTANCE = new MethodParameterVisitor();
+    private final TypeSpecVisitor typeSpecVisitor;
 
-    private MethodParameterVisitor() {
-        // nothing
+    public MethodParameterVisitor(TypeSpecVisitor typeSpecVisitor) {
+        this.typeSpecVisitor = typeSpecVisitor;
     }
 
     @Override
     public Parameter visitMethodParameterDef(ThoriumParser.MethodParameterDefContext ctx) {
         return new Parameter(
                 ctx.IDENTIFIER().getSymbol().getText(),
-                ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE)
+                ctx.typeSpec().accept(typeSpecVisitor)
         );
     }
 }

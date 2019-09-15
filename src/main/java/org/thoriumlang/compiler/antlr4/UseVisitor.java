@@ -25,12 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
-    public static final UseVisitor INSTANCE = new UseVisitor();
-
-    private UseVisitor() {
-        // nothing
-    }
-
     @Override
     public List<Use> visitUse(ThoriumParser.UseContext ctx) {
         if (ctx.baseFqIdentifier != null) {

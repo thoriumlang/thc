@@ -26,9 +26,25 @@ import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
     private final String namespace;
+    private final TypeDefVisitor typeDefVisitor;
+    private final ClassDefVisitor classDefVisitor;
+    private final UseVisitor useVisitor;
+
+    private RootVisitor(String namespace, TypeDefVisitor typeDefVisitor, ClassDefVisitor classDefVisitor,
+            UseVisitor useVisitor) {
+        this.namespace = namespace;
+        this.typeDefVisitor = typeDefVisitor;
+        this.classDefVisitor = classDefVisitor;
+        this.useVisitor = useVisitor;
+    }
 
     public RootVisitor(String namespace) {
-        this.namespace = namespace;
+        this(
+                namespace,
+                Factory.INSTANCE.typeDefVisitor(),
+                Factory.INSTANCE.classDefVisitor(),
+                Factory.INSTANCE.useVisitor()
+        );
     }
 
     @Override
@@ -37,14 +53,14 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
             return new Root(
                     namespace,
                     visitUse(ctx),
-                    ctx.typeDef().accept(TypeDefVisitor.INSTANCE)
+                    ctx.typeDef().accept(typeDefVisitor)
             );
         }
         if (ctx.classDef() != null) {
             return new Root(
                     namespace,
                     visitUse(ctx),
-                    ctx.classDef().accept(ClassDefVisitor.INSTANCE)
+                    ctx.classDef().accept(classDefVisitor)
             );
         }
         throw new IllegalStateException("No root node found");
@@ -52,7 +68,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
 
     private List<Use> visitUse(ThoriumParser.RootContext ctx) {
         return ctx.use().stream()
-                .map(u -> u.accept(UseVisitor.INSTANCE))
+                .map(u -> u.accept(useVisitor))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

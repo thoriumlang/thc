@@ -28,10 +28,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
-    public static final ClassDefVisitor INSTANCE = new ClassDefVisitor();
+    private final MethodDefVisitor methodDefVisitor;
+    private final AttributeDefVisitor attributeDefVisitor;
+    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final TypeSpecVisitor typeSpecVisitor;
 
-    private ClassDefVisitor() {
-        // nothing
+    public ClassDefVisitor(MethodDefVisitor methodDefVisitor,
+            AttributeDefVisitor attributeDefVisitor,
+            TypeParameterDefVisitor typeParameterDefVisitor,
+            TypeSpecVisitor typeSpecVisitor) {
+        this.methodDefVisitor = methodDefVisitor;
+        this.attributeDefVisitor = attributeDefVisitor;
+        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.typeSpecVisitor = typeSpecVisitor;
     }
 
     @Override
@@ -44,12 +53,12 @@ public class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                 ctx.methodDef() == null ?
                         Collections.emptyList() :
                         ctx.methodDef().stream()
-                                .map(m -> m.accept(MethodDefVisitor.INSTANCE))
+                                .map(m -> m.accept(methodDefVisitor))
                                 .collect(Collectors.toList()),
                 ctx.attributeDef() == null ?
                         Collections.emptyList() :
                         ctx.attributeDef().stream()
-                                .map(a -> a.accept(AttributeDefVisitor.INSTANCE))
+                                .map(a -> a.accept(attributeDefVisitor))
                                 .collect(Collectors.toList())
         );
     }
@@ -63,12 +72,12 @@ public class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
     private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {
         return (ctx == null || ctx.IDENTIFIER() == null) ?
                 Collections.emptyList() :
-                ctx.accept(TypeParameterDefVisitor.INSTANCE);
+                ctx.accept(typeParameterDefVisitor);
     }
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
         return ctx == null ?
                 TypeSpecSimple.OBJECT :
-                ctx.typeSpec().accept(TypeSpecVisitor.INSTANCE);
+                ctx.typeSpec().accept(typeSpecVisitor);
     }
 }
