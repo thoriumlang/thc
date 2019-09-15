@@ -143,9 +143,9 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeInferred() {
-        TypeSpecInferred typeSpec = TypeSpecInferred.INSTANCE;
+        TypeSpecInferred typeSpec = new TypeSpecInferred();
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isNotEqualTo(typeSpec);
     }
 
     @Test

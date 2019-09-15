@@ -59,7 +59,7 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                 .map(p -> p.accept(methodParameterVisitor))
                                 .collect(Collectors.toList()),
                         ctx.typeSpec() == null ?
-                                TypeSpecInferred.INSTANCE :
+                                new TypeSpecInferred() :
                                 ctx.typeSpec().accept(typeSpecVisitor)
                 ),
                 Lists.append(

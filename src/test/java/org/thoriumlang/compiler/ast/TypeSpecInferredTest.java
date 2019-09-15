@@ -21,8 +21,9 @@ import org.junit.jupiter.api.Test;
 class TypeSpecInferredTest {
     @Test
     void accept() {
+
         Assertions.assertThat(
-                TypeSpecInferred.INSTANCE.accept(new BaseVisitor<String>() {
+                new TypeSpecInferred().accept(new BaseVisitor<String>() {
                     @Override
                     public String visitTypeInferred() {
                         return "ok";
@@ -34,7 +35,7 @@ class TypeSpecInferredTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                TypeSpecInferred.INSTANCE.toString()
+                new TypeSpecInferred().toString()
         ).isEqualTo("inferred");
     }
 }

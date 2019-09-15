@@ -16,12 +16,6 @@
 package org.thoriumlang.compiler.ast;
 
 public class TypeSpecInferred implements TypeSpec {
-    public static final TypeSpecInferred INSTANCE = new TypeSpecInferred();
-
-    private TypeSpecInferred() {
-        // nothing
-    }
-
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visitTypeInferred();

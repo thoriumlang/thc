@@ -123,7 +123,7 @@ public abstract class IdentityVisitor implements Visitor<Node> {
 
     @Override
     public Node visitTypeInferred() {
-        return TypeSpecInferred.INSTANCE;
+        return new TypeSpecInferred();
     }
 
     @Override
