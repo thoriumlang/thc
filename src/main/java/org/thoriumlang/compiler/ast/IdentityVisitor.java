@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public abstract class IdentityVisitor implements Visitor<Visitable> {
     @Override
-    public Visitable visitRoot(String namespace, Type type, List<Use> uses) {
+    public Visitable visitRoot(String namespace, List<Use> uses, Type type) {
         return new Root(
                 namespace,
                 uses.stream()
@@ -31,7 +31,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitRoot(String namespace, Class clazz, List<Use> uses) {
+    public Visitable visitRoot(String namespace, List<Use> uses, Class clazz) {
         return new Root(
                 namespace,
                 uses.stream()

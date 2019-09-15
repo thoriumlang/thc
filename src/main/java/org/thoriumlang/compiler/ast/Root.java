@@ -106,7 +106,7 @@ public class Root implements Visitable {
         }
 
         public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
-            return visitor.visitRoot(namespace, (Type) topLevel, uses);
+            return visitor.visitRoot(namespace, uses, (Type) topLevel);
         }
     }
 
@@ -118,7 +118,7 @@ public class Root implements Visitable {
         }
 
         public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
-            return visitor.visitRoot(namespace, (Class) topLevel, uses);
+            return visitor.visitRoot(namespace, uses, (Class) topLevel);
         }
     }
 }

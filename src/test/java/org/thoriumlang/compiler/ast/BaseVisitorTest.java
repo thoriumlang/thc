@@ -22,7 +22,7 @@ class BaseVisitorTest {
     @Test
     void visitRoot_type() {
         Assertions.assertThat(
-                visitor().visitRoot(null, (Type) null, null)
+                visitor().visitRoot(null, null, (Type) null)
         )
                 .isEqualTo(null);
     }
@@ -30,7 +30,7 @@ class BaseVisitorTest {
     @Test
     void visitRoot_clazz() {
         Assertions.assertThat(
-                visitor().visitRoot(null, (Class) null, null)
+                visitor().visitRoot(null, null, (Class) null)
         )
                 .isEqualTo(null);
     }

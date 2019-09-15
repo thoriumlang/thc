@@ -109,7 +109,7 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(String namespace, Type type, List<Use> uses) {
+                    public String visitRoot(String namespace, List<Use> uses, Type type) {
                         return namespace + ":" + uses + ":" + type;
                     }
                 })
@@ -132,7 +132,7 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(String namespace, Class clazz, List<Use> uses) {
+                    public String visitRoot(String namespace, List<Use> uses, Class clazz) {
                         return namespace + ":" + uses + ":" + clazz;
                     }
                 })
