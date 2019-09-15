@@ -19,10 +19,10 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Parameter;
 
-public class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
+class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
     private final TypeSpecVisitor typeSpecVisitor;
 
-    public MethodParameterVisitor(TypeSpecVisitor typeSpecVisitor) {
+    MethodParameterVisitor(TypeSpecVisitor typeSpecVisitor) {
         this.typeSpecVisitor = typeSpecVisitor;
     }
 

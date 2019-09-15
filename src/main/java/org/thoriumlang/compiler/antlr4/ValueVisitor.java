@@ -38,14 +38,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ValueVisitor extends ThoriumBaseVisitor<Value> {
+ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    public ValueVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+     ValueVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,

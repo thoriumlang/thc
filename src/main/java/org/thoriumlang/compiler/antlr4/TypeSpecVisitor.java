@@ -30,10 +30,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
+ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     private final FqIdentifierVisitor fqIdentifierVisitor;
 
-    public TypeSpecVisitor(FqIdentifierVisitor fqIdentifierVisitor) {
+     TypeSpecVisitor(FqIdentifierVisitor fqIdentifierVisitor) {
         this.fqIdentifierVisitor = fqIdentifierVisitor;
     }
 

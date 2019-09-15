@@ -19,15 +19,15 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Statement;
 
-public class StatementVisitor extends ThoriumBaseVisitor<Statement> {
+class StatementVisitor extends ThoriumBaseVisitor<Statement> {
     private final boolean last;
     private ValueVisitor valueVisitor;
 
-    public StatementVisitor(boolean last) {
+    StatementVisitor(boolean last) {
         this.last = last;
     }
 
-    public void setValueVisitor(ValueVisitor valueVisitor) {
+    void setValueVisitor(ValueVisitor valueVisitor) {
         this.valueVisitor = valueVisitor;
     }
 

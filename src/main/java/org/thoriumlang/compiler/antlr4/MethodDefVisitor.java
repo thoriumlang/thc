@@ -27,14 +27,14 @@ import org.thoriumlang.compiler.collections.Lists;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
+class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    public MethodDefVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+    MethodDefVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,

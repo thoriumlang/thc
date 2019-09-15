@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
+ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
     @Override
     public List<Use> visitUse(ThoriumParser.UseContext ctx) {
         if (ctx.baseFqIdentifier != null) {

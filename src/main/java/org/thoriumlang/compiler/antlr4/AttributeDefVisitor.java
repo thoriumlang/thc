@@ -23,11 +23,11 @@ import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
 
-public class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
+class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
     private final TypeSpecVisitor typeSpecVisitor;
     private final ValueVisitor valueVisitor;
 
-    public AttributeDefVisitor(TypeSpecVisitor typeSpecVisitor, ValueVisitor valueVisitor) {
+    AttributeDefVisitor(TypeSpecVisitor typeSpecVisitor, ValueVisitor valueVisitor) {
         this.typeSpecVisitor = typeSpecVisitor;
         this.valueVisitor = valueVisitor;
     }

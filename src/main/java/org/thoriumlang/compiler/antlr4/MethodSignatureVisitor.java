@@ -25,12 +25,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
+class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
 
-    public MethodSignatureVisitor(MethodParameterVisitor methodParameterVisitor,
+    MethodSignatureVisitor(MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             TypeParameterDefVisitor typeParameterDefVisitor) {
         this.methodParameterVisitor = methodParameterVisitor;
