@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class Use implements Visitable {
+public class Use implements Node {
     private final String from;
     private final String to;
 

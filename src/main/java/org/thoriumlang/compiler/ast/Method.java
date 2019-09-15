@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Method implements Visitable {
+public class Method implements Node {
     private final MethodSignature signature;
     private final List<Statement> statements;
 

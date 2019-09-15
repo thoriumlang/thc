@@ -15,5 +15,5 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public interface Attribute extends Visitable {
+public interface Attribute extends Node {
 }

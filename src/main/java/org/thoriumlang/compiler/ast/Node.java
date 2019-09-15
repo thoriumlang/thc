@@ -15,6 +15,6 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public interface Visitable {
+public interface Node {
     <T> T accept(Visitor<? extends T> visitor);
 }

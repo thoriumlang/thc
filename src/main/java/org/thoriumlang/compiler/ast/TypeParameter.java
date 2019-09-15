@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class TypeParameter implements Visitable {
+public class TypeParameter implements Node {
     private final String name;
 
     public TypeParameter(String name) {

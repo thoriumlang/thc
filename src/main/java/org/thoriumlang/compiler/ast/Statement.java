@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public class Statement implements Visitable {
+public class Statement implements Node {
     public static final Statement NONE_LAST_STATEMENT = new Statement(NoneValue.INSTANCE, true);
     private final Value value;
     private final boolean last;

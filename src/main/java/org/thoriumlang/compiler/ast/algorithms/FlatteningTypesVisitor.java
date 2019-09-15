@@ -20,7 +20,7 @@ import org.thoriumlang.compiler.ast.IdentityVisitor;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.Visitable;
+import org.thoriumlang.compiler.ast.Node;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 public class FlatteningTypesVisitor extends IdentityVisitor {
     @Override
-    public Visitable visitTypeIntersection(List<TypeSpec> types) {
+    public Node visitTypeIntersection(List<TypeSpec> types) {
         return new TypeSpecIntersection(
                 flattenTypeIntersection(types)
         );
@@ -52,7 +52,7 @@ public class FlatteningTypesVisitor extends IdentityVisitor {
     }
 
     @Override
-    public Visitable visitTypeUnion(List<TypeSpec> types) {
+    public Node visitTypeUnion(List<TypeSpec> types) {
         return new TypeSpecUnion(
                 flattenTypeUnion(types)
         );

@@ -37,7 +37,6 @@ public class StringValue implements Value {
         return String.format("\"%s\"", value);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

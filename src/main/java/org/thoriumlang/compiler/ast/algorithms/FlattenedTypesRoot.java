@@ -16,10 +16,10 @@
 package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Visitable;
+import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.Visitor;
 
-public class FlattenedTypesRoot implements Visitable {
+public class FlattenedTypesRoot implements Node {
     private final Root root;
     private Root flattenedTypesRootCache;
 

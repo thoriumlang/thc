@@ -15,5 +15,5 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public interface TypeSpec extends Visitable {
+public interface TypeSpec extends Node {
 }

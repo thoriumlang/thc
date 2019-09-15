@@ -18,9 +18,9 @@ package org.thoriumlang.compiler.ast;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class IdentityVisitor implements Visitor<Visitable> {
+public abstract class IdentityVisitor implements Visitor<Node> {
     @Override
-    public Visitable visitRoot(String namespace, List<Use> uses, Type type) {
+    public Node visitRoot(String namespace, List<Use> uses, Type type) {
         return new Root(
                 namespace,
                 uses.stream()
@@ -31,7 +31,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitRoot(String namespace, List<Use> uses, Class clazz) {
+    public Node visitRoot(String namespace, List<Use> uses, Class clazz) {
         return new Root(
                 namespace,
                 uses.stream()
@@ -42,14 +42,14 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitUse(String from, String to) {
+    public Node visitUse(String from, String to) {
         return new Use(
                 from, to
         );
     }
 
     @Override
-    public Visitable visitType(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitType(Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<MethodSignature> methods) {
         return new Type(
                 visibility,
@@ -65,7 +65,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
         return new Class(
                 visibility,
@@ -84,7 +84,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeIntersection(List<TypeSpec> types) {
+    public Node visitTypeIntersection(List<TypeSpec> types) {
         return new TypeSpecIntersection(
                 types.stream()
                         .map(t -> (TypeSpec) t.accept(this))
@@ -93,7 +93,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeUnion(List<TypeSpec> types) {
+    public Node visitTypeUnion(List<TypeSpec> types) {
         return new TypeSpecUnion(
                 types.stream()
                         .map(t -> (TypeSpec) t.accept(this))
@@ -102,7 +102,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeSingle(String type, List<TypeSpec> arguments) {
+    public Node visitTypeSingle(String type, List<TypeSpec> arguments) {
         return new TypeSpecSimple(
                 type,
                 arguments.stream()
@@ -112,7 +112,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+    public Node visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
         return new TypeSpecFunction(
                 arguments.stream()
                         .map(t -> (TypeSpec) t.accept(this))
@@ -122,12 +122,12 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeInferred() {
+    public Node visitTypeInferred() {
         return TypeSpecInferred.INSTANCE;
     }
 
     @Override
-    public Visitable visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return new MethodSignature(
                 visibility,
@@ -143,7 +143,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitParameter(String name, TypeSpec type) {
+    public Node visitParameter(String name, TypeSpec type) {
         return new Parameter(
                 name,
                 (TypeSpec) type.accept(this)
@@ -151,37 +151,37 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitTypeParameter(String name) {
+    public Node visitTypeParameter(String name) {
         return new TypeParameter(name);
     }
 
     @Override
-    public Visitable visitStringValue(String value) {
+    public Node visitStringValue(String value) {
         return new StringValue(value);
     }
 
     @Override
-    public Visitable visitNumberValue(String value) {
+    public Node visitNumberValue(String value) {
         return new NumberValue(value);
     }
 
     @Override
-    public Visitable visitBooleanValue(boolean value) {
+    public Node visitBooleanValue(boolean value) {
         return value ? BooleanValue.TRUE : BooleanValue.FALSE;
     }
 
     @Override
-    public Visitable visitNoneValue() {
+    public Node visitNoneValue() {
         return NoneValue.INSTANCE;
     }
 
     @Override
-    public Visitable visitIdentifierValue(String value) {
+    public Node visitIdentifierValue(String value) {
         return new IdentifierValue(value);
     }
 
     @Override
-    public Visitable visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public Node visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
         return new VarAssignmentValue(
                 identifier,
                 (TypeSpec) type.accept(this),
@@ -190,7 +190,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public Node visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
         return new ValAssignmentValue(
                 identifier,
                 (TypeSpec) type.accept(this),
@@ -199,7 +199,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+    public Node visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
         return new IndirectAssignmentValue(
                 (Value) indirectValue.accept(this),
                 identifier,
@@ -208,7 +208,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+    public Node visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
         return new MethodCallValue(
                 methodName,
@@ -222,7 +222,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitNestedValue(Value outer, Value inner) {
+    public Node visitNestedValue(Value outer, Value inner) {
         return new NestedValue(
                 (Value) outer.accept(this),
                 (Value) inner.accept(this)
@@ -230,7 +230,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
+    public Node visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
         return new FunctionValue(
                 typeParameters.stream()
@@ -247,7 +247,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitStatement(Value value, boolean isLast) {
+    public Node visitStatement(Value value, boolean isLast) {
         return new Statement(
                 (Value) value.accept(this),
                 isLast
@@ -255,7 +255,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitMethod(MethodSignature signature, List<Statement> statements) {
+    public Node visitMethod(MethodSignature signature, List<Statement> statements) {
         return new Method(
                 (MethodSignature) signature.accept(this),
                 statements.stream()
@@ -265,7 +265,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitVarAttribute(String identifier, TypeSpec type, Value value) {
+    public Node visitVarAttribute(String identifier, TypeSpec type, Value value) {
         return new VarAttribute(
                 identifier,
                 (TypeSpec) type.accept(this),
@@ -274,7 +274,7 @@ public abstract class IdentityVisitor implements Visitor<Visitable> {
     }
 
     @Override
-    public Visitable visitValAttribute(String identifier, TypeSpec type, Value value) {
+    public Node visitValAttribute(String identifier, TypeSpec type, Value value) {
         return new ValAttribute(
                 identifier,
                 (TypeSpec) type.accept(this),

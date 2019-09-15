@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Root implements Visitable {
+public class Root implements Node {
     private final String namespace;
     private final List<Use> uses;
-    private final TopLevel topLevel;
+    private final TopLevelNode topLevelNode;
     private final TopLevelVisitor topLevelVisitor;
 
     public Root(String namespace, List<Use> uses, Class topLevel) {
@@ -37,7 +37,7 @@ public class Root implements Visitable {
         }
         this.namespace = namespace;
         this.uses = uses;
-        this.topLevel = topLevel;
+        this.topLevelNode = topLevel;
         this.topLevelVisitor = TopLevelClassVisitor.INSTANCE;
     }
 
@@ -53,13 +53,13 @@ public class Root implements Visitable {
         }
         this.namespace = namespace;
         this.uses = uses;
-        this.topLevel = topLevel;
+        this.topLevelNode = topLevel;
         this.topLevelVisitor = TopLevelTypeVisitor.INSTANCE;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return topLevelVisitor.visit(visitor, namespace, uses, topLevel);
+        return topLevelVisitor.visit(visitor, namespace, uses, topLevelNode);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Root implements Visitable {
         return String.format("NAMESPACE %s%n%s%s",
                 namespace,
                 use.isEmpty() ? "" : String.format("%s%n", use),
-                topLevel.toString()
+                topLevelNode.toString()
         );
     }
 
@@ -86,16 +86,16 @@ public class Root implements Visitable {
         Root root = (Root) o;
         return namespace.equals(root.namespace) &&
                 uses.equals(root.uses) &&
-                topLevel.equals(root.topLevel);
+                topLevelNode.equals(root.topLevelNode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace, uses, topLevel);
+        return Objects.hash(namespace, uses, topLevelNode);
     }
 
     private interface TopLevelVisitor {
-        <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel);
+        <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode);
     }
 
     private static class TopLevelTypeVisitor implements TopLevelVisitor {
@@ -105,8 +105,8 @@ public class Root implements Visitable {
             // singleton
         }
 
-        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
-            return visitor.visitRoot(namespace, uses, (Type) topLevel);
+        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode) {
+            return visitor.visitRoot(namespace, uses, (Type) topLevelNode);
         }
     }
 
@@ -117,8 +117,8 @@ public class Root implements Visitable {
             // singleton
         }
 
-        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevel topLevel) {
-            return visitor.visitRoot(namespace, uses, (Class) topLevel);
+        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode) {
+            return visitor.visitRoot(namespace, uses, (Class) topLevelNode);
         }
     }
 }

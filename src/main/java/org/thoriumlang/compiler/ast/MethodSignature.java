@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MethodSignature implements Visitable {
+public class MethodSignature implements Node {
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
