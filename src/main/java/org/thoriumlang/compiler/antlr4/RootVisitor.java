@@ -30,21 +30,52 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
     private final ClassDefVisitor classDefVisitor;
     private final UseVisitor useVisitor;
 
-    private RootVisitor(String namespace, TypeDefVisitor typeDefVisitor, ClassDefVisitor classDefVisitor,
-            UseVisitor useVisitor) {
-        this.namespace = namespace;
-        this.typeDefVisitor = typeDefVisitor;
-        this.classDefVisitor = classDefVisitor;
-        this.useVisitor = useVisitor;
-    }
-
     public RootVisitor(String namespace) {
-        this(
-                namespace,
-                Factory.INSTANCE.typeDefVisitor(),
-                Factory.INSTANCE.classDefVisitor(),
-                Factory.INSTANCE.useVisitor()
+        TypeSpecVisitor typeSpecVisitor = new TypeSpecVisitor(
+                new FqIdentifierVisitor()
         );
+        TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor();
+        MethodParameterVisitor methodParameterVisitor = new MethodParameterVisitor(
+                typeSpecVisitor
+        );
+        StatementVisitor statementVisitorForNotLast = new StatementVisitor(false);
+        StatementVisitor statementVisitorForLast = new StatementVisitor(true);
+        ValueVisitor valueVisitor = new ValueVisitor(
+                typeParameterDefVisitor,
+                methodParameterVisitor,
+                typeSpecVisitor,
+                statementVisitorForNotLast,
+                statementVisitorForLast
+        );
+        statementVisitorForNotLast.setValueVisitor(valueVisitor);
+        statementVisitorForLast.setValueVisitor(valueVisitor);
+
+        this.namespace = namespace;
+        this.typeDefVisitor = new TypeDefVisitor(
+                new MethodSignatureVisitor(
+                        methodParameterVisitor,
+                        typeSpecVisitor,
+                        typeParameterDefVisitor
+                ),
+                typeParameterDefVisitor,
+                typeSpecVisitor
+        );
+        this.classDefVisitor = new ClassDefVisitor(
+                new MethodDefVisitor(
+                        typeParameterDefVisitor,
+                        methodParameterVisitor,
+                        typeSpecVisitor,
+                        statementVisitorForNotLast,
+                        statementVisitorForLast
+                ),
+                new AttributeDefVisitor(
+                        typeSpecVisitor,
+                        valueVisitor
+                ),
+                typeParameterDefVisitor,
+                typeSpecVisitor
+        );
+        this.useVisitor = new UseVisitor();
     }
 
     @Override
