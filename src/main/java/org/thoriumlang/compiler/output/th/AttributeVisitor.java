@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Value;
 
@@ -29,7 +30,7 @@ class AttributeVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitVarAttribute(String identifier, TypeSpec type, Value value) {
+    public String visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return String.format("var %s%s = %s",
                 identifier,
                 type(type),
@@ -45,7 +46,7 @@ class AttributeVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitValAttribute(String identifier, TypeSpec type, Value value) {
+    public String visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return String.format("val %s%s = %s",
                 identifier,
                 type(type),

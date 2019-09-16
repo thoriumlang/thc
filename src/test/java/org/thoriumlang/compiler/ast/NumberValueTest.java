@@ -16,13 +16,34 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NumberValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new NumberValue(null, "1");
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_value() {
         try {
-            new NumberValue(null);
+            new NumberValue(nodeIdGenerator.next(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,20 +56,20 @@ class NumberValueTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new NumberValue("1")
+                new NumberValue(nodeIdGenerator.next(), "1")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNumberValue(String value) {
-                                return value;
+                            public String visitNumberValue(NodeId nodeId, String value) {
+                                return String.format("%s:%s", nodeId.toString(), value);
                             }
                         })
-        ).isEqualTo("1");
+        ).isEqualTo("#1:1");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new NumberValue("1").toString()
+                new NumberValue(nodeIdGenerator.next(), "1").toString()
         ).isEqualTo("1");
     }
 }

@@ -18,11 +18,15 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class IndirectAssignmentValue implements Value {
+    private final NodeId nodeId;
     private final Value indirectValue;
     private final String identifier;
     private final Value value;
 
-    public IndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+    public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (indirectValue == null) {
             throw new NullPointerException("indirectValue cannot be null");
         }
@@ -32,6 +36,7 @@ public class IndirectAssignmentValue implements Value {
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
+        this.nodeId = nodeId;
         this.indirectValue = indirectValue;
         this.identifier = identifier;
         this.value = value;
@@ -39,7 +44,7 @@ public class IndirectAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitIndirectAssignmentValue(indirectValue, identifier, value);
+        return visitor.visitIndirectAssignmentValue(nodeId, indirectValue, identifier, value);
     }
 
     @Override
@@ -61,13 +66,14 @@ public class IndirectAssignmentValue implements Value {
             return false;
         }
         IndirectAssignmentValue that = (IndirectAssignmentValue) o;
-        return indirectValue.equals(that.indirectValue) &&
+        return nodeId.equals(that.nodeId) &&
+                indirectValue.equals(that.indirectValue) &&
                 identifier.equals(that.identifier) &&
                 value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(indirectValue, identifier, value);
+        return Objects.hash(nodeId, indirectValue, identifier, value);
     }
 }

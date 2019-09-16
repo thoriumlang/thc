@@ -16,15 +16,46 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 class ValAssignmentValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new ValAssignmentValue(
+                    null,
+                    "identifier",
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    NoneValue.INSTANCE
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_identifier() {
         try {
-            new ValAssignmentValue(null, new TypeSpecSimple("T", Collections.emptyList()), NoneValue.INSTANCE);
+            new ValAssignmentValue(
+                    nodeIdGenerator.next(),
+                    null,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    NoneValue.INSTANCE
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -37,7 +68,12 @@ class ValAssignmentValueTest {
     @Test
     void constructor_type() {
         try {
-            new ValAssignmentValue("identifier", null, NoneValue.INSTANCE);
+            new ValAssignmentValue(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    null,
+                    NoneValue.INSTANCE
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -50,7 +86,8 @@ class ValAssignmentValueTest {
     @Test
     void constructor_value() {
         try {
-            new ValAssignmentValue("identifier", new TypeSpecSimple("T", Collections.emptyList()), null);
+            new ValAssignmentValue(nodeIdGenerator.next(), "identifier",
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -64,25 +101,33 @@ class ValAssignmentValueTest {
     void accept() {
         Assertions.assertThat(
                 new ValAssignmentValue(
+                        nodeIdGenerator.next(),
                         "identifier",
-                        new TypeSpecSimple("T", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                         NoneValue.INSTANCE
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
-                                return String.format("%s:%s:%s", type.toString(), identifier, value.toString());
+                            public String visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type,
+                                    Value value) {
+                                return String.format("%s:%s:%s:%s",
+                                        nodeId,
+                                        type.toString(),
+                                        identifier,
+                                        value.toString()
+                                );
                             }
                         })
-        ).isEqualTo("T[]:identifier:none");
+        ).isEqualTo("#1:T[]:identifier:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new ValAssignmentValue(
+                        nodeIdGenerator.next(),
                         "identifier",
-                        new TypeSpecSimple("T", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                         NoneValue.INSTANCE
                 ).toString()
         ).isEqualTo("VAL T[]:identifier = none");

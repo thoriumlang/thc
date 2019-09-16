@@ -16,13 +16,34 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TypeParameterTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new TypeParameter(null, "name");
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_name() {
         try {
-            new TypeParameter(null);
+            new TypeParameter(nodeIdGenerator.next(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,7 +56,7 @@ class TypeParameterTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                new TypeParameter("A").toString()
+                new TypeParameter(nodeIdGenerator.next(), "A").toString()
         ).isEqualTo("A");
     }
 }

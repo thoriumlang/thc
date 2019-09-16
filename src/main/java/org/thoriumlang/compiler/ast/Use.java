@@ -18,31 +18,40 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class Use implements Node {
+    private final NodeId nodeId;
     private final String from;
     private final String to;
 
-    public Use(String from, String to) {
+    public Use(NodeId nodeId, String from, String to) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (from == null) {
             throw new NullPointerException("from cannot be null");
         }
         if (to == null) {
             throw new NullPointerException("to cannot be null");
         }
+        this.nodeId = nodeId;
         this.from = from;
         this.to = to;
     }
 
-    public Use(String from) {
+    public Use(NodeId nodeId, String from) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (from == null) {
             throw new NullPointerException("from cannot be null");
         }
+        this.nodeId = nodeId;
         this.from = from;
         this.to = from.substring(from.lastIndexOf('.') + 1);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitUse(from, to);
+        return visitor.visitUse(nodeId, from, to);
     }
 
     @Override
@@ -59,12 +68,13 @@ public class Use implements Node {
             return false;
         }
         Use use = (Use) o;
-        return from.equals(use.from) &&
+        return nodeId.equals(use.nodeId) &&
+                from.equals(use.from) &&
                 to.equals(use.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(from, to);
+        return Objects.hash(nodeId, from, to);
     }
 }

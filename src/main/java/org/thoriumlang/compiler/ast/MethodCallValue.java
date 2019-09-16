@@ -20,11 +20,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MethodCallValue implements Value {
+    private final NodeId nodeId;
     private final String methodName;
     private final List<TypeSpec> typeArguments;
     private final List<Value> methodArguments;
 
-    public MethodCallValue(String methodName, List<TypeSpec> typeArguments, List<Value> methodArguments) {
+    public MethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
+            List<Value> methodArguments) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (methodName == null) {
             throw new NullPointerException("methodName cannot be null");
         }
@@ -34,6 +39,7 @@ public class MethodCallValue implements Value {
         if (methodArguments == null) {
             throw new NullPointerException("methodArguments cannot be null");
         }
+        this.nodeId = nodeId;
         this.methodName = methodName;
         this.typeArguments = typeArguments;
         this.methodArguments = methodArguments;
@@ -41,7 +47,7 @@ public class MethodCallValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodCallValue(methodName, typeArguments, methodArguments);
+        return visitor.visitMethodCallValue(nodeId, methodName, typeArguments, methodArguments);
     }
 
     @Override
@@ -67,13 +73,14 @@ public class MethodCallValue implements Value {
             return false;
         }
         MethodCallValue that = (MethodCallValue) o;
-        return methodName.equals(that.methodName) &&
+        return nodeId.equals(that.nodeId) &&
+                methodName.equals(that.methodName) &&
                 typeArguments.equals(that.typeArguments) &&
                 methodArguments.equals(that.methodArguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(methodName, typeArguments, methodArguments);
+        return Objects.hash(nodeId, methodName, typeArguments, methodArguments);
     }
 }

@@ -16,16 +16,37 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
 class MethodCallValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new MethodCallValue(null, "methodName", Collections.emptyList(), Collections.emptyList());
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_methodName() {
         try {
-            new MethodCallValue(null, Collections.emptyList(), Collections.emptyList());
+            new MethodCallValue(nodeIdGenerator.next(), null, Collections.emptyList(), Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -38,7 +59,7 @@ class MethodCallValueTest {
     @Test
     void constructor_typeArguments() {
         try {
-            new MethodCallValue("methodName", null, Collections.emptyList());
+            new MethodCallValue(nodeIdGenerator.next(), "methodName", null, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -51,7 +72,7 @@ class MethodCallValueTest {
     @Test
     void constructor_methodArguments() {
         try {
-            new MethodCallValue("methodName", Collections.emptyList(), null);
+            new MethodCallValue(nodeIdGenerator.next(), "methodName", Collections.emptyList(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -65,31 +86,39 @@ class MethodCallValueTest {
     void accept() {
         Assertions.assertThat(
                 new MethodCallValue(
+                        nodeIdGenerator.next(),
                         "methodName",
-                        Collections.singletonList(new TypeSpecSimple("T", Collections.emptyList())),
+                        Collections.singletonList(
+                                new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
+                        ),
                         Collections.singletonList(NoneValue.INSTANCE)
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+                            public String visitMethodCallValue(NodeId nodeId, String methodName,
+                                    List<TypeSpec> typeArguments,
                                     List<Value> methodArguments) {
                                 return String.format(
-                                        "%s:%s:%s",
+                                        "%s:%s:%s:%s",
+                                        nodeId.toString(),
                                         methodName,
                                         typeArguments,
                                         methodArguments
                                 );
                             }
                         })
-        ).isEqualTo("methodName:[T[]]:[none]");
+        ).isEqualTo("#1:methodName:[T[]]:[none]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new MethodCallValue(
+                        nodeIdGenerator.next(),
                         "methodName",
-                        Collections.singletonList(new TypeSpecSimple("T", Collections.emptyList())),
+                        Collections.singletonList(
+                                new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
+                        ),
                         Collections.singletonList(NoneValue.INSTANCE)
                 ).toString()
         ).isEqualTo("methodName[T[]](none)");

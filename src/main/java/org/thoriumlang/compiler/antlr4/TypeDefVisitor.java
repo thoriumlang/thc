@@ -17,24 +17,27 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
- class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
+class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final MethodSignatureVisitor methodSignatureVisitor;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
 
-     TypeDefVisitor(MethodSignatureVisitor methodSignatureVisitor,
+    TypeDefVisitor(NodeIdGenerator nodeIdGenerator,
+            MethodSignatureVisitor methodSignatureVisitor,
             TypeParameterDefVisitor typeParameterDefVisitor,
             TypeSpecVisitor typeSpecVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.methodSignatureVisitor = methodSignatureVisitor;
         this.typeParameterDefVisitor = typeParameterDefVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -43,6 +46,7 @@ import java.util.stream.Collectors;
     @Override
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
         return new Type(
+                nodeIdGenerator.next(),
                 visibility(ctx),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 typeParameters(ctx.typeParameterDef()),
@@ -68,7 +72,7 @@ import java.util.stream.Collectors;
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
         if (ctx == null) {
-            return TypeSpecSimple.OBJECT;
+            return typeSpecVisitor.object();
         }
         return ctx.typeSpec().accept(typeSpecVisitor);
     }

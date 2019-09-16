@@ -16,26 +16,34 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TypeSpecInferredTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
     void accept() {
 
         Assertions.assertThat(
-                new TypeSpecInferred().accept(new BaseVisitor<String>() {
+                new TypeSpecInferred(nodeIdGenerator.next()).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeInferred() {
-                        return "ok";
+                    public String visitTypeInferred(NodeId nodeId) {
+                        return nodeId.toString();
                     }
                 })
-        ).isEqualTo("ok");
+        ).isEqualTo("#1");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new TypeSpecInferred().toString()
+                new TypeSpecInferred(nodeIdGenerator.next()).toString()
         ).isEqualTo("inferred");
     }
 }

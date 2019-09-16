@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.Statement;
 
 import java.util.List;
@@ -32,7 +33,7 @@ class MethodVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethod(MethodSignature signature, List<Statement> statements) {
+    public String visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
         return String.format("%s {%n%s%n}",
                 signature.accept(methodSignatureVisitor),
                 statements.stream()

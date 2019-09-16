@@ -16,16 +16,46 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class TypeSpecUnionTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
-    void constructor() {
+    void constructor_nodeId() {
         try {
-            new TypeSpecUnion(null);
+            new TypeSpecUnion(
+                    null,
+                    Collections.singletonList(
+                            new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                    )
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
+    void constructor_types() {
+        try {
+            new TypeSpecUnion(
+                    nodeIdGenerator.next(),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -37,22 +67,34 @@ class TypeSpecUnionTest {
 
     @Test
     void accept() {
-        List<TypeSpec> typeSpecs = Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()));
         Assertions.assertThat(
-                new TypeSpecUnion(typeSpecs).accept(new BaseVisitor<List<TypeSpec>>() {
+                new TypeSpecUnion(
+                        nodeIdGenerator.next(),
+                        Collections.singletonList(
+                                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                        )
+                ).accept(new BaseVisitor<String>() {
                     @Override
-                    public List<TypeSpec> visitTypeUnion(List<TypeSpec> types) {
-                        return types;
+                    public String visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
+                        return String.format("%s:%s",
+                                nodeId,
+                                types.stream()
+                                        .map(TypeSpec::toString)
+                                        .collect(Collectors.joining(","))
+                        );
                     }
                 })
-        ).isEqualTo(typeSpecs);
+        ).isEqualTo("#1:type[]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new TypeSpecUnion(
-                        Collections.singletonList(new TypeSpecSimple("type", Collections.emptyList()))
+                        nodeIdGenerator.next(),
+                        Collections.singletonList(
+                                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                        )
                 ).toString()
         ).isEqualTo("u:[type[]]");
     }

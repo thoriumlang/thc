@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Use;
 
@@ -26,21 +27,27 @@ import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
     private final String namespace;
+    private final NodeIdGenerator nodeIdGenerator;
     private final TypeDefVisitor typeDefVisitor;
     private final ClassDefVisitor classDefVisitor;
     private final UseVisitor useVisitor;
 
-    public RootVisitor(String namespace) {
+    public RootVisitor(NodeIdGenerator nodeIdGenerator, String namespace) {
         TypeSpecVisitor typeSpecVisitor = new TypeSpecVisitor(
+                nodeIdGenerator,
                 new FqIdentifierVisitor()
         );
-        TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor();
+        TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor(
+                nodeIdGenerator
+        );
         MethodParameterVisitor methodParameterVisitor = new MethodParameterVisitor(
+                nodeIdGenerator,
                 typeSpecVisitor
         );
-        StatementVisitor statementVisitorForNotLast = new StatementVisitor(false);
-        StatementVisitor statementVisitorForLast = new StatementVisitor(true);
+        StatementVisitor statementVisitorForNotLast = new StatementVisitor(nodeIdGenerator, false);
+        StatementVisitor statementVisitorForLast = new StatementVisitor(nodeIdGenerator, true);
         ValueVisitor valueVisitor = new ValueVisitor(
+                nodeIdGenerator,
                 typeParameterDefVisitor,
                 methodParameterVisitor,
                 typeSpecVisitor,
@@ -50,9 +57,12 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
         statementVisitorForNotLast.setValueVisitor(valueVisitor);
         statementVisitorForLast.setValueVisitor(valueVisitor);
 
+        this.nodeIdGenerator = nodeIdGenerator;
         this.namespace = namespace;
         this.typeDefVisitor = new TypeDefVisitor(
+                nodeIdGenerator,
                 new MethodSignatureVisitor(
+                        nodeIdGenerator,
                         methodParameterVisitor,
                         typeSpecVisitor,
                         typeParameterDefVisitor
@@ -61,7 +71,9 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
                 typeSpecVisitor
         );
         this.classDefVisitor = new ClassDefVisitor(
+                nodeIdGenerator,
                 new MethodDefVisitor(
+                        nodeIdGenerator,
                         typeParameterDefVisitor,
                         methodParameterVisitor,
                         typeSpecVisitor,
@@ -69,19 +81,21 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
                         statementVisitorForLast
                 ),
                 new AttributeDefVisitor(
+                        nodeIdGenerator,
                         typeSpecVisitor,
                         valueVisitor
                 ),
                 typeParameterDefVisitor,
                 typeSpecVisitor
         );
-        this.useVisitor = new UseVisitor();
+        this.useVisitor = new UseVisitor(nodeIdGenerator);
     }
 
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
         if (ctx.typeDef() != null) {
             return new Root(
+                    nodeIdGenerator.next(),
                     namespace,
                     visitUse(ctx),
                     ctx.typeDef().accept(typeDefVisitor)
@@ -89,6 +103,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
         }
         if (ctx.classDef() != null) {
             return new Root(
+                    nodeIdGenerator.next(),
                     namespace,
                     visitUse(ctx),
                     ctx.classDef().accept(classDefVisitor)

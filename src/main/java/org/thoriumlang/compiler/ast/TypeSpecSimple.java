@@ -15,32 +15,33 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TypeSpecSimple implements TypeSpec {
-    public static final TypeSpec OBJECT = new TypeSpecSimple("org.thoriumlang.Object", Collections.emptyList());
-    public static final TypeSpec NONE = new TypeSpecSimple("org.thoriumlang.None", Collections.emptyList());
-
+    private final NodeId nodeId;
     private final String type;
     private final List<TypeSpec> arguments;
 
-    public TypeSpecSimple(String type, List<TypeSpec> arguments) {
+    public TypeSpecSimple(NodeId nodeId, String type, List<TypeSpec> arguments) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
         if (arguments == null) {
             throw new NullPointerException("arguments cannot be null");
         }
+        this.nodeId = nodeId;
         this.type = type;
         this.arguments = arguments;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeSingle(type, arguments);
+        return visitor.visitTypeSingle(nodeId, type, arguments);
     }
 
     @Override
@@ -63,12 +64,13 @@ public class TypeSpecSimple implements TypeSpec {
             return false;
         }
         TypeSpecSimple that = (TypeSpecSimple) o;
-        return type.equals(that.type) &&
+        return nodeId.equals(that.nodeId) &&
+                type.equals(that.type) &&
                 arguments.equals(that.arguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, arguments);
+        return Objects.hash(nodeId, type, arguments);
     }
 }

@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.Visibility;
@@ -34,7 +35,8 @@ class TypeVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
+    public String visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType,
             List<MethodSignature> methods) {
         return String.format(
                 "%s type %s%s : %s {%s}",

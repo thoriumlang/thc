@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
@@ -30,10 +31,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
- class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
+class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final FqIdentifierVisitor fqIdentifierVisitor;
 
-     TypeSpecVisitor(FqIdentifierVisitor fqIdentifierVisitor) {
+    TypeSpecVisitor(NodeIdGenerator nodeIdGenerator,
+            FqIdentifierVisitor fqIdentifierVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.fqIdentifierVisitor = fqIdentifierVisitor;
     }
 
@@ -63,6 +67,7 @@ import java.util.stream.Collectors;
     @Override
     public TypeSpec visitTypeSpecSimple(ThoriumParser.TypeSpecSimpleContext ctx) {
         return new TypeSpecSimple(
+                nodeIdGenerator.next(),
                 ctx.fqIdentifier().accept(fqIdentifierVisitor),
                 visitArguments(ctx.typeArguments())
         );
@@ -81,18 +86,20 @@ import java.util.stream.Collectors;
     public TypeSpec visitTypeSpecOptional(ThoriumParser.TypeSpecOptionalContext ctx) {
         if (ctx.typeSpecSimple() != null) {
             return new TypeSpecIntersection(
+                    nodeIdGenerator.next(),
                     Arrays.asList(
                             ctx.typeSpecSimple().accept(this),
-                            TypeSpecSimple.NONE
+                            none()
                     )
             );
         }
 
         if (ctx.typeSpec() != null) {
             return new TypeSpecIntersection(
+                    nodeIdGenerator.next(),
                     Arrays.asList(
                             ctx.typeSpec().accept(this),
-                            TypeSpecSimple.NONE
+                            none()
                     )
             );
         }
@@ -103,18 +110,20 @@ import java.util.stream.Collectors;
 
         if (ctx.typeSpecUnion() != null) {
             return new TypeSpecIntersection(
+                    nodeIdGenerator.next(),
                     Arrays.asList(
                             ctx.typeSpecUnion().accept(this),
-                            TypeSpecSimple.NONE
+                            none()
                     )
             );
         }
 
         if (ctx.typeSpecIntersection() != null) {
             return new TypeSpecIntersection(
+                    nodeIdGenerator.next(),
                     Arrays.asList(
                             ctx.typeSpecIntersection().accept(this),
-                            TypeSpecSimple.NONE
+                            none()
                     )
             );
         }
@@ -142,7 +151,10 @@ import java.util.stream.Collectors;
                         .collect(Collectors.toList())
         );
 
-        return new TypeSpecUnion(types);
+        return new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                types
+        );
     }
 
     private List<TypeSpec> visit(List<ThoriumParser.TypeSpecSimpleContext> specSimpleContexts,
@@ -189,14 +201,34 @@ import java.util.stream.Collectors;
                         .collect(Collectors.toList())
         );
 
-        return new TypeSpecIntersection(types);
+        return new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                types
+        );
     }
 
     @Override
     public TypeSpec visitTypeSpecFunction(ThoriumParser.TypeSpecFunctionContext ctx) {
         return new TypeSpecFunction(
+                nodeIdGenerator.next(),
                 visitArguments(ctx.typeArguments()),
                 ctx.typeSpec().accept(this)
+        );
+    }
+
+    public TypeSpecSimple object() {
+        return new TypeSpecSimple(
+                nodeIdGenerator.next(),
+                "org.thoriumlang.Object",
+                Collections.emptyList()
+        );
+    }
+
+    public TypeSpecSimple none() {
+        return new TypeSpecSimple(
+                nodeIdGenerator.next(),
+                "org.thoriumlang.None",
+                Collections.emptyList()
         );
     }
 }

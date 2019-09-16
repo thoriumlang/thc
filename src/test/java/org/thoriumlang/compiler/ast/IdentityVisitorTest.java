@@ -16,21 +16,35 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 class IdentityVisitorTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
     void visitRoot_type() {
         Root root = new Root(
+                nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(), // FIXME
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.PRIVATE,
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "Object",
+                                Collections.emptyList()
+                        ),
                         Collections.emptyList()
                 )
         );
@@ -41,13 +55,19 @@ class IdentityVisitorTest {
     @Test
     void visitRoot_clazz() {
         Root root = new Root(
+                nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(), // FIXME
                 new Class(
+                        nodeIdGenerator.next(),
                         Visibility.PRIVATE,
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "Object",
+                                Collections.emptyList()
+                        ),
                         Collections.emptyList(),
                         Collections.emptyList()
                 )
@@ -59,10 +79,15 @@ class IdentityVisitorTest {
     @Test
     void visitType() {
         Type type = new Type(
+                nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "name",
-                Collections.singletonList(new TypeParameter("T")),
-                TypeSpecSimple.OBJECT,
+                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "T")),
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "Object",
+                        Collections.emptyList()
+                ),
                 Collections.emptyList()
         );
         Assertions.assertThat(type.accept(visitor()))
@@ -72,21 +97,33 @@ class IdentityVisitorTest {
     @Test
     void visitClass() {
         Class clazz = new Class(
+                nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "name",
-                Collections.singletonList(new TypeParameter("T")),
-                TypeSpecSimple.OBJECT,
+                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "T")),
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "Object",
+                        Collections.emptyList()
+                ),
                 Collections.singletonList(
                         new Method(
+                                nodeIdGenerator.next(),
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.NAMESPACE,
                                         "method",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        TypeSpecSimple.NONE
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "None",
+                                                Collections.emptyList()
+                                        )
                                 ),
                                 Collections.singletonList(
                                         new Statement(
+                                                nodeIdGenerator.next(),
                                                 BooleanValue.TRUE,
                                                 false
                                         )
@@ -94,7 +131,16 @@ class IdentityVisitorTest {
                         )
                 ),
                 Collections.singletonList(
-                        new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
+                        new VarAttribute(
+                                nodeIdGenerator.next(),
+                                "attribute",
+                                new TypeSpecSimple(
+                                        nodeIdGenerator.next(),
+                                        "None",
+                                        Collections.emptyList()
+                                ),
+                                NoneValue.INSTANCE
+                        )
                 )
         );
         Assertions.assertThat(clazz.accept(visitor()))
@@ -103,20 +149,32 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeIntersection() {
-        TypeSpecIntersection typeSpec = new TypeSpecIntersection(Collections.singletonList(new TypeSpecSimple(
-                "type",
-                Collections.emptyList()
-        )));
+        TypeSpecIntersection typeSpec = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                Collections.singletonList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "type",
+                                Collections.emptyList()
+                        )
+                )
+        );
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
     }
 
     @Test
     void visitTypeUnion() {
-        TypeSpecUnion typeSpec = new TypeSpecUnion(Collections.singletonList(new TypeSpecSimple(
-                "type",
-                Collections.emptyList()
-        )));
+        TypeSpecUnion typeSpec = new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                Collections.singletonList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "type",
+                                Collections.emptyList()
+                        )
+                )
+        );
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
     }
@@ -124,6 +182,7 @@ class IdentityVisitorTest {
     @Test
     void visitTypeSingle() {
         TypeSpecSimple typeSpec = new TypeSpecSimple(
+                nodeIdGenerator.next(),
                 "type",
                 Collections.emptyList()
         );
@@ -134,8 +193,19 @@ class IdentityVisitorTest {
     @Test
     void visitTypeFunction() {
         TypeSpecFunction typeSpec = new TypeSpecFunction(
-                Collections.singletonList(TypeSpecSimple.NONE),
-                TypeSpecSimple.OBJECT
+                nodeIdGenerator.next(),
+                Collections.singletonList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "None",
+                                Collections.emptyList()
+                        )
+                ),
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "Object",
+                        Collections.emptyList()
+                )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isEqualTo(typeSpec);
@@ -143,7 +213,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitTypeInferred() {
-        TypeSpecInferred typeSpec = new TypeSpecInferred();
+        TypeSpecInferred typeSpec = new TypeSpecInferred(nodeIdGenerator.next());
         Assertions.assertThat(typeSpec.accept(visitor()))
                 .isNotEqualTo(typeSpec);
     }
@@ -151,11 +221,13 @@ class IdentityVisitorTest {
     @Test
     void visitMethodSignature() {
         MethodSignature methodSignature = new MethodSignature(
+                nodeIdGenerator.next(),
                 Visibility.PRIVATE,
                 "name",
                 Collections.emptyList(),
                 Collections.emptyList(),
                 new TypeSpecSimple(
+                        nodeIdGenerator.next(),
                         "type",
                         Collections.emptyList()
                 )
@@ -166,31 +238,36 @@ class IdentityVisitorTest {
 
     @Test
     void visitParameter() {
-        Parameter parameter = new Parameter("name", new TypeSpecSimple(
-                "type",
-                Collections.emptyList()
-        ));
+        Parameter parameter = new Parameter(
+                nodeIdGenerator.next(),
+                "name",
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "type",
+                        Collections.emptyList()
+                )
+        );
         Assertions.assertThat(parameter.accept(visitor()))
                 .isEqualTo(parameter);
     }
 
     @Test
     void visitTypeParameter() {
-        TypeParameter parameter = new TypeParameter("name");
+        TypeParameter parameter = new TypeParameter(nodeIdGenerator.next(), "name");
         Assertions.assertThat(parameter.accept(visitor()))
                 .isEqualTo(parameter);
     }
 
     @Test
     void visitStringValue() {
-        Value value = new StringValue("value");
+        Value value = new StringValue(nodeIdGenerator.next(), "value");
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value);
     }
 
     @Test
     void visitNumberValue() {
-        Value value = new NumberValue("1");
+        Value value = new NumberValue(nodeIdGenerator.next(), "1");
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value);
     }
@@ -213,7 +290,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitIdentifierValue() {
-        Value value = new IdentifierValue("id");
+        Value value = new IdentifierValue(nodeIdGenerator.next(),"id");
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value);
     }
@@ -221,8 +298,9 @@ class IdentityVisitorTest {
     @Test
     void visitVarAssignmentValue() {
         Value value = new VarAssignmentValue(
+                nodeIdGenerator.next(),
                 "identifier",
-                new TypeSpecSimple("T", Collections.emptyList()),
+                new TypeSpecSimple(nodeIdGenerator.next(),"T", Collections.emptyList()),
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -232,8 +310,9 @@ class IdentityVisitorTest {
     @Test
     void visitValAssignmentValue() {
         Value value = new ValAssignmentValue(
+                nodeIdGenerator.next(),
                 "identifier",
-                new TypeSpecSimple("T", Collections.emptyList()),
+                new TypeSpecSimple(nodeIdGenerator.next(),"T", Collections.emptyList()),
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -243,6 +322,7 @@ class IdentityVisitorTest {
     @Test
     void visitIndirectAssignmentValue() {
         Value value = new IndirectAssignmentValue(
+                nodeIdGenerator.next(),
                 NoneValue.INSTANCE,
                 "identifier",
                 NoneValue.INSTANCE
@@ -254,6 +334,7 @@ class IdentityVisitorTest {
     @Test
     void visitMethodCallValue() {
         Value value = new MethodCallValue(
+                nodeIdGenerator.next(),
                 "identifier",
                 Collections.emptyList(),
                 Collections.emptyList()
@@ -264,14 +345,14 @@ class IdentityVisitorTest {
 
     @Test
     void visitNestedValue() {
-        Value value = new NestedValue(BooleanValue.TRUE, BooleanValue.FALSE);
+        Value value = new NestedValue(nodeIdGenerator.next(),BooleanValue.TRUE, BooleanValue.FALSE);
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value);
     }
 
     @Test
     void visitStatement() {
-        Statement statement = new Statement(BooleanValue.TRUE, false);
+        Statement statement = new Statement(nodeIdGenerator.next(),BooleanValue.TRUE, false);
         Assertions.assertThat(statement.accept(visitor()))
                 .isEqualTo(statement);
     }
@@ -279,14 +360,20 @@ class IdentityVisitorTest {
     @Test
     void visitMethod() {
         Method method = new Method(
+                nodeIdGenerator.next(),
                 new MethodSignature(
+                        nodeIdGenerator.next(),
                         Visibility.NAMESPACE,
                         "method",
                         Collections.emptyList(),
                         Collections.emptyList(),
-                        TypeSpecSimple.NONE
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "None",
+                                Collections.emptyList()
+                        )
                 ),
-                Collections.singletonList(new Statement(BooleanValue.TRUE, false))
+                Collections.singletonList(new Statement(nodeIdGenerator.next(),BooleanValue.TRUE, false))
         );
         Assertions.assertThat(method.accept(visitor()))
                 .isEqualTo(method);
@@ -295,8 +382,13 @@ class IdentityVisitorTest {
     @Test
     void visitVarAttribute() {
         VarAttribute varAttribute = new VarAttribute(
+                nodeIdGenerator.next(),
                 "identifier",
-                TypeSpecSimple.NONE,
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "None",
+                        Collections.emptyList()
+                ),
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(varAttribute.accept(visitor()))
@@ -306,8 +398,13 @@ class IdentityVisitorTest {
     @Test
     void visitValAttribute() {
         ValAttribute valAttribute = new ValAttribute(
+                nodeIdGenerator.next(),
                 "identifier",
-                TypeSpecSimple.NONE,
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "None",
+                        Collections.emptyList()
+                ),
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(valAttribute.accept(visitor()))

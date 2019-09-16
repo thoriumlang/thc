@@ -20,23 +20,28 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TypeSpecFunction implements TypeSpec {
+    private final NodeId nodeId;
     private final List<TypeSpec> arguments;
     private final TypeSpec returnType;
 
-    public TypeSpecFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+    public TypeSpecFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (arguments == null) {
             throw new NullPointerException("arguments cannot be null");
         }
         if (returnType == null) {
             throw new NullPointerException("returnType cannot be null");
         }
+        this.nodeId = nodeId;
         this.arguments = arguments;
         this.returnType = returnType;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeFunction(arguments, returnType);
+        return visitor.visitTypeFunction(nodeId, arguments, returnType);
     }
 
     @Override
@@ -58,12 +63,13 @@ public class TypeSpecFunction implements TypeSpec {
             return false;
         }
         TypeSpecFunction that = (TypeSpecFunction) o;
-        return arguments.equals(that.arguments) &&
+        return nodeId.equals(that.nodeId) &&
+                arguments.equals(that.arguments) &&
                 returnType.equals(that.returnType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(arguments, returnType);
+        return Objects.hash(nodeId, arguments, returnType);
     }
 }

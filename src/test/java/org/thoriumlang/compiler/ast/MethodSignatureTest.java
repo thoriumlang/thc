@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -23,11 +24,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodSignatureTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new MethodSignature(null, Visibility.PRIVATE, "name", Collections.emptyList(), Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList()));
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_visibility() {
         try {
-            new MethodSignature(null, "name", Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSimple("test", Collections.emptyList()));
+            new MethodSignature(nodeIdGenerator.next(), null, "name", Collections.emptyList(), Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,8 +62,9 @@ class MethodSignatureTest {
     @Test
     void constructor_name() {
         try {
-            new MethodSignature(Visibility.PRIVATE, null, Collections.emptyList(), Collections.emptyList(),
-                    new TypeSpecSimple("test", Collections.emptyList()));
+            new MethodSignature(nodeIdGenerator.next(), Visibility.PRIVATE, null, Collections.emptyList(),
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -55,11 +78,12 @@ class MethodSignatureTest {
     void constructor_typeParameters() {
         try {
             new MethodSignature(
+                    nodeIdGenerator.next(),
                     Visibility.PRIVATE,
                     "name",
                     null,
                     Collections.emptyList(),
-                    new TypeSpecSimple("test", Collections.emptyList())
+                    new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -74,11 +98,12 @@ class MethodSignatureTest {
     void constructor_parameters() {
         try {
             new MethodSignature(
+                    nodeIdGenerator.next(),
                     Visibility.PRIVATE,
                     "name",
                     Collections.emptyList(),
                     null,
-                    new TypeSpecSimple("test", Collections.emptyList())
+                    new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList())
             );
         }
         catch (NullPointerException e) {
@@ -92,7 +117,14 @@ class MethodSignatureTest {
     @Test
     void constructor_returnType() {
         try {
-            new MethodSignature(Visibility.PRIVATE, "name", Collections.emptyList(), Collections.emptyList(), null);
+            new MethodSignature(
+                    nodeIdGenerator.next(),
+                    Visibility.PRIVATE,
+                    "name",
+                    Collections.emptyList(),
+                    Collections.emptyList(),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -106,23 +138,27 @@ class MethodSignatureTest {
     void accept() {
         Assertions.assertThat(
                 new MethodSignature(
+                        nodeIdGenerator.next(),
                         Visibility.PRIVATE,
                         "name",
-                        Collections.singletonList(new TypeParameter("T")),
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "T")),
                         Collections.singletonList(new Parameter(
+                                nodeIdGenerator.next(),
                                 "name",
                                 new TypeSpecSimple(
+                                        nodeIdGenerator.next(),
                                         "type",
                                         Collections.emptyList()
                                 )
                         )),
-                        new TypeSpecSimple("test", Collections.emptyList())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethodSignature(Visibility visibility, String name,
+                    public String visitMethodSignature(NodeId nodeId, Visibility visibility, String name,
                             List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
                         return String.format(
-                                "%s:%s:[%s]:(%s):%s",
+                                "%s:%s:%s:[%s]:(%s):%s",
+                                nodeId.toString(),
                                 visibility,
                                 name,
                                 typeParameters.stream()
@@ -135,21 +171,23 @@ class MethodSignatureTest {
                         );
                     }
                 })
-        ).isEqualTo("PRIVATE:name:[T]:(name: type[]):test[]");
+        ).isEqualTo("#1:PRIVATE:name:[T]:(name: type[]):test[]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new MethodSignature(
+                        nodeIdGenerator.next(),
                         Visibility.PRIVATE,
                         "name",
-                        Collections.singletonList(new TypeParameter("T")),
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "T")),
                         Collections.singletonList(new Parameter(
+                                nodeIdGenerator.next(),
                                 "name",
-                                new TypeSpecSimple("type", Collections.emptyList())
+                                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
                         )),
-                        new TypeSpecSimple("returnType", Collections.emptyList())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "returnType", Collections.emptyList())
                 ).toString()
         ).isEqualTo("PRIVATE name [T] (name: type[]) : returnType[]");
     }

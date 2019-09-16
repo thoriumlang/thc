@@ -35,8 +35,10 @@ public class AST {
     }
 
     public Root root() throws IOException {
+        NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
         return new FlattenedTypesRoot(
-                new RootVisitor(namespace).visit(
+                nodeIdGenerator,
+                new RootVisitor(nodeIdGenerator, namespace).visit(
                         parser().root()
                 )
         ).root();

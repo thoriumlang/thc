@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.Class;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.Use;
 
@@ -36,7 +37,7 @@ class RootVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitRoot(String namespace, List<Use> uses, Type type) {
+    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
         String use = use(uses);
         return String.format("// namespace %s%n%n%s%s",
                 namespace,
@@ -47,12 +48,12 @@ class RootVisitor extends BaseVisitor<String> {
 
     private String use(List<Use> uses) {
         return uses.stream()
-                    .map(u -> u.accept(useVisitor))
-                    .collect(Collectors.joining("\n"));
+                .map(u -> u.accept(useVisitor))
+                .collect(Collectors.joining("\n"));
     }
 
     @Override
-    public String visitRoot(String namespace, List<Use> uses, Class clazz) {
+    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
         String use = use(uses);
         return String.format("// namespace %s%n%n%s%s",
                 namespace,

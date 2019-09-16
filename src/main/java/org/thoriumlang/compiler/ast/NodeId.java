@@ -15,36 +15,18 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.List;
 import java.util.Objects;
 
-public class TypeSpecUnion implements TypeSpec {
-    private final NodeId nodeId;
-    private final List<TypeSpec> types;
+public class NodeId {
+    private final long id;
 
-    public TypeSpecUnion(NodeId nodeId, List<TypeSpec> types) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
-        if (types == null) {
-            throw new NullPointerException("types cannot be null");
-        }
-        this.nodeId = nodeId;
-        this.types = types;
-    }
-
-    public List<TypeSpec> types() {
-        return types;
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeUnion(nodeId, types);
+    public NodeId(long id) {
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        return "u:" + types.toString();
+        return String.format("#%d", id);
     }
 
     @Override
@@ -55,13 +37,12 @@ public class TypeSpecUnion implements TypeSpec {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TypeSpecUnion that = (TypeSpecUnion) o;
-        return nodeId.equals(that.nodeId) &&
-                types.equals(that.types);
+        NodeId nodeId = (NodeId) o;
+        return id == nodeId.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, types);
+        return Objects.hash(id);
     }
 }

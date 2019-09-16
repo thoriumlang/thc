@@ -18,18 +18,23 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class TypeParameter implements Node {
+    private final NodeId nodeId;
     private final String name;
 
-    public TypeParameter(String name) {
+    public TypeParameter(NodeId nodeId, String name) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (name == null) {
             throw new NullPointerException("name cannot be null");
         }
+        this.nodeId = nodeId;
         this.name = name;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeParameter(name);
+        return visitor.visitTypeParameter(nodeId, name);
     }
 
     @Override
@@ -46,11 +51,12 @@ public class TypeParameter implements Node {
             return false;
         }
         TypeParameter that = (TypeParameter) o;
-        return name.equals(that.name);
+        return nodeId.equals(that.nodeId) &&
+                name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(nodeId, name);
     }
 }

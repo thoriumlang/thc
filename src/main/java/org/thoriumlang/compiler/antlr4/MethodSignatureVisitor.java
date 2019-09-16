@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.Visibility;
 
@@ -26,13 +27,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
 
-    MethodSignatureVisitor(MethodParameterVisitor methodParameterVisitor,
+    MethodSignatureVisitor(NodeIdGenerator nodeIdGenerator,
+            MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             TypeParameterDefVisitor typeParameterDefVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
         this.typeParameterDefVisitor = typeParameterDefVisitor;
@@ -42,6 +46,7 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
     public MethodSignature visitMethodSignature(ThoriumParser.MethodSignatureContext ctx) {
 
         return new MethodSignature(
+                nodeIdGenerator.next(),
                 visibility(ctx),
                 ctx.name.getText(),
                 typeParameters(ctx.typeParameterDef()),

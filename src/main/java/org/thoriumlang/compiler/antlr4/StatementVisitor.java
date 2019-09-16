@@ -17,13 +17,17 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.Statement;
 
 class StatementVisitor extends ThoriumBaseVisitor<Statement> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final boolean last;
     private ValueVisitor valueVisitor;
 
-    StatementVisitor(boolean last) {
+    StatementVisitor(NodeIdGenerator nodeIdGenerator, boolean last) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.last = last;
     }
 
@@ -37,6 +41,7 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
             throw new IllegalStateException("value visitor not set; call setValueVisitor()");
         }
         return new Statement(
+                nodeIdGenerator.next(),
                 ctx.value().accept(valueVisitor),
                 last || isReturnStatement(ctx)
         );
@@ -44,5 +49,13 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
 
     private boolean isReturnStatement(ThoriumParser.StatementContext ctx) {
         return ctx.RETURN() != null;
+    }
+
+    public Statement none() {
+        return new Statement(
+                nodeIdGenerator.next(),
+                NoneValue.INSTANCE,
+                true
+        );
     }
 }

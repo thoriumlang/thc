@@ -20,12 +20,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Root implements Node {
+    private final NodeId nodeId;
     private final String namespace;
     private final List<Use> uses;
     private final TopLevelNode topLevelNode;
     private final TopLevelVisitor topLevelVisitor;
 
-    public Root(String namespace, List<Use> uses, Class topLevel) {
+    public Root(NodeId nodeId, String namespace, List<Use> uses, Class topLevel) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (namespace == null) {
             throw new NullPointerException("namespace cannot be null");
         }
@@ -35,13 +39,17 @@ public class Root implements Node {
         if (topLevel == null) {
             throw new NullPointerException("topLevel cannot be null");
         }
+        this.nodeId = nodeId;
         this.namespace = namespace;
         this.uses = uses;
         this.topLevelNode = topLevel;
         this.topLevelVisitor = TopLevelClassVisitor.INSTANCE;
     }
 
-    public Root(String namespace, List<Use> uses, Type topLevel) {
+    public Root(NodeId nodeId, String namespace, List<Use> uses, Type topLevel) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (namespace == null) {
             throw new NullPointerException("namespace cannot be null");
         }
@@ -51,6 +59,7 @@ public class Root implements Node {
         if (topLevel == null) {
             throw new NullPointerException("topLevel cannot be null");
         }
+        this.nodeId = nodeId;
         this.namespace = namespace;
         this.uses = uses;
         this.topLevelNode = topLevel;
@@ -59,7 +68,7 @@ public class Root implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return topLevelVisitor.visit(visitor, namespace, uses, topLevelNode);
+        return topLevelVisitor.visit(visitor, nodeId, namespace, uses, topLevelNode);
     }
 
     @Override
@@ -84,18 +93,21 @@ public class Root implements Node {
             return false;
         }
         Root root = (Root) o;
-        return namespace.equals(root.namespace) &&
+        return nodeId.equals(root.nodeId) &&
+                namespace.equals(root.namespace) &&
                 uses.equals(root.uses) &&
-                topLevelNode.equals(root.topLevelNode);
+                topLevelNode.equals(root.topLevelNode) &&
+                topLevelVisitor.equals(root.topLevelVisitor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(namespace, uses, topLevelNode);
+        return Objects.hash(nodeId, namespace, uses, topLevelNode, topLevelVisitor);
     }
 
     private interface TopLevelVisitor {
-        <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode);
+        <T> T visit(Visitor<? extends T> visitor, NodeId nodeId, String namespace, List<Use> uses,
+                TopLevelNode topLevelNode);
     }
 
     private static class TopLevelTypeVisitor implements TopLevelVisitor {
@@ -105,8 +117,9 @@ public class Root implements Node {
             // singleton
         }
 
-        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode) {
-            return visitor.visitRoot(namespace, uses, (Type) topLevelNode);
+        public <T> T visit(Visitor<? extends T> visitor, NodeId nodeId, String namespace, List<Use> uses,
+                TopLevelNode topLevelNode) {
+            return visitor.visitRoot(nodeId, namespace, uses, (Type) topLevelNode);
         }
     }
 
@@ -117,8 +130,9 @@ public class Root implements Node {
             // singleton
         }
 
-        public <T> T visit(Visitor<? extends T> visitor, String namespace, List<Use> uses, TopLevelNode topLevelNode) {
-            return visitor.visitRoot(namespace, uses, (Class) topLevelNode);
+        public <T> T visit(Visitor<? extends T> visitor, NodeId nodeId, String namespace, List<Use> uses,
+                TopLevelNode topLevelNode) {
+            return visitor.visitRoot(nodeId, namespace, uses, (Class) topLevelNode);
         }
     }
 }

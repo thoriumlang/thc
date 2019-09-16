@@ -18,21 +18,25 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class Statement implements Node {
-    public static final Statement NONE_LAST_STATEMENT = new Statement(NoneValue.INSTANCE, true);
+    private final NodeId nodeId;
     private final Value value;
     private final boolean last;
 
-    public Statement(Value value, boolean last) {
+    public Statement(NodeId nodeId, Value value, boolean last) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
+        this.nodeId = nodeId;
         this.value = value;
         this.last = last;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStatement(value, last);
+        return visitor.visitStatement(nodeId, value, last);
     }
 
     @Override
@@ -50,11 +54,12 @@ public class Statement implements Node {
         }
         Statement statement = (Statement) o;
         return last == statement.last &&
+                nodeId.equals(statement.nodeId) &&
                 value.equals(statement.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, last);
+        return Objects.hash(nodeId, value, last);
     }
 }

@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.antlr4;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Use;
 
 import java.util.Collections;
@@ -25,11 +26,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
  class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
-    @Override
+     private final NodeIdGenerator nodeIdGenerator;
+
+     UseVisitor(NodeIdGenerator nodeIdGenerator) {
+         this.nodeIdGenerator = nodeIdGenerator;
+     }
+
+     @Override
     public List<Use> visitUse(ThoriumParser.UseContext ctx) {
         if (ctx.baseFqIdentifier != null) {
             if (ctx.star != null) {
-                return Collections.singletonList(new Use(fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER()) + ".*"));
+                return Collections.singletonList(new Use(
+                        nodeIdGenerator.next(),
+                        fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER()) + ".*"
+                ));
             }
 
             if (ctx.useAs() != null && !ctx.useAs().isEmpty()) {
@@ -39,12 +49,16 @@ import java.util.stream.Collectors;
                         .collect(Collectors.toList());
             }
 
-            return Collections.singletonList(new Use(fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER())));
+            return Collections.singletonList(new Use(
+                    nodeIdGenerator.next(),
+                    fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER())
+            ));
         }
 
         if (ctx.useAs() != null && ctx.useAs().size() == 1) {
             return Collections.singletonList(
                     new Use(
+                            nodeIdGenerator.next(),
                             fqIdentifier(ctx.useAs().get(0).fqIdentifier().IDENTIFIER()),
                             ctx.useAs().get(0).alias.getText()
                     )
@@ -63,6 +77,7 @@ import java.util.stream.Collectors;
     private Use getUse(String base, ThoriumParser.UseAsContext ctx) {
         if (ctx.alias != null) {
             return new Use(
+                    nodeIdGenerator.next(),
                     String.format("%s.%s",
                             base,
                             fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
@@ -71,6 +86,7 @@ import java.util.stream.Collectors;
             );
         }
         return new Use(
+                nodeIdGenerator.next(),
                 String.format("%s.%s",
                         base,
                         fqIdentifier(ctx.fqIdentifier().IDENTIFIER())

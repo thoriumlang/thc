@@ -18,16 +18,20 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Attribute;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.ValAttribute;
 import org.thoriumlang.compiler.ast.VarAttribute;
 
 class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final TypeSpecVisitor typeSpecVisitor;
     private final ValueVisitor valueVisitor;
 
-    AttributeDefVisitor(TypeSpecVisitor typeSpecVisitor, ValueVisitor valueVisitor) {
+    AttributeDefVisitor(NodeIdGenerator nodeIdGenerator, TypeSpecVisitor typeSpecVisitor,
+            ValueVisitor valueVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.typeSpecVisitor = typeSpecVisitor;
         this.valueVisitor = valueVisitor;
     }
@@ -36,6 +40,7 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
     public Attribute visitAttributeDef(ThoriumParser.AttributeDefContext ctx) {
         if (ctx.VAR() != null) {
             return new VarAttribute(
+                    nodeIdGenerator.next(),
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
@@ -45,9 +50,10 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
         }
 
         return new ValAttribute(
+                nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
-                        new TypeSpecInferred() :
+                        new TypeSpecInferred(nodeIdGenerator.next()) :
                         ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() == null ?
                         NoneValue.INSTANCE :

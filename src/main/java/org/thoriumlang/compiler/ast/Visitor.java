@@ -18,64 +18,64 @@ package org.thoriumlang.compiler.ast;
 import java.util.List;
 
 public interface Visitor<T> {
-    T visitRoot(String namespace, List<Use> uses, Type type);
+    T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type);
 
-    T visitRoot(String namespace, List<Use> uses, Class clazz);
+    T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz);
 
-    T visitUse(String from, String to);
+    T visitUse(NodeId nodeId, String from, String to);
 
-    T visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<MethodSignature> methods);
+    T visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<MethodSignature> methods);
 
-    T visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    T visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes);
 
-    T visitTypeIntersection(List<TypeSpec> types);
+    T visitTypeIntersection(NodeId nodeId, List<TypeSpec> types);
 
-    T visitTypeUnion(List<TypeSpec> types);
+    T visitTypeUnion(NodeId nodeId, List<TypeSpec> types);
 
-    T visitTypeSingle(String type, List<TypeSpec> arguments);
+    T visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments);
 
-    T visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType);
+    T visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType);
 
-    T visitTypeInferred();
+    T visitTypeInferred(NodeId nodeId);
 
-    T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    T visitMethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType);
 
-    T visitParameter(String name, TypeSpec type);
+    T visitParameter(NodeId nodeId, String name, TypeSpec type);
 
-    T visitTypeParameter(String name);
+    T visitTypeParameter(NodeId nodeId, String name);
 
-    T visitStringValue(String value);
+    T visitStringValue(NodeId nodeId, String value);
 
-    T visitNumberValue(String value);
+    T visitNumberValue(NodeId nodeId, String value);
 
     T visitBooleanValue(boolean value);
 
     T visitNoneValue();
 
-    T visitIdentifierValue(String value);
+    T visitIdentifierValue(NodeId nodeId, String value);
 
-    T visitVarAssignmentValue(String identifier, TypeSpec type, Value value);
+    T visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value);
 
-    T visitValAssignmentValue(String identifier, TypeSpec type, Value value);
+    T visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value);
 
-    T visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value);
+    T visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value);
 
-    T visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+    T visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments);
 
-    T visitNestedValue(Value outer, Value inner);
+    T visitNestedValue(NodeId nodeId, Value outer, Value inner);
 
-    T visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType,
-            List<Statement> statements);
+    T visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
+            TypeSpec returnType, List<Statement> statements);
 
-    T visitStatement(Value value, boolean isLast);
+    T visitStatement(NodeId nodeId, Value value, boolean isLast);
 
-    T visitMethod(MethodSignature signature, List<Statement> statements);
+    T visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements);
 
-    T visitVarAttribute(String identifier, TypeSpec type, Value value);
+    T visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value);
 
-    T visitValAttribute(String identifier, TypeSpec type, Value value);
+    T visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value);
 }

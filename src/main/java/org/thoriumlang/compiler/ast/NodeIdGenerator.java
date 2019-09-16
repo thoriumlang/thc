@@ -15,23 +15,16 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public class TypeSpecInferred implements TypeSpec {
-    private final NodeId nodeId;
+import java.util.concurrent.atomic.AtomicLong;
 
-    public TypeSpecInferred(NodeId nodeId) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
-        this.nodeId = nodeId;
+public class NodeIdGenerator {
+    private final AtomicLong longGenerator;
+
+    public NodeIdGenerator() {
+        this.longGenerator = new AtomicLong();
     }
 
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeInferred(nodeId);
-    }
-
-    @Override
-    public String toString() {
-        return "inferred";
+    public NodeId next() {
+        return new NodeId(longGenerator.incrementAndGet());
     }
 }

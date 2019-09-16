@@ -23,6 +23,7 @@ import org.thoriumlang.compiler.ast.IdentifierValue;
 import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.MethodCallValue;
 import org.thoriumlang.compiler.ast.NestedValue;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.NoneValue;
 import org.thoriumlang.compiler.ast.NumberValue;
 import org.thoriumlang.compiler.ast.Statement;
@@ -39,17 +40,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class ValueVisitor extends ThoriumBaseVisitor<Value> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    ValueVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+    ValueVisitor(NodeIdGenerator nodeIdGenerator,
+            TypeParameterDefVisitor typeParameterDefVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
             StatementVisitor statementVisitorForLast) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.typeParameterDefVisitor = typeParameterDefVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -85,6 +89,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     @Override
     public Value visitFunctionValue(ThoriumParser.FunctionValueContext ctx) {
         return new FunctionValue(
+                nodeIdGenerator.next(),
                 ctx.typeParameterDef() == null ?
                         Collections.emptyList() :
                         ctx.typeParameterDef().accept(typeParameterDefVisitor),
@@ -92,17 +97,20 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
                 ctx.typeSpec() == null ?
-                        new TypeSpecInferred() :
+                        new TypeSpecInferred(nodeIdGenerator.next()) :
                         ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() != null ?
-                        Collections.singletonList(new Statement(ctx.value().accept(this), true)) :
+                        Collections.singletonList(new Statement(
+                                nodeIdGenerator.next(),
+                                ctx.value().accept(this), true
+                        )) :
                         Lists.append(
                                 Lists.withoutLast(ctx.statement()).stream()
                                         .map(s -> s.accept(statementVisitorForNotLast))
                                         .collect(Collectors.toList()),
                                 Lists.last(ctx.statement())
                                         .map(s -> s.accept(statementVisitorForLast))
-                                        .orElse(Statement.NONE_LAST_STATEMENT)
+                                        .orElse(statementVisitorForLast.none())
                         )
         );
     }
@@ -111,6 +119,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     public Value visitAssignmentValue(ThoriumParser.AssignmentValueContext ctx) {
         if (ctx.indirectValue() != null) {
             return new IndirectAssignmentValue(
+                    nodeIdGenerator.next(),
                     ctx.indirectValue().accept(this),
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.value().accept(this)
@@ -118,9 +127,10 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         }
         if (ctx.VAR() != null) {
             return new VarAssignmentValue(
+                    nodeIdGenerator.next(),
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec() == null ?
-                            new TypeSpecInferred() :
+                            new TypeSpecInferred(nodeIdGenerator.next()) :
                             ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
                             NoneValue.INSTANCE :
@@ -128,9 +138,10 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
             );
         }
         return new ValAssignmentValue(
+                nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
-                        new TypeSpecInferred() :
+                        new TypeSpecInferred(nodeIdGenerator.next()) :
                         ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value().accept(this)
         );
@@ -140,6 +151,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     public Value visitDirectValue(ThoriumParser.DirectValueContext ctx) {
         if (ctx.NUMBER() != null) {
             return new NumberValue(
+                    nodeIdGenerator.next(),
                     ctx.NUMBER().getSymbol().getText()
             );
         }
@@ -147,6 +159,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         if (ctx.STRING() != null) {
             String str = ctx.STRING().getSymbol().getText();
             return new StringValue(
+                    nodeIdGenerator.next(),
                     str.substring(1, str.length() - 1)
             );
         }
@@ -169,16 +182,18 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     @Override
     public Value visitIndirectValue(ThoriumParser.IndirectValueContext ctx) {
         if (ctx.THIS() != null) {
-            return IdentifierValue.THIS;
+            return new IdentifierValue(nodeIdGenerator.next(), "this");
         }
 
         if (ctx.indirectValue() != null) {
             return isMethodCall(ctx) ?
                     new NestedValue(
+                            nodeIdGenerator.next(),
                             ctx.indirectValue().accept(this),
                             methodCall(ctx)
                     ) :
                     new NestedValue(
+                            nodeIdGenerator.next(),
                             ctx.indirectValue().accept(this),
                             identifier(ctx)
                     );
@@ -187,10 +202,12 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         if (ctx.directValue() != null) {
             return isMethodCall(ctx) ?
                     new NestedValue(
+                            nodeIdGenerator.next(),
                             ctx.directValue().accept(this),
                             methodCall(ctx)
                     ) :
                     new NestedValue(
+                            nodeIdGenerator.next(),
                             ctx.directValue().accept(this),
                             identifier(ctx)
                     );
@@ -211,6 +228,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
 
     private MethodCallValue methodCall(ThoriumParser.IndirectValueContext ctx) {
         return new MethodCallValue(
+                nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 typeArguments(ctx),
                 methodArguments(ctx)
@@ -234,6 +252,9 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     }
 
     private IdentifierValue identifier(ThoriumParser.IndirectValueContext ctx) {
-        return new IdentifierValue(ctx.IDENTIFIER().getSymbol().getText());
+        return new IdentifierValue(
+                nodeIdGenerator.next(),
+                ctx.IDENTIFIER().getSymbol().getText()
+        );
     }
 }

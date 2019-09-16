@@ -20,8 +20,9 @@ import java.util.stream.Collectors;
 
 public abstract class IdentityVisitor implements Visitor<Node> {
     @Override
-    public Node visitRoot(String namespace, List<Use> uses, Type type) {
+    public Node visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
         return new Root(
+                nodeId,
                 namespace,
                 uses.stream()
                         .map(u -> (Use) u.accept(this))
@@ -31,8 +32,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitRoot(String namespace, List<Use> uses, Class clazz) {
+    public Node visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
         return new Root(
+                nodeId,
                 namespace,
                 uses.stream()
                         .map(u -> (Use) u.accept(this))
@@ -42,16 +44,17 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitUse(String from, String to) {
+    public Node visitUse(NodeId nodeId, String from, String to) {
         return new Use(
-                from, to
+                nodeId, from, to
         );
     }
 
     @Override
-    public Node visitType(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<MethodSignature> methods) {
         return new Type(
+                nodeId,
                 visibility,
                 name,
                 typeParameters.stream()
@@ -65,9 +68,10 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
         return new Class(
+                nodeId,
                 visibility,
                 name,
                 typeParameters.stream()
@@ -84,8 +88,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeIntersection(List<TypeSpec> types) {
+    public Node visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
         return new TypeSpecIntersection(
+                nodeId,
                 types.stream()
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList())
@@ -93,8 +98,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeUnion(List<TypeSpec> types) {
+    public Node visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
         return new TypeSpecUnion(
+                nodeId,
                 types.stream()
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList())
@@ -102,8 +108,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeSingle(String type, List<TypeSpec> arguments) {
+    public Node visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
         return new TypeSpecSimple(
+                nodeId,
                 type,
                 arguments.stream()
                         .map(a -> (TypeSpec) a.accept(this))
@@ -112,8 +119,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+    public Node visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
         return new TypeSpecFunction(
+                nodeId,
                 arguments.stream()
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList()),
@@ -122,14 +130,16 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeInferred() {
-        return new TypeSpecInferred();
+    public Node visitTypeInferred(NodeId nodeId) {
+        return new TypeSpecInferred(nodeId);
     }
 
     @Override
-    public Node visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public Node visitMethodSignature(NodeId nodeId, Visibility visibility, String name,
+            List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return new MethodSignature(
+                nodeId,
                 visibility,
                 name,
                 typeParameters.stream()
@@ -143,26 +153,27 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitParameter(String name, TypeSpec type) {
+    public Node visitParameter(NodeId nodeId, String name, TypeSpec type) {
         return new Parameter(
+                nodeId,
                 name,
                 (TypeSpec) type.accept(this)
         );
     }
 
     @Override
-    public Node visitTypeParameter(String name) {
-        return new TypeParameter(name);
+    public Node visitTypeParameter(NodeId nodeId, String name) {
+        return new TypeParameter(nodeId, name);
     }
 
     @Override
-    public Node visitStringValue(String value) {
-        return new StringValue(value);
+    public Node visitStringValue(NodeId nodeId, String value) {
+        return new StringValue(nodeId, value);
     }
 
     @Override
-    public Node visitNumberValue(String value) {
-        return new NumberValue(value);
+    public Node visitNumberValue(NodeId nodeId, String value) {
+        return new NumberValue(nodeId, value);
     }
 
     @Override
@@ -176,13 +187,14 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitIdentifierValue(String value) {
-        return new IdentifierValue(value);
+    public Node visitIdentifierValue(NodeId nodeId, String value) {
+        return new IdentifierValue(nodeId, value);
     }
 
     @Override
-    public Node visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public Node visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return new VarAssignmentValue(
+                nodeId,
                 identifier,
                 (TypeSpec) type.accept(this),
                 (Value) value.accept(this)
@@ -190,8 +202,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public Node visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return new ValAssignmentValue(
+                nodeId,
                 identifier,
                 (TypeSpec) type.accept(this),
                 (Value) value.accept(this)
@@ -199,8 +212,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+    public Node visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
         return new IndirectAssignmentValue(
+                nodeId,
                 (Value) indirectValue.accept(this),
                 identifier,
                 (Value) value.accept(this)
@@ -208,9 +222,10 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+    public Node visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
         return new MethodCallValue(
+                nodeId,
                 methodName,
                 typeArguments.stream()
                         .map(a -> (TypeSpec) a.accept(this))
@@ -222,17 +237,19 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitNestedValue(Value outer, Value inner) {
+    public Node visitNestedValue(NodeId nodeId, Value outer, Value inner) {
         return new NestedValue(
+                nodeId,
                 (Value) outer.accept(this),
                 (Value) inner.accept(this)
         );
     }
 
     @Override
-    public Node visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
+    public Node visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
         return new FunctionValue(
+                nodeId,
                 typeParameters.stream()
                         .map(t -> (TypeParameter) t.accept(this))
                         .collect(Collectors.toList()),
@@ -247,16 +264,18 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitStatement(Value value, boolean isLast) {
+    public Node visitStatement(NodeId nodeId, Value value, boolean isLast) {
         return new Statement(
+                nodeId,
                 (Value) value.accept(this),
                 isLast
         );
     }
 
     @Override
-    public Node visitMethod(MethodSignature signature, List<Statement> statements) {
+    public Node visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
         return new Method(
+                nodeId,
                 (MethodSignature) signature.accept(this),
                 statements.stream()
                         .map(s -> (Statement) s.accept(this))
@@ -265,8 +284,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitVarAttribute(String identifier, TypeSpec type, Value value) {
+    public Node visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return new VarAttribute(
+                nodeId,
                 identifier,
                 (TypeSpec) type.accept(this),
                 (Value) value.accept(this)
@@ -274,8 +294,9 @@ public abstract class IdentityVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitValAttribute(String identifier, TypeSpec type, Value value) {
+    public Node visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return new ValAttribute(
+                nodeId,
                 identifier,
                 (TypeSpec) type.accept(this),
                 (Value) value.accept(this)

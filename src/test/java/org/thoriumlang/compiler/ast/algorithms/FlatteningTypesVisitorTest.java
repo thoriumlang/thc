@@ -16,7 +16,9 @@
 package org.thoriumlang.compiler.ast.algorithms;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
@@ -25,69 +27,104 @@ import java.util.Arrays;
 import java.util.Collections;
 
 class FlatteningTypesVisitorTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
     void visitTypeSpecIntersection() {
-        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor();
+        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor(nodeIdGenerator);
 
         TypeSpecIntersection spec = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
                 Arrays.asList(
-                        new TypeSpecSimple("TA", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
                         new TypeSpecIntersection(
+                                nodeIdGenerator.next(),
                                 Arrays.asList(
-                                        new TypeSpecSimple("TB", Collections.emptyList()),
-                                        new TypeSpecSimple("TC", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TC", Collections.emptyList()),
                                         new TypeSpecIntersection(
+                                                nodeIdGenerator.next(),
                                                 Arrays.asList(
-                                                        new TypeSpecSimple("TD", Collections.emptyList()),
-                                                        new TypeSpecSimple("TE", Collections.emptyList())
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TD",
+                                                                Collections.emptyList()
+                                                        ),
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TE",
+                                                                Collections.emptyList()
+                                                        )
                                                 )
                                         ))
                         )
                 )
         );
 
-        Assertions.assertThat(spec.accept(visitor))
-                .isEqualTo(new TypeSpecIntersection(
-                        Arrays.asList(
-                                new TypeSpecSimple("TA", Collections.emptyList()),
-                                new TypeSpecSimple("TB", Collections.emptyList()),
-                                new TypeSpecSimple("TC", Collections.emptyList()),
-                                new TypeSpecSimple("TD", Collections.emptyList()),
-                                new TypeSpecSimple("TE", Collections.emptyList())
-                        )
-                ));
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecIntersection(
+                                nodeIdGenerator.next(),
+                                Arrays.asList(
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TC", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TD", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TE", Collections.emptyList())
+                                )
+                        ).toString()
+                );
     }
 
     @Test
     void visitTypeSpecUnion() {
-        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor();
+        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor(nodeIdGenerator);
 
         TypeSpecUnion spec = new TypeSpecUnion(
+                nodeIdGenerator.next(),
                 Arrays.asList(
-                        new TypeSpecSimple("TA", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
                         new TypeSpecUnion(
+                                nodeIdGenerator.next(),
                                 Arrays.asList(
-                                        new TypeSpecSimple("TB", Collections.emptyList()),
-                                        new TypeSpecSimple("TC", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TC", Collections.emptyList()),
                                         new TypeSpecUnion(
+                                                nodeIdGenerator.next(),
                                                 Arrays.asList(
-                                                        new TypeSpecSimple("TD", Collections.emptyList()),
-                                                        new TypeSpecSimple("TE", Collections.emptyList())
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TD",
+                                                                Collections.emptyList()
+                                                        ),
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TE",
+                                                                Collections.emptyList()
+                                                        )
                                                 )
                                         ))
                         )
                 )
         );
 
-        Assertions.assertThat(spec.accept(visitor))
-                .isEqualTo(new TypeSpecUnion(
-                        Arrays.asList(
-                                new TypeSpecSimple("TA", Collections.emptyList()),
-                                new TypeSpecSimple("TB", Collections.emptyList()),
-                                new TypeSpecSimple("TC", Collections.emptyList()),
-                                new TypeSpecSimple("TD", Collections.emptyList()),
-                                new TypeSpecSimple("TE", Collections.emptyList())
-                        )
-                ));
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecUnion(
+                                nodeIdGenerator.next(),
+                                Arrays.asList(
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TC", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TD", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TE", Collections.emptyList())
+                                )
+                        ).toString()
+                );
     }
 }

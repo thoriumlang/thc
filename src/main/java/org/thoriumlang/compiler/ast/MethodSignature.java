@@ -20,14 +20,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MethodSignature implements Node {
+    private final NodeId nodeId;
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
 
-    public MethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public MethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -43,6 +47,7 @@ public class MethodSignature implements Node {
         if (returnType == null) {
             throw new NullPointerException("returnType cannot be null");
         }
+        this.nodeId = nodeId;
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
@@ -53,6 +58,7 @@ public class MethodSignature implements Node {
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visitMethodSignature(
+                nodeId,
                 visibility,
                 name,
                 typeParameters,
@@ -85,7 +91,8 @@ public class MethodSignature implements Node {
             return false;
         }
         MethodSignature that = (MethodSignature) o;
-        return visibility == that.visibility &&
+        return nodeId.equals(that.nodeId) &&
+                visibility == that.visibility &&
                 name.equals(that.name) &&
                 typeParameters.equals(that.typeParameters) &&
                 parameters.equals(that.parameters) &&
@@ -94,6 +101,6 @@ public class MethodSignature implements Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(visibility, name, typeParameters, parameters, returnType);
+        return Objects.hash(nodeId, visibility, name, typeParameters, parameters, returnType);
     }
 }

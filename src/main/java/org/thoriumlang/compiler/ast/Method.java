@@ -22,21 +22,26 @@ import java.util.stream.Collectors;
 public class Method implements Node {
     private final MethodSignature signature;
     private final List<Statement> statements;
+    private final NodeId nodeId;
 
-    public Method(MethodSignature signature, List<Statement> statements) {
+    public Method(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (signature == null) {
             throw new NullPointerException("signature cannot be null");
         }
         if (statements == null) {
             throw new NullPointerException("statements cannot be null");
         }
+        this.nodeId = nodeId;
         this.signature = signature;
         this.statements = statements;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethod(signature, statements);
+        return visitor.visitMethod(nodeId, signature, statements);
     }
 
     @Override
@@ -60,11 +65,12 @@ public class Method implements Node {
         }
         Method method = (Method) o;
         return signature.equals(method.signature) &&
-                statements.equals(method.statements);
+                statements.equals(method.statements) &&
+                nodeId.equals(method.nodeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signature, statements);
+        return Objects.hash(signature, statements, nodeId);
     }
 }

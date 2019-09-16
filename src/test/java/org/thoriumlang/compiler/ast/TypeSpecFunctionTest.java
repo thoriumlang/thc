@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -24,10 +25,40 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecFunctionTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new TypeSpecFunction(
+                    null,
+                    Collections.singletonList(
+                            new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+                    ),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_arguments() {
         try {
-            new TypeSpecFunction(null, TypeSpecSimple.NONE);
+            new TypeSpecFunction(
+                    nodeIdGenerator.next(),
+                    null,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,7 +71,13 @@ class TypeSpecFunctionTest {
     @Test
     void constructor_returnType() {
         try {
-            new TypeSpecFunction(Collections.singletonList(TypeSpecSimple.NONE), null);
+            new TypeSpecFunction(
+                    nodeIdGenerator.next(),
+                    Collections.singletonList(
+                            new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+                    ),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -54,13 +91,17 @@ class TypeSpecFunctionTest {
     void accept() {
         Assertions.assertThat(
                 new TypeSpecFunction(
-                        Collections.singletonList(new TypeSpecSimple("A", Collections.emptyList())),
-                        new TypeSpecSimple("B", Collections.emptyList())
+                        nodeIdGenerator.next(),
+                        Collections.singletonList(
+                                new TypeSpecSimple(nodeIdGenerator.next(), "A", Collections.emptyList())
+                        ),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "B", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+                    public String visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
                         return String.format(
-                                "(%s):%s",
+                                "%s:(%s):%s",
+                                nodeId,
                                 arguments.stream()
                                         .map(TypeSpec::toString)
                                         .collect(Collectors.joining(",")),
@@ -68,17 +109,18 @@ class TypeSpecFunctionTest {
                         );
                     }
                 })
-        ).isEqualTo("(A[]):B[]");
+        ).isEqualTo("#1:(A[]):B[]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new TypeSpecSimple(
+                        nodeIdGenerator.next(),
                         "type",
                         Arrays.asList(
-                                new TypeSpecSimple("A", Collections.emptyList()),
-                                new TypeSpecSimple("B", Collections.emptyList())
+                                new TypeSpecSimple(nodeIdGenerator.next(), "A", Collections.emptyList()),
+                                new TypeSpecSimple(nodeIdGenerator.next(), "B", Collections.emptyList())
                         )
                 ).toString()
         ).isEqualTo("type[A[], B[]]");

@@ -17,18 +17,22 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Parameter;
 
 class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
     private final TypeSpecVisitor typeSpecVisitor;
+    private final NodeIdGenerator nodeIdGenerator;
 
-    MethodParameterVisitor(TypeSpecVisitor typeSpecVisitor) {
+    MethodParameterVisitor(NodeIdGenerator nodeIdGenerator, TypeSpecVisitor typeSpecVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.typeSpecVisitor = typeSpecVisitor;
     }
 
     @Override
     public Parameter visitMethodParameterDef(ThoriumParser.MethodParameterDefContext ctx) {
         return new Parameter(
+                nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec().accept(typeSpecVisitor)
         );

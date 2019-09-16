@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Class implements TopLevelNode {
+    private final NodeId nodeId;
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
@@ -27,8 +28,11 @@ public class Class implements TopLevelNode {
     private final List<Method> methods;
     private final List<Attribute> attributes;
 
-    public Class(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<Method> methods, List<Attribute> attributes) {
+    public Class(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -47,6 +51,7 @@ public class Class implements TopLevelNode {
         if (attributes == null) {
             throw new NullPointerException("attributes cannot be null");
         }
+        this.nodeId = nodeId;
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
@@ -57,7 +62,15 @@ public class Class implements TopLevelNode {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitClass(visibility, name, typeParameters, superType, methods, attributes);
+        return visitor.visitClass(
+                nodeId,
+                visibility,
+                name,
+                typeParameters,
+                superType,
+                methods,
+                attributes
+        );
     }
 
     @Override
@@ -90,7 +103,8 @@ public class Class implements TopLevelNode {
             return false;
         }
         Class aClass = (Class) o;
-        return visibility == aClass.visibility &&
+        return nodeId.equals(aClass.nodeId) &&
+                visibility == aClass.visibility &&
                 name.equals(aClass.name) &&
                 typeParameters.equals(aClass.typeParameters) &&
                 superType.equals(aClass.superType) &&
@@ -100,6 +114,6 @@ public class Class implements TopLevelNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(visibility, name, typeParameters, superType, methods, attributes);
+        return Objects.hash(nodeId, visibility, name, typeParameters, superType, methods, attributes);
     }
 }

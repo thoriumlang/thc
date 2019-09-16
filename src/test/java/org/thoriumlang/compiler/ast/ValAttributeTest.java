@@ -16,13 +16,46 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 public class ValAttributeTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new ValAttribute(
+                    null,
+                    null,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                    NoneValue.INSTANCE
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_identifier() {
         try {
-            new ValAttribute(null, TypeSpecSimple.NONE, NoneValue.INSTANCE);
+            new ValAttribute(
+                    nodeIdGenerator.next(),
+                    null,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                    NoneValue.INSTANCE
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,7 +68,12 @@ public class ValAttributeTest {
     @Test
     void constructor_type() {
         try {
-            new ValAttribute("identifier", null, NoneValue.INSTANCE);
+            new ValAttribute(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    null,
+                    NoneValue.INSTANCE
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -48,7 +86,12 @@ public class ValAttributeTest {
     @Test
     void constructor_value() {
         try {
-            new ValAttribute("identifier", TypeSpecSimple.NONE, null);
+            new ValAttribute(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -61,20 +104,36 @@ public class ValAttributeTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new ValAttribute("identifier", TypeSpecSimple.NONE, NoneValue.INSTANCE)
+                new ValAttribute(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                        NoneValue.INSTANCE
+                )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitValAttribute(String identifier, TypeSpec type, Value value) {
-                                return String.format("%s:%s:%s", identifier, type, value);
+                            public String visitValAttribute(NodeId nodeId, String identifier, TypeSpec type,
+                                    Value value) {
+                                return String.format("%s:%s:%s:%s",
+                                        nodeId,
+                                        identifier,
+                                        type,
+                                        value
+                                );
                             }
                         })
-        ).isEqualTo("identifier:org.thoriumlang.None[]:none");
+        ).isEqualTo("#1:identifier:None[]:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new ValAttribute("identifier", TypeSpecSimple.NONE, NoneValue.INSTANCE).toString()
-        ).isEqualTo("VAL identifier: org.thoriumlang.None[] = none");
+                new ValAttribute(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                        NoneValue.INSTANCE
+                ).toString()
+        ).isEqualTo("VAL identifier: None[] = none");
     }
 }

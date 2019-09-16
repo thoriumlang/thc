@@ -18,11 +18,15 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class ValAssignmentValue implements Value {
+    private final NodeId nodeId;
     private final String identifier;
     private final TypeSpec type;
     private final Value value;
 
-    public ValAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public ValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (identifier == null) {
             throw new NullPointerException("identifier cannot be null");
         }
@@ -32,6 +36,7 @@ public class ValAssignmentValue implements Value {
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
+        this.nodeId = nodeId;
         this.identifier = identifier;
         this.type = type;
         this.value = value;
@@ -39,7 +44,7 @@ public class ValAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitValAssignmentValue(identifier, type, value);
+        return visitor.visitValAssignmentValue(nodeId, identifier, type, value);
     }
 
     @Override
@@ -61,13 +66,14 @@ public class ValAssignmentValue implements Value {
             return false;
         }
         ValAssignmentValue that = (ValAssignmentValue) o;
-        return identifier.equals(that.identifier) &&
+        return nodeId.equals(that.nodeId) &&
+                identifier.equals(that.identifier) &&
                 type.equals(that.type) &&
                 value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, type, value);
+        return Objects.hash(nodeId, identifier, type, value);
     }
 }

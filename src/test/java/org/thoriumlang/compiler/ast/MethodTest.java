@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -23,10 +24,41 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new Method(
+                    null,
+                    new MethodSignature(
+                            nodeIdGenerator.next(),
+                            Visibility.PUBLIC,
+                            "method",
+                            Collections.emptyList(),
+                            Collections.emptyList(),
+                            new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+                    ),
+                    Collections.emptyList()
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_signature() {
         try {
-            new Method(null, Collections.emptyList());
+            new Method(nodeIdGenerator.next(), null, Collections.emptyList());
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,12 +72,14 @@ class MethodTest {
     void constructor_statements() {
         try {
             new Method(
+                    nodeIdGenerator.next(),
                     new MethodSignature(
+                            nodeIdGenerator.next(),
                             Visibility.PUBLIC,
                             "method",
                             Collections.emptyList(),
                             Collections.emptyList(),
-                            TypeSpecSimple.NONE
+                            new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
                     ),
                     null
             );
@@ -62,24 +96,28 @@ class MethodTest {
     void accept() {
         Assertions.assertThat(
                 new Method(
+                        nodeIdGenerator.next(),
                         new MethodSignature(
+                                nodeIdGenerator.next(),
                                 Visibility.PUBLIC,
                                 "method",
                                 Collections.emptyList(),
                                 Collections.emptyList(),
-                                TypeSpecSimple.NONE
+                                new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
                         ),
                         Collections.singletonList(
                                 new Statement(
+                                        nodeIdGenerator.next(),
                                         BooleanValue.TRUE,
                                         true
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethod(MethodSignature signature, List<Statement> statements) {
+                    public String visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
                         return String.format(
-                                "{%s}:{%s}",
+                                "%s:{%s}:{%s}",
+                                nodeId.toString(),
                                 signature.toString(),
                                 statements.stream()
                                         .map(Statement::toString)
@@ -87,27 +125,30 @@ class MethodTest {
                         );
                     }
                 })
-        ).isEqualTo("{PUBLIC method [] () : org.thoriumlang.None[]}:{true:true}");
+        ).isEqualTo("#1:{PUBLIC method [] () : None[]}:{true:true}");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new Method(
+                        nodeIdGenerator.next(),
                         new MethodSignature(
+                                nodeIdGenerator.next(),
                                 Visibility.PUBLIC,
                                 "method",
                                 Collections.emptyList(),
                                 Collections.emptyList(),
-                                TypeSpecSimple.NONE
+                                new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
                         ),
                         Collections.singletonList(
                                 new Statement(
+                                        nodeIdGenerator.next(),
                                         BooleanValue.TRUE,
                                         true
                                 )
                         )
                 ).toString()
-        ).isEqualTo("PUBLIC method [] () : org.thoriumlang.None[] { true:true }");
+        ).isEqualTo("PUBLIC method [] () : None[] { true:true }");
     }
 }

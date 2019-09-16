@@ -19,80 +19,80 @@ import java.util.List;
 
 public abstract class BaseVisitor<T> implements Visitor<T> {
     @Override
-    public T visitRoot(String namespace, List<Use> uses, Type type) {
+    public T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
         return null;
     }
 
     @Override
-    public T visitRoot(String namespace, List<Use> uses, Class clazz) {
+    public T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
         return null;
     }
 
     @Override
-    public T visitUse(String from, String to) {
+    public T visitUse(NodeId nodeId, String from, String to) {
         return null;
     }
 
     @Override
-    public T visitType(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<MethodSignature> methods) {
+    public T visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<MethodSignature> methods) {
         return null;
     }
 
     @Override
-    public T visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public T visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
         return null;
     }
 
     @Override
-    public T visitTypeIntersection(List<TypeSpec> types) {
+    public T visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
         return null;
     }
 
     @Override
-    public T visitTypeUnion(List<TypeSpec> types) {
+    public T visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
         return null;
     }
 
     @Override
-    public T visitTypeSingle(String type, List<TypeSpec> arguments) {
+    public T visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
         return null;
     }
 
     @Override
-    public T visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+    public T visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
         return null;
     }
 
     @Override
-    public T visitTypeInferred() {
+    public T visitTypeInferred(NodeId nodeId) {
         return null;
     }
 
     @Override
-    public T visitMethodSignature(Visibility visibility, String name, List<TypeParameter> typeParameters,
+    public T visitMethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         return null;
     }
 
     @Override
-    public T visitParameter(String name, TypeSpec type) {
+    public T visitParameter(NodeId nodeId, String name, TypeSpec type) {
         return null;
     }
 
     @Override
-    public T visitTypeParameter(String name) {
+    public T visitTypeParameter(NodeId nodeId, String name) {
         return null;
     }
 
     @Override
-    public T visitStringValue(String value) {
+    public T visitStringValue(NodeId nodeId, String value) {
         return null;
     }
 
     @Override
-    public T visitNumberValue(String value) {
+    public T visitNumberValue(NodeId nodeId, String value) {
         return null;
     }
 
@@ -107,59 +107,59 @@ public abstract class BaseVisitor<T> implements Visitor<T> {
     }
 
     @Override
-    public T visitIdentifierValue(String value) {
+    public T visitIdentifierValue(NodeId nodeId, String value) {
         return null;
     }
 
     @Override
-    public T visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public T visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return null;
     }
 
     @Override
-    public T visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public T visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return null;
     }
 
     @Override
-    public T visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+    public T visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
         return null;
     }
 
     @Override
-    public T visitMethodCallValue(String methodName, List<TypeSpec> typeArguments,
+    public T visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
         return null;
     }
 
     @Override
-    public T visitNestedValue(Value outer, Value inner) {
+    public T visitNestedValue(NodeId nodeId, Value outer, Value inner) {
         return null;
     }
 
     @Override
-    public T visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType,
-            List<Statement> statements) {
+    public T visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
+            TypeSpec returnType, List<Statement> statements) {
         return null;
     }
 
     @Override
-    public T visitStatement(Value value, boolean isLast) {
+    public T visitStatement(NodeId nodeId, Value value, boolean isLast) {
         return null;
     }
 
     @Override
-    public T visitMethod(MethodSignature signature, List<Statement> statements) {
+    public T visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
         return null;
     }
 
     @Override
-    public T visitVarAttribute(String identifier, TypeSpec type, Value value) {
+    public T visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return null;
     }
 
     @Override
-    public T visitValAttribute(String identifier, TypeSpec type, Value value) {
+    public T visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return null;
     }
 }

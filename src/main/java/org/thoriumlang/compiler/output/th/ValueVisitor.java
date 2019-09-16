@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.Parameter;
 import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.TypeParameter;
@@ -38,19 +39,19 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitStatement(Value value, boolean isLast) {
+    public String visitStatement(NodeId nodeId, Value value, boolean isLast) {
         return isLast ?
                 "return " + value.accept(this) :
                 value.accept(this);
     }
 
     @Override
-    public String visitStringValue(String value) {
+    public String visitStringValue(NodeId nodeId, String value) {
         return "\"" + value + "\"";
     }
 
     @Override
-    public String visitNumberValue(String value) {
+    public String visitNumberValue(NodeId nodeId, String value) {
         return value;
     }
 
@@ -65,12 +66,12 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitIdentifierValue(String value) {
+    public String visitIdentifierValue(NodeId nodeId, String value) {
         return value;
     }
 
     @Override
-    public String visitVarAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public String visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return String.format("var %s%s = %s",
                 identifier,
                 type(type),
@@ -80,13 +81,13 @@ class ValueVisitor extends BaseVisitor<String> {
 
     private String type(TypeSpec typeSpec) {
         String type = typeSpec.accept(typeSpecVisitor);
-        return type.isEmpty()?
-                "":
+        return type.isEmpty() ?
+                "" :
                 String.format(": %s", type);
     }
 
     @Override
-    public String visitValAssignmentValue(String identifier, TypeSpec type, Value value) {
+    public String visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         return String.format("val %s%s = %s",
                 identifier,
                 type(type),
@@ -95,7 +96,7 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+    public String visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
         return String.format("%s.%s = %s",
                 indirectValue.accept(this),
                 identifier,
@@ -104,7 +105,8 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethodCallValue(String methodName, List<TypeSpec> typeArguments, List<Value> methodArguments) {
+    public String visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
+            List<Value> methodArguments) {
         return String.format("%s%s(%s)",
                 methodName,
                 typeArguments.isEmpty() ?
@@ -121,12 +123,12 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitNestedValue(Value outer, Value inner) {
+    public String visitNestedValue(NodeId nodeId, Value outer, Value inner) {
         return outer.accept(this) + "." + inner.accept(this);
     }
 
     @Override
-    public String visitFunctionValue(List<TypeParameter> typeParameters, List<Parameter> parameters,
+    public String visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
         return String.format("%s(%s)%s => {%n%s%n}",
                 typeParameters.isEmpty() ?

@@ -18,9 +18,9 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Class;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeParameter;
 import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.Visibility;
 
 import java.util.Collections;
@@ -28,15 +28,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final MethodDefVisitor methodDefVisitor;
     private final AttributeDefVisitor attributeDefVisitor;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
 
-    ClassDefVisitor(MethodDefVisitor methodDefVisitor,
+    ClassDefVisitor(NodeIdGenerator nodeIdGenerator, MethodDefVisitor methodDefVisitor,
             AttributeDefVisitor attributeDefVisitor,
             TypeParameterDefVisitor typeParameterDefVisitor,
             TypeSpecVisitor typeSpecVisitor) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.methodDefVisitor = methodDefVisitor;
         this.attributeDefVisitor = attributeDefVisitor;
         this.typeParameterDefVisitor = typeParameterDefVisitor;
@@ -46,6 +48,7 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
     @Override
     public Class visitClassDef(ThoriumParser.ClassDefContext ctx) {
         return new Class(
+                nodeIdGenerator.next(),
                 visibility(ctx),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 typeParameters(ctx.typeParameterDef()),
@@ -77,7 +80,7 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
         return ctx == null ?
-                TypeSpecSimple.OBJECT :
+                typeSpecVisitor.object() :
                 ctx.typeSpec().accept(typeSpecVisitor);
     }
 }

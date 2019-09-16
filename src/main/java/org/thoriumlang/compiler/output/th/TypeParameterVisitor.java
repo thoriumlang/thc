@@ -16,10 +16,11 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.NodeId;
 
 class TypeParameterVisitor extends BaseVisitor<String> {
     @Override
-    public String visitTypeParameter(String name) {
+    public String visitTypeParameter(NodeId nodeId, String name) {
         return name;
     }
 }

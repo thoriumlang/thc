@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.TypeSpec;
 
 import java.util.Comparator;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 class TypeSpecVisitor extends BaseVisitor<String> {
     @Override
-    public String visitTypeIntersection(List<TypeSpec> types) {
+    public String visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
         return String.format("(%s)",
                 types.stream()
                         .sorted(Comparator.comparing(Object::toString))
@@ -34,7 +35,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeUnion(List<TypeSpec> types) {
+    public String visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
         return String.format("(%s)",
                 types.stream()
                         .sorted(Comparator.comparing(Object::toString))
@@ -44,7 +45,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeSingle(String type, List<TypeSpec> arguments) {
+    public String visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
         return String.format(
                 "%s%s",
                 type,
@@ -55,7 +56,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeFunction(List<TypeSpec> arguments, TypeSpec returnType) {
+    public String visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
         return String.format("(%s): %s",
                 arguments.stream()
                         .map(t -> t.accept(this))
@@ -65,7 +66,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeInferred() {
+    public String visitTypeInferred(NodeId nodeId) {
         return "";
     }
 }

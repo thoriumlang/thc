@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -24,10 +25,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new Type(
+                    null,
+                    null,
+                    "name",
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                    Collections.emptyList()
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_visibility() {
         try {
-            new Type(null, "name", Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Type(
+                    nodeIdGenerator.next(),
+                    null,
+                    "name",
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -40,7 +75,14 @@ class TypeTest {
     @Test
     void constructor_name() {
         try {
-            new Type(Visibility.PUBLIC, null, Collections.emptyList(), TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Type(
+                    nodeIdGenerator.next(),
+                    Visibility.PUBLIC,
+                    null,
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -53,7 +95,14 @@ class TypeTest {
     @Test
     void constructor_typeParameters() {
         try {
-            new Type(Visibility.PUBLIC, "name", null, TypeSpecSimple.OBJECT, Collections.emptyList());
+            new Type(
+                    nodeIdGenerator.next(),
+                    Visibility.PUBLIC,
+                    "name",
+                    null,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -66,7 +115,14 @@ class TypeTest {
     @Test
     void constructor_implements() {
         try {
-            new Type(Visibility.PUBLIC, "name", Collections.emptyList(), null, Collections.emptyList());
+            new Type(
+                    nodeIdGenerator.next(),
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    null,
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -79,7 +135,14 @@ class TypeTest {
     @Test
     void constructor_methods() {
         try {
-            new Type(Visibility.PUBLIC, "name", Collections.emptyList(), TypeSpecSimple.OBJECT, null);
+            new Type(
+                    nodeIdGenerator.next(),
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -93,24 +156,32 @@ class TypeTest {
     void accept() {
         Assertions.assertThat(
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "name",
-                        Collections.singletonList(new TypeParameter("A")),
-                        TypeSpecSimple.OBJECT,
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(),"A")),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSimple("type", Collections.emptyList())
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "type",
+                                                Collections.emptyList()
+                                        )
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitType(Visibility visibility, String name, List<TypeParameter> typeParameters,
+                    public String visitType(NodeId nodeId, Visibility visibility, String name,
+                            List<TypeParameter> typeParameters,
                             TypeSpec superType, List<MethodSignature> methods) {
-                        return String.format("%s:%s:[%s]:%s:%s",
+                        return String.format("%s:%s:%s:[%s]:%s:%s",
+                                nodeId,
                                 visibility,
                                 name,
                                 typeParameters.stream()
@@ -121,58 +192,72 @@ class TypeTest {
                         );
                     }
                 })
-        ).isEqualTo("PUBLIC:name:[A]:org.thoriumlang.Object[]:[PRIVATE name [] () : type[]]");
+        ).isEqualTo("#1:PUBLIC:name:[A]:Object[]:[PRIVATE name [] () : type[]]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "name",
                         Arrays.asList(
-                                new TypeParameter("A"),
-                                new TypeParameter("B")
+                                new TypeParameter(nodeIdGenerator.next(), "A"),
+                                new TypeParameter(nodeIdGenerator.next(), "B")
                         ),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
-                                        new TypeSpecSimple("returnType", Collections.emptyList())
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "returnType",
+                                                Collections.emptyList()
+                                        )
                                 )
                         )
                 ).toString()
-        ).isEqualTo("PUBLIC TYPE name[A, B] : org.thoriumlang.Object[]:\nPRIVATE name [] () : returnType[]");
+        ).isEqualTo("PUBLIC TYPE name[A, B] : Object[]:\nPRIVATE name [] () : returnType[]");
     }
 
     @Test
     void _toStringWithoutTypeParameter() {
         Assertions.assertThat(
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.NAMESPACE,
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.singletonList(new Parameter(
+                                                nodeIdGenerator.next(),
                                                 "parameter",
                                                 new TypeSpecSimple(
+                                                        nodeIdGenerator.next(),
                                                         "type",
                                                         Collections.emptyList()
                                                 )
                                         )),
-                                        new TypeSpecSimple("returnType", Collections.emptyList())
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "returnType",
+                                                Collections.emptyList()
+                                        )
                                 )
                         )
                 ).toString()
         ).isEqualTo(
-                "NAMESPACE TYPE name[] : org.thoriumlang.Object[]:\nPRIVATE name [] (parameter: type[]) : returnType[]");
+                "NAMESPACE TYPE name[] : Object[]:\nPRIVATE name [] (parameter: type[]) : returnType[]");
     }
 }

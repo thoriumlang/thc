@@ -20,14 +20,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Type implements TopLevelNode {
+    private final NodeId nodeId;
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
     private final TypeSpec superType;
     private final List<MethodSignature> methods;
 
-    public Type(Visibility visibility, String name, List<TypeParameter> typeParameters, TypeSpec superType,
-            List<MethodSignature> methods) {
+    public Type(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
+            TypeSpec superType, List<MethodSignature> methods) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -43,6 +47,7 @@ public class Type implements TopLevelNode {
         if (methods == null) {
             throw new NullPointerException("methods cannot be null");
         }
+        this.nodeId = nodeId;
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
@@ -52,7 +57,14 @@ public class Type implements TopLevelNode {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(visibility, name, typeParameters, superType, methods);
+        return visitor.visitType(
+                nodeId,
+                visibility,
+                name,
+                typeParameters,
+                superType,
+                methods
+        );
     }
 
     @Override
@@ -81,7 +93,8 @@ public class Type implements TopLevelNode {
             return false;
         }
         Type type = (Type) o;
-        return visibility == type.visibility &&
+        return nodeId.equals(type.nodeId) &&
+                visibility == type.visibility &&
                 name.equals(type.name) &&
                 typeParameters.equals(type.typeParameters) &&
                 superType.equals(type.superType) &&
@@ -90,6 +103,6 @@ public class Type implements TopLevelNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(visibility, name, typeParameters, superType, methods);
+        return Objects.hash(nodeId, visibility, name, typeParameters, superType, methods);
     }
 }

@@ -16,15 +16,52 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
 class ParameterTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new Parameter(
+                    null,
+                    "name",
+                    new TypeSpecSimple(
+                            nodeIdGenerator.next(),
+                            "test",
+                            Collections.emptyList()
+                    )
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_name() {
         try {
-            new Parameter(null, new TypeSpecSimple("test", Collections.emptyList()));
+            new Parameter(
+                    nodeIdGenerator.next(),
+                    null,
+                    new TypeSpecSimple(
+                            nodeIdGenerator.next(),
+                            "test",
+                            Collections.emptyList()
+                    )
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -37,7 +74,7 @@ class ParameterTest {
     @Test
     void constructor_type() {
         try {
-            new Parameter("name", null);
+            new Parameter(nodeIdGenerator.next(), "name", null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -51,21 +88,34 @@ class ParameterTest {
     void accept() {
         Assertions.assertThat(
                 new Parameter(
+                        nodeIdGenerator.next(),
                         "name",
-                        new TypeSpecSimple("type", Collections.emptyList())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitParameter(String name, TypeSpec type) {
-                        return name + ":" + type.toString();
+                    public String visitParameter(NodeId nodeId, String name, TypeSpec type) {
+                        return String.format("%s:%s:%s",
+                                nodeId.toString(),
+                                name,
+                                type.toString()
+                        );
                     }
                 })
-        ).isEqualTo("name:type[]");
+        ).isEqualTo("#1:name:type[]");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new Parameter("name", new TypeSpecSimple("type", Collections.emptyList())).toString()
+                new Parameter(
+                        nodeIdGenerator.next(),
+                        "name",
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "type",
+                                Collections.emptyList()
+                        )
+                ).toString()
         ).isEqualTo("name: type[]");
     }
 }

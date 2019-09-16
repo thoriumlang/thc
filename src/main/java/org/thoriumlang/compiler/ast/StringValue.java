@@ -18,18 +18,23 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class StringValue implements Value {
+    private final NodeId nodeId;
     private final String value;
 
-    public StringValue(String value) {
+    public StringValue(NodeId nodeId, String value) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
+        this.nodeId = nodeId;
         this.value = value;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStringValue(value);
+        return visitor.visitStringValue(nodeId, value);
     }
 
     @Override
@@ -46,11 +51,12 @@ public class StringValue implements Value {
             return false;
         }
         StringValue that = (StringValue) o;
-        return value.equals(that.value);
+        return nodeId.equals(that.nodeId) &&
+                value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(nodeId, value);
     }
 }

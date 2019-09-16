@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.Method;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Statement;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.Visibility;
@@ -28,17 +29,20 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
+    private final NodeIdGenerator nodeIdGenerator;
     private final TypeParameterDefVisitor typeParameterDefVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    MethodDefVisitor(TypeParameterDefVisitor typeParameterDefVisitor,
+    MethodDefVisitor(NodeIdGenerator nodeIdGenerator,
+            TypeParameterDefVisitor typeParameterDefVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
             StatementVisitor statementVisitorForLast) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.typeParameterDefVisitor = typeParameterDefVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -49,7 +53,9 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     @Override
     public Method visitMethodDef(ThoriumParser.MethodDefContext ctx) {
         return new Method(
+                nodeIdGenerator.next(),
                 new MethodSignature(
+                        nodeIdGenerator.next(),
                         visibility(ctx),
                         ctx.IDENTIFIER().getSymbol().getText(),
                         ctx.typeParameterDef() == null ?
@@ -59,7 +65,7 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                 .map(p -> p.accept(methodParameterVisitor))
                                 .collect(Collectors.toList()),
                         ctx.typeSpec() == null ?
-                                new TypeSpecInferred() :
+                                new TypeSpecInferred(nodeIdGenerator.next()) :
                                 ctx.typeSpec().accept(typeSpecVisitor)
                 ),
                 Lists.append(
@@ -68,7 +74,7 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                 .collect(Collectors.toList()),
                         Lists.last(ctx.statement())
                                 .map(s -> s.accept(statementVisitorForLast))
-                                .orElse(Statement.NONE_LAST_STATEMENT)
+                                .orElse(statementVisitorForLast.none())
                 )
         );
     }

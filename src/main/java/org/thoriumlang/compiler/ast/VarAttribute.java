@@ -18,11 +18,15 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class VarAttribute implements Value, Attribute {
+    private final NodeId nodeId;
     private final String identifier;
     private final TypeSpec type;
     private final Value value;
 
-    public VarAttribute(String identifier, TypeSpec type, Value value) {
+    public VarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (identifier == null) {
             throw new NullPointerException("identifier cannot be null");
         }
@@ -32,6 +36,7 @@ public class VarAttribute implements Value, Attribute {
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
+        this.nodeId = nodeId;
         this.identifier = identifier;
         this.type = type;
         this.value = value;
@@ -40,7 +45,7 @@ public class VarAttribute implements Value, Attribute {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitVarAttribute(identifier, type, value);
+        return visitor.visitVarAttribute(nodeId, identifier, type, value);
     }
 
     @Override
@@ -57,13 +62,14 @@ public class VarAttribute implements Value, Attribute {
             return false;
         }
         VarAttribute that = (VarAttribute) o;
-        return identifier.equals(that.identifier) &&
+        return nodeId.equals(that.nodeId) &&
+                identifier.equals(that.identifier) &&
                 type.equals(that.type) &&
                 value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, type, value);
+        return Objects.hash(nodeId, identifier, type, value);
     }
 }

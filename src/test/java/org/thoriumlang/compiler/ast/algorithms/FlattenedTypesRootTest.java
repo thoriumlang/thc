@@ -16,8 +16,10 @@
 package org.thoriumlang.compiler.ast.algorithms;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
@@ -28,32 +30,50 @@ import java.util.Arrays;
 import java.util.Collections;
 
 class FlattenedTypesRootTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
     void accept() {
         Root root = new Root(
+                nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(),
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "type",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
+                                                nodeIdGenerator.next(),
                                                 Arrays.asList(
-                                                        new TypeSpecSimple("TA", Collections.emptyList()),
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TA",
+                                                                Collections.emptyList()
+                                                        ),
                                                         new TypeSpecIntersection(
+                                                                nodeIdGenerator.next(),
                                                                 Arrays.asList(
                                                                         new TypeSpecSimple(
+                                                                                nodeIdGenerator.next(),
                                                                                 "TB",
                                                                                 Collections.emptyList()
                                                                         ),
                                                                         new TypeSpecSimple(
+                                                                                nodeIdGenerator.next(),
                                                                                 "TC",
                                                                                 Collections.emptyList()
                                                                         )
@@ -66,24 +86,40 @@ class FlattenedTypesRootTest {
                 )
         );
         Root expectedRoot = new Root(
+                nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(),
                 new Type(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "type",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
+                                        nodeIdGenerator.next(),
                                         Visibility.PRIVATE,
                                         "name",
                                         Collections.emptyList(),
                                         Collections.emptyList(),
                                         new TypeSpecIntersection(
+                                                nodeIdGenerator.next(),
                                                 Arrays.asList(
-                                                        new TypeSpecSimple("TA", Collections.emptyList()),
-                                                        new TypeSpecSimple("TB", Collections.emptyList()),
-                                                        new TypeSpecSimple("TC", Collections.emptyList())
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TA",
+                                                                Collections.emptyList()
+                                                        ),
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TB",
+                                                                Collections.emptyList()
+                                                        ),
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "TC",
+                                                                Collections.emptyList()
+                                                        )
                                                 )
                                         )
                                 )
@@ -91,7 +127,7 @@ class FlattenedTypesRootTest {
                 )
         );
 
-        Assertions.assertThat(new FlattenedTypesRoot(root).root())
-                .isEqualTo(expectedRoot);
+        Assertions.assertThat(new FlattenedTypesRoot(nodeIdGenerator, root).root().toString())
+                .isEqualTo(expectedRoot.toString());
     }
 }

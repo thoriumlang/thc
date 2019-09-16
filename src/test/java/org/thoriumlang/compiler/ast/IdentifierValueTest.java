@@ -16,13 +16,34 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class IdentifierValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new IdentifierValue(null,"identifier");
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_value() {
         try {
-            new IdentifierValue(null);
+            new IdentifierValue(nodeIdGenerator.next(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,20 +56,23 @@ class IdentifierValueTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new IdentifierValue("id")
+                new IdentifierValue(nodeIdGenerator.next(), "id")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIdentifierValue(String value) {
-                                return value;
+                            public String visitIdentifierValue(NodeId nodeId, String value) {
+                                return String.format("%s:%s",
+                                        nodeId.toString(),
+                                        value
+                                );
                             }
                         })
-        ).isEqualTo("id");
+        ).isEqualTo("#1:id");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new IdentifierValue("id").toString()
+                new IdentifierValue(nodeIdGenerator.next(), "id").toString()
         ).isEqualTo("id");
     }
 }

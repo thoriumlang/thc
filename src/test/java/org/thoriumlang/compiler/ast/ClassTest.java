@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -24,14 +25,42 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class ClassTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new Class(
+                     null,
+                    Visibility.PUBLIC,
+                    "name",
+                    Collections.emptyList(),
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
+                    Collections.emptyList(),
+                    Collections.emptyList());
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_visibility() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     null,
                     "name",
                     Collections.emptyList(),
-                    TypeSpecSimple.OBJECT,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.emptyList());
         }
@@ -47,10 +76,11 @@ class ClassTest {
     void constructor_name() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     Visibility.PUBLIC,
                     null,
                     Collections.emptyList(),
-                    TypeSpecSimple.OBJECT,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.emptyList());
         }
@@ -66,10 +96,11 @@ class ClassTest {
     void constructor_typeParameters() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     Visibility.PUBLIC,
                     "name",
                     null,
-                    TypeSpecSimple.OBJECT,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
                     Collections.emptyList());
         }
@@ -85,6 +116,7 @@ class ClassTest {
     void constructor_implements() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     Visibility.PUBLIC,
                     "name",
                     Collections.emptyList(),
@@ -104,10 +136,11 @@ class ClassTest {
     void constructor_methods() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     Visibility.PUBLIC,
                     "name",
                     Collections.emptyList(),
-                    TypeSpecSimple.OBJECT,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     null,
                     Collections.emptyList());
         }
@@ -123,10 +156,11 @@ class ClassTest {
     void constructor_attributes() {
         try {
             new Class(
+                    nodeIdGenerator.next(),
                     Visibility.PUBLIC,
                     "name",
                     Collections.emptyList(),
-                    TypeSpecSimple.OBJECT,
+                    new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
                     null);
         }
@@ -142,21 +176,28 @@ class ClassTest {
     void accept() {
         Assertions.assertThat(
                 new Class(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "name",
-                        Collections.singletonList(new TypeParameter("A")),
-                        TypeSpecSimple.OBJECT,
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "A")),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new Method(
+                                        nodeIdGenerator.next(),
                                         new MethodSignature(
+                                                nodeIdGenerator.next(),
                                                 Visibility.PRIVATE,
                                                 "name",
                                                 Collections.emptyList(),
                                                 Collections.emptyList(),
-                                                new TypeSpecSimple("type", Collections.emptyList())
+                                                new TypeSpecSimple(
+                                                        nodeIdGenerator.next(),
+                                                        "type",
+                                                        Collections.emptyList())
                                         ),
                                         Collections.singletonList(
                                                 new Statement(
+                                                        nodeIdGenerator.next(),
                                                         NoneValue.INSTANCE,
                                                         true
                                                 )
@@ -164,13 +205,20 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
+                                new VarAttribute(
+                                        nodeIdGenerator.next(),
+                                        "attribute",
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                                        NoneValue.INSTANCE
+                                )
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitClass(Visibility visibility, String name, List<TypeParameter> typeParameters,
+                    public String visitClass(NodeId nodeId, Visibility visibility, String name,
+                            List<TypeParameter> typeParameters,
                             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
-                        return String.format("%s:%s:[%s]:%s:{ %s ; %s }",
+                        return String.format("%s:%s:%s:[%s]:%s:{ %s ; %s }",
+                                nodeId.toString(),
                                 visibility,
                                 name,
                                 typeParameters.stream()
@@ -186,8 +234,8 @@ class ClassTest {
                         );
                     }
                 })
-        ).isEqualTo("PUBLIC:name:[A]:org.thoriumlang.Object[]:{ " +
-                "VAR attribute: org.thoriumlang.None[] = none ; " +
+        ).isEqualTo("#1:PUBLIC:name:[A]:Object[]:{ " +
+                "VAR attribute: None[] = none ; " +
                 "PRIVATE name [] () : type[] { none:true } " +
                 "}"
         );
@@ -197,24 +245,32 @@ class ClassTest {
     void _toString() {
         Assertions.assertThat(
                 new Class(
+                        nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "name",
                         Arrays.asList(
-                                new TypeParameter("A"),
-                                new TypeParameter("B")
+                                new TypeParameter(nodeIdGenerator.next(), "A"),
+                                new TypeParameter(nodeIdGenerator.next(), "B")
                         ),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new Method(
+                                        nodeIdGenerator.next(),
                                         new MethodSignature(
+                                                nodeIdGenerator.next(),
                                                 Visibility.PRIVATE,
                                                 "name",
                                                 Collections.emptyList(),
                                                 Collections.emptyList(),
-                                                new TypeSpecSimple("returnType", Collections.emptyList())
+                                                new TypeSpecSimple(
+                                                        nodeIdGenerator.next(),
+                                                        "returnType",
+                                                        Collections.emptyList()
+                                                )
                                         ),
                                         Collections.singletonList(
                                                 new Statement(
+                                                        nodeIdGenerator.next(),
                                                         BooleanValue.TRUE,
                                                         false
                                                 )
@@ -222,11 +278,20 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
+                                new VarAttribute(
+                                        nodeIdGenerator.next(),
+                                        "attribute",
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "None",
+                                                Collections.emptyList()
+                                        ),
+                                        NoneValue.INSTANCE
+                                )
                         )
                 ).toString()
-        ).isEqualTo("PUBLIC CLASS name[A, B] : org.thoriumlang.Object[]:\n" +
-                "VAR attribute: org.thoriumlang.None[] = none\n" +
+        ).isEqualTo("PUBLIC CLASS name[A, B] : Object[]:\n" +
+                "VAR attribute: None[] = none\n" +
                 "PRIVATE name [] () : returnType[] { true:false }"
         );
     }
@@ -235,21 +300,29 @@ class ClassTest {
     void _toStringWithoutTypeParameter() {
         Assertions.assertThat(
                 new Class(
+                        nodeIdGenerator.next(),
                         Visibility.NAMESPACE,
                         "name",
                         Collections.emptyList(),
-                        TypeSpecSimple.OBJECT,
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new Method(
+                                        nodeIdGenerator.next(),
                                         new MethodSignature(
+                                                nodeIdGenerator.next(),
                                                 Visibility.PRIVATE,
                                                 "name",
                                                 Collections.emptyList(),
                                                 Collections.emptyList(),
-                                                new TypeSpecSimple("returnType", Collections.emptyList())
+                                                new TypeSpecSimple(
+                                                        nodeIdGenerator.next(),
+                                                        "returnType",
+                                                        Collections.emptyList()
+                                                )
                                         ),
                                         Collections.singletonList(
                                                 new Statement(
+                                                        nodeIdGenerator.next(),
                                                         BooleanValue.TRUE,
                                                         false
                                                 )
@@ -257,11 +330,20 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute("attribute", TypeSpecSimple.NONE, NoneValue.INSTANCE)
+                                new VarAttribute(
+                                        nodeIdGenerator.next(),
+                                        "attribute",
+                                        new TypeSpecSimple(
+                                                nodeIdGenerator.next(),
+                                                "None",
+                                                Collections.emptyList()
+                                        ),
+                                        NoneValue.INSTANCE
+                                )
                         )
                 ).toString()
-        ).isEqualTo("NAMESPACE CLASS name[] : org.thoriumlang.Object[]:\n" +
-                "VAR attribute: org.thoriumlang.None[] = none\n" +
+        ).isEqualTo("NAMESPACE CLASS name[] : Object[]:\n" +
+                "VAR attribute: None[] = none\n" +
                 "PRIVATE name [] () : returnType[] { true:false }"
         );
     }

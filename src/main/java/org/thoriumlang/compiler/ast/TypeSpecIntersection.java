@@ -19,12 +19,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class TypeSpecIntersection implements TypeSpec {
+    private final NodeId nodeId;
     private final List<TypeSpec> types;
 
-    public TypeSpecIntersection(List<TypeSpec> types) {
+    public TypeSpecIntersection(NodeId nodeId, List<TypeSpec> types) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (types == null) {
             throw new NullPointerException("types cannot be null");
         }
+        this.nodeId = nodeId;
         this.types = types;
     }
 
@@ -34,7 +39,7 @@ public class TypeSpecIntersection implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeIntersection(types);
+        return visitor.visitTypeIntersection(nodeId, types);
     }
 
     @Override
@@ -51,11 +56,12 @@ public class TypeSpecIntersection implements TypeSpec {
             return false;
         }
         TypeSpecIntersection that = (TypeSpecIntersection) o;
-        return types.equals(that.types);
+        return nodeId.equals(that.nodeId) &&
+                types.equals(that.types);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(types);
+        return Objects.hash(nodeId, types);
     }
 }

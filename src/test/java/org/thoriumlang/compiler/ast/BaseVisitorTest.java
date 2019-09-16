@@ -22,7 +22,7 @@ class BaseVisitorTest {
     @Test
     void visitRoot_type() {
         Assertions.assertThat(
-                visitor().visitRoot(null, null, (Type) null)
+                visitor().visitRoot(null, null, null, (Type) null)
         )
                 .isEqualTo(null);
     }
@@ -30,7 +30,7 @@ class BaseVisitorTest {
     @Test
     void visitRoot_clazz() {
         Assertions.assertThat(
-                visitor().visitRoot(null, null, (Class) null)
+                visitor().visitRoot(null, null, null, (Class) null)
         )
                 .isEqualTo(null);
     }
@@ -38,7 +38,7 @@ class BaseVisitorTest {
     @Test
     void visitUse() {
         Assertions.assertThat(
-                visitor().visitUse(null, null)
+                visitor().visitUse(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -46,7 +46,7 @@ class BaseVisitorTest {
     @Test
     void visitType() {
         Assertions.assertThat(
-                visitor().visitType(null, null, null, null, null)
+                visitor().visitType(null, null, null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -54,7 +54,7 @@ class BaseVisitorTest {
     @Test
     void visitClass() {
         Assertions.assertThat(
-                visitor().visitClass(null, null, null, null, null, null)
+                visitor().visitClass(null, null, null, null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -62,7 +62,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeIntersection() {
         Assertions.assertThat(
-                visitor().visitTypeIntersection(null)
+                visitor().visitTypeIntersection(null, null)
         )
                 .isEqualTo(null);
     }
@@ -70,7 +70,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeUnion() {
         Assertions.assertThat(
-                visitor().visitTypeUnion(null)
+                visitor().visitTypeUnion(null, null)
         )
                 .isEqualTo(null);
     }
@@ -78,7 +78,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeSingle() {
         Assertions.assertThat(
-                visitor().visitTypeSingle(null, null)
+                visitor().visitTypeSingle(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -86,7 +86,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeFunction() {
         Assertions.assertThat(
-                visitor().visitTypeFunction(null, null)
+                visitor().visitTypeFunction(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -94,7 +94,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeInferred() {
         Assertions.assertThat(
-                visitor().visitTypeInferred()
+                visitor().visitTypeInferred(null)
         )
                 .isEqualTo(null);
     }
@@ -102,7 +102,7 @@ class BaseVisitorTest {
     @Test
     void visitMethodSignature() {
         Assertions.assertThat(
-                visitor().visitMethodSignature(null, null, null, null, null)
+                visitor().visitMethodSignature(null, null, null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -110,7 +110,7 @@ class BaseVisitorTest {
     @Test
     void visitParameter() {
         Assertions.assertThat(
-                visitor().visitParameter(null, null)
+                visitor().visitParameter(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -118,7 +118,7 @@ class BaseVisitorTest {
     @Test
     void visitTypeParameter() {
         Assertions.assertThat(
-                visitor().visitTypeParameter(null)
+                visitor().visitTypeParameter(null, null)
         )
                 .isEqualTo(null);
     }
@@ -126,7 +126,7 @@ class BaseVisitorTest {
     @Test
     void visitStringValue() {
         Assertions.assertThat(
-                visitor().visitStringValue(null)
+                visitor().visitStringValue(null, null)
         )
                 .isEqualTo(null);
     }
@@ -134,7 +134,7 @@ class BaseVisitorTest {
     @Test
     void visitNumberValue() {
         Assertions.assertThat(
-                visitor().visitNumberValue(null)
+                visitor().visitNumberValue(null, null)
         )
                 .isEqualTo(null);
     }
@@ -158,7 +158,7 @@ class BaseVisitorTest {
     @Test
     void visitIdentifierValue() {
         Assertions.assertThat(
-                visitor().visitIdentifierValue(null)
+                visitor().visitIdentifierValue(null, null)
         )
                 .isEqualTo(null);
     }
@@ -166,7 +166,7 @@ class BaseVisitorTest {
     @Test
     void visitVarAssignmentValue() {
         Assertions.assertThat(
-                visitor().visitVarAssignmentValue(null, null, null)
+                visitor().visitVarAssignmentValue(null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -174,7 +174,7 @@ class BaseVisitorTest {
     @Test
     void visitValAssignmentValue() {
         Assertions.assertThat(
-                visitor().visitValAssignmentValue(null, null, null)
+                visitor().visitValAssignmentValue(null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -182,7 +182,7 @@ class BaseVisitorTest {
     @Test
     void visitIndirectAssignmentValue() {
         Assertions.assertThat(
-                visitor().visitIndirectAssignmentValue(null, null, null)
+                visitor().visitIndirectAssignmentValue(null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -190,7 +190,7 @@ class BaseVisitorTest {
     @Test
     void visitMethodCallValue() {
         Assertions.assertThat(
-                visitor().visitMethodCallValue(null, null, null)
+                visitor().visitMethodCallValue(null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -198,7 +198,7 @@ class BaseVisitorTest {
     @Test
     void visitNestedValue() {
         Assertions.assertThat(
-                visitor().visitNestedValue(null, null)
+                visitor().visitNestedValue(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -206,7 +206,7 @@ class BaseVisitorTest {
     @Test
     void visitFunctionValue() {
         Assertions.assertThat(
-                visitor().visitFunctionValue(null, null, null, null)
+                visitor().visitFunctionValue(null, null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -214,7 +214,7 @@ class BaseVisitorTest {
     @Test
     void visitStatement() {
         Assertions.assertThat(
-                visitor().visitStatement(null, false)
+                visitor().visitStatement(null, null, false)
         )
                 .isEqualTo(null);
     }
@@ -222,7 +222,7 @@ class BaseVisitorTest {
     @Test
     void visitMethod() {
         Assertions.assertThat(
-                visitor().visitMethod(null, null)
+                visitor().visitMethod(null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -230,7 +230,7 @@ class BaseVisitorTest {
     @Test
     void visitVarAttribute() {
         Assertions.assertThat(
-                visitor().visitVarAttribute(null, null, null)
+                visitor().visitVarAttribute(null, null, null, null)
         )
                 .isEqualTo(null);
     }
@@ -238,7 +238,7 @@ class BaseVisitorTest {
     @Test
     void visitValAttribute() {
         Assertions.assertThat(
-                visitor().visitValAttribute(null, null, null)
+                visitor().visitValAttribute(null, null, null, null)
         )
                 .isEqualTo(null);
     }

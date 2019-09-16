@@ -15,21 +15,24 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.Visitor;
 
 public class FlattenedTypesRoot implements Node {
+    private final NodeIdGenerator nodeIdGenerator;
     private final Root root;
     private Root flattenedTypesRootCache;
 
-    public FlattenedTypesRoot(Root root) {
+    public FlattenedTypesRoot(NodeIdGenerator nodeIdGenerator, Root root) {
+        this.nodeIdGenerator=nodeIdGenerator;
         this.root = root;
     }
 
     private Root flattenedTypesRoot() {
         if (flattenedTypesRootCache == null) {
-            flattenedTypesRootCache = (Root) root.accept(new FlatteningTypesVisitor());
+            flattenedTypesRootCache = (Root) root.accept(new FlatteningTypesVisitor(nodeIdGenerator));
         }
         return flattenedTypesRootCache;
     }

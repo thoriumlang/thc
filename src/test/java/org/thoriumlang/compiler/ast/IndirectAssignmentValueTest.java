@@ -16,13 +16,33 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class IndirectAssignmentValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new IndirectAssignmentValue(null, NoneValue.INSTANCE,"identifier", NoneValue.INSTANCE);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
     @Test
     void constructor_indirectValue() {
         try {
-            new IndirectAssignmentValue(null, "identifier", NoneValue.INSTANCE);
+            new IndirectAssignmentValue(nodeIdGenerator.next(),null, "identifier", NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,7 +55,7 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_identifier() {
         try {
-            new IndirectAssignmentValue(NoneValue.INSTANCE, null, NoneValue.INSTANCE);
+            new IndirectAssignmentValue(nodeIdGenerator.next(),NoneValue.INSTANCE, null, NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -48,7 +68,7 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_value() {
         try {
-            new IndirectAssignmentValue(NoneValue.INSTANCE, "identifier", null);
+            new IndirectAssignmentValue(nodeIdGenerator.next(),NoneValue.INSTANCE, "identifier", null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -62,28 +82,31 @@ class IndirectAssignmentValueTest {
     void accept() {
         Assertions.assertThat(
                 new IndirectAssignmentValue(
-                        new NumberValue("1"),
+                        nodeIdGenerator.next(),
+                        new NumberValue(nodeIdGenerator.next(),"1"),
                         "identifier",
                         NoneValue.INSTANCE
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIndirectAssignmentValue(Value indirectValue, String identifier, Value value) {
+                            public String visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
                                 return String.format(
-                                        "%s:%s:%s",
+                                        "%s:%s:%s:%s",
+                                        nodeId.toString(),
                                         indirectValue.toString(),
                                         identifier,
                                         value.toString()
                                 );
                             }
                         })
-        ).isEqualTo("1:identifier:none");
+        ).isEqualTo("#1:1:identifier:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new IndirectAssignmentValue(
+                        nodeIdGenerator.next(),
                         NoneValue.INSTANCE,
                         "identifier",
                         NoneValue.INSTANCE

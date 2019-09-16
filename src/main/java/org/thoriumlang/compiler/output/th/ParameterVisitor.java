@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.TypeSpec;
 
 class ParameterVisitor extends BaseVisitor<String> {
@@ -26,7 +27,7 @@ class ParameterVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitParameter(String name, TypeSpec type) {
+    public String visitParameter(NodeId nodeId, String name, TypeSpec type) {
         return String.format("%s: %s",
                 name,
                 type.accept(typeSpecVisitor)

@@ -16,13 +16,34 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class UseTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new Use(null, "from");
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void constructor_from1() {
         try {
-            new Use(null);
+            new Use(nodeIdGenerator.next(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -35,7 +56,7 @@ class UseTest {
     @Test
     void constructor_from2() {
         try {
-            new Use(null, "to");
+            new Use(nodeIdGenerator.next(), null, "to");
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -48,7 +69,7 @@ class UseTest {
     @Test
     void constructor_to() {
         try {
-            new Use("from", null);
+            new Use(nodeIdGenerator.next(), "from", null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -61,31 +82,31 @@ class UseTest {
     @Test
     void accept1() {
         Assertions.assertThat(
-                new Use("f.r.o.m").accept(new BaseVisitor<String>() {
+                new Use(nodeIdGenerator.next(), "f.r.o.m").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(String from, String to) {
-                        return from + ":" + to;
+                    public String visitUse(NodeId nodeId, String from, String to) {
+                        return String.format("%s:%s:%s", nodeId, from, to);
                     }
                 })
-        ).isEqualTo("f.r.o.m:m");
+        ).isEqualTo("#1:f.r.o.m:m");
     }
 
     @Test
     void accept2() {
         Assertions.assertThat(
-                new Use("f.r.o.m", "to").accept(new BaseVisitor<String>() {
+                new Use(nodeIdGenerator.next(), "f.r.o.m", "to").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(String from, String to) {
-                        return from + ":" + to;
+                    public String visitUse(NodeId nodeId, String from, String to) {
+                        return String.format("%s:%s:%s", nodeId, from, to);
                     }
                 })
-        ).isEqualTo("f.r.o.m:to");
+        ).isEqualTo("#1:f.r.o.m:to");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new Use("from", "to").toString()
+                new Use(nodeIdGenerator.next(), "from", "to").toString()
         ).isEqualTo("USE from : to");
     }
 }

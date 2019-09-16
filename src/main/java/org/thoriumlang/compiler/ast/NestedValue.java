@@ -18,23 +18,28 @@ package org.thoriumlang.compiler.ast;
 import java.util.Objects;
 
 public class NestedValue implements Value {
+    private final NodeId nodeId;
     private final Value outer;
     private final Value inner;
 
-    public NestedValue(Value outer, Value inner) {
+    public NestedValue(NodeId nodeId, Value outer, Value inner) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
         if (outer == null) {
             throw new NullPointerException("outer cannot be null");
         }
         if (inner == null) {
             throw new NullPointerException("inner cannot be null");
         }
+        this.nodeId = nodeId;
         this.outer = outer;
         this.inner = inner;
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitNestedValue(outer, inner);
+        return visitor.visitNestedValue(nodeId, outer, inner);
     }
 
     @Override
@@ -55,12 +60,13 @@ public class NestedValue implements Value {
             return false;
         }
         NestedValue that = (NestedValue) o;
-        return outer.equals(that.outer) &&
+        return nodeId.equals(that.nodeId) &&
+                outer.equals(that.outer) &&
                 inner.equals(that.inner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(outer, inner);
+        return Objects.hash(nodeId, outer, inner);
     }
 }

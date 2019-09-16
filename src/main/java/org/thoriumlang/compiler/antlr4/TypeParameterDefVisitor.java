@@ -17,20 +17,30 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeParameter;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
- class TypeParameterDefVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
+class TypeParameterDefVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
+    private final NodeIdGenerator nodeIdGenerator;
+
+    TypeParameterDefVisitor(NodeIdGenerator nodeIdGenerator) {
+        this.nodeIdGenerator = nodeIdGenerator;
+    }
+
     @Override
     public List<TypeParameter> visitTypeParameterDef(ThoriumParser.TypeParameterDefContext ctx) {
         if (ctx.IDENTIFIER() == null) {
             return Collections.emptyList();
         }
         return ctx.IDENTIFIER().stream()
-                .map(i -> new TypeParameter(i.getSymbol().getText()))
+                .map(i -> new TypeParameter(
+                        nodeIdGenerator.next(),
+                        i.getSymbol().getText()
+                ))
                 .collect(Collectors.toList());
     }
 }

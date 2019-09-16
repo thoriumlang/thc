@@ -16,13 +16,32 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StatementTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
     @Test
+    void constructor_nodeId() {
+        try {
+            new Statement(null, NoneValue.INSTANCE, true);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }@Test
     void constructor_value() {
         try {
-            new Statement(null, true);
+            new Statement(nodeIdGenerator.next(),null, true);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -36,24 +55,27 @@ class StatementTest {
     void accept() {
         Assertions.assertThat(
                 new Statement(
+                        nodeIdGenerator.next(),
                         NoneValue.INSTANCE,
                         false
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitStatement(Value value, boolean isLast) {
-                        return String.format("%s:%s",
+                    public String visitStatement(NodeId nodeId, Value value, boolean isLast) {
+                        return String.format("%s:%s:%s",
+                                nodeId,
                                 value.toString(),
                                 isLast
                         );
                     }
                 })
-        ).isEqualTo("none:false");
+        ).isEqualTo("#1:none:false");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
                 new Statement(
+                        nodeIdGenerator.next(),
                         NoneValue.INSTANCE,
                         false
                 ).toString()
