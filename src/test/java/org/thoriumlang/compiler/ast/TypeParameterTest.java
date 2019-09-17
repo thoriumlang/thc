@@ -54,6 +54,25 @@ class TypeParameterTest {
     }
 
     @Test
+    void accept() {
+        Assertions.assertThat(
+                new TypeParameter(
+                        nodeIdGenerator.next(),
+                        "T"
+                ).accept(new BaseVisitor<String>() {
+                    @Override
+                    public String visit(TypeParameter node) {
+                        return String.format(
+                                "%s:%s",
+                                node.getNodeId(),
+                                node.getName()
+                        );
+                    }
+                })
+        ).isEqualTo("#1:T");
+    }
+
+    @Test
     void _toString() {
         Assertions.assertThat(
                 new TypeParameter(nodeIdGenerator.next(), "A").toString()
