@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public class VarAssignmentValue extends AssignmentValue {
+public class VarAssignmentValue extends Assignment implements AssignmentValue {
     public VarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         super(nodeId, identifier, type, value);
     }

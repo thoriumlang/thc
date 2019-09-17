@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public class VarAttribute extends Attribute {
+public class VarAttribute extends Assignment implements Attribute {
     public VarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         super(nodeId, identifier, type, value);
     }
@@ -27,6 +27,10 @@ public class VarAttribute extends Attribute {
 
     @Override
     public String toString() {
-        return String.format("VAR %s: %s = %s", getIdentifier(), getType(), getValue());
+        return String.format("VAR %s: %s = %s",
+                getIdentifier(),
+                getType(),
+                getValue()
+        );
     }
 }

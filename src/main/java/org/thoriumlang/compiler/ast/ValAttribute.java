@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public class ValAttribute extends Attribute {
+public class ValAttribute extends Assignment implements Attribute {
     public ValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         super(nodeId, identifier, type, value);
     }
@@ -27,6 +27,10 @@ public class ValAttribute extends Attribute {
 
     @Override
     public String toString() {
-        return String.format("VAL %s: %s = %s", getIdentifier(), getType(), getValue());
+        return String.format("VAL %s: %s = %s",
+                getIdentifier(),
+                getType(),
+                getValue()
+        );
     }
 }
