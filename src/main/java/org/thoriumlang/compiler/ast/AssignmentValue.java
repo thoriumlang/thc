@@ -17,13 +17,13 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.Objects;
 
-public abstract class Attribute implements Value {
+public abstract class AssignmentValue implements Value {
     private final NodeId nodeId;
     private final String identifier;
     private final TypeSpec type;
     private final Value value;
 
-    public Attribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public AssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         if (nodeId == null) {
             throw new NullPointerException("nodeId cannot be null");
         }
@@ -66,7 +66,7 @@ public abstract class Attribute implements Value {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Attribute that = (Attribute) o;
+        AssignmentValue that = (AssignmentValue) o;
         return nodeId.equals(that.nodeId) &&
                 identifier.equals(that.identifier) &&
                 type.equals(that.type) &&

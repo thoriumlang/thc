@@ -17,13 +17,11 @@ package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
 import org.thoriumlang.compiler.ast.CopyVisitor;
-import org.thoriumlang.compiler.ast.IdentityVisitor;
-import org.thoriumlang.compiler.ast.NodeId;
+import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeSpec;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.Node;
 
 import java.util.Collection;
 import java.util.List;
