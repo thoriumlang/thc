@@ -15,291 +15,139 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public abstract class IdentityVisitor implements Visitor<Node> {
     @Override
-    public Node visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
-        return new Root(
-                nodeId,
-                namespace,
-                uses.stream()
-                        .map(u -> (Use) u.accept(this))
-                        .collect(Collectors.toList()),
-                (Type) type.accept(this)
-        );
+    public Node visitRoot(Root node) {
+        return node;
     }
 
     @Override
-    public Node visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
-        return new Root(
-                nodeId,
-                namespace,
-                uses.stream()
-                        .map(u -> (Use) u.accept(this))
-                        .collect(Collectors.toList()),
-                (Class) clazz.accept(this)
-        );
+    public Node visitUse(Use node) {
+        return node;
     }
 
     @Override
-    public Node visitUse(NodeId nodeId, String from, String to) {
-        return new Use(
-                nodeId, from, to
-        );
+    public Node visitType(Type node) {
+        return node;
     }
 
     @Override
-    public Node visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<MethodSignature> methods) {
-        return new Type(
-                nodeId,
-                visibility,
-                name,
-                typeParameters.stream()
-                        .map(p -> (TypeParameter) p.accept(this))
-                        .collect(Collectors.toList()),
-                (TypeSpec) superType.accept(this),
-                methods.stream()
-                        .map(m -> (MethodSignature) m.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitClass(Class node) {
+        return node;
     }
 
     @Override
-    public Node visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
-        return new Class(
-                nodeId,
-                visibility,
-                name,
-                typeParameters.stream()
-                        .map(p -> (TypeParameter) p.accept(this))
-                        .collect(Collectors.toList()),
-                (TypeSpec) superType.accept(this),
-                methods.stream()
-                        .map(m -> (Method) m.accept(this))
-                        .collect(Collectors.toList()),
-                attributes.stream()
-                        .map(a -> (Attribute) a.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitTypeIntersection(TypeSpecIntersection node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
-        return new TypeSpecIntersection(
-                nodeId,
-                types.stream()
-                        .map(t -> (TypeSpec) t.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitTypeUnion(TypeSpecUnion node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
-        return new TypeSpecUnion(
-                nodeId,
-                types.stream()
-                        .map(t -> (TypeSpec) t.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitTypeSingle(TypeSpecSimple node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
-        return new TypeSpecSimple(
-                nodeId,
-                type,
-                arguments.stream()
-                        .map(a -> (TypeSpec) a.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitTypeFunction(TypeSpecFunction node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
-        return new TypeSpecFunction(
-                nodeId,
-                arguments.stream()
-                        .map(t -> (TypeSpec) t.accept(this))
-                        .collect(Collectors.toList()),
-                (TypeSpec) returnType.accept(this)
-        );
+    public Node visitTypeInferred(TypeSpecInferred node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeInferred(NodeId nodeId) {
-        return new TypeSpecInferred(nodeId);
+    public Node visitMethodSignature(MethodSignature node) {
+        return node;
     }
 
     @Override
-    public Node visitMethodSignature(NodeId nodeId, Visibility visibility, String name,
-            List<TypeParameter> typeParameters,
-            List<Parameter> parameters, TypeSpec returnType) {
-        return new MethodSignature(
-                nodeId,
-                visibility,
-                name,
-                typeParameters.stream()
-                        .map(p -> (TypeParameter) p.accept(this))
-                        .collect(Collectors.toList()),
-                parameters.stream()
-                        .map(p -> (Parameter) p.accept(this))
-                        .collect(Collectors.toList()),
-                (TypeSpec) returnType.accept(this)
-        );
+    public Node visitParameter(Parameter node) {
+        return node;
     }
 
     @Override
-    public Node visitParameter(NodeId nodeId, String name, TypeSpec type) {
-        return new Parameter(
-                nodeId,
-                name,
-                (TypeSpec) type.accept(this)
-        );
+    public Node visitTypeParameter(TypeParameter node) {
+        return node;
     }
 
     @Override
-    public Node visitTypeParameter(NodeId nodeId, String name) {
-        return new TypeParameter(nodeId, name);
+    public Node visitStringValue(StringValue node) {
+        return node;
     }
 
     @Override
-    public Node visitStringValue(NodeId nodeId, String value) {
-        return new StringValue(nodeId, value);
+    public Node visitNumberValue(NumberValue node) {
+        return node;
     }
 
     @Override
-    public Node visitNumberValue(NodeId nodeId, String value) {
-        return new NumberValue(nodeId, value);
+    public Node visitBooleanValue(BooleanValue node) {
+        return node;
     }
 
     @Override
-    public Node visitBooleanValue(boolean value) {
-        return value ? BooleanValue.TRUE : BooleanValue.FALSE;
+    public Node visitNoneValue(NoneValue node) {
+        return node;
     }
 
     @Override
-    public Node visitNoneValue() {
-        return NoneValue.INSTANCE;
+    public Node visitIdentifierValue(IdentifierValue node) {
+        return node;
     }
 
     @Override
-    public Node visitIdentifierValue(NodeId nodeId, String value) {
-        return new IdentifierValue(nodeId, value);
+    public Node visitVarAssignmentValue(VarAssignmentValue node) {
+        return node;
     }
 
     @Override
-    public Node visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        return new VarAssignmentValue(
-                nodeId,
-                identifier,
-                (TypeSpec) type.accept(this),
-                (Value) value.accept(this)
-        );
+    public Node visitValAssignmentValue(ValAssignmentValue node) {
+        return node;
     }
 
     @Override
-    public Node visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        return new ValAssignmentValue(
-                nodeId,
-                identifier,
-                (TypeSpec) type.accept(this),
-                (Value) value.accept(this)
-        );
+    public Node visitIndirectAssignmentValue(IndirectAssignmentValue node) {
+        return node;
     }
 
     @Override
-    public Node visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
-        return new IndirectAssignmentValue(
-                nodeId,
-                (Value) indirectValue.accept(this),
-                identifier,
-                (Value) value.accept(this)
-        );
+    public Node visitMethodCallValue(MethodCallValue node) {
+        return node;
     }
 
     @Override
-    public Node visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
-            List<Value> methodArguments) {
-        return new MethodCallValue(
-                nodeId,
-                methodName,
-                typeArguments.stream()
-                        .map(a -> (TypeSpec) a.accept(this))
-                        .collect(Collectors.toList()),
-                methodArguments.stream()
-                        .map(v -> (Value) v.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitNestedValue(NestedValue node) {
+        return node;
     }
 
     @Override
-    public Node visitNestedValue(NodeId nodeId, Value outer, Value inner) {
-        return new NestedValue(
-                nodeId,
-                (Value) outer.accept(this),
-                (Value) inner.accept(this)
-        );
+    public Node visitFunctionValue(FunctionValue node) {
+        return node;
     }
 
     @Override
-    public Node visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
-            TypeSpec returnType, List<Statement> statements) {
-        return new FunctionValue(
-                nodeId,
-                typeParameters.stream()
-                        .map(t -> (TypeParameter) t.accept(this))
-                        .collect(Collectors.toList()),
-                parameters.stream()
-                        .map(p -> (Parameter) p.accept(this))
-                        .collect(Collectors.toList()),
-                (TypeSpec) returnType.accept(this),
-                statements.stream()
-                        .map(s -> (Statement) s.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitStatement(Statement node) {
+        return node;
     }
 
     @Override
-    public Node visitStatement(NodeId nodeId, Value value, boolean isLast) {
-        return new Statement(
-                nodeId,
-                (Value) value.accept(this),
-                isLast
-        );
+    public Node visitMethod(Method node) {
+        return node;
     }
 
     @Override
-    public Node visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
-        return new Method(
-                nodeId,
-                (MethodSignature) signature.accept(this),
-                statements.stream()
-                        .map(s -> (Statement) s.accept(this))
-                        .collect(Collectors.toList())
-        );
+    public Node visitVarAttribute(VarAttribute node) {
+        return node;
     }
 
     @Override
-    public Node visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        return new VarAttribute(
-                nodeId,
-                identifier,
-                (TypeSpec) type.accept(this),
-                (Value) value.accept(this)
-        );
-    }
-
-    @Override
-    public Node visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        return new ValAttribute(
-                nodeId,
-                identifier,
-                (TypeSpec) type.accept(this),
-                (Value) value.accept(this)
-        );
+    public Node visitValAttribute(ValAttribute node) {
+        return node;
     }
 }

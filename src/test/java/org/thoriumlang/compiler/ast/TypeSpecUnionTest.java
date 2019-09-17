@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecUnionTest {
@@ -75,10 +74,10 @@ class TypeSpecUnionTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
+                    public String visitTypeUnion(TypeSpecUnion node) {
                         return String.format("%s:%s",
-                                nodeId,
-                                types.stream()
+                                node.getNodeId(),
+                                node.getTypes().stream()
                                         .map(TypeSpec::toString)
                                         .collect(Collectors.joining(","))
                         );

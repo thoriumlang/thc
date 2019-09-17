@@ -107,13 +107,12 @@ class VarAssignmentValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type,
-                                    Value value) {
+                            public String visitVarAssignmentValue(VarAssignmentValue node) {
                                 return String.format("%s:%s:%s:%s",
-                                        nodeId,
-                                        type.toString(),
-                                        identifier,
-                                        value.toString()
+                                        node.getNodeId(),
+                                        node.getType().toString(),
+                                        node.getIdentifier(),
+                                        node.getValue().toString()
                                 );
                             }
                         })

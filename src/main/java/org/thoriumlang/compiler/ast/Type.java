@@ -57,14 +57,7 @@ public class Type implements TopLevelNode {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitType(
-                nodeId,
-                visibility,
-                name,
-                typeParameters,
-                superType,
-                methods
-        );
+        return visitor.visitType(this);
     }
 
     @Override
@@ -82,6 +75,30 @@ public class Type implements TopLevelNode {
                 superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<TypeParameter> getTypeParameters() {
+        return typeParameters;
+    }
+
+    public TypeSpec getSuperType() {
+        return superType;
+    }
+
+    public List<MethodSignature> getMethods() {
+        return methods;
     }
 
     @Override

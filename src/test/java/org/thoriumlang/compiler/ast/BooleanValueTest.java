@@ -25,8 +25,8 @@ class BooleanValueTest {
                 BooleanValue.TRUE
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
-                            public Boolean visitBooleanValue(boolean value) {
-                                return value;
+                            public Boolean visitBooleanValue(BooleanValue node) {
+                                return node.getValue();
                             }
                         })
         ).isEqualTo(true);
@@ -38,8 +38,8 @@ class BooleanValueTest {
                 BooleanValue.FALSE
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
-                            public Boolean visitBooleanValue(boolean value) {
-                                return value;
+                            public Boolean visitBooleanValue(BooleanValue node) {
+                                return node.getValue();
                             }
                         })
         ).isEqualTo(false);

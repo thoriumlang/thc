@@ -16,18 +16,20 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.NodeId;
-import org.thoriumlang.compiler.ast.TypeSpec;
+import org.thoriumlang.compiler.ast.TypeSpecFunction;
+import org.thoriumlang.compiler.ast.TypeSpecInferred;
+import org.thoriumlang.compiler.ast.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.TypeSpecUnion;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecVisitor extends BaseVisitor<String> {
     @Override
-    public String visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
+    public String visitTypeIntersection(TypeSpecIntersection node) {
         return String.format("(%s)",
-                types.stream()
+                node.getTypes().stream()
                         .sorted(Comparator.comparing(Object::toString))
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(" | "))
@@ -35,9 +37,9 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
+    public String visitTypeUnion(TypeSpecUnion node) {
         return String.format("(%s)",
-                types.stream()
+                node.getTypes().stream()
                         .sorted(Comparator.comparing(Object::toString))
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(" & "))
@@ -45,28 +47,28 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
+    public String visitTypeSingle(TypeSpecSimple node) {
         return String.format(
                 "%s%s",
-                type,
-                arguments.isEmpty() ? "" : arguments.stream()
+                node.getType(),
+                node.getArguments().isEmpty() ? "" : node.getArguments().stream()
                         .map(e -> e.accept(this))
                         .collect(Collectors.joining(", ", "[", "]"))
         );
     }
 
     @Override
-    public String visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
+    public String visitTypeFunction(TypeSpecFunction node) {
         return String.format("(%s): %s",
-                arguments.stream()
+                node.getArguments().stream()
                         .map(t -> t.accept(this))
                         .collect(Collectors.joining(", ")),
-                returnType.accept(this)
+                node.getReturnType().accept(this)
         );
     }
 
     @Override
-    public String visitTypeInferred(NodeId nodeId) {
+    public String visitTypeInferred(TypeSpecInferred node) {
         return "";
     }
 }

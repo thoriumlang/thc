@@ -16,14 +16,14 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.NodeId;
+import org.thoriumlang.compiler.ast.Use;
 
 class UseVisitor extends BaseVisitor<String> {
     @Override
-    public String visitUse(NodeId nodeId, String from, String to) {
-        if (to.equals("*")) {
-            return String.format("use %s;", from);
+    public String visitUse(Use node) {
+        if (node.getTo().equals("*")) {
+            return String.format("use %s;", node.getFrom());
         }
-        return String.format("use %s : %s;", from, to);
+        return String.format("use %s : %s;", node.getFrom(), node.getTo());
     }
 }

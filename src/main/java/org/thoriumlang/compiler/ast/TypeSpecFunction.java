@@ -41,7 +41,7 @@ public class TypeSpecFunction implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeFunction(nodeId, arguments, returnType);
+        return visitor.visitTypeFunction(this);
     }
 
     @Override
@@ -53,6 +53,19 @@ public class TypeSpecFunction implements TypeSpec {
                 returnType.toString()
         );
     }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public List<TypeSpec> getArguments() {
+        return arguments;
+    }
+
+    public TypeSpec getReturnType() {
+        return returnType;
+    }
+
 
     @Override
     public boolean equals(Object o) {

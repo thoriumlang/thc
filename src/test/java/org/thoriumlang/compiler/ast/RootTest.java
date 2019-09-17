@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 
 class RootTest {
     private NodeIdGenerator nodeIdGenerator;
@@ -164,12 +163,12 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
+                    public String visitRoot(Root node) {
                         return String.format("%s:%s:%s:%s",
-                                nodeId,
-                                namespace,
-                                uses,
-                                type
+                                node.getNodeId(),
+                                node.getNamespace(),
+                                node.getUses(),
+                                node.getTopLevelNode()
                         );
                     }
                 })
@@ -198,12 +197,12 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
+                    public String visitRoot(Root node) {
                         return String.format("%s:%s:%s:%s",
                                 nodeIdGenerator.next(),
-                                namespace,
-                                uses,
-                                clazz
+                                node.getNamespace(),
+                                node.getUses(),
+                                node.getTopLevelNode()
                         );
                     }
                 })

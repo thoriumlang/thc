@@ -16,14 +16,20 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.NodeId;
-import org.thoriumlang.compiler.ast.Parameter;
+import org.thoriumlang.compiler.ast.BooleanValue;
+import org.thoriumlang.compiler.ast.FunctionValue;
+import org.thoriumlang.compiler.ast.IdentifierValue;
+import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
+import org.thoriumlang.compiler.ast.MethodCallValue;
+import org.thoriumlang.compiler.ast.NestedValue;
+import org.thoriumlang.compiler.ast.NoneValue;
+import org.thoriumlang.compiler.ast.NumberValue;
 import org.thoriumlang.compiler.ast.Statement;
-import org.thoriumlang.compiler.ast.TypeParameter;
+import org.thoriumlang.compiler.ast.StringValue;
 import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.Value;
+import org.thoriumlang.compiler.ast.ValAssignmentValue;
+import org.thoriumlang.compiler.ast.VarAssignmentValue;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 class ValueVisitor extends BaseVisitor<String> {
@@ -39,43 +45,43 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitStatement(NodeId nodeId, Value value, boolean isLast) {
-        return isLast ?
-                "return " + value.accept(this) :
-                value.accept(this);
+    public String visitStatement(Statement node) {
+        return node.isLast() ?
+                "return " + node.getValue().accept(this) :
+                node.getValue().accept(this);
     }
 
     @Override
-    public String visitStringValue(NodeId nodeId, String value) {
-        return "\"" + value + "\"";
+    public String visitStringValue(StringValue node) {
+        return "\"" + node.getValue() + "\"";
     }
 
     @Override
-    public String visitNumberValue(NodeId nodeId, String value) {
-        return value;
+    public String visitNumberValue(NumberValue node) {
+        return node.getValue();
     }
 
     @Override
-    public String visitBooleanValue(boolean value) {
-        return String.valueOf(value);
+    public String visitBooleanValue(BooleanValue node) {
+        return String.valueOf(node.getValue());
     }
 
     @Override
-    public String visitNoneValue() {
+    public String visitNoneValue(NoneValue node) {
         return "none";
     }
 
     @Override
-    public String visitIdentifierValue(NodeId nodeId, String value) {
-        return value;
+    public String visitIdentifierValue(IdentifierValue node) {
+        return node.getValue();
     }
 
     @Override
-    public String visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public String visitVarAssignmentValue(VarAssignmentValue node) {
         return String.format("var %s%s = %s",
-                identifier,
-                type(type),
-                value.accept(this)
+                node.getIdentifier(),
+                type(node.getType()),
+                node.getValue().accept(this)
         );
     }
 
@@ -87,60 +93,58 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public String visitValAssignmentValue(ValAssignmentValue node) {
         return String.format("val %s%s = %s",
-                identifier,
-                type(type),
-                value.accept(this)
+                node.getIdentifier(),
+                type(node.getType()),
+                node.getValue().accept(this)
         );
     }
 
     @Override
-    public String visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
+    public String visitIndirectAssignmentValue(IndirectAssignmentValue node) {
         return String.format("%s.%s = %s",
-                indirectValue.accept(this),
-                identifier,
-                value.accept(this)
+                node.getIndirectValue().accept(this),
+                node.getIdentifier(),
+                node.getValue().accept(this)
         );
     }
 
     @Override
-    public String visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
-            List<Value> methodArguments) {
+    public String visitMethodCallValue(MethodCallValue node) {
         return String.format("%s%s(%s)",
-                methodName,
-                typeArguments.isEmpty() ?
+                node.getMethodName(),
+                node.getTypeArguments().isEmpty() ?
                         "" :
-                        typeArguments.stream()
+                        node.getTypeArguments().stream()
                                 .map(a -> a.accept(typeSpecVisitor))
                                 .collect(Collectors.joining(", ", "[", "]")),
-                methodArguments.isEmpty() ?
+                node.getMethodArguments().isEmpty() ?
                         "" :
-                        methodArguments.stream()
+                        node.getMethodArguments().stream()
                                 .map(a -> a.accept(this))
                                 .collect(Collectors.joining(", "))
         );
     }
 
     @Override
-    public String visitNestedValue(NodeId nodeId, Value outer, Value inner) {
-        return outer.accept(this) + "." + inner.accept(this);
+    public String visitNestedValue(NestedValue node) {
+        return node.getOuter().accept(this) + "." + node.getInner().accept(this);
     }
 
     @Override
-    public String visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
-            TypeSpec returnType, List<Statement> statements) {
+    public String visitFunctionValue(FunctionValue node) {
         return String.format("%s(%s)%s => {%n%s%n}",
-                typeParameters.isEmpty() ?
+                node.getTypeParameters().isEmpty() ?
                         "" :
-                        typeParameters.stream()
+                        node.getTypeParameters().stream()
                                 .map(t -> t.accept(typeParameterVisitor))
                                 .collect(Collectors.joining(", ", "[", "]")),
-                parameters.stream()
+                node.getParameters().stream()
                         .map(p -> p.accept(parameterVisitor))
                         .collect(Collectors.joining(", ")),
-                type(returnType),
-                statements.stream()
+                type(node.getReturnType()),
+                node.getStatements().stream()
                         .map(s -> s.accept(this))
                         .map(Indent.INSTANCE)
                         .map(s -> s + ";")

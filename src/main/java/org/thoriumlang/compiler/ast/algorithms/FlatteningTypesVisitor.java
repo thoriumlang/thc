@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.CopyVisitor;
 import org.thoriumlang.compiler.ast.IdentityVisitor;
 import org.thoriumlang.compiler.ast.NodeId;
 import org.thoriumlang.compiler.ast.NodeIdGenerator;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FlatteningTypesVisitor extends IdentityVisitor {
+public class FlatteningTypesVisitor extends CopyVisitor {
     private final NodeIdGenerator nodeIdGenerator;
 
     public FlatteningTypesVisitor(NodeIdGenerator nodeIdGenerator) {
@@ -37,10 +38,10 @@ public class FlatteningTypesVisitor extends IdentityVisitor {
     }
 
     @Override
-    public Node visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
+    public Node visitTypeIntersection(TypeSpecIntersection node) {
         return new TypeSpecIntersection(
                 nodeIdGenerator.next(),
-                flattenTypeIntersection(types)
+                flattenTypeIntersection(node.getTypes())
         );
     }
 
@@ -52,8 +53,8 @@ public class FlatteningTypesVisitor extends IdentityVisitor {
                         .filter(TypeSpecIntersection.class::isInstance)
                         .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
                             @Override
-                            public List<TypeSpec> visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
-                                return flattenTypeIntersection(types);
+                            public List<TypeSpec> visitTypeIntersection(TypeSpecIntersection node) {
+                                return flattenTypeIntersection(node.getTypes());
                             }
                         }))
                         .flatMap(Collection::stream)
@@ -61,10 +62,10 @@ public class FlatteningTypesVisitor extends IdentityVisitor {
     }
 
     @Override
-    public Node visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
+    public Node visitTypeUnion(TypeSpecUnion node) {
         return new TypeSpecUnion(
                 nodeIdGenerator.next(),
-                flattenTypeUnion(types)
+                flattenTypeUnion(node.getTypes())
         );
     }
 
@@ -76,8 +77,8 @@ public class FlatteningTypesVisitor extends IdentityVisitor {
                         .filter(TypeSpecUnion.class::isInstance)
                         .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
                             @Override
-                            public List<TypeSpec> visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
-                                return flattenTypeUnion(types);
+                            public List<TypeSpec> visitTypeUnion(TypeSpecUnion node) {
+                                return flattenTypeUnion(node.getTypes());
                             }
                         }))
                         .flatMap(Collection::stream)

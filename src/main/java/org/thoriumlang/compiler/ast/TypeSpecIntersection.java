@@ -33,18 +33,22 @@ public class TypeSpecIntersection implements TypeSpec {
         this.types = types;
     }
 
-    public List<TypeSpec> types() {
-        return types;
-    }
-
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeIntersection(nodeId, types);
+        return visitor.visitTypeIntersection(this);
     }
 
     @Override
     public String toString() {
         return "i:" + types.toString();
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public List<TypeSpec> getTypes() {
+        return types;
     }
 
     @Override

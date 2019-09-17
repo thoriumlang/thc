@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecSimpleTest {
@@ -85,12 +84,12 @@ class TypeSpecSimpleTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
+                    public String visitTypeSingle(TypeSpecSimple node) {
                         return String.format(
                                 "%s:%s:[%s]",
-                                nodeId,
-                                type,
-                                arguments.stream()
+                                node.getNodeId(),
+                                node.getType(),
+                                node.getArguments().stream()
                                         .map(TypeSpec::toString)
                                         .collect(Collectors.joining(","))
                         );

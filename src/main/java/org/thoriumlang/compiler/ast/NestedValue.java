@@ -39,7 +39,7 @@ public class NestedValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitNestedValue(nodeId, outer, inner);
+        return visitor.visitNestedValue(this);
     }
 
     @Override
@@ -49,6 +49,18 @@ public class NestedValue implements Value {
                 outer.toString(),
                 inner.toString()
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Value getOuter() {
+        return outer;
+    }
+
+    public Value getInner() {
+        return inner;
     }
 
     @Override

@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodTest {
@@ -114,12 +113,12 @@ class MethodTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
+                    public String visitMethod(Method node) {
                         return String.format(
                                 "%s:{%s}:{%s}",
-                                nodeId.toString(),
-                                signature.toString(),
-                                statements.stream()
+                                node.getNodeId().toString(),
+                                node.getSignature().toString(),
+                                node.getStatements().stream()
                                         .map(Statement::toString)
                                         .collect(Collectors.joining(","))
                         );

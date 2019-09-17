@@ -141,7 +141,7 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         types.addAll(
                 ctx.typeSpecUnion().stream()
                         .map(t -> (TypeSpecUnion) t.accept(this))
-                        .map(TypeSpecUnion::types)
+                        .map(TypeSpecUnion::getTypes)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList())
         );
@@ -191,7 +191,7 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         types.addAll(
                 ctx.typeSpecIntersection().stream()
                         .map(t -> (TypeSpecIntersection) t.accept(this))
-                        .map(TypeSpecIntersection::types)
+                        .map(TypeSpecIntersection::getTypes)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toList())
         );

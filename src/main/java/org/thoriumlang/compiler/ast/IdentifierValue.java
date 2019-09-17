@@ -34,11 +34,19 @@ public class IdentifierValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitIdentifierValue(nodeId, value);
+        return visitor.visitIdentifierValue(this);
     }
 
     @Override
     public String toString() {
+        return value;
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getValue() {
         return value;
     }
 

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecFunctionTest {
@@ -98,14 +97,14 @@ class TypeSpecFunctionTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "B", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
+                    public String visitTypeFunction(TypeSpecFunction node) {
                         return String.format(
                                 "%s:(%s):%s",
-                                nodeId,
-                                arguments.stream()
+                                node.getNodeId(),
+                                node.getArguments().stream()
                                         .map(TypeSpec::toString)
                                         .collect(Collectors.joining(",")),
-                                returnType.toString()
+                                node.getReturnType().toString()
                         );
                     }
                 })

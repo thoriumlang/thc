@@ -30,7 +30,7 @@ class IdentifierValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IdentifierValue(null,"identifier");
+            new IdentifierValue(null, "identifier");
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -59,10 +59,10 @@ class IdentifierValueTest {
                 new IdentifierValue(nodeIdGenerator.next(), "id")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIdentifierValue(NodeId nodeId, String value) {
+                            public String visitIdentifierValue(IdentifierValue node) {
                                 return String.format("%s:%s",
-                                        nodeId.toString(),
-                                        value
+                                        node.getNodeId().toString(),
+                                        node.getValue()
                                 );
                             }
                         })

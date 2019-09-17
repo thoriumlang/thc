@@ -15,5 +15,5 @@
  */
 package org.thoriumlang.compiler.ast;
 
-public interface Attribute extends Node {
+public interface Attribute extends Value {
 }

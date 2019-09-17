@@ -51,12 +51,24 @@ public class Use implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitUse(nodeId, from, to);
+        return visitor.visitUse(this);
     }
 
     @Override
     public String toString() {
         return String.format("USE %s : %s", from, to);
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public String getTo() {
+        return to;
     }
 
     @Override

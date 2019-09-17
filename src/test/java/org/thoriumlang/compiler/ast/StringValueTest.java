@@ -59,8 +59,11 @@ class StringValueTest {
                 new StringValue(nodeIdGenerator.next(), "value")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitStringValue(NodeId nodeId, String value) {
-                                return String.format("%s:%s", nodeId, value);
+                            public String visitStringValue(StringValue node) {
+                                return String.format("%s:%s",
+                                        node.getNodeId(),
+                                        node.getValue()
+                                );
                             }
                         })
         ).isEqualTo("#1:value");

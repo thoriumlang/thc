@@ -30,7 +30,7 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IndirectAssignmentValue(null, NoneValue.INSTANCE,"identifier", NoneValue.INSTANCE);
+            new IndirectAssignmentValue(null, NoneValue.INSTANCE, "identifier", NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -39,10 +39,11 @@ class IndirectAssignmentValueTest {
         }
         Assertions.fail("NPE not thrown");
     }
+
     @Test
     void constructor_indirectValue() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(),null, "identifier", NoneValue.INSTANCE);
+            new IndirectAssignmentValue(nodeIdGenerator.next(), null, "identifier", NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -55,7 +56,7 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_identifier() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(),NoneValue.INSTANCE, null, NoneValue.INSTANCE);
+            new IndirectAssignmentValue(nodeIdGenerator.next(), NoneValue.INSTANCE, null, NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -68,7 +69,7 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_value() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(),NoneValue.INSTANCE, "identifier", null);
+            new IndirectAssignmentValue(nodeIdGenerator.next(), NoneValue.INSTANCE, "identifier", null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -83,19 +84,19 @@ class IndirectAssignmentValueTest {
         Assertions.assertThat(
                 new IndirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new NumberValue(nodeIdGenerator.next(),"1"),
+                        new NumberValue(nodeIdGenerator.next(), "1"),
                         "identifier",
                         NoneValue.INSTANCE
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
+                            public String visitIndirectAssignmentValue(IndirectAssignmentValue node) {
                                 return String.format(
                                         "%s:%s:%s:%s",
-                                        nodeId.toString(),
-                                        indirectValue.toString(),
-                                        identifier,
-                                        value.toString()
+                                        node.getNodeId().toString(),
+                                        node.getIndirectValue().toString(),
+                                        node.getIdentifier(),
+                                        node.getValue().toString()
                                 );
                             }
                         })

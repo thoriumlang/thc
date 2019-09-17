@@ -112,13 +112,12 @@ class VarAttributeTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type,
-                                    Value value) {
+                            public String visitVarAttribute(VarAttribute node) {
                                 return String.format("%s:%s:%s:%s",
-                                        nodeId,
-                                        identifier,
-                                        type,
-                                        value
+                                        node.getNodeId(),
+                                        node.getIdentifier(),
+                                        node.getType(),
+                                        node.getValue()
                                 );
                             }
                         })

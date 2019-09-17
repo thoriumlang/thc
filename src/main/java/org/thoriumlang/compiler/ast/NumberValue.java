@@ -34,11 +34,19 @@ public class NumberValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitNumberValue(nodeId, value);
+        return visitor.visitNumberValue(this);
     }
 
     @Override
     public String toString() {
+        return value;
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getValue() {
         return value;
     }
 

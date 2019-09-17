@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class ClassTest {
@@ -36,7 +35,7 @@ class ClassTest {
     void constructor_nodeId() {
         try {
             new Class(
-                     null,
+                    null,
                     Visibility.PUBLIC,
                     "name",
                     Collections.emptyList(),
@@ -214,21 +213,19 @@ class ClassTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitClass(NodeId nodeId, Visibility visibility, String name,
-                            List<TypeParameter> typeParameters,
-                            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
+                    public String visitClass(Class node) {
                         return String.format("%s:%s:%s:[%s]:%s:{ %s ; %s }",
-                                nodeId.toString(),
-                                visibility,
-                                name,
-                                typeParameters.stream()
+                                node.getNodeId().toString(),
+                                node.getVisibility(),
+                                node.getName(),
+                                node.getTypeParameters().stream()
                                         .map(TypeParameter::toString)
                                         .collect(Collectors.joining(", ")),
-                                superType,
-                                attributes.stream()
+                                node.getSuperType(),
+                                node.getAttributes().stream()
                                         .map(Attribute::toString)
                                         .collect(Collectors.joining(", ")),
-                                methods.stream()
+                                node.getMethods().stream()
                                         .map(Method::toString)
                                         .collect(Collectors.joining(", "))
                         );

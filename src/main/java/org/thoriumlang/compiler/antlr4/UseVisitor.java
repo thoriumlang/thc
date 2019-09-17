@@ -25,14 +25,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
- class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
-     private final NodeIdGenerator nodeIdGenerator;
+class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
+    private final NodeIdGenerator nodeIdGenerator;
 
-     UseVisitor(NodeIdGenerator nodeIdGenerator) {
-         this.nodeIdGenerator = nodeIdGenerator;
-     }
+    UseVisitor(NodeIdGenerator nodeIdGenerator) {
+        this.nodeIdGenerator = nodeIdGenerator;
+    }
 
-     @Override
+    @Override
     public List<Use> visitUse(ThoriumParser.UseContext ctx) {
         if (ctx.baseFqIdentifier != null) {
             if (ctx.star != null) {

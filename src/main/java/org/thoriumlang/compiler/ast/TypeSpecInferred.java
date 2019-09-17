@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import java.util.Objects;
+
 public class TypeSpecInferred implements TypeSpec {
     private final NodeId nodeId;
 
@@ -27,11 +29,32 @@ public class TypeSpecInferred implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeInferred(nodeId);
+        return visitor.visitTypeInferred(this);
     }
 
     @Override
     public String toString() {
         return "inferred";
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeSpecInferred that = (TypeSpecInferred) o;
+        return nodeId.equals(that.nodeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeId);
     }
 }

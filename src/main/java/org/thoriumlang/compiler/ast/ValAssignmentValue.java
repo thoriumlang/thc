@@ -44,7 +44,7 @@ public class ValAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitValAssignmentValue(nodeId, identifier, type, value);
+        return visitor.visitValAssignmentValue(this);
     }
 
     @Override
@@ -55,6 +55,22 @@ public class ValAssignmentValue implements Value {
                 identifier,
                 value.toString()
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
     }
 
     @Override

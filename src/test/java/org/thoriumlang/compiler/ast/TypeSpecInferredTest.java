@@ -33,8 +33,8 @@ class TypeSpecInferredTest {
         Assertions.assertThat(
                 new TypeSpecInferred(nodeIdGenerator.next()).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeInferred(NodeId nodeId) {
-                        return nodeId.toString();
+                    public String visitTypeInferred(TypeSpecInferred node) {
+                        return node.getNodeId().toString();
                     }
                 })
         ).isEqualTo("#1");

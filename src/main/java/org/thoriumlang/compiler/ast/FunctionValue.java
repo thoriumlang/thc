@@ -52,13 +52,7 @@ public class FunctionValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitFunctionValue(
-                nodeId,
-                typeParameters,
-                parameters,
-                returnType,
-                statements
-        );
+        return visitor.visitFunctionValue(this);
     }
 
     @Override
@@ -76,6 +70,26 @@ public class FunctionValue implements Value {
                         .map(Statement::toString)
                         .collect(Collectors.joining(";"))
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public List<TypeParameter> getTypeParameters() {
+        return typeParameters;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public TypeSpec getReturnType() {
+        return returnType;
+    }
+
+    public List<Statement> getStatements() {
+        return statements;
     }
 
     @Override

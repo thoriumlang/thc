@@ -16,33 +16,28 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.Class;
-import org.thoriumlang.compiler.ast.NodeId;
-import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.Use;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 class RootVisitor extends BaseVisitor<String> {
-    private final TypeVisitor typeVisitor;
     private final UseVisitor useVisitor;
-    private final ClassVisitor classVisitor;
+    private final TopLevelVisitor topLevelVisitor;
 
-    RootVisitor(UseVisitor useVisitor, TypeVisitor typeVisitor,
-            ClassVisitor classVisitor) {
+    RootVisitor(UseVisitor useVisitor, TopLevelVisitor topLevelVisitor) {
         this.useVisitor = useVisitor;
-        this.typeVisitor = typeVisitor;
-        this.classVisitor = classVisitor;
+        this.topLevelVisitor = topLevelVisitor;
     }
 
     @Override
-    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
-        String use = use(uses);
+    public String visitRoot(Root node) {
+        String use = use(node.getUses());
         return String.format("// namespace %s%n%n%s%s",
-                namespace,
+                node.getNamespace(),
                 use.isEmpty() ? "" : String.format("%s%n%n", use),
-                type.accept(typeVisitor)
+                node.getTopLevelNode().accept(topLevelVisitor)
         );
     }
 
@@ -50,15 +45,5 @@ class RootVisitor extends BaseVisitor<String> {
         return uses.stream()
                 .map(u -> u.accept(useVisitor))
                 .collect(Collectors.joining("\n"));
-    }
-
-    @Override
-    public String visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
-        String use = use(uses);
-        return String.format("// namespace %s%n%n%s%s",
-                namespace,
-                use.isEmpty() ? "" : String.format("%s%n%n", use),
-                clazz.accept(classVisitor)
-        );
     }
 }

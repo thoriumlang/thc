@@ -45,12 +45,28 @@ public class VarAttribute implements Value, Attribute {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitVarAttribute(nodeId, identifier, type, value);
+        return visitor.visitVarAttribute(this);
     }
 
     @Override
     public String toString() {
         return String.format("VAR %s: %s = %s", identifier, type, value);
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
     }
 
     @Override
@@ -72,4 +88,5 @@ public class VarAttribute implements Value, Attribute {
     public int hashCode() {
         return Objects.hash(nodeId, identifier, type, value);
     }
+
 }

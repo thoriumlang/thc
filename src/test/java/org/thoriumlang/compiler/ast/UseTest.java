@@ -84,8 +84,12 @@ class UseTest {
         Assertions.assertThat(
                 new Use(nodeIdGenerator.next(), "f.r.o.m").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(NodeId nodeId, String from, String to) {
-                        return String.format("%s:%s:%s", nodeId, from, to);
+                    public String visitUse(Use node) {
+                        return String.format("%s:%s:%s",
+                                node.getNodeId(),
+                                node.getFrom(),
+                                node.getTo()
+                        );
                     }
                 })
         ).isEqualTo("#1:f.r.o.m:m");
@@ -96,8 +100,12 @@ class UseTest {
         Assertions.assertThat(
                 new Use(nodeIdGenerator.next(), "f.r.o.m", "to").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(NodeId nodeId, String from, String to) {
-                        return String.format("%s:%s:%s", nodeId, from, to);
+                    public String visitUse(Use node) {
+                        return String.format("%s:%s:%s",
+                                node.getNodeId(),
+                                node.getFrom(),
+                                node.getTo()
+                        );
                     }
                 })
         ).isEqualTo("#1:f.r.o.m:to");

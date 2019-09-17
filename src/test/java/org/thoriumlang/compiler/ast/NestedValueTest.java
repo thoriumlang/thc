@@ -19,9 +19,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.List;
-
 class NestedValueTest {
     private NodeIdGenerator nodeIdGenerator;
 
@@ -41,10 +38,12 @@ class NestedValueTest {
             return;
         }
         Assertions.fail("NPE not thrown");
-    }@Test
+    }
+
+    @Test
     void constructor_outer() {
         try {
-            new NestedValue(nodeIdGenerator.next(),null, NoneValue.INSTANCE);
+            new NestedValue(nodeIdGenerator.next(), null, NoneValue.INSTANCE);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -57,7 +56,7 @@ class NestedValueTest {
     @Test
     void constructor_inner() {
         try {
-            new NestedValue(nodeIdGenerator.next(),NoneValue.INSTANCE, null);
+            new NestedValue(nodeIdGenerator.next(), NoneValue.INSTANCE, null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -77,12 +76,12 @@ class NestedValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNestedValue(NodeId nodeId, Value outer, Value inner) {
+                            public String visitNestedValue(NestedValue node) {
                                 return String.format(
                                         "%s:%s:%s",
-                                        nodeId.toString(),
-                                        outer,
-                                        inner
+                                        node.getNodeId().toString(),
+                                        node.getOuter(),
+                                        node.getInner()
                                 );
                             }
                         })

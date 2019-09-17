@@ -59,8 +59,11 @@ class NumberValueTest {
                 new NumberValue(nodeIdGenerator.next(), "1")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNumberValue(NodeId nodeId, String value) {
-                                return String.format("%s:%s", nodeId.toString(), value);
+                            public String visitNumberValue(NumberValue node) {
+                                return String.format("%s:%s",
+                                        node.getNodeId().toString(),
+                                        node.getValue()
+                                );
                             }
                         })
         ).isEqualTo("#1:1");

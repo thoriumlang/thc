@@ -41,7 +41,7 @@ public class Method implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethod(nodeId, signature, statements);
+        return visitor.visitMethod(this);
     }
 
     @Override
@@ -53,6 +53,18 @@ public class Method implements Node {
                         .map(Statement::toString)
                         .collect(Collectors.joining(";"))
         );
+    }
+
+    public MethodSignature getSignature() {
+        return signature;
+    }
+
+    public List<Statement> getStatements() {
+        return statements;
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
     }
 
     @Override

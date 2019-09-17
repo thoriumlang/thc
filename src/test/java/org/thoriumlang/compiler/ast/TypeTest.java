@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeTest {
@@ -159,7 +158,7 @@ class TypeTest {
                         nodeIdGenerator.next(),
                         Visibility.PUBLIC,
                         "name",
-                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(),"A")),
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "A")),
                         new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                         Collections.singletonList(
                                 new MethodSignature(
@@ -177,18 +176,16 @@ class TypeTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitType(NodeId nodeId, Visibility visibility, String name,
-                            List<TypeParameter> typeParameters,
-                            TypeSpec superType, List<MethodSignature> methods) {
+                    public String visitType(Type node) {
                         return String.format("%s:%s:%s:[%s]:%s:%s",
-                                nodeId,
-                                visibility,
-                                name,
-                                typeParameters.stream()
+                                node.getNodeId(),
+                                node.getVisibility(),
+                                node.getName(),
+                                node.getTypeParameters().stream()
                                         .map(TypeParameter::toString)
                                         .collect(Collectors.joining(", ")),
-                                superType,
-                                methods
+                                node.getSuperType(),
+                                node.getMethods()
                         );
                     }
                 })

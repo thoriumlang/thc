@@ -42,15 +42,30 @@ public class ValAttribute implements Value, Attribute {
         this.value = value;
     }
 
-
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitValAttribute(nodeId, identifier, type, value);
+        return visitor.visitValAttribute(this);
     }
 
     @Override
     public String toString() {
         return String.format("VAL %s: %s = %s", identifier, type, value);
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
     }
 
     @Override

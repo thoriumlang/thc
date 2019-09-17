@@ -108,13 +108,12 @@ class ValAssignmentValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type,
-                                    Value value) {
+                            public String visitValAssignmentValue(ValAssignmentValue node) {
                                 return String.format("%s:%s:%s:%s",
-                                        nodeId,
-                                        type.toString(),
-                                        identifier,
-                                        value.toString()
+                                        node.getNodeId(),
+                                        node.getType().toString(),
+                                        node.getIdentifier(),
+                                        node.getValue().toString()
                                 );
                             }
                         })

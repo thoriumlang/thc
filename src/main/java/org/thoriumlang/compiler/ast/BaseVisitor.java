@@ -15,151 +15,139 @@
  */
 package org.thoriumlang.compiler.ast;
 
-import java.util.List;
-
 public abstract class BaseVisitor<T> implements Visitor<T> {
     @Override
-    public T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Type type) {
+    public T visitRoot(Root node) {
         return null;
     }
 
     @Override
-    public T visitRoot(NodeId nodeId, String namespace, List<Use> uses, Class clazz) {
+    public T visitUse(Use node) {
         return null;
     }
 
     @Override
-    public T visitUse(NodeId nodeId, String from, String to) {
+    public T visitType(Type node) {
         return null;
     }
 
     @Override
-    public T visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<MethodSignature> methods) {
+    public T visitClass(Class node) {
         return null;
     }
 
     @Override
-    public T visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
+    public T visitTypeIntersection(TypeSpecIntersection node) {
         return null;
     }
 
     @Override
-    public T visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
+    public T visitTypeUnion(TypeSpecUnion node) {
         return null;
     }
 
     @Override
-    public T visitTypeUnion(NodeId nodeId, List<TypeSpec> types) {
+    public T visitTypeSingle(TypeSpecSimple node) {
         return null;
     }
 
     @Override
-    public T visitTypeSingle(NodeId nodeId, String type, List<TypeSpec> arguments) {
+    public T visitTypeFunction(TypeSpecFunction node) {
         return null;
     }
 
     @Override
-    public T visitTypeFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
+    public T visitTypeInferred(TypeSpecInferred node) {
         return null;
     }
 
     @Override
-    public T visitTypeInferred(NodeId nodeId) {
+    public T visitMethodSignature(MethodSignature node) {
         return null;
     }
 
     @Override
-    public T visitMethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            List<Parameter> parameters, TypeSpec returnType) {
+    public T visitParameter(Parameter node) {
         return null;
     }
 
     @Override
-    public T visitParameter(NodeId nodeId, String name, TypeSpec type) {
+    public T visitTypeParameter(TypeParameter node) {
         return null;
     }
 
     @Override
-    public T visitTypeParameter(NodeId nodeId, String name) {
+    public T visitStringValue(StringValue node) {
         return null;
     }
 
     @Override
-    public T visitStringValue(NodeId nodeId, String value) {
+    public T visitNumberValue(NumberValue node) {
         return null;
     }
 
     @Override
-    public T visitNumberValue(NodeId nodeId, String value) {
+    public T visitBooleanValue(BooleanValue node) {
         return null;
     }
 
     @Override
-    public T visitBooleanValue(boolean value) {
+    public T visitNoneValue(NoneValue node) {
         return null;
     }
 
     @Override
-    public T visitNoneValue() {
+    public T visitIdentifierValue(IdentifierValue node) {
         return null;
     }
 
     @Override
-    public T visitIdentifierValue(NodeId nodeId, String value) {
+    public T visitVarAssignmentValue(VarAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitVarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public T visitValAssignmentValue(ValAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public T visitIndirectAssignmentValue(IndirectAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitIndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
+    public T visitMethodCallValue(MethodCallValue node) {
         return null;
     }
 
     @Override
-    public T visitMethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
-            List<Value> methodArguments) {
+    public T visitNestedValue(NestedValue node) {
         return null;
     }
 
     @Override
-    public T visitNestedValue(NodeId nodeId, Value outer, Value inner) {
+    public T visitFunctionValue(FunctionValue node) {
         return null;
     }
 
     @Override
-    public T visitFunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
-            TypeSpec returnType, List<Statement> statements) {
+    public T visitStatement(Statement node) {
         return null;
     }
 
     @Override
-    public T visitStatement(NodeId nodeId, Value value, boolean isLast) {
+    public T visitMethod(Method node) {
         return null;
     }
 
     @Override
-    public T visitMethod(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
+    public T visitVarAttribute(VarAttribute node) {
         return null;
     }
 
     @Override
-    public T visitVarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        return null;
-    }
-
-    @Override
-    public T visitValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+    public T visitValAttribute(ValAttribute node) {
         return null;
     }
 }

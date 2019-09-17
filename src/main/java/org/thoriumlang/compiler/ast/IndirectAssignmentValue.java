@@ -44,7 +44,7 @@ public class IndirectAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitIndirectAssignmentValue(nodeId, indirectValue, identifier, value);
+        return visitor.visitIndirectAssignmentValue(this);
     }
 
     @Override
@@ -55,6 +55,22 @@ public class IndirectAssignmentValue implements Value {
                 identifier,
                 value.toString()
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Value getIndirectValue() {
+        return indirectValue;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public Value getValue() {
+        return value;
     }
 
     @Override

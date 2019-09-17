@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 
 class MethodCallValueTest {
     private NodeIdGenerator nodeIdGenerator;
@@ -95,15 +94,13 @@ class MethodCallValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitMethodCallValue(NodeId nodeId, String methodName,
-                                    List<TypeSpec> typeArguments,
-                                    List<Value> methodArguments) {
+                            public String visitMethodCallValue(MethodCallValue node) {
                                 return String.format(
                                         "%s:%s:%s:%s",
-                                        nodeId.toString(),
-                                        methodName,
-                                        typeArguments,
-                                        methodArguments
+                                        node.getNodeId().toString(),
+                                        node.getMethodName(),
+                                        node.getTypeArguments(),
+                                        node.getMethodArguments()
                                 );
                             }
                         })

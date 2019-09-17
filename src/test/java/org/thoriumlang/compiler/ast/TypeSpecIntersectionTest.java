@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class TypeSpecIntersectionTest {
@@ -61,10 +60,10 @@ class TypeSpecIntersectionTest {
                         ))
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeIntersection(NodeId nodeId, List<TypeSpec> types) {
+                    public String visitTypeIntersection(TypeSpecIntersection node) {
                         return String.format("%s:%s",
-                                nodeId,
-                                types.stream()
+                                node.getNodeId(),
+                                node.getTypes().stream()
                                         .map(TypeSpec::toString)
                                         .collect(Collectors.joining(","))
                         );

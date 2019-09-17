@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodSignatureTest {
@@ -154,20 +153,19 @@ class MethodSignatureTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethodSignature(NodeId nodeId, Visibility visibility, String name,
-                            List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
+                    public String visitMethodSignature(MethodSignature node) {
                         return String.format(
                                 "%s:%s:%s:[%s]:(%s):%s",
-                                nodeId.toString(),
-                                visibility,
-                                name,
-                                typeParameters.stream()
+                                node.getNodeId().toString(),
+                                node.getVisibility(),
+                                node.getName(),
+                                node.getTypeParameters().stream()
                                         .map(TypeParameter::toString)
                                         .collect(Collectors.joining(",")),
-                                parameters.stream()
+                                node.getParameters().stream()
                                         .map(Parameter::toString)
                                         .collect(Collectors.joining(",")),
-                                returnType
+                                node.getReturnType()
                         );
                     }
                 })

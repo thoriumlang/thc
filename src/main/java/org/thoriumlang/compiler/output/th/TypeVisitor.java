@@ -16,47 +16,8 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.MethodSignature;
-import org.thoriumlang.compiler.ast.NodeId;
-import org.thoriumlang.compiler.ast.TypeParameter;
-import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.Visibility;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 class TypeVisitor extends BaseVisitor<String> {
-    private final TypeSpecVisitor typeSpecVisitor;
-    private final MethodSignatureVisitor methodSignatureVisitor;
-
     TypeVisitor(TypeSpecVisitor typeSpecVisitor, MethodSignatureVisitor methodSignatureVisitor) {
-        this.typeSpecVisitor = typeSpecVisitor;
-        this.methodSignatureVisitor = methodSignatureVisitor;
-    }
-
-    @Override
-    public String visitType(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType,
-            List<MethodSignature> methods) {
-        return String.format(
-                "%s type %s%s : %s {%s}",
-                visibility.name().toLowerCase(),
-                name,
-                typeParameters.isEmpty() ?
-                        "" :
-                        typeParameters.stream()
-                                .map(TypeParameter::toString)
-                                .collect(Collectors.joining(", ", "[", "]")),
-                superType.accept(typeSpecVisitor),
-                methods.isEmpty() ?
-                        "\n" :
-                        String.format("%n%s%n",
-                                methods.stream()
-                                        .map(m -> m.accept(methodSignatureVisitor))
-                                        .map(s -> s + ";")
-                                        .map(Indent.INSTANCE)
-                                        .collect(Collectors.joining("\n"))
-                        )
-        );
     }
 }

@@ -36,12 +36,24 @@ public class Statement implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStatement(nodeId, value, last);
+        return visitor.visitStatement(this);
     }
 
     @Override
     public String toString() {
         return String.format("%s:%s", value, last);
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    public boolean isLast() {
+        return last;
     }
 
     @Override

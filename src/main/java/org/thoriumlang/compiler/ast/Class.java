@@ -62,15 +62,7 @@ public class Class implements TopLevelNode {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitClass(
-                nodeId,
-                visibility,
-                name,
-                typeParameters,
-                superType,
-                methods,
-                attributes
-        );
+        return visitor.visitClass(this);
     }
 
     @Override
@@ -92,6 +84,34 @@ public class Class implements TopLevelNode {
                 serializedAttributes.isEmpty() ? "" : String.format("%n%s", serializedAttributes),
                 serializedMethods.isEmpty() ? "" : String.format("%n%s", serializedMethods)
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<TypeParameter> getTypeParameters() {
+        return typeParameters;
+    }
+
+    public TypeSpec getSuperType() {
+        return superType;
+    }
+
+    public List<Method> getMethods() {
+        return methods;
+    }
+
+    public List<Attribute> getAttributes() {
+        return attributes;
     }
 
     @Override

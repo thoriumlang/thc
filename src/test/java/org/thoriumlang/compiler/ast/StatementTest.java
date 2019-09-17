@@ -38,10 +38,12 @@ class StatementTest {
             return;
         }
         Assertions.fail("NPE not thrown");
-    }@Test
+    }
+
+    @Test
     void constructor_value() {
         try {
-            new Statement(nodeIdGenerator.next(),null, true);
+            new Statement(nodeIdGenerator.next(), null, true);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -60,11 +62,11 @@ class StatementTest {
                         false
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitStatement(NodeId nodeId, Value value, boolean isLast) {
+                    public String visitStatement(Statement node) {
                         return String.format("%s:%s:%s",
-                                nodeId,
-                                value.toString(),
-                                isLast
+                                node.getNodeId(),
+                                node.getValue().toString(),
+                                node.isLast()
                         );
                     }
                 })

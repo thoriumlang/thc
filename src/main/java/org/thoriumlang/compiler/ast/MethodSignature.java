@@ -57,14 +57,7 @@ public class MethodSignature implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodSignature(
-                nodeId,
-                visibility,
-                name,
-                typeParameters,
-                parameters,
-                returnType
-        );
+        return visitor.visitMethodSignature(this);
     }
 
     @Override
@@ -80,6 +73,30 @@ public class MethodSignature implements Node {
                         .collect(Collectors.joining(", ")),
                 returnType
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public Visibility getVisibility() {
+        return visibility;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<TypeParameter> getTypeParameters() {
+        return typeParameters;
+    }
+
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
+
+    public TypeSpec getReturnType() {
+        return returnType;
     }
 
     @Override

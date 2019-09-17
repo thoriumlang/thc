@@ -40,11 +40,7 @@ public class ThWalker implements Walker<String> {
         );
         this.visitor = new RootVisitor(
                 new UseVisitor(),
-                new TypeVisitor(
-                        typeSpecVisitor,
-                        methodSignatureVisitor
-                ),
-                new ClassVisitor(
+                new TopLevelVisitor(
                         typeSpecVisitor,
                         new AttributeVisitor(
                                 typeSpecVisitor,
@@ -53,7 +49,8 @@ public class ThWalker implements Walker<String> {
                         new MethodVisitor(
                                 methodSignatureVisitor,
                                 valueVisitor
-                        )
+                        ),
+                        methodSignatureVisitor
                 )
         );
     }

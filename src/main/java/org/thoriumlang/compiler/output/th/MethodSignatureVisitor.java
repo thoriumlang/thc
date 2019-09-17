@@ -16,13 +16,9 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.NodeId;
-import org.thoriumlang.compiler.ast.Parameter;
-import org.thoriumlang.compiler.ast.TypeParameter;
+import org.thoriumlang.compiler.ast.MethodSignature;
 import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.Visibility;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 class MethodSignatureVisitor extends BaseVisitor<String> {
@@ -38,20 +34,19 @@ class MethodSignatureVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethodSignature(NodeId nodeId, Visibility visibility, String name,
-            List<TypeParameter> typeParameters, List<Parameter> parameters, TypeSpec returnType) {
+    public String visitMethodSignature(MethodSignature node) {
         return String.format("%s %s%s(%s)%s",
-                visibility.name().toLowerCase(),
-                name,
-                typeParameters.isEmpty() ?
+                node.getVisibility().name().toLowerCase(),
+                node.getName(),
+                node.getTypeParameters().isEmpty() ?
                         "" :
-                        typeParameters.stream()
+                        node.getTypeParameters().stream()
                                 .map(p -> p.accept(typeParameterVisitor))
                                 .collect(Collectors.joining(", ", "[", "]")),
-                parameters.stream()
+                node.getParameters().stream()
                         .map(p -> p.accept(parameterVisitor))
                         .collect(Collectors.joining(", ")),
-                returnType(returnType)
+                returnType(node.getReturnType())
         );
     }
 

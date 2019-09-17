@@ -25,7 +25,7 @@ class NoneValueTest {
                 NoneValue.INSTANCE
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNoneValue() {
+                            public String visitNoneValue(NoneValue node) {
                                 return "NONE";
                             }
                         })

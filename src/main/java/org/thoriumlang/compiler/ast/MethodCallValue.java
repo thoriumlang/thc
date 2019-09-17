@@ -47,7 +47,7 @@ public class MethodCallValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodCallValue(nodeId, methodName, typeArguments, methodArguments);
+        return visitor.visitMethodCallValue(this);
     }
 
     @Override
@@ -62,6 +62,22 @@ public class MethodCallValue implements Value {
                         .map(Object::toString)
                         .collect(Collectors.joining(","))
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public List<TypeSpec> getTypeArguments() {
+        return typeArguments;
+    }
+
+    public List<Value> getMethodArguments() {
+        return methodArguments;
     }
 
     @Override

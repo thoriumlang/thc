@@ -33,18 +33,22 @@ public class TypeSpecUnion implements TypeSpec {
         this.types = types;
     }
 
-    public List<TypeSpec> types() {
-        return types;
-    }
-
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeUnion(nodeId, types);
+        return visitor.visitTypeUnion(this);
     }
 
     @Override
     public String toString() {
         return "u:" + types.toString();
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public List<TypeSpec> getTypes() {
+        return types;
     }
 
     @Override

@@ -39,12 +39,24 @@ public class Parameter implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitParameter(nodeId, name, type);
+        return visitor.visitParameter(this);
     }
 
     @Override
     public String toString() {
         return name + ": " + type;
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public TypeSpec getType() {
+        return type;
     }
 
     @Override

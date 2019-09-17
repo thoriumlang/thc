@@ -27,11 +27,15 @@ public class BooleanValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitBooleanValue(value);
+        return visitor.visitBooleanValue(this);
     }
 
     @Override
     public String toString() {
         return value.toString();
+    }
+
+    public Boolean getValue() {
+        return value;
     }
 }

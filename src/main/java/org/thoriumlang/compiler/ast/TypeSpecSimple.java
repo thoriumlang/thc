@@ -41,7 +41,7 @@ public class TypeSpecSimple implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeSingle(nodeId, type, arguments);
+        return visitor.visitTypeSingle(this);
     }
 
     @Override
@@ -53,6 +53,18 @@ public class TypeSpecSimple implements TypeSpec {
                         .map(TypeSpec::toString)
                         .collect(Collectors.joining(", "))
         );
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<TypeSpec> getArguments() {
+        return arguments;
     }
 
     @Override

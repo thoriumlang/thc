@@ -34,12 +34,20 @@ public class StringValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStringValue(nodeId, value);
+        return visitor.visitStringValue(this);
     }
 
     @Override
     public String toString() {
         return String.format("\"%s\"", value);
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override

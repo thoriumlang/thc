@@ -15,57 +15,79 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.Attribute;
 import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.Method;
-import org.thoriumlang.compiler.ast.NodeId;
+import org.thoriumlang.compiler.ast.Class;
+import org.thoriumlang.compiler.ast.Type;
 import org.thoriumlang.compiler.ast.TypeParameter;
-import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.Visibility;
 
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class ClassVisitor extends BaseVisitor<String> {
+class TopLevelVisitor extends BaseVisitor<String> {
     private final TypeSpecVisitor typeSpecVisitor;
     private final AttributeVisitor attributeVisitor;
     private final MethodVisitor methodVisitor;
+    private final MethodSignatureVisitor methodSignatureVisitor;
 
-    ClassVisitor(TypeSpecVisitor typeSpecVisitor, AttributeVisitor attributeVisitor, MethodVisitor methodVisitor) {
+
+    TopLevelVisitor(TypeSpecVisitor typeSpecVisitor, AttributeVisitor attributeVisitor, MethodVisitor methodVisitor,
+            MethodSignatureVisitor methodSignatureVisitor) {
         this.typeSpecVisitor = typeSpecVisitor;
         this.attributeVisitor = attributeVisitor;
         this.methodVisitor = methodVisitor;
+        this.methodSignatureVisitor = methodSignatureVisitor;
     }
 
     @Override
-    public String visitClass(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType,
-            List<Method> methods, List<Attribute> attributes) {
+    public String visitClass(Class node) {
         return String.format(
                 "%s class %s%s : %s {%s}",
-                visibility.name().toLowerCase(),
-                name,
-                typeParameters.isEmpty() ?
+                node.getVisibility().name().toLowerCase(),
+                node.getName(),
+                node.getTypeParameters().isEmpty() ?
                         "" :
-                        typeParameters.stream()
+                        node.getTypeParameters().stream()
                                 .map(TypeParameter::toString)
                                 .collect(Collectors.joining(", ", "[", "]")),
-                superType.accept(typeSpecVisitor),
+                node.getSuperType().accept(typeSpecVisitor),
                 Stream
                         .of(
-                                attributes.stream()
+                                node.getAttributes().stream()
                                         .map(a -> a.accept(attributeVisitor))
                                         .map(Indent.INSTANCE)
                                         .map(s -> s + ";")
                                         .collect(Collectors.joining("\n")),
-                                methods.stream()
+                                node.getMethods().stream()
                                         .map(m -> m.accept(methodVisitor))
                                         .map(Indent.INSTANCE)
                                         .collect(Collectors.joining("\n\n"))
                         )
                         .filter(s -> !s.isEmpty())
                         .collect(Collectors.joining("\n\n", "\n", "\n"))
+        );
+    }
+
+    @Override
+    public String visitType(Type node) {
+        return String.format(
+                "%s type %s%s : %s {%s}",
+                node.getVisibility().name().toLowerCase(),
+                node.getName(),
+                node.getTypeParameters().isEmpty() ?
+                        "" :
+                        node.getTypeParameters().stream()
+                                .map(TypeParameter::toString)
+                                .collect(Collectors.joining(", ", "[", "]")),
+                node.getSuperType().accept(typeSpecVisitor),
+                node.getMethods().isEmpty() ?
+                        "\n" :
+                        String.format("%n%s%n",
+                                node.getMethods().stream()
+                                        .map(m -> m.accept(methodSignatureVisitor))
+                                        .map(s -> s + ";")
+                                        .map(Indent.INSTANCE)
+                                        .collect(Collectors.joining("\n"))
+                        )
         );
     }
 }
