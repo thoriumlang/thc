@@ -45,7 +45,7 @@ public class VarAttribute implements Value, Attribute {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitVarAttribute(this);
+        return visitor.visit(this);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class NoneValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitNoneValue(this);
+        return visitor.visit(this);
     }
 
     @Override

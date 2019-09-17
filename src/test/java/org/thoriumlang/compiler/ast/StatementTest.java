@@ -62,7 +62,7 @@ class StatementTest {
                         false
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitStatement(Statement node) {
+                    public String visit(Statement node) {
                         return String.format("%s:%s:%s",
                                 node.getNodeId(),
                                 node.getValue().toString(),

@@ -44,7 +44,7 @@ public class VarAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitVarAssignmentValue(this);
+        return visitor.visit(this);
     }
 
     @Override

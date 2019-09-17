@@ -60,7 +60,7 @@ class TypeSpecIntersectionTest {
                         ))
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeIntersection(TypeSpecIntersection node) {
+                    public String visit(TypeSpecIntersection node) {
                         return String.format("%s:%s",
                                 node.getNodeId(),
                                 node.getTypes().stream()

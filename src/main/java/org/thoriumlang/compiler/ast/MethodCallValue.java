@@ -47,7 +47,7 @@ public class MethodCallValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodCallValue(this);
+        return visitor.visit(this);
     }
 
     @Override

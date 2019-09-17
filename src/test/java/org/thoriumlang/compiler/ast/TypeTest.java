@@ -176,7 +176,7 @@ class TypeTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitType(Type node) {
+                    public String visit(Type node) {
                         return String.format("%s:%s:%s:[%s]:%s:%s",
                                 node.getNodeId(),
                                 node.getVisibility(),

@@ -112,7 +112,7 @@ public class ValAttributeTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitValAttribute(ValAttribute node) {
+                            public String visit(ValAttribute node) {
                                 return String.format("%s:%s:%s:%s",
                                         node.getNodeId(),
                                         node.getIdentifier(),

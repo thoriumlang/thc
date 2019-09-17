@@ -84,7 +84,7 @@ class UseTest {
         Assertions.assertThat(
                 new Use(nodeIdGenerator.next(), "f.r.o.m").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(Use node) {
+                    public String visit(Use node) {
                         return String.format("%s:%s:%s",
                                 node.getNodeId(),
                                 node.getFrom(),
@@ -100,7 +100,7 @@ class UseTest {
         Assertions.assertThat(
                 new Use(nodeIdGenerator.next(), "f.r.o.m", "to").accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitUse(Use node) {
+                    public String visit(Use node) {
                         return String.format("%s:%s:%s",
                                 node.getNodeId(),
                                 node.getFrom(),

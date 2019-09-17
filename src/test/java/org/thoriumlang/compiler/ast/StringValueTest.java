@@ -59,7 +59,7 @@ class StringValueTest {
                 new StringValue(nodeIdGenerator.next(), "value")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitStringValue(StringValue node) {
+                            public String visit(StringValue node) {
                                 return String.format("%s:%s",
                                         node.getNodeId(),
                                         node.getValue()

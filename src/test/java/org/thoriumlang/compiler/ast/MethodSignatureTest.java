@@ -153,7 +153,7 @@ class MethodSignatureTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "test", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethodSignature(MethodSignature node) {
+                    public String visit(MethodSignature node) {
                         return String.format(
                                 "%s:%s:%s:[%s]:(%s):%s",
                                 node.getNodeId().toString(),

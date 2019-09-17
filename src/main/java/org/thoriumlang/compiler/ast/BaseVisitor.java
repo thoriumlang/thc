@@ -17,137 +17,137 @@ package org.thoriumlang.compiler.ast;
 
 public abstract class BaseVisitor<T> implements Visitor<T> {
     @Override
-    public T visitRoot(Root node) {
+    public T visit(Root node) {
         return null;
     }
 
     @Override
-    public T visitUse(Use node) {
+    public T visit(Use node) {
         return null;
     }
 
     @Override
-    public T visitType(Type node) {
+    public T visit(Type node) {
         return null;
     }
 
     @Override
-    public T visitClass(Class node) {
+    public T visit(Class node) {
         return null;
     }
 
     @Override
-    public T visitTypeIntersection(TypeSpecIntersection node) {
+    public T visit(TypeSpecIntersection node) {
         return null;
     }
 
     @Override
-    public T visitTypeUnion(TypeSpecUnion node) {
+    public T visit(TypeSpecUnion node) {
         return null;
     }
 
     @Override
-    public T visitTypeSingle(TypeSpecSimple node) {
+    public T visit(TypeSpecSimple node) {
         return null;
     }
 
     @Override
-    public T visitTypeFunction(TypeSpecFunction node) {
+    public T visit(TypeSpecFunction node) {
         return null;
     }
 
     @Override
-    public T visitTypeInferred(TypeSpecInferred node) {
+    public T visit(TypeSpecInferred node) {
         return null;
     }
 
     @Override
-    public T visitMethodSignature(MethodSignature node) {
+    public T visit(MethodSignature node) {
         return null;
     }
 
     @Override
-    public T visitParameter(Parameter node) {
+    public T visit(Parameter node) {
         return null;
     }
 
     @Override
-    public T visitTypeParameter(TypeParameter node) {
+    public T visit(TypeParameter node) {
         return null;
     }
 
     @Override
-    public T visitStringValue(StringValue node) {
+    public T visit(StringValue node) {
         return null;
     }
 
     @Override
-    public T visitNumberValue(NumberValue node) {
+    public T visit(NumberValue node) {
         return null;
     }
 
     @Override
-    public T visitBooleanValue(BooleanValue node) {
+    public T visit(BooleanValue node) {
         return null;
     }
 
     @Override
-    public T visitNoneValue(NoneValue node) {
+    public T visit(NoneValue node) {
         return null;
     }
 
     @Override
-    public T visitIdentifierValue(IdentifierValue node) {
+    public T visit(IdentifierValue node) {
         return null;
     }
 
     @Override
-    public T visitVarAssignmentValue(VarAssignmentValue node) {
+    public T visit(VarAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitValAssignmentValue(ValAssignmentValue node) {
+    public T visit(ValAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitIndirectAssignmentValue(IndirectAssignmentValue node) {
+    public T visit(IndirectAssignmentValue node) {
         return null;
     }
 
     @Override
-    public T visitMethodCallValue(MethodCallValue node) {
+    public T visit(MethodCallValue node) {
         return null;
     }
 
     @Override
-    public T visitNestedValue(NestedValue node) {
+    public T visit(NestedValue node) {
         return null;
     }
 
     @Override
-    public T visitFunctionValue(FunctionValue node) {
+    public T visit(FunctionValue node) {
         return null;
     }
 
     @Override
-    public T visitStatement(Statement node) {
+    public T visit(Statement node) {
         return null;
     }
 
     @Override
-    public T visitMethod(Method node) {
+    public T visit(Method node) {
         return null;
     }
 
     @Override
-    public T visitVarAttribute(VarAttribute node) {
+    public T visit(VarAttribute node) {
         return null;
     }
 
     @Override
-    public T visitValAttribute(ValAttribute node) {
+    public T visit(ValAttribute node) {
         return null;
     }
 }

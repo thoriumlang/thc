@@ -45,39 +45,39 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitStatement(Statement node) {
+    public String visit(Statement node) {
         return node.isLast() ?
                 "return " + node.getValue().accept(this) :
                 node.getValue().accept(this);
     }
 
     @Override
-    public String visitStringValue(StringValue node) {
+    public String visit(StringValue node) {
         return "\"" + node.getValue() + "\"";
     }
 
     @Override
-    public String visitNumberValue(NumberValue node) {
+    public String visit(NumberValue node) {
         return node.getValue();
     }
 
     @Override
-    public String visitBooleanValue(BooleanValue node) {
+    public String visit(BooleanValue node) {
         return String.valueOf(node.getValue());
     }
 
     @Override
-    public String visitNoneValue(NoneValue node) {
+    public String visit(NoneValue node) {
         return "none";
     }
 
     @Override
-    public String visitIdentifierValue(IdentifierValue node) {
+    public String visit(IdentifierValue node) {
         return node.getValue();
     }
 
     @Override
-    public String visitVarAssignmentValue(VarAssignmentValue node) {
+    public String visit(VarAssignmentValue node) {
         return String.format("var %s%s = %s",
                 node.getIdentifier(),
                 type(node.getType()),
@@ -93,7 +93,7 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitValAssignmentValue(ValAssignmentValue node) {
+    public String visit(ValAssignmentValue node) {
         return String.format("val %s%s = %s",
                 node.getIdentifier(),
                 type(node.getType()),
@@ -102,7 +102,7 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitIndirectAssignmentValue(IndirectAssignmentValue node) {
+    public String visit(IndirectAssignmentValue node) {
         return String.format("%s.%s = %s",
                 node.getIndirectValue().accept(this),
                 node.getIdentifier(),
@@ -111,7 +111,7 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethodCallValue(MethodCallValue node) {
+    public String visit(MethodCallValue node) {
         return String.format("%s%s(%s)",
                 node.getMethodName(),
                 node.getTypeArguments().isEmpty() ?
@@ -128,12 +128,12 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitNestedValue(NestedValue node) {
+    public String visit(NestedValue node) {
         return node.getOuter().accept(this) + "." + node.getInner().accept(this);
     }
 
     @Override
-    public String visitFunctionValue(FunctionValue node) {
+    public String visit(FunctionValue node) {
         return String.format("%s(%s)%s => {%n%s%n}",
                 node.getTypeParameters().isEmpty() ?
                         "" :

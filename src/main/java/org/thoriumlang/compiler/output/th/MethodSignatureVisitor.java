@@ -34,7 +34,7 @@ class MethodSignatureVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethodSignature(MethodSignature node) {
+    public String visit(MethodSignature node) {
         return String.format("%s %s%s(%s)%s",
                 node.getVisibility().name().toLowerCase(),
                 node.getName(),

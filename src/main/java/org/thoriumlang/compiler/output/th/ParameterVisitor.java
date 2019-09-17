@@ -26,7 +26,7 @@ class ParameterVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitParameter(Parameter node) {
+    public String visit(Parameter node) {
         return String.format("%s: %s",
                 node.getName(),
                 node.getType().accept(typeSpecVisitor)

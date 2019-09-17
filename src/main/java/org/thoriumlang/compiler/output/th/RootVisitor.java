@@ -32,7 +32,7 @@ class RootVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitRoot(Root node) {
+    public String visit(Root node) {
         String use = use(node.getUses());
         return String.format("// namespace %s%n%n%s%s",
                 node.getNamespace(),

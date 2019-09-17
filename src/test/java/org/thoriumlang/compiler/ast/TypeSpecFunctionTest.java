@@ -97,7 +97,7 @@ class TypeSpecFunctionTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "B", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeFunction(TypeSpecFunction node) {
+                    public String visit(TypeSpecFunction node) {
                         return String.format(
                                 "%s:(%s):%s",
                                 node.getNodeId(),

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 class TypeSpecVisitor extends BaseVisitor<String> {
     @Override
-    public String visitTypeIntersection(TypeSpecIntersection node) {
+    public String visit(TypeSpecIntersection node) {
         return String.format("(%s)",
                 node.getTypes().stream()
                         .sorted(Comparator.comparing(Object::toString))
@@ -37,7 +37,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeUnion(TypeSpecUnion node) {
+    public String visit(TypeSpecUnion node) {
         return String.format("(%s)",
                 node.getTypes().stream()
                         .sorted(Comparator.comparing(Object::toString))
@@ -47,7 +47,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeSingle(TypeSpecSimple node) {
+    public String visit(TypeSpecSimple node) {
         return String.format(
                 "%s%s",
                 node.getType(),
@@ -58,7 +58,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeFunction(TypeSpecFunction node) {
+    public String visit(TypeSpecFunction node) {
         return String.format("(%s): %s",
                 node.getArguments().stream()
                         .map(t -> t.accept(this))
@@ -68,7 +68,7 @@ class TypeSpecVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitTypeInferred(TypeSpecInferred node) {
+    public String visit(TypeSpecInferred node) {
         return "";
     }
 }

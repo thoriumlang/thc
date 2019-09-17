@@ -34,7 +34,7 @@ public class IdentifierValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitIdentifierValue(this);
+        return visitor.visit(this);
     }
 
     @Override

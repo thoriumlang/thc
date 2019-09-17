@@ -44,7 +44,7 @@ public class IndirectAssignmentValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitIndirectAssignmentValue(this);
+        return visitor.visit(this);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class Root implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitRoot(this);
+        return visitor.visit(this);
     }
 
     @Override

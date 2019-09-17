@@ -90,7 +90,7 @@ class IndirectAssignmentValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIndirectAssignmentValue(IndirectAssignmentValue node) {
+                            public String visit(IndirectAssignmentValue node) {
                                 return String.format(
                                         "%s:%s:%s:%s",
                                         node.getNodeId().toString(),

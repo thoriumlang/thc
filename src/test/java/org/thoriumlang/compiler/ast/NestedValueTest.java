@@ -76,7 +76,7 @@ class NestedValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNestedValue(NestedValue node) {
+                            public String visit(NestedValue node) {
                                 return String.format(
                                         "%s:%s:%s",
                                         node.getNodeId().toString(),

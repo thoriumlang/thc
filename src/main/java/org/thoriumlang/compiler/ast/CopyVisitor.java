@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public abstract class CopyVisitor implements Visitor<Node> {
     @Override
-    public Node visitRoot(Root node) {
+    public Node visit(Root node) {
         return new Root(
                 node.getNodeId(),
                 node.getNamespace(),
@@ -31,14 +31,14 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitUse(Use node) {
+    public Node visit(Use node) {
         return new Use(
                 node.getNodeId(), node.getFrom(), node.getTo()
         );
     }
 
     @Override
-    public Node visitType(Type node) {
+    public Node visit(Type node) {
         return new Type(
                 node.getNodeId(),
                 node.getVisibility(),
@@ -54,7 +54,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitClass(Class node) {
+    public Node visit(Class node) {
         return new Class(
                 node.getNodeId(),
                 node.getVisibility(),
@@ -73,7 +73,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeIntersection(TypeSpecIntersection node) {
+    public Node visit(TypeSpecIntersection node) {
         return new TypeSpecIntersection(
                 node.getNodeId(),
                 node.getTypes().stream()
@@ -83,7 +83,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeUnion(TypeSpecUnion node) {
+    public Node visit(TypeSpecUnion node) {
         return new TypeSpecUnion(
                 node.getNodeId(),
                 node.getTypes().stream()
@@ -93,7 +93,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeSingle(TypeSpecSimple node) {
+    public Node visit(TypeSpecSimple node) {
         return new TypeSpecSimple(
                 node.getNodeId(),
                 node.getType(),
@@ -104,7 +104,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeFunction(TypeSpecFunction node) {
+    public Node visit(TypeSpecFunction node) {
         return new TypeSpecFunction(
                 node.getNodeId(),
                 node.getArguments().stream()
@@ -115,12 +115,12 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeInferred(TypeSpecInferred node) {
+    public Node visit(TypeSpecInferred node) {
         return new TypeSpecInferred(node.getNodeId());
     }
 
     @Override
-    public Node visitMethodSignature(MethodSignature node) {
+    public Node visit(MethodSignature node) {
         return new MethodSignature(
                 node.getNodeId(),
                 node.getVisibility(),
@@ -136,7 +136,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitParameter(Parameter node) {
+    public Node visit(Parameter node) {
         return new Parameter(
                 node.getNodeId(),
                 node.getName(),
@@ -145,37 +145,37 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitTypeParameter(TypeParameter node) {
+    public Node visit(TypeParameter node) {
         return new TypeParameter(node.getNodeId(), node.getName());
     }
 
     @Override
-    public Node visitStringValue(StringValue node) {
+    public Node visit(StringValue node) {
         return new StringValue(node.getNodeId(), node.getValue());
     }
 
     @Override
-    public Node visitNumberValue(NumberValue node) {
+    public Node visit(NumberValue node) {
         return new NumberValue(node.getNodeId(), node.getValue());
     }
 
     @Override
-    public Node visitBooleanValue(BooleanValue node) {
+    public Node visit(BooleanValue node) {
         return node;
     }
 
     @Override
-    public Node visitNoneValue(NoneValue node) {
+    public Node visit(NoneValue node) {
         return node;
     }
 
     @Override
-    public Node visitIdentifierValue(IdentifierValue node) {
+    public Node visit(IdentifierValue node) {
         return new IdentifierValue(node.getNodeId(), node.getValue());
     }
 
     @Override
-    public Node visitVarAssignmentValue(VarAssignmentValue node) {
+    public Node visit(VarAssignmentValue node) {
         return new VarAssignmentValue(
                 node.getNodeId(),
                 node.getIdentifier(),
@@ -185,7 +185,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitValAssignmentValue(ValAssignmentValue node) {
+    public Node visit(ValAssignmentValue node) {
         return new ValAssignmentValue(
                 node.getNodeId(),
                 node.getIdentifier(),
@@ -195,7 +195,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitIndirectAssignmentValue(IndirectAssignmentValue node) {
+    public Node visit(IndirectAssignmentValue node) {
         return new IndirectAssignmentValue(
                 node.getNodeId(),
                 (Value) node.getIndirectValue().accept(this),
@@ -205,7 +205,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitMethodCallValue(MethodCallValue node) {
+    public Node visit(MethodCallValue node) {
         return new MethodCallValue(
                 node.getNodeId(),
                 node.getMethodName(),
@@ -219,7 +219,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitNestedValue(NestedValue node) {
+    public Node visit(NestedValue node) {
         return new NestedValue(
                 node.getNodeId(),
                 (Value) node.getOuter().accept(this),
@@ -228,7 +228,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitFunctionValue(FunctionValue node) {
+    public Node visit(FunctionValue node) {
         return new FunctionValue(
                 node.getNodeId(),
                 node.getTypeParameters().stream()
@@ -245,7 +245,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitStatement(Statement node) {
+    public Node visit(Statement node) {
         return new Statement(
                 node.getNodeId(),
                 (Value) node.getValue().accept(this),
@@ -254,7 +254,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitMethod(Method node) {
+    public Node visit(Method node) {
         return new Method(
                 node.getNodeId(),
                 (MethodSignature) node.getSignature().accept(this),
@@ -265,7 +265,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitVarAttribute(VarAttribute node) {
+    public Node visit(VarAttribute node) {
         return new VarAttribute(
                 node.getNodeId(),
                 node.getIdentifier(),
@@ -275,7 +275,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visitValAttribute(ValAttribute node) {
+    public Node visit(ValAttribute node) {
         return new ValAttribute(
                 node.getNodeId(),
                 node.getIdentifier(),

@@ -59,7 +59,7 @@ class IdentifierValueTest {
                 new IdentifierValue(nodeIdGenerator.next(), "id")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitIdentifierValue(IdentifierValue node) {
+                            public String visit(IdentifierValue node) {
                                 return String.format("%s:%s",
                                         node.getNodeId().toString(),
                                         node.getValue()

@@ -62,7 +62,7 @@ public class Class implements TopLevelNode {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitClass(this);
+        return visitor.visit(this);
     }
 
     @Override

@@ -51,7 +51,7 @@ public class Use implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitUse(this);
+        return visitor.visit(this);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class TypeSpecSimple implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeSingle(this);
+        return visitor.visit(this);
     }
 
     @Override

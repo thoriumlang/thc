@@ -34,7 +34,7 @@ public class NumberValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitNumberValue(this);
+        return visitor.visit(this);
     }
 
     @Override

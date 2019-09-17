@@ -34,7 +34,7 @@ public class TypeParameter implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeParameter(this);
+        return visitor.visit(this);
     }
 
     @Override

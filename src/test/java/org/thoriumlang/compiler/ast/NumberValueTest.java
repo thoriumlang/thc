@@ -59,7 +59,7 @@ class NumberValueTest {
                 new NumberValue(nodeIdGenerator.next(), "1")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitNumberValue(NumberValue node) {
+                            public String visit(NumberValue node) {
                                 return String.format("%s:%s",
                                         node.getNodeId().toString(),
                                         node.getValue()

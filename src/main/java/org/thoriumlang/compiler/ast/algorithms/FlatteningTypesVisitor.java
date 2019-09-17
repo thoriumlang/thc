@@ -38,7 +38,7 @@ public class FlatteningTypesVisitor extends CopyVisitor {
     }
 
     @Override
-    public Node visitTypeIntersection(TypeSpecIntersection node) {
+    public Node visit(TypeSpecIntersection node) {
         return new TypeSpecIntersection(
                 nodeIdGenerator.next(),
                 flattenTypeIntersection(node.getTypes())
@@ -53,7 +53,7 @@ public class FlatteningTypesVisitor extends CopyVisitor {
                         .filter(TypeSpecIntersection.class::isInstance)
                         .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
                             @Override
-                            public List<TypeSpec> visitTypeIntersection(TypeSpecIntersection node) {
+                            public List<TypeSpec> visit(TypeSpecIntersection node) {
                                 return flattenTypeIntersection(node.getTypes());
                             }
                         }))
@@ -62,7 +62,7 @@ public class FlatteningTypesVisitor extends CopyVisitor {
     }
 
     @Override
-    public Node visitTypeUnion(TypeSpecUnion node) {
+    public Node visit(TypeSpecUnion node) {
         return new TypeSpecUnion(
                 nodeIdGenerator.next(),
                 flattenTypeUnion(node.getTypes())
@@ -77,7 +77,7 @@ public class FlatteningTypesVisitor extends CopyVisitor {
                         .filter(TypeSpecUnion.class::isInstance)
                         .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
                             @Override
-                            public List<TypeSpec> visitTypeUnion(TypeSpecUnion node) {
+                            public List<TypeSpec> visit(TypeSpecUnion node) {
                                 return flattenTypeUnion(node.getTypes());
                             }
                         }))

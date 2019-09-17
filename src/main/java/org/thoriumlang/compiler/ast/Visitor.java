@@ -16,57 +16,57 @@
 package org.thoriumlang.compiler.ast;
 
 public interface Visitor<T> {
-    T visitRoot(Root node);
+    T visit(Root node);
 
-    T visitUse(Use node);
+    T visit(Use node);
 
-    T visitType(Type node);
+    T visit(Type node);
 
-    T visitClass(Class node);
+    T visit(Class node);
 
-    T visitTypeIntersection(TypeSpecIntersection node);
+    T visit(TypeSpecIntersection node);
 
-    T visitTypeUnion(TypeSpecUnion node);
+    T visit(TypeSpecUnion node);
 
-    T visitTypeSingle(TypeSpecSimple node);
+    T visit(TypeSpecSimple node);
 
-    T visitTypeFunction(TypeSpecFunction node);
+    T visit(TypeSpecFunction node);
 
-    T visitTypeInferred(TypeSpecInferred node);
+    T visit(TypeSpecInferred node);
 
-    T visitMethodSignature(MethodSignature node);
+    T visit(MethodSignature node);
 
-    T visitParameter(Parameter node);
+    T visit(Parameter node);
 
-    T visitTypeParameter(TypeParameter node);
+    T visit(TypeParameter node);
 
-    T visitStringValue(StringValue node);
+    T visit(StringValue node);
 
-    T visitNumberValue(NumberValue node);
+    T visit(NumberValue node);
 
-    T visitBooleanValue(BooleanValue node);
+    T visit(BooleanValue node);
 
-    T visitNoneValue(NoneValue node);
+    T visit(NoneValue node);
 
-    T visitIdentifierValue(IdentifierValue node);
+    T visit(IdentifierValue node);
 
-    T visitVarAssignmentValue(VarAssignmentValue node);
+    T visit(VarAssignmentValue node);
 
-    T visitValAssignmentValue(ValAssignmentValue node);
+    T visit(ValAssignmentValue node);
 
-    T visitIndirectAssignmentValue(IndirectAssignmentValue node);
+    T visit(IndirectAssignmentValue node);
 
-    T visitMethodCallValue(MethodCallValue node);
+    T visit(MethodCallValue node);
 
-    T visitNestedValue(NestedValue node);
+    T visit(NestedValue node);
 
-    T visitFunctionValue(FunctionValue node);
+    T visit(FunctionValue node);
 
-    T visitStatement(Statement node);
+    T visit(Statement node);
 
-    T visitMethod(Method node);
+    T visit(Method node);
 
-    T visitVarAttribute(VarAttribute node);
+    T visit(VarAttribute node);
 
-    T visitValAttribute(ValAttribute node);
+    T visit(ValAttribute node);
 }

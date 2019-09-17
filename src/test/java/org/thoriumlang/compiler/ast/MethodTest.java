@@ -113,7 +113,7 @@ class MethodTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitMethod(Method node) {
+                    public String visit(Method node) {
                         return String.format(
                                 "%s:{%s}:{%s}",
                                 node.getNodeId().toString(),

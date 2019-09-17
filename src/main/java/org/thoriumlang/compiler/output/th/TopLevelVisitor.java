@@ -39,7 +39,7 @@ class TopLevelVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitClass(Class node) {
+    public String visit(Class node) {
         return String.format(
                 "%s class %s%s : %s {%s}",
                 node.getVisibility().name().toLowerCase(),
@@ -68,7 +68,7 @@ class TopLevelVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitType(Type node) {
+    public String visit(Type node) {
         return String.format(
                 "%s type %s%s : %s {%s}",
                 node.getVisibility().name().toLowerCase(),

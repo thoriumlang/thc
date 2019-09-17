@@ -41,7 +41,7 @@ public class Method implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethod(this);
+        return visitor.visit(this);
     }
 
     @Override

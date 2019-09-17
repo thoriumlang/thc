@@ -163,7 +163,7 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(Root node) {
+                    public String visit(Root node) {
                         return String.format("%s:%s:%s:%s",
                                 node.getNodeId(),
                                 node.getNamespace(),
@@ -197,7 +197,7 @@ class RootTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitRoot(Root node) {
+                    public String visit(Root node) {
                         return String.format("%s:%s:%s:%s",
                                 nodeIdGenerator.next(),
                                 node.getNamespace(),

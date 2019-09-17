@@ -213,7 +213,7 @@ class ClassTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitClass(Class node) {
+                    public String visit(Class node) {
                         return String.format("%s:%s:%s:[%s]:%s:{ %s ; %s }",
                                 node.getNodeId().toString(),
                                 node.getVisibility(),

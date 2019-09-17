@@ -93,7 +93,7 @@ class ParameterTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitParameter(Parameter node) {
+                    public String visit(Parameter node) {
                         return String.format("%s:%s:%s",
                                 node.getNodeId().toString(),
                                 node.getName(),

@@ -20,7 +20,7 @@ import org.thoriumlang.compiler.ast.TypeParameter;
 
 class TypeParameterVisitor extends BaseVisitor<String> {
     @Override
-    public String visitTypeParameter(TypeParameter node) {
+    public String visit(TypeParameter node) {
         return node.getName();
     }
 }

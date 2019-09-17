@@ -74,7 +74,7 @@ class TypeSpecUnionTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeUnion(TypeSpecUnion node) {
+                    public String visit(TypeSpecUnion node) {
                         return String.format("%s:%s",
                                 node.getNodeId(),
                                 node.getTypes().stream()

@@ -29,7 +29,7 @@ public class TypeSpecInferred implements TypeSpec {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitTypeInferred(this);
+        return visitor.visit(this);
     }
 
     @Override

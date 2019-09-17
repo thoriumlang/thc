@@ -20,7 +20,7 @@ import org.thoriumlang.compiler.ast.Use;
 
 class UseVisitor extends BaseVisitor<String> {
     @Override
-    public String visitUse(Use node) {
+    public String visit(Use node) {
         if (node.getTo().equals("*")) {
             return String.format("use %s;", node.getFrom());
         }

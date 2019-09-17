@@ -84,7 +84,7 @@ class TypeSpecSimpleTest {
                         )
                 ).accept(new BaseVisitor<String>() {
                     @Override
-                    public String visitTypeSingle(TypeSpecSimple node) {
+                    public String visit(TypeSpecSimple node) {
                         return String.format(
                                 "%s:%s:[%s]",
                                 node.getNodeId(),

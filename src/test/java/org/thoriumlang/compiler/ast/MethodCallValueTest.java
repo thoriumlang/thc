@@ -94,7 +94,7 @@ class MethodCallValueTest {
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visitMethodCallValue(MethodCallValue node) {
+                            public String visit(MethodCallValue node) {
                                 return String.format(
                                         "%s:%s:%s:%s",
                                         node.getNodeId().toString(),

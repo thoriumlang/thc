@@ -44,7 +44,7 @@ public class ValAttribute implements Value, Attribute {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitValAttribute(this);
+        return visitor.visit(this);
     }
 
     @Override

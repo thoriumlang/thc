@@ -30,7 +30,7 @@ class AttributeVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitVarAttribute(VarAttribute node) {
+    public String visit(VarAttribute node) {
         return String.format("var %s%s = %s",
                 node.getIdentifier(),
                 type(node.getType()),
@@ -46,7 +46,7 @@ class AttributeVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitValAttribute(ValAttribute node) {
+    public String visit(ValAttribute node) {
         return String.format("val %s%s = %s",
                 node.getIdentifier(),
                 type(node.getType()),

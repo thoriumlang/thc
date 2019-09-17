@@ -52,7 +52,7 @@ public class FunctionValue implements Value {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitFunctionValue(this);
+        return visitor.visit(this);
     }
 
     @Override

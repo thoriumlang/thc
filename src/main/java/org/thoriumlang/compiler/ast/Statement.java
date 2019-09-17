@@ -36,7 +36,7 @@ public class Statement implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitStatement(this);
+        return visitor.visit(this);
     }
 
     @Override

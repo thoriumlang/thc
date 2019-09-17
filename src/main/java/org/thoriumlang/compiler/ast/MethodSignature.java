@@ -57,7 +57,7 @@ public class MethodSignature implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitMethodSignature(this);
+        return visitor.visit(this);
     }
 
     @Override

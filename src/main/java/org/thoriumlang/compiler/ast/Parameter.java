@@ -39,7 +39,7 @@ public class Parameter implements Node {
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visitParameter(this);
+        return visitor.visit(this);
     }
 
     @Override

@@ -30,7 +30,7 @@ class MethodVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visitMethod(Method node) {
+    public String visit(Method node) {
         return String.format("%s {%n%s%n}",
                 node.getSignature().accept(methodSignatureVisitor),
                 node.getStatements().stream()
