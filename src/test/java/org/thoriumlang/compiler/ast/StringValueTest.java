@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class StringValueTest {
     private NodeIdGenerator nodeIdGenerator;

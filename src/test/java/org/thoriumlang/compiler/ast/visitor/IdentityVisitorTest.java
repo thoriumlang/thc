@@ -13,15 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast;
+package org.thoriumlang.compiler.ast.visitor;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.BooleanValue;
+import org.thoriumlang.compiler.ast.Class;
+import org.thoriumlang.compiler.ast.IdentifierValue;
+import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
+import org.thoriumlang.compiler.ast.Method;
+import org.thoriumlang.compiler.ast.MethodCallValue;
+import org.thoriumlang.compiler.ast.MethodSignature;
+import org.thoriumlang.compiler.ast.NestedValue;
+import org.thoriumlang.compiler.ast.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.NoneValue;
+import org.thoriumlang.compiler.ast.NumberValue;
+import org.thoriumlang.compiler.ast.Parameter;
+import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.Statement;
+import org.thoriumlang.compiler.ast.StringValue;
+import org.thoriumlang.compiler.ast.Type;
+import org.thoriumlang.compiler.ast.TypeParameter;
+import org.thoriumlang.compiler.ast.TypeSpecFunction;
+import org.thoriumlang.compiler.ast.TypeSpecInferred;
+import org.thoriumlang.compiler.ast.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.ValAssignmentValue;
+import org.thoriumlang.compiler.ast.ValAttribute;
+import org.thoriumlang.compiler.ast.Value;
+import org.thoriumlang.compiler.ast.VarAssignmentValue;
+import org.thoriumlang.compiler.ast.VarAttribute;
+import org.thoriumlang.compiler.ast.Visibility;
+import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
 
 import java.util.Collections;
 
-class CopyVisitorTest {
+class IdentityVisitorTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -49,8 +78,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root)
-                .isNotSameAs(root);
+                .isEqualTo(root);
     }
 
     @Test
@@ -74,8 +102,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root)
-                .isNotSameAs(root);
+                .isEqualTo(root);
     }
 
     @Test
@@ -93,8 +120,7 @@ class CopyVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(type.accept(visitor()))
-                .isEqualTo(type)
-                .isNotSameAs(type);
+                .isEqualTo(type);
     }
 
     @Test
@@ -147,8 +173,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(clazz.accept(visitor()))
-                .isEqualTo(clazz)
-                .isNotSameAs(clazz);
+                .isEqualTo(clazz);
     }
 
     @Test
@@ -164,8 +189,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+                .isEqualTo(typeSpec);
     }
 
     @Test
@@ -181,8 +205,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+                .isEqualTo(typeSpec);
     }
 
     @Test
@@ -193,8 +216,7 @@ class CopyVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+                .isEqualTo(typeSpec);
     }
 
     @Test
@@ -215,16 +237,14 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+                .isEqualTo(typeSpec);
     }
 
     @Test
     void visitTypeInferred() {
         TypeSpecInferred typeSpec = new TypeSpecInferred(nodeIdGenerator.next());
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+                .isEqualTo(typeSpec);
     }
 
     @Test
@@ -242,8 +262,7 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(methodSignature.accept(visitor()))
-                .isEqualTo(methodSignature)
-                .isNotSameAs(methodSignature);
+                .isEqualTo(methodSignature);
     }
 
     @Test
@@ -258,32 +277,28 @@ class CopyVisitorTest {
                 )
         );
         Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter)
-                .isNotSameAs(parameter);
+                .isEqualTo(parameter);
     }
 
     @Test
     void visitTypeParameter() {
         TypeParameter parameter = new TypeParameter(nodeIdGenerator.next(), "name");
         Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter)
-                .isNotSameAs(parameter);
+                .isEqualTo(parameter);
     }
 
     @Test
     void visitStringValue() {
         Value value = new StringValue(nodeIdGenerator.next(), "value");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
     void visitNumberValue() {
         Value value = new NumberValue(nodeIdGenerator.next(), "1");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
@@ -298,8 +313,7 @@ class CopyVisitorTest {
     void visitNoneValue() {
         Value value = NoneValue.INSTANCE;
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isSameAs(value);
+                .isEqualTo(value);
     }
 
 
@@ -307,8 +321,7 @@ class CopyVisitorTest {
     void visitIdentifierValue() {
         Value value = new IdentifierValue(nodeIdGenerator.next(), "id");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
@@ -320,8 +333,7 @@ class CopyVisitorTest {
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
@@ -333,8 +345,7 @@ class CopyVisitorTest {
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
@@ -346,8 +357,7 @@ class CopyVisitorTest {
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
@@ -359,24 +369,21 @@ class CopyVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
     void visitNestedValue() {
         Value value = new NestedValue(nodeIdGenerator.next(), BooleanValue.TRUE, BooleanValue.FALSE);
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+                .isEqualTo(value);
     }
 
     @Test
     void visitStatement() {
         Statement statement = new Statement(nodeIdGenerator.next(), BooleanValue.TRUE, false);
         Assertions.assertThat(statement.accept(visitor()))
-                .isEqualTo(statement)
-                .isNotSameAs(statement);
+                .isEqualTo(statement);
     }
 
     @Test
@@ -398,8 +405,7 @@ class CopyVisitorTest {
                 Collections.singletonList(new Statement(nodeIdGenerator.next(), BooleanValue.TRUE, false))
         );
         Assertions.assertThat(method.accept(visitor()))
-                .isEqualTo(method)
-                .isNotSameAs(method);
+                .isEqualTo(method);
     }
 
     @Test
@@ -415,8 +421,7 @@ class CopyVisitorTest {
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(varAttribute.accept(visitor()))
-                .isEqualTo(varAttribute)
-                .isNotSameAs(varAttribute);
+                .isEqualTo(varAttribute);
     }
 
     @Test
@@ -432,12 +437,11 @@ class CopyVisitorTest {
                 NoneValue.INSTANCE
         );
         Assertions.assertThat(valAttribute.accept(visitor()))
-                .isEqualTo(valAttribute)
-                .isNotSameAs(valAttribute);
+                .isEqualTo(valAttribute);
     }
 
-    private CopyVisitor visitor() {
-        return new CopyVisitor() {
+    private IdentityVisitor visitor() {
+        return new IdentityVisitor() {
         };
     }
 }

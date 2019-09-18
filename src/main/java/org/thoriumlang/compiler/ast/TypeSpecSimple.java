@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

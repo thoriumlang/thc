@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+
 public class BooleanValue implements Value {
     public static final BooleanValue TRUE = new BooleanValue(true);
     public static final BooleanValue FALSE = new BooleanValue(false);

@@ -15,8 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
-import org.thoriumlang.compiler.ast.BaseVisitor;
-import org.thoriumlang.compiler.ast.CopyVisitor;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.CopyVisitor;
 import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.TypeSpec;

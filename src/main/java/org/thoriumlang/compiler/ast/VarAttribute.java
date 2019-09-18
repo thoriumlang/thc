@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+
 public class VarAttribute extends Assignment implements Attribute {
     public VarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         super(nodeId, identifier, type, value);

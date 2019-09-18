@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.BooleanValue;
 import org.thoriumlang.compiler.ast.FunctionValue;
 import org.thoriumlang.compiler.ast.IdentifierValue;

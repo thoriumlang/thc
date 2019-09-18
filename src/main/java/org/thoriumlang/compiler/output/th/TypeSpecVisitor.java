@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.TypeSpecIntersection;

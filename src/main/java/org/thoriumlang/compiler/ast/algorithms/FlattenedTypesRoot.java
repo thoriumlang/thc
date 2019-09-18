@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms;
 import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
-import org.thoriumlang.compiler.ast.Visitor;
+import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 public class FlattenedTypesRoot implements Node {
     private final NodeIdGenerator nodeIdGenerator;

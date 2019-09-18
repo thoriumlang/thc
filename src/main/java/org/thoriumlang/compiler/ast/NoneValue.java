@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+
 public class NoneValue implements Value {
     public static final NoneValue INSTANCE = new NoneValue();
 

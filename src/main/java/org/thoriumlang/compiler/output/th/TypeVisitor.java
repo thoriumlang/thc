@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class TypeVisitor extends BaseVisitor<String> {
     TypeVisitor(TypeSpecVisitor typeSpecVisitor, MethodSignatureVisitor methodSignatureVisitor) {
