@@ -62,7 +62,7 @@ public class Context {
     }
 
     @SuppressWarnings({"OptionalGetWithoutIsPresent", "squid:S3655"}) // we are sure the optional will not be empty
-    public <T> T putIfAbsentAndGet(String key, java.lang.Class<T> type, String value) {
+    public <T> T putIfAbsentAndGet(String key, java.lang.Class<T> type, T value) {
         if (key == null) {
             throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
         }
@@ -87,11 +87,11 @@ public class Context {
     }
 
     private static class Key {
-        private final String key;
+        private final String name;
         private final java.lang.Class type;
 
-        private Key(String key, java.lang.Class type) {
-            this.key = key;
+        private Key(String name, java.lang.Class type) {
+            this.name = name;
             this.type = type;
         }
 
@@ -104,13 +104,13 @@ public class Context {
                 return false;
             }
             Key key1 = (Key) o;
-            return key.equals(key1.key) &&
+            return name.equals(key1.name) &&
                     type.equals(key1.type);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(key, type);
+            return Objects.hash(name, type);
         }
     }
 }
