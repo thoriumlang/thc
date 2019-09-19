@@ -17,11 +17,15 @@ package org.thoriumlang.compiler.ast;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Context {
+    private static final String KEY_CANNOT_BE_NULL = "key cannot be null";
+    private static final String TYPE_CANNOT_BE_NULL = "type cannot be null";
+    private static final String VALUE_CANNOT_BE_NULL = "value cannot be null";
     private final Node node;
-    private final Map<java.lang.Class, Object> map;
+    private final Map<Key, Object> map;
 
     public Context(Node node) {
         this.node = node;
@@ -32,23 +36,81 @@ public class Context {
         return node;
     }
 
-    public <T> Context put(java.lang.Class<T> key, T value) {
-        map.put(key, value);
+    public <T> Context put(String key, java.lang.Class<T> type, T value) {
+        if (key == null) {
+            throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
+        }
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        if (value == null) {
+            throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
+        }
+        map.put(new Key(key, type), value);
         return this;
     }
 
     @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
-    public <T> Optional<T> get(java.lang.Class<T> key) {
-        return Optional.ofNullable((T) map.get(key));
+    public <T> Optional<T> get(String key, java.lang.Class<T> type) {
+        if (key == null) {
+            throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
+        }
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        return Optional.ofNullable((T) map.get(new Key(key, type)));
     }
 
     @SuppressWarnings({"OptionalGetWithoutIsPresent", "squid:S3655"}) // we are sure the optional will not be empty
-    public <T> T putIfAbsentAndGet(java.lang.Class<T> key, String value) {
-        map.putIfAbsent(key, value);
-        return get(key).get();
+    public <T> T putIfAbsentAndGet(String key, java.lang.Class<T> type, String value) {
+        if (key == null) {
+            throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
+        }
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        if (value == null) {
+            throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
+        }
+        map.putIfAbsent(new Key(key, type), value);
+        return get(key, type).get();
     }
 
-    public <T> boolean contains(java.lang.Class<T> key) {
-        return map.containsKey(key);
+    public <T> boolean contains(String key, java.lang.Class<T> type) {
+        if (key == null) {
+            throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
+        }
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        return map.containsKey(new Key(key, type));
+    }
+
+    private static class Key {
+        private final String key;
+        private final java.lang.Class type;
+
+        private Key(String key, java.lang.Class type) {
+            this.key = key;
+            this.type = type;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            Key key1 = (Key) o;
+            return key.equals(key1.key) &&
+                    type.equals(key1.type);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(key, type);
+        }
     }
 }
