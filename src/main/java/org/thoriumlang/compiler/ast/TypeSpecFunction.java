@@ -25,6 +25,7 @@ public class TypeSpecFunction implements TypeSpec {
     private final NodeId nodeId;
     private final List<TypeSpec> arguments;
     private final TypeSpec returnType;
+    private final Context context;
 
     public TypeSpecFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
         if (nodeId == null) {
@@ -39,11 +40,17 @@ public class TypeSpecFunction implements TypeSpec {
         this.nodeId = nodeId;
         this.arguments = arguments;
         this.returnType = returnType;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

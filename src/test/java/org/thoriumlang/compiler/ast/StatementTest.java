@@ -31,7 +31,7 @@ class StatementTest {
     @Test
     void constructor_nodeId() {
         try {
-            new Statement(null, NoneValue.INSTANCE, true);
+            new Statement(null, new NoneValue(nodeIdGenerator.next()), true);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -59,7 +59,7 @@ class StatementTest {
         Assertions.assertThat(
                 new Statement(
                         nodeIdGenerator.next(),
-                        NoneValue.INSTANCE,
+                        new NoneValue(nodeIdGenerator.next()),
                         false
                 ).accept(new BaseVisitor<String>() {
                     @Override
@@ -79,9 +79,20 @@ class StatementTest {
         Assertions.assertThat(
                 new Statement(
                         nodeIdGenerator.next(),
-                        NoneValue.INSTANCE,
+                        new NoneValue(nodeIdGenerator.next()),
                         false
                 ).toString()
         ).isEqualTo("none:false");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Statement(
+                        nodeIdGenerator.next(),
+                        new NoneValue(nodeIdGenerator.next()),
+                        false
+                ).getContext()
+        ).isNotNull();
     }
 }

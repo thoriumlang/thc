@@ -84,4 +84,14 @@ class TypeSpecIntersectionTest {
                 ).toString()
         ).isEqualTo("i:[type[]]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new TypeSpecIntersection(
+                        nodeIdGenerator.next(),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
+    }
 }

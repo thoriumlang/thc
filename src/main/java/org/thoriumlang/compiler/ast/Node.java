@@ -19,4 +19,6 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 public interface Node {
     <T> T accept(Visitor<? extends T> visitor);
+
+    Context getContext();
 }

@@ -108,7 +108,7 @@ class MethodTest {
                         Collections.singletonList(
                                 new Statement(
                                         nodeIdGenerator.next(),
-                                        BooleanValue.TRUE,
+                                        new BooleanValue(nodeIdGenerator.next(), true),
                                         true
                                 )
                         )
@@ -144,11 +144,29 @@ class MethodTest {
                         Collections.singletonList(
                                 new Statement(
                                         nodeIdGenerator.next(),
-                                        BooleanValue.TRUE,
+                                        new BooleanValue(nodeIdGenerator.next(), true),
                                         true
                                 )
                         )
                 ).toString()
         ).isEqualTo("PUBLIC method [] () : None[] { true:true }");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Method(
+                        nodeIdGenerator.next(),
+                        new MethodSignature(
+                                nodeIdGenerator.next(),
+                                Visibility.PUBLIC,
+                                "method",
+                                Collections.emptyList(),
+                                Collections.emptyList(),
+                                new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList())
+                        ),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
     }
 }

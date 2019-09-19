@@ -26,6 +26,7 @@ public class MethodCallValue implements Value {
     private final String methodName;
     private final List<TypeSpec> typeArguments;
     private final List<Value> methodArguments;
+    private final Context context;
 
     public MethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
@@ -45,11 +46,17 @@ public class MethodCallValue implements Value {
         this.methodName = methodName;
         this.typeArguments = typeArguments;
         this.methodArguments = methodArguments;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

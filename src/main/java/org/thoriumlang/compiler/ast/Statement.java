@@ -23,6 +23,7 @@ public class Statement implements Node {
     private final NodeId nodeId;
     private final Value value;
     private final boolean last;
+    private final Context context;
 
     public Statement(NodeId nodeId, Value value, boolean last) {
         if (nodeId == null) {
@@ -34,11 +35,17 @@ public class Statement implements Node {
         this.nodeId = nodeId;
         this.value = value;
         this.last = last;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

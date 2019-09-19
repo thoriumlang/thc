@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
+import java.util.Collections;
+
 class UseTest {
     private NodeIdGenerator nodeIdGenerator;
 
@@ -117,5 +119,12 @@ class UseTest {
         Assertions.assertThat(
                 new Use(nodeIdGenerator.next(), "from", "to").toString()
         ).isEqualTo("USE from : to");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Use(nodeIdGenerator.next(), "from", "to").getContext()
+        ).isNotNull();
     }
 }

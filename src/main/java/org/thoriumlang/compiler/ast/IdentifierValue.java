@@ -22,6 +22,7 @@ import java.util.Objects;
 public class IdentifierValue implements Value {
     private final NodeId nodeId;
     private final String value;
+    private final Context context;
 
     public IdentifierValue(NodeId nodeId, String value) {
         if (nodeId == null) {
@@ -32,11 +33,17 @@ public class IdentifierValue implements Value {
         }
         this.nodeId = nodeId;
         this.value = value;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

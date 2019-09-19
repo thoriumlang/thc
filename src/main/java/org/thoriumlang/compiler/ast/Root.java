@@ -26,6 +26,7 @@ public class Root implements Node {
     private final String namespace;
     private final List<Use> uses;
     private final TopLevelNode topLevelNode;
+    private final Context context;
 
     public Root(NodeId nodeId, String namespace, List<Use> uses, TopLevelNode topLevel) {
         if (nodeId == null) {
@@ -44,11 +45,17 @@ public class Root implements Node {
         this.namespace = namespace;
         this.uses = uses;
         this.topLevelNode = topLevel;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

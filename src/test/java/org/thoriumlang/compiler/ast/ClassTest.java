@@ -42,7 +42,8 @@ class ClassTest {
                     Collections.emptyList(),
                     new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
                     Collections.emptyList(),
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -62,7 +63,8 @@ class ClassTest {
                     Collections.emptyList(),
                     new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -82,7 +84,8 @@ class ClassTest {
                     Collections.emptyList(),
                     new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -102,7 +105,8 @@ class ClassTest {
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -122,7 +126,8 @@ class ClassTest {
                     Collections.emptyList(),
                     null,
                     Collections.emptyList(),
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -142,7 +147,8 @@ class ClassTest {
                     Collections.emptyList(),
                     new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     null,
-                    Collections.emptyList());
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -162,7 +168,8 @@ class ClassTest {
                     Collections.emptyList(),
                     new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
                     Collections.emptyList(),
-                    null);
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -198,7 +205,7 @@ class ClassTest {
                                         Collections.singletonList(
                                                 new Statement(
                                                         nodeIdGenerator.next(),
-                                                        NoneValue.INSTANCE,
+                                                        new NoneValue(nodeIdGenerator.next()),
                                                         true
                                                 )
                                         )
@@ -209,7 +216,7 @@ class ClassTest {
                                         nodeIdGenerator.next(),
                                         "attribute",
                                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                                        NoneValue.INSTANCE
+                                        new NoneValue(nodeIdGenerator.next())
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
@@ -269,7 +276,7 @@ class ClassTest {
                                         Collections.singletonList(
                                                 new Statement(
                                                         nodeIdGenerator.next(),
-                                                        BooleanValue.TRUE,
+                                                        new BooleanValue(nodeIdGenerator.next(), true),
                                                         false
                                                 )
                                         )
@@ -284,7 +291,7 @@ class ClassTest {
                                                 "None",
                                                 Collections.emptyList()
                                         ),
-                                        NoneValue.INSTANCE
+                                        new NoneValue(nodeIdGenerator.next())
                                 )
                         )
                 ).toString()
@@ -321,7 +328,7 @@ class ClassTest {
                                         Collections.singletonList(
                                                 new Statement(
                                                         nodeIdGenerator.next(),
-                                                        BooleanValue.TRUE,
+                                                        new BooleanValue(nodeIdGenerator.next(), true),
                                                         false
                                                 )
                                         )
@@ -336,7 +343,7 @@ class ClassTest {
                                                 "None",
                                                 Collections.emptyList()
                                         ),
-                                        NoneValue.INSTANCE
+                                        new NoneValue(nodeIdGenerator.next())
                                 )
                         )
                 ).toString()
@@ -344,5 +351,20 @@ class ClassTest {
                 "VAR attribute: None[] = none\n" +
                 "PRIVATE name [] () : returnType[] { true:false }"
         );
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Class(
+                        nodeIdGenerator.next(),
+                        Visibility.PUBLIC,
+                        "name",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
     }
 }

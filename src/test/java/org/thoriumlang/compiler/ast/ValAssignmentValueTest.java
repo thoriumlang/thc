@@ -37,7 +37,7 @@ class ValAssignmentValueTest {
                     null,
                     "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -55,7 +55,7 @@ class ValAssignmentValueTest {
                     nodeIdGenerator.next(),
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -73,7 +73,7 @@ class ValAssignmentValueTest {
                     nodeIdGenerator.next(),
                     "identifier",
                     null,
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -105,7 +105,7 @@ class ValAssignmentValueTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -128,8 +128,20 @@ class ValAssignmentValueTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("VAL T[]:identifier = none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new ValAssignmentValue(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }

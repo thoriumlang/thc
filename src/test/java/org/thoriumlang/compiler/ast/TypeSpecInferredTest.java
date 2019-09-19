@@ -47,4 +47,11 @@ class TypeSpecInferredTest {
                 new TypeSpecInferred(nodeIdGenerator.next()).toString()
         ).isEqualTo("inferred");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new TypeSpecInferred(nodeIdGenerator.next()).getContext()
+        ).isNotNull();
+    }
 }

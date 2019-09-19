@@ -25,6 +25,7 @@ public class Method implements Node {
     private final MethodSignature signature;
     private final List<Statement> statements;
     private final NodeId nodeId;
+    private final Context context;
 
     public Method(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
         if (nodeId == null) {
@@ -39,11 +40,17 @@ public class Method implements Node {
         this.nodeId = nodeId;
         this.signature = signature;
         this.statements = statements;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

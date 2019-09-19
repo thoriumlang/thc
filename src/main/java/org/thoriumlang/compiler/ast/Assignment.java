@@ -22,6 +22,7 @@ public abstract class Assignment implements Node {
     private final String identifier;
     private final TypeSpec type;
     private final Value value;
+    private final Context context;
 
     public Assignment(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         if (nodeId == null) {
@@ -40,6 +41,7 @@ public abstract class Assignment implements Node {
         this.identifier = identifier;
         this.type = type;
         this.value = value;
+        this.context = new Context(this);
     }
 
     public NodeId getNodeId() {
@@ -56,6 +58,11 @@ public abstract class Assignment implements Node {
 
     public Value getValue() {
         return value;
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

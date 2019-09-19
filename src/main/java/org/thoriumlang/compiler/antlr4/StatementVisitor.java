@@ -54,7 +54,7 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
     public Statement none() {
         return new Statement(
                 nodeIdGenerator.next(),
-                NoneValue.INSTANCE,
+                new NoneValue(nodeIdGenerator.next()),
                 true
         );
     }

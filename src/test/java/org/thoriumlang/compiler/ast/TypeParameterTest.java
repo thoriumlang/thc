@@ -79,4 +79,11 @@ class TypeParameterTest {
                 new TypeParameter(nodeIdGenerator.next(), "A").toString()
         ).isEqualTo("A");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new TypeParameter(nodeIdGenerator.next(), "A").getContext()
+        ).isNotNull();
+    }
 }

@@ -24,6 +24,7 @@ public class IndirectAssignmentValue implements Value {
     private final Value indirectValue;
     private final String identifier;
     private final Value value;
+    private final Context context;
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
         if (nodeId == null) {
@@ -42,11 +43,17 @@ public class IndirectAssignmentValue implements Value {
         this.indirectValue = indirectValue;
         this.identifier = identifier;
         this.value = value;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

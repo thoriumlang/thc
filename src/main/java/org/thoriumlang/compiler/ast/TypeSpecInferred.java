@@ -21,17 +21,24 @@ import java.util.Objects;
 
 public class TypeSpecInferred implements TypeSpec {
     private final NodeId nodeId;
+    private final Context context;
 
     public TypeSpecInferred(NodeId nodeId) {
         if (nodeId == null) {
             throw new NullPointerException("nodeId cannot be null");
         }
         this.nodeId = nodeId;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

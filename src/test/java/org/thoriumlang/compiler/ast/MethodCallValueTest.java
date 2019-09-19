@@ -91,7 +91,7 @@ class MethodCallValueTest {
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
-                        Collections.singletonList(NoneValue.INSTANCE)
+                        Collections.singletonList(new NoneValue(nodeIdGenerator.next()))
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -117,8 +117,20 @@ class MethodCallValueTest {
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
-                        Collections.singletonList(NoneValue.INSTANCE)
+                        Collections.singletonList(new NoneValue(nodeIdGenerator.next()))
                 ).toString()
         ).isEqualTo("methodName[T[]](none)");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new MethodCallValue(
+                        nodeIdGenerator.next(),
+                        "methodName",
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
     }
 }

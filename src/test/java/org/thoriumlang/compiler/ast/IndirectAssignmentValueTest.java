@@ -31,7 +31,12 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IndirectAssignmentValue(null, NoneValue.INSTANCE, "identifier", NoneValue.INSTANCE);
+            new IndirectAssignmentValue(
+                    null,
+                    new NoneValue(nodeIdGenerator.next()),
+                    "identifier",
+                    new NoneValue(nodeIdGenerator.next())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -44,7 +49,12 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_indirectValue() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(), null, "identifier", NoneValue.INSTANCE);
+            new IndirectAssignmentValue(
+                    nodeIdGenerator.next(),
+                    null,
+                    "identifier",
+                    new NoneValue(nodeIdGenerator.next())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -57,7 +67,12 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_identifier() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(), NoneValue.INSTANCE, null, NoneValue.INSTANCE);
+            new IndirectAssignmentValue(
+                    nodeIdGenerator.next(),
+                    new NoneValue(nodeIdGenerator.next()),
+                    null,
+                    new NoneValue(nodeIdGenerator.next())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -70,7 +85,12 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_value() {
         try {
-            new IndirectAssignmentValue(nodeIdGenerator.next(), NoneValue.INSTANCE, "identifier", null);
+            new IndirectAssignmentValue(
+                    nodeIdGenerator.next(),
+                    new NoneValue(nodeIdGenerator.next()),
+                    "identifier",
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -87,7 +107,7 @@ class IndirectAssignmentValueTest {
                         nodeIdGenerator.next(),
                         new NumberValue(nodeIdGenerator.next(), "1"),
                         "identifier",
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -109,10 +129,22 @@ class IndirectAssignmentValueTest {
         Assertions.assertThat(
                 new IndirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        NoneValue.INSTANCE,
+                        new NoneValue(nodeIdGenerator.next()),
                         "identifier",
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("INDIRECT none.identifier = none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new IndirectAssignmentValue(
+                        nodeIdGenerator.next(),
+                        new NoneValue(nodeIdGenerator.next()),
+                        "identifier",
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }

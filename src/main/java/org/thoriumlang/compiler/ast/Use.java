@@ -23,6 +23,7 @@ public class Use implements Node {
     private final NodeId nodeId;
     private final String from;
     private final String to;
+    private final Context context;
 
     public Use(NodeId nodeId, String from, String to) {
         if (nodeId == null) {
@@ -37,6 +38,7 @@ public class Use implements Node {
         this.nodeId = nodeId;
         this.from = from;
         this.to = to;
+        this.context = new Context(this);
     }
 
     public Use(NodeId nodeId, String from) {
@@ -49,11 +51,17 @@ public class Use implements Node {
         this.nodeId = nodeId;
         this.from = from;
         this.to = from.substring(from.lastIndexOf('.') + 1);
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

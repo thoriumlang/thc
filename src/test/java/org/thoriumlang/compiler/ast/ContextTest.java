@@ -93,7 +93,8 @@ class ContextTest {
             return null;
         }
 
-        Context getContext() {
+        @Override
+        public Context getContext() {
             return new Context(this);
         }
     }

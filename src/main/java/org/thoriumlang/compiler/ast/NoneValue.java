@@ -17,11 +17,18 @@ package org.thoriumlang.compiler.ast;
 
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public class NoneValue implements Value {
-    public static final NoneValue INSTANCE = new NoneValue();
+import java.util.Objects;
 
-    private NoneValue() {
-        // nothing
+public class NoneValue implements Value {
+    private final NodeId nodeId;
+    private final Context context;
+
+    public NoneValue(NodeId nodeId) {
+        if (nodeId == null) {
+            throw new NullPointerException("nodeId cannot be null");
+        }
+        this.nodeId = nodeId;
+        this.context = new Context(this);
     }
 
     @Override
@@ -30,7 +37,33 @@ public class NoneValue implements Value {
     }
 
     @Override
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
     public String toString() {
         return "none";
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NoneValue noneValue = (NoneValue) o;
+        return nodeId.equals(noneValue.nodeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeId);
     }
 }

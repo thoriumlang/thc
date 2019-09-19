@@ -194,12 +194,12 @@ public abstract class CopyVisitor implements Visitor<Node> {
 
     @Override
     public Node visit(BooleanValue node) {
-        return node;
+        return new BooleanValue(node.getNodeId(), node.getValue());
     }
 
     @Override
     public Node visit(NoneValue node) {
-        return node;
+        return new NoneValue(node.getNodeId());
     }
 
     @Override

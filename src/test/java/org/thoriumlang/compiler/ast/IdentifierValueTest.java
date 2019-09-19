@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
+import java.util.Collections;
+
 class IdentifierValueTest {
     private NodeIdGenerator nodeIdGenerator;
 
@@ -75,5 +77,12 @@ class IdentifierValueTest {
         Assertions.assertThat(
                 new IdentifierValue(nodeIdGenerator.next(), "id").toString()
         ).isEqualTo("id");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new IdentifierValue(nodeIdGenerator.next(), "id").getContext()
+        ).isNotNull();
     }
 }

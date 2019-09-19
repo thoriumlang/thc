@@ -16,14 +16,37 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class BooleanValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new BooleanValue(
+                    null,
+                    true);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void accept_true() {
         Assertions.assertThat(
-                BooleanValue.TRUE
+                new BooleanValue(nodeIdGenerator.next(), true)
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
                             public Boolean visit(BooleanValue node) {
@@ -36,7 +59,7 @@ class BooleanValueTest {
     @Test
     void accept_false() {
         Assertions.assertThat(
-                BooleanValue.FALSE
+                new BooleanValue(nodeIdGenerator.next(), false)
                         .accept(new BaseVisitor<Boolean>() {
                             @Override
                             public Boolean visit(BooleanValue node) {
@@ -49,10 +72,17 @@ class BooleanValueTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                BooleanValue.TRUE.toString()
+                new BooleanValue(nodeIdGenerator.next(), true).toString()
         ).isEqualTo("true");
         Assertions.assertThat(
-                BooleanValue.FALSE.toString()
+                new BooleanValue(nodeIdGenerator.next(), false).toString()
         ).isEqualTo("false");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new BooleanValue(nodeIdGenerator.next(), true).getContext()
+        ).isNotNull();
     }
 }

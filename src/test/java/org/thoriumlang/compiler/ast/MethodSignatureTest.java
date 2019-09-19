@@ -190,4 +190,18 @@ class MethodSignatureTest {
                 ).toString()
         ).isEqualTo("PRIVATE name [T] (name: type[]) : returnType[]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.PRIVATE,
+                        "name",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "returnType", Collections.emptyList())
+                ).getContext()
+        ).isNotNull();
+    }
 }

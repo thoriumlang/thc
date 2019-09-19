@@ -98,4 +98,14 @@ class TypeSpecUnionTest {
                 ).toString()
         ).isEqualTo("u:[type[]]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new TypeSpecUnion(
+                        nodeIdGenerator.next(),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
+    }
 }

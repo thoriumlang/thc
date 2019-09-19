@@ -119,4 +119,19 @@ class ParameterTest {
                 ).toString()
         ).isEqualTo("name: type[]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Parameter(
+                        nodeIdGenerator.next(),
+                        "name",
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "type",
+                                Collections.emptyList()
+                        )
+                ).getContext()
+        ).isNotNull();
+    }
 }

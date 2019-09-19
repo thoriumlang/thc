@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
+import org.thoriumlang.compiler.ast.Context;
 import org.thoriumlang.compiler.ast.Node;
 import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
@@ -23,11 +24,13 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 public class FlattenedTypesRoot implements Node {
     private final NodeIdGenerator nodeIdGenerator;
     private final Root root;
+    private final Context context;
     private Root flattenedTypesRootCache;
 
     public FlattenedTypesRoot(NodeIdGenerator nodeIdGenerator, Root root) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.root = root;
+        this.context = new Context(this);
     }
 
     private Root flattenedTypesRoot() {
@@ -44,5 +47,10 @@ public class FlattenedTypesRoot implements Node {
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return flattenedTypesRoot().accept(visitor);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 }

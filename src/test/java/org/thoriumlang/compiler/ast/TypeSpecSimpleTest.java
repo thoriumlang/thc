@@ -112,4 +112,15 @@ class TypeSpecSimpleTest {
                 ).toString()
         ).isEqualTo("type[A[], B[]]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "type",
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
+    }
 }

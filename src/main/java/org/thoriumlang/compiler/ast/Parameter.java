@@ -23,6 +23,7 @@ public class Parameter implements Node {
     private final NodeId nodeId;
     private final String name;
     private final TypeSpec type;
+    private final Context context;
 
     public Parameter(NodeId nodeId, String name, TypeSpec type) {
         if (nodeId == null) {
@@ -37,11 +38,17 @@ public class Parameter implements Node {
         this.nodeId = nodeId;
         this.name = name;
         this.type = type;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

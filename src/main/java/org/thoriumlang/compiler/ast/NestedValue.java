@@ -23,6 +23,7 @@ public class NestedValue implements Value {
     private final NodeId nodeId;
     private final Value outer;
     private final Value inner;
+    private final Context context;
 
     public NestedValue(NodeId nodeId, Value outer, Value inner) {
         if (nodeId == null) {
@@ -37,11 +38,17 @@ public class NestedValue implements Value {
         this.nodeId = nodeId;
         this.outer = outer;
         this.inner = inner;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

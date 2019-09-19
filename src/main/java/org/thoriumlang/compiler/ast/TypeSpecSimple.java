@@ -25,6 +25,7 @@ public class TypeSpecSimple implements TypeSpec {
     private final NodeId nodeId;
     private final String type;
     private final List<TypeSpec> arguments;
+    private final Context context;
 
     public TypeSpecSimple(NodeId nodeId, String type, List<TypeSpec> arguments) {
         if (nodeId == null) {
@@ -39,11 +40,17 @@ public class TypeSpecSimple implements TypeSpec {
         this.nodeId = nodeId;
         this.type = type;
         this.arguments = arguments;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

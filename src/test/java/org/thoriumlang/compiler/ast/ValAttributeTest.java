@@ -37,7 +37,7 @@ public class ValAttributeTest {
                     null,
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -55,7 +55,7 @@ public class ValAttributeTest {
                     nodeIdGenerator.next(),
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -73,7 +73,7 @@ public class ValAttributeTest {
                     nodeIdGenerator.next(),
                     "identifier",
                     null,
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -109,7 +109,7 @@ public class ValAttributeTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -132,8 +132,20 @@ public class ValAttributeTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("VAL identifier: None[] = none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new ValAttribute(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }

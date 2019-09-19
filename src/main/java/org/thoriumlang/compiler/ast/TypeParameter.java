@@ -22,6 +22,7 @@ import java.util.Objects;
 public class TypeParameter implements Node {
     private final NodeId nodeId;
     private final String name;
+    private final Context context;
 
     public TypeParameter(NodeId nodeId, String name) {
         if (nodeId == null) {
@@ -32,11 +33,17 @@ public class TypeParameter implements Node {
         }
         this.nodeId = nodeId;
         this.name = name;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

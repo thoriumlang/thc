@@ -29,6 +29,7 @@ public class Class implements TopLevelNode {
     private final TypeSpec superType;
     private final List<Method> methods;
     private final List<Attribute> attributes;
+    private final Context context;
 
     public Class(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
@@ -60,11 +61,17 @@ public class Class implements TopLevelNode {
         this.superType = superType;
         this.methods = methods;
         this.attributes = attributes;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

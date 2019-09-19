@@ -27,6 +27,7 @@ public class FunctionValue implements Value {
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
     private final List<Statement> statements;
+    private final Context context;
 
     public FunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
@@ -50,11 +51,17 @@ public class FunctionValue implements Value {
         this.parameters = parameters;
         this.returnType = returnType;
         this.statements = statements;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return this.context;
     }
 
     @Override

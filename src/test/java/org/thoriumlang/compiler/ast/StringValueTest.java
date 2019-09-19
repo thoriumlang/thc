@@ -76,4 +76,11 @@ class StringValueTest {
                 new StringValue(nodeIdGenerator.next(), "value").toString()
         ).isEqualTo("\"value\"");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new StringValue(nodeIdGenerator.next(), "value").getContext()
+        ).isNotNull();
+    }
 }

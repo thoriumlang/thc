@@ -133,7 +133,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             new TypeSpecInferred(nodeIdGenerator.next()) :
                             ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
-                            NoneValue.INSTANCE :
+                            new NoneValue(nodeIdGenerator.next()) :
                             ctx.value().accept(this)
             );
         }
@@ -165,15 +165,15 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         }
 
         if (ctx.TRUE() != null) {
-            return BooleanValue.TRUE;
+            return new BooleanValue(nodeIdGenerator.next(), true);
         }
 
         if (ctx.FALSE() != null) {
-            return BooleanValue.FALSE;
+            return new BooleanValue(nodeIdGenerator.next(), false);
         }
 
         if (ctx.NONE() != null) {
-            return NoneValue.INSTANCE;
+            return new NoneValue(nodeIdGenerator.next());
         }
 
         throw new IllegalStateException("Value is none of [NUMBER, STRING, TRUE, FALSE, NONE]");

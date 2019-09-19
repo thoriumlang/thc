@@ -258,4 +258,18 @@ class TypeTest {
         ).isEqualTo(
                 "NAMESPACE TYPE name[] : Object[]:\nPRIVATE name [] (parameter: type[]) : returnType[]");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Type(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "name",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Object", Collections.emptyList()),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
+    }
 }

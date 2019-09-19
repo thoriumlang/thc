@@ -37,7 +37,7 @@ class VarAttributeTest {
                     null,
                     "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -55,8 +55,8 @@ class VarAttributeTest {
                     nodeIdGenerator.next(),
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    NoneValue.INSTANCE)
-            ;
+                    new NoneValue(nodeIdGenerator.next())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -73,7 +73,7 @@ class VarAttributeTest {
                     nodeIdGenerator.next(),
                     "identifier",
                     null,
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -109,7 +109,7 @@ class VarAttributeTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -132,8 +132,20 @@ class VarAttributeTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("VAR identifier: None[] = none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new VarAttribute(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }

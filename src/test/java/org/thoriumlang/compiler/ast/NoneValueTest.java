@@ -16,14 +16,35 @@
 package org.thoriumlang.compiler.ast;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class NoneValueTest {
+    private NodeIdGenerator nodeIdGenerator;
+
+    @BeforeEach
+    void setup() {
+        this.nodeIdGenerator = new NodeIdGenerator();
+    }
+
+    @Test
+    void constructor_nodeId() {
+        try {
+            new NoneValue(null);
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("nodeId cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
     @Test
     void accept() {
         Assertions.assertThat(
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
                         .accept(new BaseVisitor<String>() {
                             @Override
                             public String visit(NoneValue node) {
@@ -36,7 +57,14 @@ class NoneValueTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                NoneValue.INSTANCE.toString()
+                new NoneValue(nodeIdGenerator.next()).toString()
         ).isEqualTo("none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new NoneValue(nodeIdGenerator.next()).getContext()
+        ).isNotNull();
     }
 }

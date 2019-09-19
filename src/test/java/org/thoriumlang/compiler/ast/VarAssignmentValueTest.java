@@ -37,7 +37,7 @@ class VarAssignmentValueTest {
                     null,
                     "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -55,7 +55,7 @@ class VarAssignmentValueTest {
                     nodeIdGenerator.next(),
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                    NoneValue.INSTANCE
+                    new NoneValue(nodeIdGenerator.next())
             );
         }
         catch (NullPointerException e) {
@@ -69,7 +69,12 @@ class VarAssignmentValueTest {
     @Test
     void constructor_type() {
         try {
-            new VarAssignmentValue(nodeIdGenerator.next(), "identifier", null, NoneValue.INSTANCE);
+            new VarAssignmentValue(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    null,
+                    new NoneValue(nodeIdGenerator.next())
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -104,7 +109,7 @@ class VarAssignmentValueTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -127,8 +132,20 @@ class VarAssignmentValueTest {
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                        NoneValue.INSTANCE
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("VAR T[]:identifier = none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new VarAssignmentValue(
+                        nodeIdGenerator.next(),
+                        "identifier",
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }

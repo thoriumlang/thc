@@ -143,7 +143,7 @@ class FunctionValueTest {
                         ),
                         new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
                         Collections.singletonList(
-                                new Statement(nodeIdGenerator.next(), NoneValue.INSTANCE, true)
+                                new Statement(nodeIdGenerator.next(), new NoneValue(nodeIdGenerator.next()), true)
                         )
                 )
                         .accept(new BaseVisitor<String>() {
@@ -184,9 +184,22 @@ class FunctionValueTest {
                         ),
                         new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
                         Collections.singletonList(
-                                new Statement(nodeIdGenerator.next(), NoneValue.INSTANCE, true)
+                                new Statement(nodeIdGenerator.next(), new NoneValue(nodeIdGenerator.next()), true)
                         )
                 ).toString()
         ).isEqualTo("[T](param: P[]):Type[] { none:true }");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new FunctionValue(
+                        nodeIdGenerator.next(),
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
+                        Collections.emptyList()
+                ).getContext()
+        ).isNotNull();
     }
 }

@@ -28,6 +28,7 @@ public class MethodSignature implements Node {
     private final List<TypeParameter> typeParameters;
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
+    private final Context context;
 
     public MethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
@@ -55,11 +56,17 @@ public class MethodSignature implements Node {
         this.typeParameters = typeParameters;
         this.parameters = parameters;
         this.returnType = returnType;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

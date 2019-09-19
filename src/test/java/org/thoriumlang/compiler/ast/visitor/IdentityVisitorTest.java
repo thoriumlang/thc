@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.BooleanValue;
 import org.thoriumlang.compiler.ast.Class;
+import org.thoriumlang.compiler.ast.FunctionValue;
 import org.thoriumlang.compiler.ast.IdentifierValue;
 import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.Method;
@@ -46,7 +47,6 @@ import org.thoriumlang.compiler.ast.Value;
 import org.thoriumlang.compiler.ast.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.VarAttribute;
 import org.thoriumlang.compiler.ast.Visibility;
-import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
 
 import java.util.Collections;
 
@@ -78,7 +78,7 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root);
+                .isSameAs(root);
     }
 
     @Test
@@ -102,7 +102,7 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root);
+                .isSameAs(root);
     }
 
     @Test
@@ -120,7 +120,7 @@ class IdentityVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(type.accept(visitor()))
-                .isEqualTo(type);
+                .isSameAs(type);
     }
 
     @Test
@@ -153,7 +153,7 @@ class IdentityVisitorTest {
                                 Collections.singletonList(
                                         new Statement(
                                                 nodeIdGenerator.next(),
-                                                BooleanValue.TRUE,
+                                                new BooleanValue(nodeIdGenerator.next(), true),
                                                 false
                                         )
                                 )
@@ -168,12 +168,12 @@ class IdentityVisitorTest {
                                         "None",
                                         Collections.emptyList()
                                 ),
-                                NoneValue.INSTANCE
+                                new NoneValue(nodeIdGenerator.next())
                         )
                 )
         );
         Assertions.assertThat(clazz.accept(visitor()))
-                .isEqualTo(clazz);
+                .isSameAs(clazz);
     }
 
     @Test
@@ -189,7 +189,7 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isSameAs(typeSpec);
     }
 
     @Test
@@ -205,7 +205,7 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isSameAs(typeSpec);
     }
 
     @Test
@@ -216,7 +216,7 @@ class IdentityVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isSameAs(typeSpec);
     }
 
     @Test
@@ -237,14 +237,14 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isSameAs(typeSpec);
     }
 
     @Test
     void visitTypeInferred() {
         TypeSpecInferred typeSpec = new TypeSpecInferred(nodeIdGenerator.next());
         Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec);
+                .isSameAs(typeSpec);
     }
 
     @Test
@@ -262,7 +262,7 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(methodSignature.accept(visitor()))
-                .isEqualTo(methodSignature);
+                .isSameAs(methodSignature);
     }
 
     @Test
@@ -277,43 +277,49 @@ class IdentityVisitorTest {
                 )
         );
         Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter);
+                .isSameAs(parameter);
     }
 
     @Test
     void visitTypeParameter() {
         TypeParameter parameter = new TypeParameter(nodeIdGenerator.next(), "name");
         Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter);
+                .isSameAs(parameter);
     }
 
     @Test
     void visitStringValue() {
         Value value = new StringValue(nodeIdGenerator.next(), "value");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
     void visitNumberValue() {
         Value value = new NumberValue(nodeIdGenerator.next(), "1");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
-    void visitBooleanValue() {
-        Assertions.assertThat(BooleanValue.TRUE.accept(visitor()))
-                .isEqualTo(BooleanValue.TRUE);
-        Assertions.assertThat(BooleanValue.FALSE.accept(visitor()))
-                .isEqualTo(BooleanValue.FALSE);
+    void visitBooleanValue_true() {
+        Value value = new BooleanValue(nodeIdGenerator.next(), true);
+        Assertions.assertThat(value.accept(visitor()))
+                .isSameAs(value);
+    }
+
+    @Test
+    void visitBooleanValue_false() {
+        Value value = new BooleanValue(nodeIdGenerator.next(), false);
+        Assertions.assertThat(value.accept(visitor()))
+                .isSameAs(value);
     }
 
     @Test
     void visitNoneValue() {
-        Value value = NoneValue.INSTANCE;
+        Value value = new NoneValue(nodeIdGenerator.next());
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
 
@@ -321,7 +327,7 @@ class IdentityVisitorTest {
     void visitIdentifierValue() {
         Value value = new IdentifierValue(nodeIdGenerator.next(), "id");
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
@@ -330,10 +336,10 @@ class IdentityVisitorTest {
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
@@ -342,22 +348,22 @@ class IdentityVisitorTest {
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
     void visitIndirectAssignmentValue() {
         Value value = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
-                NoneValue.INSTANCE,
+                new NoneValue(nodeIdGenerator.next()),
                 "identifier",
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
@@ -369,21 +375,42 @@ class IdentityVisitorTest {
                 Collections.emptyList()
         );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
     }
 
     @Test
     void visitNestedValue() {
-        Value value = new NestedValue(nodeIdGenerator.next(), BooleanValue.TRUE, BooleanValue.FALSE);
+        Value value = new NestedValue(
+                nodeIdGenerator.next(),
+                new BooleanValue(nodeIdGenerator.next(), true),
+                new BooleanValue(nodeIdGenerator.next(), false)
+        );
         Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value);
+                .isSameAs(value);
+    }
+
+    @Test
+    void visitFunctionValue() {
+        Value value = new FunctionValue(
+                nodeIdGenerator.next(),
+                Collections.emptyList(),
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                Collections.emptyList()
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isSameAs(value);
     }
 
     @Test
     void visitStatement() {
-        Statement statement = new Statement(nodeIdGenerator.next(), BooleanValue.TRUE, false);
+        Statement statement = new Statement(
+                nodeIdGenerator.next(),
+                new BooleanValue(nodeIdGenerator.next(), true),
+                false
+        );
         Assertions.assertThat(statement.accept(visitor()))
-                .isEqualTo(statement);
+                .isSameAs(statement);
     }
 
     @Test
@@ -402,10 +429,14 @@ class IdentityVisitorTest {
                                 Collections.emptyList()
                         )
                 ),
-                Collections.singletonList(new Statement(nodeIdGenerator.next(), BooleanValue.TRUE, false))
+                Collections.singletonList(new Statement(
+                        nodeIdGenerator.next(),
+                        new BooleanValue(nodeIdGenerator.next(), true),
+                        false
+                ))
         );
         Assertions.assertThat(method.accept(visitor()))
-                .isEqualTo(method);
+                .isSameAs(method);
     }
 
     @Test
@@ -418,10 +449,10 @@ class IdentityVisitorTest {
                         "None",
                         Collections.emptyList()
                 ),
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(varAttribute.accept(visitor()))
-                .isEqualTo(varAttribute);
+                .isSameAs(varAttribute);
     }
 
     @Test
@@ -434,10 +465,10 @@ class IdentityVisitorTest {
                         "None",
                         Collections.emptyList()
                 ),
-                NoneValue.INSTANCE
+                new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(valAttribute.accept(visitor()))
-                .isEqualTo(valAttribute);
+                .isSameAs(valAttribute);
     }
 
     private IdentityVisitor visitor() {

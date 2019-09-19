@@ -76,4 +76,11 @@ class NumberValueTest {
                 new NumberValue(nodeIdGenerator.next(), "1").toString()
         ).isEqualTo("1");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new NumberValue(nodeIdGenerator.next(), "1").getContext()
+        ).isNotNull();
+    }
 }

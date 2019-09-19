@@ -256,4 +256,28 @@ class RootTest {
                 ).toString()
         ).isEqualTo("NAMESPACE namespace\nUSE from : from\nPUBLIC CLASS name[] : Object[]:");
     }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new Root(
+                        nodeIdGenerator.next(),
+                        "namespace",
+                        Collections.singletonList(new Use(nodeIdGenerator.next(), "from")),
+                        new Class(
+                                nodeIdGenerator.next(),
+                                Visibility.PUBLIC,
+                                "name",
+                                Collections.emptyList(),
+                                new TypeSpecSimple(
+                                        nodeIdGenerator.next(),
+                                        "Object",
+                                        Collections.emptyList()
+                                ),
+                                Collections.emptyList(),
+                                Collections.emptyList()
+                        )
+                ).getContext()
+        ).isNotNull();
+    }
 }

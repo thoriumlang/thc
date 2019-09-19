@@ -23,6 +23,7 @@ import java.util.Objects;
 public class TypeSpecUnion implements TypeSpec {
     private final NodeId nodeId;
     private final List<TypeSpec> types;
+    private final Context context;
 
     public TypeSpecUnion(NodeId nodeId, List<TypeSpec> types) {
         if (nodeId == null) {
@@ -33,11 +34,17 @@ public class TypeSpecUnion implements TypeSpec {
         }
         this.nodeId = nodeId;
         this.types = types;
+        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
+    }
+
+    @Override
+    public Context getContext() {
+        return context;
     }
 
     @Override

@@ -44,7 +44,7 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
-                            NoneValue.INSTANCE :
+                            new NoneValue(nodeIdGenerator.next()) :
                             ctx.value().accept(valueVisitor)
             );
         }
@@ -56,7 +56,7 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                         new TypeSpecInferred(nodeIdGenerator.next()) :
                         ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() == null ?
-                        NoneValue.INSTANCE :
+                        new NoneValue(nodeIdGenerator.next()) :
                         ctx.value().accept(valueVisitor)
         );
     }

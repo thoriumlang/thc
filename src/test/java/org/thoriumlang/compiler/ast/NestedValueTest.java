@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
+import java.util.Collections;
+
 class NestedValueTest {
     private NodeIdGenerator nodeIdGenerator;
 
@@ -31,7 +33,7 @@ class NestedValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new NestedValue(null, NoneValue.INSTANCE, NoneValue.INSTANCE);
+            new NestedValue(null, new NoneValue(nodeIdGenerator.next()), new NoneValue(nodeIdGenerator.next()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -44,7 +46,7 @@ class NestedValueTest {
     @Test
     void constructor_outer() {
         try {
-            new NestedValue(nodeIdGenerator.next(), null, NoneValue.INSTANCE);
+            new NestedValue(nodeIdGenerator.next(), null, new NoneValue(nodeIdGenerator.next()));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -57,7 +59,7 @@ class NestedValueTest {
     @Test
     void constructor_inner() {
         try {
-            new NestedValue(nodeIdGenerator.next(), NoneValue.INSTANCE, null);
+            new NestedValue(nodeIdGenerator.next(), new NoneValue(nodeIdGenerator.next()), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -72,8 +74,8 @@ class NestedValueTest {
         Assertions.assertThat(
                 new NestedValue(
                         nodeIdGenerator.next(),
-                        BooleanValue.TRUE,
-                        NoneValue.INSTANCE
+                        new BooleanValue(nodeIdGenerator.next(), true),
+                        new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -94,9 +96,20 @@ class NestedValueTest {
         Assertions.assertThat(
                 new NestedValue(
                         nodeIdGenerator.next(),
-                        BooleanValue.TRUE,
-                        NoneValue.INSTANCE
+                        new BooleanValue(nodeIdGenerator.next(), true),
+                        new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("true.none");
+    }
+
+    @Test
+    void getContext() {
+        Assertions.assertThat(
+                new NestedValue(
+                        nodeIdGenerator.next(),
+                        new BooleanValue(nodeIdGenerator.next(), true),
+                        new NoneValue(nodeIdGenerator.next())
+                ).getContext()
+        ).isNotNull();
     }
 }
