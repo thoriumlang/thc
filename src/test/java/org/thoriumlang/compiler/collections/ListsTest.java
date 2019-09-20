@@ -93,4 +93,11 @@ class ListsTest {
                 Lists.append(Arrays.asList("first", "second"), null)
         ).containsExactly("first", "second");
     }
+
+    @Test
+    void merge() {
+        Assertions.assertThat(
+                Lists.merge(Collections.singletonList("A"), Collections.singletonList("B"))
+        ).containsExactly("A", "B");
+    }
 }

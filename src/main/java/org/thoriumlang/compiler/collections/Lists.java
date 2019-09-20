@@ -50,4 +50,11 @@ public class Lists {
         ret.add(element);
         return ret;
     }
+
+    public static <T> List<T> merge(List<T> a, List<T> b) {
+        List<T> list = new ArrayList<>(a.size() + b.size());
+        list.addAll(a);
+        list.addAll(b);
+        return list;
+    }
 }
