@@ -46,7 +46,21 @@ public class Context {
         if (value == null) {
             throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
         }
-        map.put(new Key(key, type), value);
+        return put(new Key(key, type), value);
+    }
+
+    public <T> Context put(java.lang.Class<T> type, T value) {
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        if (value == null) {
+            throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
+        }
+        return put(new Key(null, type), value);
+    }
+
+    private Context put(Key key, Object value) {
+        map.put(key, value);
         return this;
     }
 
@@ -58,10 +72,22 @@ public class Context {
         if (type == null) {
             throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
         }
-        return Optional.ofNullable((T) map.get(new Key(key, type)));
+        return Optional.ofNullable((T) get(new Key(key, type)));
     }
 
-    @SuppressWarnings({"OptionalGetWithoutIsPresent", "squid:S3655"}) // we are sure the optional will not be empty
+    @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
+    public <T> Optional<T> get(java.lang.Class<T> type) {
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        return Optional.ofNullable((T) get(new Key(null, type)));
+    }
+
+    private Object get(Key key) {
+        return map.get(key);
+    }
+
+    @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
     public <T> T putIfAbsentAndGet(String key, java.lang.Class<T> type, T value) {
         if (key == null) {
             throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
@@ -72,8 +98,23 @@ public class Context {
         if (value == null) {
             throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
         }
-        map.putIfAbsent(new Key(key, type), value);
-        return get(key, type).get();
+        return (T) putIfAbsentAndGet(new Key(key, type), value);
+    }
+
+    @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
+    public <T> T putIfAbsentAndGet(java.lang.Class<T> type, T value) {
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        if (value == null) {
+            throw new IllegalArgumentException(VALUE_CANNOT_BE_NULL);
+        }
+        return (T) putIfAbsentAndGet(new Key(null, type), value);
+    }
+
+    private Object putIfAbsentAndGet(Key key, Object value) {
+        map.putIfAbsent(key, value);
+        return get(key);
     }
 
     public <T> boolean contains(String key, java.lang.Class<T> type) {
@@ -83,7 +124,18 @@ public class Context {
         if (type == null) {
             throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
         }
-        return map.containsKey(new Key(key, type));
+        return contains(new Key(key, type));
+    }
+
+    public <T> boolean contains(java.lang.Class<T> type) {
+        if (type == null) {
+            throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
+        }
+        return contains(new Key(null, type));
+    }
+
+    private boolean contains(Key key) {
+        return map.containsKey(key);
     }
 
     private static class Key {
@@ -103,9 +155,9 @@ public class Context {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            Key key1 = (Key) o;
-            return name.equals(key1.name) &&
-                    type.equals(key1.type);
+            Key key = (Key) o;
+            return Objects.equals(name, key.name) &&
+                    type.equals(key.type);
         }
 
         @Override

@@ -21,7 +21,7 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 class ContextTest {
     @Test
-    void put_nullKey() {
+    void put_keyType_nullKey() {
         Context context = new NodeStub().getContext();
         try {
             context.put(null, String.class, "Hello");
@@ -35,7 +35,7 @@ class ContextTest {
     }
 
     @Test
-    void put_nullType() {
+    void put_keyType_nullType() {
         Context context = new NodeStub().getContext();
         try {
             context.put("key", null, "Hello");
@@ -49,7 +49,7 @@ class ContextTest {
     }
 
     @Test
-    void put_nullValue() {
+    void put_keyType_nullValue() {
         Context context = new NodeStub().getContext();
         try {
             context.put("key", String.class, null);
@@ -63,7 +63,7 @@ class ContextTest {
     }
 
     @Test
-    void get_nullKey() {
+    void get_keyType_nullKey() {
         Context context = new NodeStub().getContext();
         try {
             context.get(null, String.class);
@@ -77,7 +77,7 @@ class ContextTest {
     }
 
     @Test
-    void get_nullType() {
+    void get_keyType_nullType() {
         Context context = new NodeStub().getContext();
         try {
             context.get("key", null);
@@ -91,7 +91,7 @@ class ContextTest {
     }
 
     @Test
-    void get_present() {
+    void get_keyType_present() {
         Context context = new NodeStub().getContext();
 
         context.put("key", String.class, "Hello");
@@ -103,7 +103,7 @@ class ContextTest {
     }
 
     @Test
-    void get_keyAbsent() {
+    void get_keyType_keyAbsent() {
         Context context = new NodeStub().getContext();
 
         context.put("key", String.class, "Hello");
@@ -113,7 +113,7 @@ class ContextTest {
     }
 
     @Test
-    void get_typeAbsent() {
+    void get_keyType_typeAbsent() {
         Context context = new NodeStub().getContext();
 
         context.put("key", String.class, "Hello");
@@ -123,7 +123,7 @@ class ContextTest {
     }
 
     @Test
-    void put_returnsContext() {
+    void put_keyType_returnsContext() {
         Context context = new NodeStub().getContext();
 
         Assertions.assertThat(context.put("key", String.class, ""))
@@ -131,14 +131,7 @@ class ContextTest {
     }
 
     @Test
-    void getNode() {
-        NodeStub node = new NodeStub();
-        Assertions.assertThat(node.getContext().getNode())
-                .isSameAs(node);
-    }
-
-    @Test
-    void putIfAbsentAndGet_nullKey() {
+    void putIfAbsentAndGet_keyType_nullKey() {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet(null, String.class, "Hello");
@@ -152,7 +145,7 @@ class ContextTest {
     }
 
     @Test
-    void putIfAbsentAndGet_nullType() {
+    void putIfAbsentAndGet_keyType_nullType() {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet("key", null, "Hello");
@@ -166,7 +159,7 @@ class ContextTest {
     }
 
     @Test
-    void putIfAbsentAndGet_nullValue() {
+    void putIfAbsentAndGet_keyType_nullValue() {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet("key", String.class, null);
@@ -180,7 +173,7 @@ class ContextTest {
     }
 
     @Test
-    void putIfAbsentAndGet_present() {
+    void putIfAbsentAndGet_keyType_present() {
         Context context = new NodeStub().getContext();
         context.put("key", String.class, "World");
         Assertions.assertThat(context.putIfAbsentAndGet("key", String.class, "Hello"))
@@ -188,14 +181,14 @@ class ContextTest {
     }
 
     @Test
-    void putIfAbsentAndGet_absent() {
+    void putIfAbsentAndGet_keyType_absent() {
         Context context = new NodeStub().getContext();
         Assertions.assertThat(context.putIfAbsentAndGet("key", String.class, "Hello"))
                 .isEqualTo("Hello");
     }
 
     @Test
-    void contains_nullKey() {
+    void contains_keyType_nullKey() {
         Context context = new NodeStub().getContext();
         try {
             context.contains(null, String.class);
@@ -209,7 +202,7 @@ class ContextTest {
     }
 
     @Test
-    void contains_nullType() {
+    void contains_keyType_nullType() {
         Context context = new NodeStub().getContext();
         try {
             context.contains("key", null);
@@ -223,7 +216,7 @@ class ContextTest {
     }
 
     @Test
-    void contains_present() {
+    void contains_keyType_present() {
         Context context = new NodeStub().getContext();
         context.put("key", String.class, "");
         Assertions.assertThat(context.contains("key", String.class))
@@ -231,14 +224,14 @@ class ContextTest {
     }
 
     @Test
-    void contains_absent() {
+    void contains_keyType_absent() {
         Context context = new NodeStub().getContext();
         Assertions.assertThat(context.contains("key", String.class))
                 .isFalse();
     }
 
     @Test
-    void contains_keyAbsent() {
+    void contains_keyType_keyAbsent() {
         Context context = new NodeStub().getContext();
         context.put("key", String.class, "Hello");
         Assertions.assertThat(context.contains("absent", String.class))
@@ -246,11 +239,171 @@ class ContextTest {
     }
 
     @Test
-    void contains_typeAbsent() {
+    void contains_keyType_typeAbsent() {
         Context context = new NodeStub().getContext();
-        context.put("key", String.class, "Hello");
-        Assertions.assertThat(context.contains("key", Integer.class))
+        context.put(String.class, "Hello");
+        Assertions.assertThat(context.contains(Integer.class))
                 .isFalse();
+    }
+
+    @Test
+    void put_type_nullType() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.put(null, "Hello");
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("type cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void put_type_nullValue() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.put(String.class, null);
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("value cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void get_type_nullType() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.get(null);
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("type cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void get_type_present() {
+        Context context = new NodeStub().getContext();
+
+        context.put(String.class, "Hello");
+
+        Assertions.assertThat(context.get(String.class))
+                .isNotEmpty()
+                .get()
+                .isEqualTo("Hello");
+    }
+
+    @Test
+    void get_type_typeAbsent() {
+        Context context = new NodeStub().getContext();
+
+        context.put(String.class, "Hello");
+
+        Assertions.assertThat(context.get(Integer.class))
+                .isEmpty();
+    }
+
+    @Test
+    void put_type_returnsContext() {
+        Context context = new NodeStub().getContext();
+
+        Assertions.assertThat(context.put(String.class, ""))
+                .isSameAs(context);
+    }
+
+    @Test
+    void putIfAbsentAndGet_type_nullType() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.putIfAbsentAndGet(null, "Hello");
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("type cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void putIfAbsentAndGet_type_nullValue() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.putIfAbsentAndGet(String.class, null);
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("value cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void putIfAbsentAndGet_type_present() {
+        Context context = new NodeStub().getContext();
+        context.put(String.class, "World");
+        Assertions.assertThat(context.putIfAbsentAndGet(String.class, "Hello"))
+                .isEqualTo("World");
+    }
+
+    @Test
+    void putIfAbsentAndGet_type_absent() {
+        Context context = new NodeStub().getContext();
+        Assertions.assertThat(context.putIfAbsentAndGet(String.class, "Hello"))
+                .isEqualTo("Hello");
+    }
+
+    @Test
+    void contains_type_nullType() {
+        Context context = new NodeStub().getContext();
+        try {
+            context.contains(null);
+        }
+        catch (IllegalArgumentException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("type cannot be null");
+            return;
+        }
+        Assertions.fail("Exception not thrown");
+    }
+
+    @Test
+    void contains_type_present() {
+        Context context = new NodeStub().getContext();
+        context.put(String.class, "");
+        Assertions.assertThat(context.contains(String.class))
+                .isTrue();
+    }
+
+    @Test
+    void contains_type_absent() {
+        Context context = new NodeStub().getContext();
+        Assertions.assertThat(context.contains(String.class))
+                .isFalse();
+    }
+
+
+    @Test
+    void contains_type_typeAbsent() {
+        Context context = new NodeStub().getContext();
+        context.put(String.class, "Hello");
+        Assertions.assertThat(context.contains(Integer.class))
+                .isFalse();
+    }
+
+    @Test
+    void getNode() {
+        NodeStub node = new NodeStub();
+        Assertions.assertThat(node.getContext().getNode())
+                .isSameAs(node);
     }
 
     private static class NodeStub implements Node {
