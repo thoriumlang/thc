@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import org.thoriumlang.compiler.ast.Visibility;
 import java.util.Arrays;
 import java.util.Collections;
 
-class FlattenedTypesRootTest {
+class TypeFlattenedRootTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -127,7 +127,7 @@ class FlattenedTypesRootTest {
                 )
         );
 
-        Assertions.assertThat(new FlattenedTypesRoot(nodeIdGenerator, root).root().toString())
+        Assertions.assertThat(new TypeFlattenedRoot(nodeIdGenerator, root).root().toString())
                 .isEqualTo(expectedRoot.toString());
     }
 }

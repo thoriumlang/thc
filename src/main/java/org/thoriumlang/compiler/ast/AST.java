@@ -20,7 +20,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
-import org.thoriumlang.compiler.ast.algorithms.FlattenedTypesRoot;
+import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ public class AST {
 
     public Root root() throws IOException {
         NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
-        return new FlattenedTypesRoot(
+        return new TypeFlattenedRoot(
                 nodeIdGenerator,
                 new RootVisitor(nodeIdGenerator, namespace).visit(
                         parser().root()

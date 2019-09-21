@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.CopyVisitor;
@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class FlatteningTypesVisitor extends CopyVisitor {
+public class TypeFlatteningVisitor extends CopyVisitor {
     private final NodeIdGenerator nodeIdGenerator;
 
-    public FlatteningTypesVisitor(NodeIdGenerator nodeIdGenerator) {
+    public TypeFlatteningVisitor(NodeIdGenerator nodeIdGenerator) {
         this.nodeIdGenerator = nodeIdGenerator;
     }
 

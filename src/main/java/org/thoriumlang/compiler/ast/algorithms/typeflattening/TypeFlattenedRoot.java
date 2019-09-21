@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.thoriumlang.compiler.ast.Context;
 import org.thoriumlang.compiler.ast.Node;
@@ -21,13 +21,13 @@ import org.thoriumlang.compiler.ast.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.Root;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public class FlattenedTypesRoot implements Node {
+public class TypeFlattenedRoot implements Node {
     private final NodeIdGenerator nodeIdGenerator;
     private final Root root;
     private final Context context;
     private Root flattenedTypesRootCache;
 
-    public FlattenedTypesRoot(NodeIdGenerator nodeIdGenerator, Root root) {
+    public TypeFlattenedRoot(NodeIdGenerator nodeIdGenerator, Root root) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.root = root;
         this.context = new Context(this);
@@ -35,7 +35,7 @@ public class FlattenedTypesRoot implements Node {
 
     private Root flattenedTypesRoot() {
         if (flattenedTypesRootCache == null) {
-            flattenedTypesRootCache = (Root) root.accept(new FlatteningTypesVisitor(nodeIdGenerator));
+            flattenedTypesRootCache = (Root) root.accept(new TypeFlatteningVisitor(nodeIdGenerator));
         }
         return flattenedTypesRootCache;
     }

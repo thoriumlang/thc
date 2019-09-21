@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import org.thoriumlang.compiler.ast.TypeSpecUnion;
 import java.util.Arrays;
 import java.util.Collections;
 
-class FlatteningTypesVisitorTest {
+class TypeFlatteningVisitorTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -36,7 +36,7 @@ class FlatteningTypesVisitorTest {
 
     @Test
     void visitTypeSpecIntersection() {
-        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor(nodeIdGenerator);
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
 
         TypeSpecIntersection spec = new TypeSpecIntersection(
                 nodeIdGenerator.next(),
@@ -83,7 +83,7 @@ class FlatteningTypesVisitorTest {
 
     @Test
     void visitTypeSpecUnion() {
-        FlatteningTypesVisitor visitor = new FlatteningTypesVisitor(nodeIdGenerator);
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
 
         TypeSpecUnion spec = new TypeSpecUnion(
                 nodeIdGenerator.next(),
