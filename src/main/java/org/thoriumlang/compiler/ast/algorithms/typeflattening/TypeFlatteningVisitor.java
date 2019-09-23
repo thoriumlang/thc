@@ -17,11 +17,11 @@ package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.CopyVisitor;
-import org.thoriumlang.compiler.ast.Node;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 
 import java.util.Collection;
 import java.util.List;

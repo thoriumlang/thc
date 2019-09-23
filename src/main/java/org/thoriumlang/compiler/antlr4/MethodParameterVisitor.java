@@ -17,8 +17,8 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.Parameter;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.Parameter;
 
 class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
     private final TypeSpecVisitor typeSpecVisitor;

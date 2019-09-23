@@ -16,19 +16,19 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.BooleanValue;
-import org.thoriumlang.compiler.ast.FunctionValue;
-import org.thoriumlang.compiler.ast.IdentifierValue;
-import org.thoriumlang.compiler.ast.IndirectAssignmentValue;
-import org.thoriumlang.compiler.ast.MethodCallValue;
-import org.thoriumlang.compiler.ast.NestedValue;
-import org.thoriumlang.compiler.ast.NoneValue;
-import org.thoriumlang.compiler.ast.NumberValue;
-import org.thoriumlang.compiler.ast.Statement;
-import org.thoriumlang.compiler.ast.StringValue;
-import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.VarAssignmentValue;
+import org.thoriumlang.compiler.ast.nodes.BooleanValue;
+import org.thoriumlang.compiler.ast.nodes.FunctionValue;
+import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
+import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
+import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
+import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NoneValue;
+import org.thoriumlang.compiler.ast.nodes.NumberValue;
+import org.thoriumlang.compiler.ast.nodes.Statement;
+import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
+import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 
 import java.util.stream.Collectors;
 

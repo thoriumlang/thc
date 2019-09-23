@@ -16,7 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Parameter;
 
 class ParameterVisitor extends BaseVisitor<String> {
     private final TypeSpecVisitor typeSpecVisitor;

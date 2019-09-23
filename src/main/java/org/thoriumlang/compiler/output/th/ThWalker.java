@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.output.Walker;
 
 public class ThWalker implements Walker<String> {

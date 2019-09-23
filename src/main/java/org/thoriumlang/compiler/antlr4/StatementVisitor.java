@@ -17,9 +17,9 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.NoneValue;
-import org.thoriumlang.compiler.ast.Statement;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.NoneValue;
+import org.thoriumlang.compiler.ast.nodes.Statement;
 
 class StatementVisitor extends ThoriumBaseVisitor<Statement> {
     private final NodeIdGenerator nodeIdGenerator;

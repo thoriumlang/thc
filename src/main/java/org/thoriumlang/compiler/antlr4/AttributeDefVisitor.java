@@ -17,12 +17,12 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.Attribute;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.NoneValue;
-import org.thoriumlang.compiler.ast.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.ValAttribute;
-import org.thoriumlang.compiler.ast.VarAttribute;
+import org.thoriumlang.compiler.ast.nodes.Attribute;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.NoneValue;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
+import org.thoriumlang.compiler.ast.nodes.ValAttribute;
+import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 
 class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
     private final NodeIdGenerator nodeIdGenerator;

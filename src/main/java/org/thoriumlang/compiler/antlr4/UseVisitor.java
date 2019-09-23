@@ -18,8 +18,8 @@ package org.thoriumlang.compiler.antlr4;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.Use;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.Use;
 
 import java.util.Collections;
 import java.util.List;

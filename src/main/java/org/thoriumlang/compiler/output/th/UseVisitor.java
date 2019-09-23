@@ -16,7 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.Use;
+import org.thoriumlang.compiler.ast.nodes.Use;
 
 class UseVisitor extends BaseVisitor<String> {
     @Override

@@ -18,10 +18,10 @@ package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
-import org.thoriumlang.compiler.ast.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 
 import java.util.Arrays;
 import java.util.Collections;

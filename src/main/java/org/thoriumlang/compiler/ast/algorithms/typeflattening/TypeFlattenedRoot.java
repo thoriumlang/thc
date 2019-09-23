@@ -15,10 +15,10 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
-import org.thoriumlang.compiler.ast.Context;
-import org.thoriumlang.compiler.ast.Node;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.nodes.Context;
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 public class TypeFlattenedRoot implements Node {

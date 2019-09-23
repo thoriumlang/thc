@@ -17,12 +17,12 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.TypeSpec;
-import org.thoriumlang.compiler.ast.TypeSpecFunction;
-import org.thoriumlang.compiler.ast.TypeSpecIntersection;
-import org.thoriumlang.compiler.ast.TypeSpecSimple;
-import org.thoriumlang.compiler.ast.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 
 import java.util.ArrayList;
 import java.util.Arrays;

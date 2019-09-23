@@ -15,8 +15,8 @@
  */
 package org.thoriumlang.compiler;
 
-import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.Root;
+import org.thoriumlang.compiler.ast.nodes.AST;
+import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.output.Walker;
 import org.thoriumlang.compiler.output.th.ThWalker;
 

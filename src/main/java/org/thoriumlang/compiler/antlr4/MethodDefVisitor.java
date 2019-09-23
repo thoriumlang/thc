@@ -17,11 +17,11 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.Method;
-import org.thoriumlang.compiler.ast.MethodSignature;
-import org.thoriumlang.compiler.ast.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.Visibility;
+import org.thoriumlang.compiler.ast.nodes.Method;
+import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
+import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.Collections;

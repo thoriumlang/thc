@@ -21,7 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.SourceFiles;
-import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.output.th.ThWalker;
 
 import java.io.BufferedReader;
