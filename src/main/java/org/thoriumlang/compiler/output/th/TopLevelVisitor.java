@@ -15,10 +15,10 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.helpers.Indent;
 
 import java.util.stream.Collectors;

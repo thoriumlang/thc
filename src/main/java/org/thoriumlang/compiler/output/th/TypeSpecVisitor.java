@@ -15,12 +15,12 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;

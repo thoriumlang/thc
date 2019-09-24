@@ -15,10 +15,10 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class AttributeVisitor extends BaseVisitor<String> {
     private final TypeSpecVisitor typeSpecVisitor;

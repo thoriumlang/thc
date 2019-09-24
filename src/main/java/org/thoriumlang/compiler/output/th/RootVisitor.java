@@ -15,9 +15,9 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Use;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -15,8 +15,8 @@
  */
 package org.thoriumlang.compiler.output.th;
 
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 class TypeParameterVisitor extends BaseVisitor<String> {
     @Override
