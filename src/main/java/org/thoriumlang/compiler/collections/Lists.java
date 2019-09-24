@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.collections;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -51,10 +52,16 @@ public class Lists {
         return ret;
     }
 
-    public static <T> List<T> merge(List<T> a, List<T> b) {
-        List<T> list = new ArrayList<>(a.size() + b.size());
-        list.addAll(a);
-        list.addAll(b);
+    @SafeVarargs
+    public static <T> List<T> merge(List<T>... lists) {
+        List<T> list = new ArrayList<>(
+                Arrays.stream(lists)
+                        .map(List::size)
+                        .reduce(0, (i, j) -> j + j)
+        );
+        for (List<T> l : lists) {
+            list.addAll(l);
+        }
         return list;
     }
 }
