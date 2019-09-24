@@ -62,7 +62,8 @@ class IntegrationTest {
                 );
     }
 
-    private SourceFile sourceFile(String path, Function<String, String> filenameGenerator) throws URISyntaxException, IOException {
+    private SourceFile sourceFile(String path,Function<String, String> filenameGenerator)
+            throws URISyntaxException, IOException {
         return new SourceFiles(
                 Paths.get(IntegrationTest.class.getResource("/").toURI()),
                 (p, bfa) -> p.getFileName().toString().equals(filenameGenerator.apply(path))

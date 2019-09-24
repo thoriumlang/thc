@@ -15,5 +15,15 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-public interface Symbol {
+public class JavaInterface implements Symbol {
+    private final Class clazz;
+
+    public JavaInterface(Class clazz) {
+        this.clazz = clazz;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(rt.jar: interface %s)", clazz.getCanonicalName());
+    }
 }

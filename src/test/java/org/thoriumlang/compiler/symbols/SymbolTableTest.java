@@ -28,28 +28,32 @@ class SymbolTableTest {
     @Test
     void find_localSymbol() {
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.put("someVar", new Symbol());
+        symbolTable.put("someVar", new Symbol() {
+        });
         Assertions.assertThat(symbolTable.find("someVar")).isNotEmpty();
     }
 
     @Test
     void find_parentSymbol() {
         SymbolTable symbolTable = new SymbolTable();
-        symbolTable.put("someVar", new Symbol());
+        symbolTable.put("someVar", new Symbol() {
+        });
 
-        SymbolTable nestedSymbolTable = new SymbolTable(symbolTable);
+        SymbolTable nestedSymbolTable = new SymbolTable("", symbolTable);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar")).isNotEmpty();
     }
 
     @Test
     void find_precedence() {
-        Symbol parentSymbol = new Symbol();
+        Symbol parentSymbol = new Symbol() {
+        };
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.put("someVar", parentSymbol);
 
-        Symbol symbol = new Symbol();
-        SymbolTable nestedSymbolTable = new SymbolTable(symbolTable);
+        Symbol symbol = new Symbol() {
+        };
+        SymbolTable nestedSymbolTable = new SymbolTable("", symbolTable);
         symbolTable.put("someVar", symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
@@ -60,11 +64,12 @@ class SymbolTableTest {
 
     @Test
     void child() {
-        Symbol symbol = new Symbol();
+        Symbol symbol = new Symbol() {
+        };
         SymbolTable symbolTable = new SymbolTable();
         symbolTable.put("someVar", symbol);
 
-        SymbolTable nestedTable = symbolTable.createNestedTable();
+        SymbolTable nestedTable = symbolTable.createNestedTable("");
 
         Assertions.assertThat(nestedTable.find("someVar"))
                 .isNotEmpty()

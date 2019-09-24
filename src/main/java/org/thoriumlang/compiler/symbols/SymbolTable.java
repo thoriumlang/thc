@@ -15,9 +15,16 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.helpers.Indent;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SymbolTable {
     private static final SymbolTable ROOT = new SymbolTable() {
@@ -32,16 +39,22 @@ public class SymbolTable {
         }
     };
 
+    private final int hashCode;
+    private final String name;
     private final SymbolTable parentSymbolTable;
+    private final Set<SymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
-    public SymbolTable() {
-        this(ROOT);
-    }
-
-    SymbolTable(SymbolTable parentSymbolTable) {
+    SymbolTable(String name, SymbolTable parentSymbolTable) {
+        this.hashCode = new Random().nextInt();
+        this.name = name;
         this.parentSymbolTable = parentSymbolTable;
         this.symbols = new HashMap<>();
+        this.childrenSymbolTables = new HashSet<>();
+    }
+
+    public SymbolTable() {
+        this("root", ROOT);
     }
 
     public Optional<Symbol> find(String name) {
@@ -52,7 +65,42 @@ public class SymbolTable {
         symbols.put(name, symbol);
     }
 
-    public SymbolTable createNestedTable() {
-        return new SymbolTable(this);
+    public SymbolTable createNestedTable(String name) {
+        SymbolTable childTable = new SymbolTable(name, this);
+        childrenSymbolTables.add(childTable);
+        return childTable;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s%s",
+                name,
+                symbols.isEmpty() ?
+                        "" :
+                        symbols.entrySet().stream()
+                                .map(e -> String.format("%s -> %s", e.getKey(), e.getValue()))
+                                .collect(Collectors.joining("\n", "\n", "")),
+                childrenSymbolTables.isEmpty() ?
+                        "" :
+                        childrenSymbolTables.stream()
+                                .map(table -> Arrays.stream(table.toString().split("\n"))
+                                        .map(Indent.INSTANCE)
+                                        .collect(Collectors.joining("\n"))
+                                )
+                                .collect(Collectors.joining("\n", "\n", ""))
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return hashCode;
+    }
+
+    public void merge(SymbolTable other) {
+        other.getSymbols().forEach(symbols::put);
+    }
+
+    private Map<String, Symbol> getSymbols() {
+        return symbols;
     }
 }

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.symbols;
+package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
-public interface Symbol {
+import java.util.Optional;
+
+public interface JavaRuntimeClassLoader {
+    Optional<Class> find(String name);
 }

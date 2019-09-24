@@ -15,5 +15,15 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-public interface Symbol {
+public class JavaClass implements Symbol {
+    private final Class<?> clazz;
+
+    public JavaClass(Class<?> clazz) {
+        this.clazz = clazz;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(rt.jar: class %s)", clazz.getCanonicalName());
+    }
 }

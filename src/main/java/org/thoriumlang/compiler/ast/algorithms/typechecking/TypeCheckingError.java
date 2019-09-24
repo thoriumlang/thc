@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.symbols;
+package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
-public interface Symbol {
+public class TypeCheckingError {
+    private final String message;
+
+    public TypeCheckingError(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return message;
+    }
 }
