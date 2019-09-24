@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.nodes.Method;
+import org.thoriumlang.compiler.helpers.Indent;
 
 import java.util.stream.Collectors;
 

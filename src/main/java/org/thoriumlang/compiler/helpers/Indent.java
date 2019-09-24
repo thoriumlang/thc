@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.output.th;
+package org.thoriumlang.compiler.helpers;
 
 import java.util.Arrays;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-class Indent implements UnaryOperator<String> {
+public class Indent implements UnaryOperator<String> {
     public static final Indent INSTANCE = new Indent("  ");
     private final String level;
 
