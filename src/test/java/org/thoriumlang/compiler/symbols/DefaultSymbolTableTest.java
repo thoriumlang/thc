@@ -18,16 +18,16 @@ package org.thoriumlang.compiler.symbols;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class SymbolTableTest {
+class DefaultSymbolTableTest {
     @Test
     void find_unknown() {
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         Assertions.assertThat(symbolTable.find("unknown")).isEmpty();
     }
 
     @Test
     void find_localSymbol() {
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put("someVar", new Symbol() {
         });
         Assertions.assertThat(symbolTable.find("someVar")).isNotEmpty();
@@ -35,11 +35,11 @@ class SymbolTableTest {
 
     @Test
     void find_parentSymbol() {
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put("someVar", new Symbol() {
         });
 
-        SymbolTable nestedSymbolTable = new SymbolTable("", symbolTable);
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar")).isNotEmpty();
     }
@@ -48,12 +48,12 @@ class SymbolTableTest {
     void find_precedence() {
         Symbol parentSymbol = new Symbol() {
         };
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put("someVar", parentSymbol);
 
         Symbol symbol = new Symbol() {
         };
-        SymbolTable nestedSymbolTable = new SymbolTable("", symbolTable);
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
         symbolTable.put("someVar", symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
@@ -66,10 +66,10 @@ class SymbolTableTest {
     void child() {
         Symbol symbol = new Symbol() {
         };
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put("someVar", symbol);
 
-        SymbolTable nestedTable = symbolTable.createNestedTable("");
+        DefaultSymbolTable nestedTable = symbolTable.createNestedTable("");
 
         Assertions.assertThat(nestedTable.find("someVar"))
                 .isNotEmpty()

@@ -17,12 +17,24 @@ package org.thoriumlang.compiler.symbols;
 
 import java.util.Optional;
 
-public interface SymbolTable {
-    String fqName();
+public class RootSymbolTable implements SymbolTable {
+    @Override
+    public String fqName() {
+        return "";
+    }
 
-    Optional<Symbol> find(String name);
+    @Override
+    public Optional<Symbol> find(String name) {
+        return Optional.empty();
+    }
 
-    void put(String name, Symbol symbol);
+    @Override
+    public void put(String name, Symbol symbol) {
+        throw new IllegalStateException("Cannot add a symbol to an empty symbol table");
+    }
 
-    DefaultSymbolTable createNestedTable(String name);
+    @Override
+    public DefaultSymbolTable createNestedTable(String name) {
+        throw new IllegalStateException("Cannot add a nested symbol table to an empty symbol table");
+    }
 }

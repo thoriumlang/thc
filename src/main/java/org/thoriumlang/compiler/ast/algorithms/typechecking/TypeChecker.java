@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class TypeChecker {
     public List<TypeCheckingError> walk(Root root) {
         List<TypeCheckingError> discoveryErrors = root
                 .getContext()
-                .put(SymbolTable.class, new SymbolTable())
+                .put(SymbolTable.class, new DefaultSymbolTable())
                 .getNode()
                 .accept(
                         new TypeDiscoveryVisitor(

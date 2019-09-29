@@ -46,6 +46,7 @@ import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Collections;
@@ -62,7 +63,7 @@ class BaseTypeCheckingVisitorTest {
     @Test
     void setSymbolTable_table() {
         Node node = new NoneValue(new NodeIdGenerator().next());
-        SymbolTable symbolTable = new SymbolTable();
+        SymbolTable symbolTable = new DefaultSymbolTable();
         visitor.setSymbolTable(node, symbolTable);
         Assertions.assertThat(node.getContext().get(SymbolTable.class))
                 .get()
@@ -73,7 +74,7 @@ class BaseTypeCheckingVisitorTest {
     void setSymbolTable_node() {
         Node nodeSrc = new NoneValue(new NodeIdGenerator().next());
         Node nodeDst = new NoneValue(new NodeIdGenerator().next());
-        SymbolTable symbolTable = new SymbolTable();
+        SymbolTable symbolTable = new DefaultSymbolTable();
 
         nodeSrc.getContext().put(SymbolTable.class, symbolTable);
 
@@ -86,7 +87,7 @@ class BaseTypeCheckingVisitorTest {
     @Test
     void getSymbolTable() {
         Node node = new NoneValue(new NodeIdGenerator().next());
-        SymbolTable symbolTable = new SymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         node.getContext().put(SymbolTable.class, symbolTable);
         Assertions.assertThat(visitor.getSymbolTable(node))
                 .isEqualTo(symbolTable);

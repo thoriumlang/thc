@@ -29,6 +29,7 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
@@ -216,7 +217,7 @@ class TypeDiscoveryVisitorTest {
     private <T extends Node> T injectSymbolTable(T node) {
         return (T) node
                 .getContext()
-                .put(SymbolTable.class, new SymbolTable())
+                .put(SymbolTable.class, new DefaultSymbolTable())
                 .getNode();
     }
 
