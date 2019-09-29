@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.Use;
@@ -22,6 +23,7 @@ import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
 import java.util.Collections;
@@ -79,6 +81,24 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
 
         getSymbolTable(node).put(node.getName(), new ThoriumType(node));
         node.getTypeParameters().forEach(t -> getSymbolTable(node).put(t.getName(), new ThoriumType(t)));
+
+        return node.getMethods().stream()
+                .map(m -> setSymbolTable(m, node))
+                .map(m -> m.accept(this))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TypeCheckingError> visit(MethodSignature node) {
+        SymbolTable symbolTable = getSymbolTable(
+                setSymbolTable(
+                        node,
+                        getSymbolTable(node).createNestedTable(node.getName())
+                )
+        );
+
+        node.getTypeParameters().forEach(t -> symbolTable.put(t.getName(), new ThoriumType(t)));
 
         return Collections.emptyList();
     }

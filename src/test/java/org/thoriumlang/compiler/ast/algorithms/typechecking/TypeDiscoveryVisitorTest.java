@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -102,23 +103,54 @@ class TypeDiscoveryVisitorTest {
     }
 
     @Test
+    void methodSignature() {
+        MethodSignature node = injectSymbolTable(new MethodSignature(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "methodName",
+                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
+        ));
+
+        Assertions.assertThat(visitor().visit(node))
+                .isEmpty();
+        Assertions.assertThat(getSymbol(node, "TypeParameter"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+    }
+
+    @Test
     void type() {
-        Type node = injectSymbolTable(new Type(
+        MethodSignature methodSignature = new MethodSignature(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "methodName",
+                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "MethodTypeParameter")),
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
+        );
+        Type type = injectSymbolTable(new Type(
                 nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "TypeName",
                 Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
                 new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
-                Collections.emptyList()
+                Collections.singletonList(methodSignature)
         ));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor().visit(type))
                 .isEmpty();
 
-        Assertions.assertThat(getSymbol(node, "TypeName"))
+        Assertions.assertThat(getSymbol(type, "TypeName"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
-        Assertions.assertThat(getSymbol(node, "TypeParameter"))
+        Assertions.assertThat(getSymbol(type, "TypeParameter"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+        Assertions.assertThat(getSymbol(type, "MethodTypeParameter"))
+                .isEmpty();
+        Assertions.assertThat(getSymbol(methodSignature, "MethodTypeParameter"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
     }
@@ -151,7 +183,7 @@ class TypeDiscoveryVisitorTest {
     }
 
     @Test
-    void root() {
+    void root_type() {
         Root node = injectSymbolTable(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
@@ -163,7 +195,7 @@ class TypeDiscoveryVisitorTest {
                         nodeIdGenerator.next(),
                         Visibility.NAMESPACE,
                         "TypeName",
-                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
+                        Collections.emptyList(),
                         new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
                         Collections.emptyList()
                 )
@@ -176,9 +208,6 @@ class TypeDiscoveryVisitorTest {
                 .get()
                 .isInstanceOf(JavaClass.class);
         Assertions.assertThat(getSymbol(node, "TypeName"))
-                .get()
-                .isInstanceOf(ThoriumType.class);
-        Assertions.assertThat(getSymbol(node, "TypeParameter"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
     }

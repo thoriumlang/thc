@@ -3,8 +3,8 @@ use java.util.List : JavaList;
 use org.thoriumlang.compiler.ast.AST;
 
 // a comment
-type MyType {
-    a(): ((A?&B)|C)?|(D);
+type MyType[T] {
+    a[U](): ((A?&B)|C)?|(D);
     b(t: Type): A&B;
     c(): A?&C;
     d(): ((A?)?)?;

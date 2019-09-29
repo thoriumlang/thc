@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.symbols;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Type;
+import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 public class ThoriumType implements Symbol {
@@ -38,6 +39,11 @@ public class ThoriumType implements Symbol {
             @Override
             public String visit(Class node) {
                 return String.format("class %s", node.getName());
+            }
+
+            @Override
+            public String visit(TypeParameter node) {
+                return String.format("param %s", node.getName());
             }
         }));
     }

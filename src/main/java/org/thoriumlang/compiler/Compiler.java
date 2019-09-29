@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,6 +41,7 @@ public class Compiler {
                 List<TypeCheckingError> typeCheckingError = new TypeChecker().walk(root);
 
                 typeCheckingError.forEach(System.out::println);
+                root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
             }
             catch (IOException e) {
                 throw new RuntimeException(e);
