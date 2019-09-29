@@ -80,6 +80,8 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
         }
 
         getSymbolTable(node).put(node.getName(), new ThoriumType(node));
+        setSymbolTable(node, getSymbolTable(node).createNestedTable(node.getName()));
+
         node.getTypeParameters().forEach(t -> getSymbolTable(node).put(t.getName(), new ThoriumType(t)));
 
         return node.getMethods().stream()
