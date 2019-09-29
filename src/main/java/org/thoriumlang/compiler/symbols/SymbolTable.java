@@ -96,11 +96,4 @@ public class SymbolTable {
         return hashCode;
     }
 
-    public void merge(SymbolTable other) {
-        other.getSymbols().forEach(symbols::put);
-    }
-
-    private Map<String, Symbol> getSymbols() {
-        return symbols;
-    }
 }
