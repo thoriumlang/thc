@@ -117,7 +117,7 @@ class MethodDefTest {
                         token("{"),
                         token("}")
                 ).serialize("methodDef")
-        ).isEqualTo("(methodDef methodName [ (typeParameterDef T , U) ] ( ) { })");
+        ).isEqualTo("(methodDef methodName [ (typeParameter T , U) ] ( ) { })");
     }
 
     @Test

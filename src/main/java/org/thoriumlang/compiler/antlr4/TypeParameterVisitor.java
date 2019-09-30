@@ -24,15 +24,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class TypeParameterDefVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
+class TypeParameterVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
     private final NodeIdGenerator nodeIdGenerator;
 
-    TypeParameterDefVisitor(NodeIdGenerator nodeIdGenerator) {
+    TypeParameterVisitor(NodeIdGenerator nodeIdGenerator) {
         this.nodeIdGenerator = nodeIdGenerator;
     }
 
     @Override
-    public List<TypeParameter> visitTypeParameterDef(ThoriumParser.TypeParameterDefContext ctx) {
+    public List<TypeParameter> visitTypeParameter(ThoriumParser.TypeParameterContext ctx) {
         if (ctx.IDENTIFIER() == null) {
             return Collections.emptyList();
         }

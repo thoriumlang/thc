@@ -54,10 +54,10 @@ useAs
     ;
 
 typeDef
-    : visibility=( NAMESPACE | PUBLIC )? TYPE IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( methodSignature ';' )* '}'
+    : visibility=( NAMESPACE | PUBLIC )? TYPE IDENTIFIER ( '[' typeParameter ']' )? implementsSpec? '{' ( methodSignature ';' )* '}'
     ;
 
-typeParameterDef
+typeParameter
     : IDENTIFIER ( ',' IDENTIFIER )*
     ;
 typeArguments
@@ -69,7 +69,7 @@ implementsSpec
     ;
 
 classDef
-    : visibility=( NAMESPACE | PUBLIC )? CLASS IDENTIFIER ( '[' typeParameterDef ']' )? implementsSpec? '{' ( attributeDef | methodDef )* '}'
+    : visibility=( NAMESPACE | PUBLIC )? CLASS IDENTIFIER ( '[' typeParameter ']' )? implementsSpec? '{' ( attributeDef | methodDef )* '}'
     ;
 
 attributeDef
@@ -106,7 +106,7 @@ typeSpecFunction
 
 methodSignature
     : visibility=( NAMESPACE | PUBLIC )? name=IDENTIFIER
-      ( '[' typeParameterDef ']' )?
+      ( '[' typeParameter ']' )?
       '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
       ':' returnType=typeSpec
     ;
@@ -116,7 +116,7 @@ methodParameterDef
 
 methodDef
     : visibility=( PRIVATE | NAMESPACE | PUBLIC )? name=IDENTIFIER
-      ( '[' typeParameterDef ']' )?
+      ( '[' typeParameter ']' )?
       '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
       ( ':' returnType=typeSpec )?
       '{' statement* '}'
@@ -155,7 +155,7 @@ indirectValue
     | directValue ( '.' | '?.' ) methodName=IDENTIFIER ( '[' typeArguments ']' )? '(' methodArguments? ')'
     ;
 functionValue
-    : ( '[' typeParameterDef ']' )?
+    : ( '[' typeParameter ']' )?
       '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
       ( ':' typeSpec )?
       ( '=>' value | '=>' '{' statement* '}' )

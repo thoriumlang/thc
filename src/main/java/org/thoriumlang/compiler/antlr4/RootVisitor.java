@@ -37,7 +37,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
                 nodeIdGenerator,
                 new FqIdentifierVisitor()
         );
-        TypeParameterDefVisitor typeParameterDefVisitor = new TypeParameterDefVisitor(
+        TypeParameterVisitor typeParameterVisitor = new TypeParameterVisitor(
                 nodeIdGenerator
         );
         MethodParameterVisitor methodParameterVisitor = new MethodParameterVisitor(
@@ -48,7 +48,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
         StatementVisitor statementVisitorForLast = new StatementVisitor(nodeIdGenerator, true);
         ValueVisitor valueVisitor = new ValueVisitor(
                 nodeIdGenerator,
-                typeParameterDefVisitor,
+                typeParameterVisitor,
                 methodParameterVisitor,
                 typeSpecVisitor,
                 statementVisitorForNotLast,
@@ -65,16 +65,16 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
                         nodeIdGenerator,
                         methodParameterVisitor,
                         typeSpecVisitor,
-                        typeParameterDefVisitor
+                        typeParameterVisitor
                 ),
-                typeParameterDefVisitor,
+                typeParameterVisitor,
                 typeSpecVisitor
         );
         this.classDefVisitor = new ClassDefVisitor(
                 nodeIdGenerator,
                 new MethodDefVisitor(
                         nodeIdGenerator,
-                        typeParameterDefVisitor,
+                        typeParameterVisitor,
                         methodParameterVisitor,
                         typeSpecVisitor,
                         statementVisitorForNotLast,
@@ -85,7 +85,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
                         typeSpecVisitor,
                         valueVisitor
                 ),
-                typeParameterDefVisitor,
+                typeParameterVisitor,
                 typeSpecVisitor
         );
         this.useVisitor = new UseVisitor(nodeIdGenerator);

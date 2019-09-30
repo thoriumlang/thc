@@ -29,20 +29,20 @@ import java.util.stream.Collectors;
 
 class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     private final NodeIdGenerator nodeIdGenerator;
-    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final TypeParameterVisitor typeParameterVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
     MethodDefVisitor(NodeIdGenerator nodeIdGenerator,
-            TypeParameterDefVisitor typeParameterDefVisitor,
+            TypeParameterVisitor typeParameterVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
             StatementVisitor statementVisitorForLast) {
         this.nodeIdGenerator = nodeIdGenerator;
-        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.typeParameterVisitor = typeParameterVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
         this.statementVisitorForNotLast = statementVisitorForNotLast;
@@ -57,9 +57,9 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                         nodeIdGenerator.next(),
                         visibility(ctx),
                         ctx.IDENTIFIER().getSymbol().getText(),
-                        ctx.typeParameterDef() == null ?
+                        ctx.typeParameter() == null ?
                                 Collections.emptyList() :
-                                ctx.typeParameterDef().accept(typeParameterDefVisitor),
+                                ctx.typeParameter().accept(typeParameterVisitor),
                         ctx.methodParameterDef().stream()
                                 .map(p -> p.accept(methodParameterVisitor))
                                 .collect(Collectors.toList()),

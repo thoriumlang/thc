@@ -30,16 +30,16 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
     private final NodeIdGenerator nodeIdGenerator;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
-    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final TypeParameterVisitor typeParameterVisitor;
 
     MethodSignatureVisitor(NodeIdGenerator nodeIdGenerator,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
-            TypeParameterDefVisitor typeParameterDefVisitor) {
+            TypeParameterVisitor typeParameterVisitor) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
-        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.typeParameterVisitor = typeParameterVisitor;
     }
 
     @Override
@@ -49,7 +49,7 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
                 nodeIdGenerator.next(),
                 visibility(ctx),
                 ctx.name.getText(),
-                typeParameters(ctx.typeParameterDef()),
+                typeParameters(ctx.typeParameter()),
                 ctx.methodParameterDef().stream()
                         .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
@@ -63,10 +63,10 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
                 Visibility.valueOf(ctx.visibility.getText().toUpperCase());
     }
 
-    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {
+    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterContext ctx) {
         if (ctx == null || ctx.IDENTIFIER() == null) {
             return Collections.emptyList();
         }
-        return ctx.accept(typeParameterDefVisitor);
+        return ctx.accept(typeParameterVisitor);
     }
 }

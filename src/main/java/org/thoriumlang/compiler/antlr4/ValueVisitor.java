@@ -41,20 +41,20 @@ import java.util.stream.Collectors;
 
 class ValueVisitor extends ThoriumBaseVisitor<Value> {
     private final NodeIdGenerator nodeIdGenerator;
-    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final TypeParameterVisitor typeParameterVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
     ValueVisitor(NodeIdGenerator nodeIdGenerator,
-            TypeParameterDefVisitor typeParameterDefVisitor,
+            TypeParameterVisitor typeParameterVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
             StatementVisitor statementVisitorForLast) {
         this.nodeIdGenerator = nodeIdGenerator;
-        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.typeParameterVisitor = typeParameterVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
         this.statementVisitorForNotLast = statementVisitorForNotLast;
@@ -90,9 +90,9 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     public Value visitFunctionValue(ThoriumParser.FunctionValueContext ctx) {
         return new FunctionValue(
                 nodeIdGenerator.next(),
-                ctx.typeParameterDef() == null ?
+                ctx.typeParameter() == null ?
                         Collections.emptyList() :
-                        ctx.typeParameterDef().accept(typeParameterDefVisitor),
+                        ctx.typeParameter().accept(typeParameterVisitor),
                 ctx.methodParameterDef().stream()
                         .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
