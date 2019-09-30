@@ -23,14 +23,14 @@ import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
 @Tag("parser")
-class TypeParameterDefTest {
+class typeParameterTest {
     @Test
     void one() {
         Assertions.assertThat(
                 new Tree(
                         token("T", ThoriumLexer.IDENTIFIER)
-                ).serialize("typeParameterDef")
-        ).isEqualTo("(typeParameterDef T)");
+                ).serialize("typeParameter")
+        ).isEqualTo("(typeParameter T)");
     }
 
     @Test
@@ -42,7 +42,7 @@ class TypeParameterDefTest {
                         token("U", ThoriumLexer.IDENTIFIER),
                         token(","),
                         token("V", ThoriumLexer.IDENTIFIER)
-                ).serialize("typeParameterDef")
-        ).isEqualTo("(typeParameterDef T , U , V)");
+                ).serialize("typeParameter")
+        ).isEqualTo("(typeParameter T , U , V)");
     }
 }

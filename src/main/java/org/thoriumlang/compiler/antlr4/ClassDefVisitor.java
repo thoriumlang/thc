@@ -31,17 +31,17 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
     private final NodeIdGenerator nodeIdGenerator;
     private final MethodDefVisitor methodDefVisitor;
     private final AttributeDefVisitor attributeDefVisitor;
-    private final TypeParameterDefVisitor typeParameterDefVisitor;
+    private final TypeParameterVisitor typeParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
 
     ClassDefVisitor(NodeIdGenerator nodeIdGenerator, MethodDefVisitor methodDefVisitor,
             AttributeDefVisitor attributeDefVisitor,
-            TypeParameterDefVisitor typeParameterDefVisitor,
+            TypeParameterVisitor typeParameterVisitor,
             TypeSpecVisitor typeSpecVisitor) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.methodDefVisitor = methodDefVisitor;
         this.attributeDefVisitor = attributeDefVisitor;
-        this.typeParameterDefVisitor = typeParameterDefVisitor;
+        this.typeParameterVisitor = typeParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
     }
 
@@ -51,7 +51,7 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                 nodeIdGenerator.next(),
                 visibility(ctx),
                 ctx.IDENTIFIER().getSymbol().getText(),
-                typeParameters(ctx.typeParameterDef()),
+                typeParameters(ctx.typeParameter()),
                 implementsSpec(ctx.implementsSpec()),
                 ctx.methodDef() == null ?
                         Collections.emptyList() :
@@ -72,10 +72,10 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                 Visibility.valueOf(ctx.visibility.getText().toUpperCase());
     }
 
-    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterDefContext ctx) {
+    private List<TypeParameter> typeParameters(ThoriumParser.TypeParameterContext ctx) {
         return (ctx == null || ctx.IDENTIFIER() == null) ?
                 Collections.emptyList() :
-                ctx.accept(typeParameterDefVisitor);
+                ctx.accept(typeParameterVisitor);
     }
 
     private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {

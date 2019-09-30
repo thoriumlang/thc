@@ -114,6 +114,6 @@ class TypeDefTest {
                         token("{"),
                         token("}")
                 ).serialize()
-        ).isEqualTo("(root (typeDef type Identifier [ (typeParameterDef T , U) ] { }))");
+        ).isEqualTo("(root (typeDef type Identifier [ (typeParameter T , U) ] { }))");
     }
 }

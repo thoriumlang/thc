@@ -64,7 +64,7 @@ class ClassDefTest {
                         token("{"),
                         token("}")
                 ).serialize("classDef")
-        ).isEqualTo("(classDef class Identifier [ (typeParameterDef TA) ] { })");
+        ).isEqualTo("(classDef class Identifier [ (typeParameter TA) ] { })");
     }
 
     @Test
