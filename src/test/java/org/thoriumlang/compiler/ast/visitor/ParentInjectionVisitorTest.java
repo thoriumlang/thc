@@ -15,9 +15,15 @@
  */
 package org.thoriumlang.compiler.ast.visitor;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.antlr4.RootVisitor;
+import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -48,7 +54,9 @@ import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
+import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 class ParentInjectionVisitorTest {
     private NodeIdGenerator nodeIdGenerator;
@@ -461,5 +469,30 @@ class ParentInjectionVisitorTest {
         assertParent(parameter, functionValue);
         assertParent(returnType, functionValue);
         assertParent(statement, functionValue);
+    }
+
+    @Test
+    void allNodesHaveParent_class() throws IOException {
+        Root root = new RootVisitor(nodeIdGenerator, "namespace").visit(
+                new ThoriumParser(
+                        new CommonTokenStream(
+                                new ThoriumLexer(
+                                        CharStreams.fromStream(
+                                                ParentInjectionVisitorTest.class.getResourceAsStream(
+                                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                                                )
+                                        )
+                                )
+                        )
+                ).root()
+        );
+
+        parentInjectionVisitor.visit(root);
+
+        List<Node> missingParents = new NodesMatching(
+                n -> !n.getContext().get("parent", Node.class).isPresent() && n != root
+        ).visit(root);
+
+        Assertions.assertThat(missingParents).isEmpty();
     }
 }

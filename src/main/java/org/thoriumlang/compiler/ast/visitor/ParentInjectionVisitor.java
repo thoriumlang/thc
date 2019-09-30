@@ -45,12 +45,8 @@ public class ParentInjectionVisitor extends IdentityVisitor {
     }
 
     private void setParentRecursively(Node target, Node parent) {
-        setParent(target, parent);
-        target.accept(this);
-    }
-
-    private void setParent(Node target, Node parent) {
         target.getContext().put("parent", Node.class, parent);
+        target.accept(this);
     }
 
     @Override
@@ -66,117 +62,117 @@ public class ParentInjectionVisitor extends IdentityVisitor {
         node.getAttributes().forEach(n -> setParentRecursively(n, node));
         node.getTypeParameters().forEach(n -> setParentRecursively(n, node));
         node.getMethods().forEach(n -> setParentRecursively(n, node));
-        setParent(node.getSuperType(), node);
+        setParentRecursively(node.getSuperType(), node);
         return node;
     }
 
     @Override
     public Node visit(TypeSpecIntersection node) {
-        node.getTypes().forEach(n -> setParent(n, node));
+        node.getTypes().forEach(n -> setParentRecursively(n, node));
         return node;
     }
 
     @Override
     public Node visit(TypeSpecUnion node) {
-        node.getTypes().forEach(n -> setParent(n, node));
+        node.getTypes().forEach(n -> setParentRecursively(n, node));
         return node;
     }
 
     @Override
     public Node visit(TypeSpecSimple node) {
-        node.getArguments().forEach(n -> setParent(n, node));
+        node.getArguments().forEach(n -> setParentRecursively(n, node));
         return node;
     }
 
     @Override
     public Node visit(TypeSpecFunction node) {
-        node.getArguments().forEach(n -> setParent(n, node));
-        setParent(node.getReturnType(), node);
+        node.getArguments().forEach(n -> setParentRecursively(n, node));
+        setParentRecursively(node.getReturnType(), node);
         return node;
     }
 
     @Override
     public Node visit(MethodSignature node) {
-        node.getTypeParameters().forEach(n -> setParent(n, node));
-        node.getParameters().forEach(n -> setParent(n, node));
-        setParent(node.getReturnType(), node);
+        node.getTypeParameters().forEach(n -> setParentRecursively(n, node));
+        node.getParameters().forEach(n -> setParentRecursively(n, node));
+        setParentRecursively(node.getReturnType(), node);
         return node;
     }
 
     @Override
     public Node visit(Parameter node) {
-        setParent(node.getType(), node);
+        setParentRecursively(node.getType(), node);
         return node;
     }
 
     @Override
     public Node visit(VarAssignmentValue node) {
-        setParent(node.getType(), node);
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getType(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 
     @Override
     public Node visit(ValAssignmentValue node) {
-        setParent(node.getType(), node);
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getType(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 
     @Override
     public Node visit(IndirectAssignmentValue node) {
-        setParent(node.getIndirectValue(), node);
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getIndirectValue(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 
     @Override
     public Node visit(MethodCallValue node) {
-        node.getMethodArguments().forEach(n -> setParent(n, node));
-        node.getTypeArguments().forEach(n -> setParent(n, node));
+        node.getMethodArguments().forEach(n -> setParentRecursively(n, node));
+        node.getTypeArguments().forEach(n -> setParentRecursively(n, node));
         return node;
     }
 
     @Override
     public Node visit(NestedValue node) {
-        setParent(node.getInner(), node);
-        setParent(node.getOuter(), node);
+        setParentRecursively(node.getInner(), node);
+        setParentRecursively(node.getOuter(), node);
         return node;
     }
 
     @Override
     public Node visit(FunctionValue node) {
-        node.getTypeParameters().forEach(n -> setParent(n, node));
-        node.getParameters().forEach(n -> setParent(n, node));
-        node.getStatements().forEach(n -> setParent(n, node));
-        setParent(node.getReturnType(), node);
+        node.getTypeParameters().forEach(n -> setParentRecursively(n, node));
+        node.getParameters().forEach(n -> setParentRecursively(n, node));
+        node.getStatements().forEach(n -> setParentRecursively(n, node));
+        setParentRecursively(node.getReturnType(), node);
         return node;
     }
 
     @Override
     public Node visit(Statement node) {
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 
     @Override
     public Node visit(Method node) {
-        setParent(node.getSignature(), node);
-        node.getStatements().forEach(n -> setParent(n, node));
+        setParentRecursively(node.getSignature(), node);
+        node.getStatements().forEach(n -> setParentRecursively(n, node));
         return node;
     }
 
     @Override
     public Node visit(VarAttribute node) {
-        setParent(node.getType(), node);
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getType(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 
     @Override
     public Node visit(ValAttribute node) {
-        setParent(node.getType(), node);
-        setParent(node.getValue(), node);
+        setParentRecursively(node.getType(), node);
+        setParentRecursively(node.getValue(), node);
         return node;
     }
 }
