@@ -44,6 +44,9 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public String fqName() {
+        if (parentSymbolTable.fqName().isEmpty()) {
+            return String.format("%s", name);
+        }
         return String.format("%s.%s", parentSymbolTable.fqName(), name);
     }
 
