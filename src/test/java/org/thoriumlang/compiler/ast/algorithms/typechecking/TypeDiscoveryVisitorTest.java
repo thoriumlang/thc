@@ -16,7 +16,10 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -26,10 +29,11 @@ import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
+import org.thoriumlang.compiler.ast.visitor.ParentInjectionVisitor;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
@@ -45,6 +49,13 @@ class TypeDiscoveryVisitorTest {
                     : Optional.empty();
     private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
+    private TypeDiscoveryVisitor visitor;
+
+    @BeforeEach
+    void setup() {
+        visitor = new TypeDiscoveryVisitor(classLoader);
+    }
+
     @Test
     void use_class() {
         Use node = injectSymbolTable(new Use(
@@ -52,7 +63,7 @@ class TypeDiscoveryVisitorTest {
                 "java.lang.String"
         ));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
         Assertions.assertThat(getSymbol(node, "String"))
                 .get()
@@ -66,7 +77,7 @@ class TypeDiscoveryVisitorTest {
                 "java.util.List"
         ));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
         Assertions.assertThat(getSymbol(node, "List"))
                 .get()
@@ -80,7 +91,7 @@ class TypeDiscoveryVisitorTest {
                 "notFound"
         ));
 
-        Assertions.assertThat(visitor().visit(node).stream()
+        Assertions.assertThat(visitor.visit(node).stream()
                 .map(TypeCheckingError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound");
@@ -96,7 +107,7 @@ class TypeDiscoveryVisitorTest {
                 "JavaString"
         ));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
         Assertions.assertThat(getSymbol(node, "JavaString"))
                 .get()
@@ -114,8 +125,31 @@ class TypeDiscoveryVisitorTest {
                 new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
         ));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
+        Assertions.assertThat(getSymbol(node, "TypeParameter"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+    }
+
+    @Test
+    void method() {
+        Method node = injectSymbolTable(injectParents(new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "methodName",
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
+                ),
+                Collections.emptyList()
+        )));
+
+        Assertions.assertThat(visitor.visit(node))
+                .isEmpty();
+
         Assertions.assertThat(getSymbol(node, "TypeParameter"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
@@ -131,16 +165,16 @@ class TypeDiscoveryVisitorTest {
                 Collections.emptyList(),
                 new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
         );
-        Type type = injectSymbolTable(new Type(
+        Type type = injectSymbolTable(injectParents(new Type(
                 nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "TypeName",
                 Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
                 new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
                 Collections.singletonList(methodSignature)
-        ));
+        )));
 
-        Assertions.assertThat(visitor().visit(type))
+        Assertions.assertThat(visitor.visit(type))
                 .isEmpty();
 
         Assertions.assertThat(getSymbol(type, "TypeName"))
@@ -173,7 +207,7 @@ class TypeDiscoveryVisitorTest {
                 new JavaClass(String.class)
         );
 
-        Assertions.assertThat(visitor().visit(node).stream()
+        Assertions.assertThat(visitor.visit(node).stream()
                 .map(TypeCheckingError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName");
@@ -184,8 +218,78 @@ class TypeDiscoveryVisitorTest {
     }
 
     @Test
+    void clazz() {
+        Method method = new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "methodName",
+                        Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "MethodTypeParameter")),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
+                ),
+                Collections.emptyList()
+        );
+        Class clazz = injectSymbolTable(injectParents(new Class(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "ClassName",
+                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
+                new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
+                Collections.singletonList(
+                        method
+                ),
+                Collections.emptyList()
+        )));
+
+        Assertions.assertThat(visitor.visit(clazz))
+                .isEmpty();
+
+        Assertions.assertThat(getSymbol(clazz, "ClassName"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+        Assertions.assertThat(getSymbol(clazz, "TypeParameter"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+        Assertions.assertThat(getSymbol(clazz, "MethodTypeParameter"))
+                .isEmpty();
+        Assertions.assertThat(getSymbol(method, "MethodTypeParameter"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+    }
+
+    @Test
+    void clazz_alreadyDefined() {
+        Class node = putSymbol(
+                injectSymbolTable(
+                        new Class(
+                                nodeIdGenerator.next(),
+                                Visibility.NAMESPACE,
+                                "ClassName",
+                                Collections.singletonList(new TypeParameter(nodeIdGenerator.next(), "TypeParameter")),
+                                new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
+                                Collections.emptyList(),
+                                Collections.emptyList()
+                        )
+                ),
+                "ClassName",
+                new JavaClass(String.class)
+        );
+
+        Assertions.assertThat(visitor.visit(node).stream()
+                .map(TypeCheckingError::toString))
+                .isNotEmpty()
+                .containsExactly("symbol already defined: ClassName");
+
+        Assertions.assertThat(getSymbol(node, "ClassName"))
+                .get()
+                .isInstanceOf(JavaClass.class);
+    }
+
+    @Test
     void root_type() {
-        Root node = injectSymbolTable(new Root(
+        Root node = injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(new Use(
@@ -200,9 +304,9 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        ));
+        )));
 
-        Assertions.assertThat(visitor().visit(node))
+        Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
 
         Assertions.assertThat(getSymbol(node, "String"))
@@ -211,6 +315,42 @@ class TypeDiscoveryVisitorTest {
         Assertions.assertThat(getSymbol(node, "TypeName"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
+    }
+
+    @Test
+    void root_class() {
+        Root node = injectSymbolTable(injectParents(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Collections.singletonList(new Use(
+                        nodeIdGenerator.next(),
+                        "java.lang.String"
+                )),
+                new Class(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "ClassName",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
+                        Collections.emptyList(),
+                        Collections.emptyList()
+                )
+        )));
+
+        Assertions.assertThat(visitor.visit(node))
+                .isEmpty();
+
+        Assertions.assertThat(getSymbol(node, "String"))
+                .get()
+                .isInstanceOf(JavaClass.class);
+        Assertions.assertThat(getSymbol(node, "ClassName"))
+                .get()
+                .isInstanceOf(ThoriumType.class);
+    }
+
+    @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
+    private <T extends Node> T injectParents(T node) {
+        return (T) node.accept(new ParentInjectionVisitor());
     }
 
     @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
@@ -237,9 +377,5 @@ class TypeDiscoveryVisitorTest {
                 .put(name, symbol);
 
         return node;
-    }
-
-    private TypeDiscoveryVisitor visitor() {
-        return new TypeDiscoveryVisitor(classLoader);
     }
 }

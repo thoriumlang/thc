@@ -37,6 +37,7 @@ public class Compiler {
                 Paths.get(Compiler.class.getResource("/").toURI())
         ).files().forEach(f -> {
             try {
+                System.out.println(String.format("Processing %s", f));
                 Root root = new AST(f.inputStream(), f.namespace()).root();
                 List<TypeCheckingError> typeCheckingError = new TypeChecker().walk(root);
 

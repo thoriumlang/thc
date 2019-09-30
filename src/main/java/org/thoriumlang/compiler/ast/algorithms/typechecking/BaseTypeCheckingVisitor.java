@@ -43,32 +43,42 @@ import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 abstract class BaseTypeCheckingVisitor extends BaseVisitor<List<TypeCheckingError>> {
-    Node setSymbolTable(Node node, SymbolTable symbolTable) {
-        return node
-                .getContext()
-                .put(SymbolTable.class, symbolTable)
-                .getNode();
+    SymbolTable setSymbolTable(Node node, SymbolTable symbolTable) {
+        node.getContext().put(SymbolTable.class, symbolTable);
+        return symbolTable;
     }
 
-    Node setSymbolTable(Node destination, Node source) {
+    SymbolTable setSymbolTable(Node destination, Node source) {
         return setSymbolTable(destination, getSymbolTable(source));
     }
 
     SymbolTable getSymbolTable(Node node) {
         return node.getContext()
                 .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("SymbolTable not found"));
+                .orElseGet(() -> getSymbolTable(
+                        node.getContext()
+                                .get("parent", Node.class)
+                                .orElseThrow(() -> new IllegalStateException("No parent found"))
+                ));
     }
 
     @Override
     public List<TypeCheckingError> visit(Root node) {
-        return Collections.emptyList();
+        return Lists.merge(
+                node.getUses().stream()
+                        .map(u -> u.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()),
+                node.getTopLevelNode().accept(this)
+        );
     }
 
     @Override
@@ -183,7 +193,13 @@ abstract class BaseTypeCheckingVisitor extends BaseVisitor<List<TypeCheckingErro
 
     @Override
     public List<TypeCheckingError> visit(Method node) {
-        return Collections.emptyList();
+        return Lists.merge(
+                node.getSignature().accept(this),
+                node.getStatements().stream()
+                        .map(s -> s.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Override

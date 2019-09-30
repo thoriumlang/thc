@@ -46,23 +46,26 @@ import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
+import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Collections;
 
 class BaseTypeCheckingVisitorTest {
+    private NodeIdGenerator nodeIdGenerator;
     private BaseTypeCheckingVisitor visitor;
 
     @BeforeEach
     void setup() {
+        nodeIdGenerator = new NodeIdGenerator();
         visitor = new BaseTypeCheckingVisitor() {
         };
     }
 
     @Test
     void setSymbolTable_table() {
-        Node node = new NoneValue(new NodeIdGenerator().next());
+        Node node = new NoneValue(nodeIdGenerator.next());
         SymbolTable symbolTable = new DefaultSymbolTable();
         visitor.setSymbolTable(node, symbolTable);
         Assertions.assertThat(node.getContext().get(SymbolTable.class))
@@ -72,8 +75,8 @@ class BaseTypeCheckingVisitorTest {
 
     @Test
     void setSymbolTable_node() {
-        Node nodeSrc = new NoneValue(new NodeIdGenerator().next());
-        Node nodeDst = new NoneValue(new NodeIdGenerator().next());
+        Node nodeSrc = new NoneValue(nodeIdGenerator.next());
+        Node nodeDst = new NoneValue(nodeIdGenerator.next());
         SymbolTable symbolTable = new DefaultSymbolTable();
 
         nodeSrc.getContext().put(SymbolTable.class, symbolTable);
@@ -86,7 +89,7 @@ class BaseTypeCheckingVisitorTest {
 
     @Test
     void getSymbolTable() {
-        Node node = new NoneValue(new NodeIdGenerator().next());
+        Node node = new NoneValue(nodeIdGenerator.next());
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         node.getContext().put(SymbolTable.class, symbolTable);
         Assertions.assertThat(visitor.getSymbolTable(node))
@@ -95,7 +98,23 @@ class BaseTypeCheckingVisitorTest {
 
     @Test
     void visitRoot() {
-        Assertions.assertThat(visitor.visit((Root) null))
+        Assertions.assertThat(visitor.visit(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Collections.emptyList(),
+                new Type(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "Type",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "Type",
+                                Collections.emptyList()
+                        ),
+                        Collections.emptyList()
+                )
+        )))
                 .isEqualTo(Collections.emptyList());
     }
 
@@ -233,7 +252,18 @@ class BaseTypeCheckingVisitorTest {
 
     @Test
     void visitMethod() {
-        Assertions.assertThat(visitor.visit((Method) null))
+        Assertions.assertThat(visitor.visit(new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "method",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList())
+                ),
+                Collections.emptyList()
+        )))
                 .isEqualTo(Collections.emptyList());
     }
 

@@ -3,13 +3,15 @@ use java.util.List : JavaList;
 use org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest;
 use java.lang.Object;
 
-class TestClass: UnknownSupertype | Object {
+class TestClass[U]: UnknownSupertype | Object {
     val someValue: UnknownAttributeValType;
     val someObject: Object;
+    val someU: U;
 
-    public method[T](p0: Object, p1: UnknownParameterType, p2: JavaList[String | UnknownTypeParameterType], p3: T): String | UnknownReturnType {
+    public method[T](p0: Object, p1: UnknownParameterType, p2: JavaList[String | UnknownTypeParameterType], p3: T, p4: U): String | UnknownReturnType {
         val someVal1: T = p3;
-        val someVal2: Object = none;
-        var someVar1: UnknownValType;
+        val someVal2: U = p4;
+        val someVal3: Object = none;
+        var someVar4: UnknownValType;
     }
 }
