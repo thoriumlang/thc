@@ -37,14 +37,15 @@ public class AST {
 
     public Root root() throws IOException {
         NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
-        return (Root) new ParentInjectionVisitor().visit(
-                new TypeFlattenedRoot(
-                        nodeIdGenerator,
-                        new RootVisitor(nodeIdGenerator, namespace).visit(
-                                parser().root()
-                        )
-                ).root()
-        );
+        return (Root) new ParentInjectionVisitor()
+                .visit(
+                        new TypeFlattenedRoot(
+                                nodeIdGenerator,
+                                new RootVisitor(nodeIdGenerator, namespace).visit(
+                                        parser().root()
+                                )
+                        ).root()
+                );
     }
 
     private ThoriumParser parser() throws IOException {
