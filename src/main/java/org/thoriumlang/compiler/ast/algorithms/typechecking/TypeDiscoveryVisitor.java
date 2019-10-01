@@ -18,8 +18,13 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.Use;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
@@ -34,11 +39,22 @@ import java.util.stream.Collectors;
  * This visitor is in charge of discovering all the types / classes available in the current compilation unit. It fills
  * the root symbol tables with all types it finds.
  */
-public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
+public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     private final JavaRuntimeClassLoader javaRuntimeClassLoader;
 
     public TypeDiscoveryVisitor(JavaRuntimeClassLoader javaRuntimeClassLoader) {
         this.javaRuntimeClassLoader = javaRuntimeClassLoader;
+    }
+
+    @Override
+    public List<TypeCheckingError> visit(Root node) {
+        return Lists.merge(
+                node.getUses().stream()
+                        .map(u -> u.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()),
+                node.getTopLevelNode().accept(this)
+        );
     }
 
     @Override
@@ -53,6 +69,10 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
                 ));
     }
 
+    private SymbolTable getSymbolTable(Node node) {
+        return SymbolTableAwareNode.wrap(node).getSymbolTable();
+    }
+
     private Symbol fromJavaClass(java.lang.Class clazz) {
         return clazz.isInterface() ?
                 new JavaInterface(clazz) :
@@ -63,7 +83,8 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
     @SuppressWarnings("squid:S3864") // ok to use peek()
     public List<TypeCheckingError> visit(Type node) {
         SymbolTable parentSymbolTable = getSymbolTable(node);
-        SymbolTable symbolTable = setSymbolTable(node, parentSymbolTable.createNestedTable(node.getName()));
+        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node)
+                .setSymbolTable(parentSymbolTable.createNestedTable(node.getName()));
 
         if (parentSymbolTable.find(node.getName()).isPresent()) {
             return Collections.singletonList(
@@ -76,7 +97,7 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
         node.getTypeParameters().forEach(t -> symbolTable.put(t.getName(), new ThoriumType(t)));
 
         return node.getMethods().stream()
-                .peek(m -> setSymbolTable(m, symbolTable.createNestedTable(m.getName())))
+                .peek(m -> SymbolTableAwareNode.wrap(m).setSymbolTable(symbolTable.createNestedTable(m.getName())))
                 .map(m -> m.accept(this))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -85,7 +106,8 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
     @Override
     public List<TypeCheckingError> visit(Class node) {
         SymbolTable parentSymbolTable = getSymbolTable(node);
-        SymbolTable symbolTable = setSymbolTable(node, parentSymbolTable.createNestedTable(node.getName()));
+        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node)
+                .setSymbolTable(parentSymbolTable.createNestedTable(node.getName()));
 
         if (parentSymbolTable.find(node.getName()).isPresent()) {
             return Collections.singletonList(
@@ -105,8 +127,12 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
 
     @Override
     public List<TypeCheckingError> visit(Method node) {
-        setSymbolTable(node, getSymbolTable(node).createNestedTable(node.getSignature().getName()));
-        return super.visit(node);
+        SymbolTableAwareNode symbolTableAwareNode = SymbolTableAwareNode.wrap(node);
+        symbolTableAwareNode.setSymbolTable(
+                symbolTableAwareNode.getSymbolTable().createNestedTable(node.getSignature().getName())
+        );
+
+        return node.getSignature().accept(this);
     }
 
     @Override
@@ -115,6 +141,6 @@ public class TypeDiscoveryVisitor extends BaseTypeCheckingVisitor {
 
         node.getTypeParameters().forEach(t -> symbolTable.put(t.getName(), new ThoriumType(t)));
 
-        return super.visit(node);
+        return Collections.emptyList();
     }
 }
