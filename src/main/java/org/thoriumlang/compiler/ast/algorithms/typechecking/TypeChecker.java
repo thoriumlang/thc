@@ -16,7 +16,9 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
@@ -37,20 +39,20 @@ public class TypeChecker {
                         )
                 );
 
-        SymbolTable symbolTable = root.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("SymbolTable not filled"));
-
-        List<TypeCheckingError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
-                .visit(root).stream()
-                .map(t -> (TypeSpecSimple) t)
-                .filter(t -> !symbolTable.find(t.getType()).isPresent())
-                .map(t -> new TypeCheckingError(String.format("symbol not found: %s", t.getType())))
-                .collect(Collectors.toList());
+        List<TypeCheckingError> typeNotFoundErrors =
+                new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
+                        .map(t -> (TypeSpecSimple) t)
+                        .filter(t -> !getSymbolTable(t).find(t.getType()).isPresent())
+                        .map(t -> new TypeCheckingError(String.format("symbol not found: %s", t.getType())))
+                        .collect(Collectors.toList());
 
         return Lists.merge(
                 discoveryErrors,
                 typeNotFoundErrors
         );
+    }
+
+    private SymbolTable getSymbolTable(Node node) {
+        return SymbolTableAwareNode.wrap(node).getSymbolTable();
     }
 }
