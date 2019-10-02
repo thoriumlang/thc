@@ -70,6 +70,11 @@ public class MethodSignature implements Node {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s %s [%s] (%s) : %s",
                 visibility,
@@ -82,10 +87,6 @@ public class MethodSignature implements Node {
                         .collect(Collectors.joining(", ")),
                 returnType
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public Visibility getVisibility() {

@@ -42,6 +42,11 @@ public class SymbolTableAwareNode implements Node {
         return node.getContext();
     }
 
+    @Override
+    public NodeId getNodeId() {
+        return node.getNodeId();
+    }
+
     public SymbolTable setSymbolTable(SymbolTable symbolTable) {
         node.getContext().put(SymbolTable.class, symbolTable);
         return symbolTable;

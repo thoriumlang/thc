@@ -47,12 +47,13 @@ public class TypeParameter implements Node {
     }
 
     @Override
-    public String toString() {
-        return name;
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     public String getName() {

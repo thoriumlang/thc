@@ -54,6 +54,11 @@ public class TypeSpecSimple implements TypeSpec {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "%s[%s]",
@@ -62,10 +67,6 @@ public class TypeSpecSimple implements TypeSpec {
                         .map(TypeSpec::toString)
                         .collect(Collectors.joining(", "))
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public String getType() {

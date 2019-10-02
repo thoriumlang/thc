@@ -42,12 +42,13 @@ public class TypeSpecInferred implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return "inferred";
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return "inferred";
     }
 
     @Override

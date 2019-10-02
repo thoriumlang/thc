@@ -54,6 +54,11 @@ public class Method implements Node {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "%s { %s }",
@@ -70,10 +75,6 @@ public class Method implements Node {
 
     public List<Statement> getStatements() {
         return statements;
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override

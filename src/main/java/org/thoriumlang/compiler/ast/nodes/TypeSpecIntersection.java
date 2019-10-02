@@ -48,12 +48,13 @@ public class TypeSpecIntersection implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return "i:" + types.toString();
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return "i:" + types.toString();
     }
 
     public List<TypeSpec> getTypes() {

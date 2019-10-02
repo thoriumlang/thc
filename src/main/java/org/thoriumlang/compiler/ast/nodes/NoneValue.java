@@ -42,12 +42,13 @@ public class NoneValue implements Value {
     }
 
     @Override
-    public String toString() {
-        return "none";
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return "none";
     }
 
     @Override

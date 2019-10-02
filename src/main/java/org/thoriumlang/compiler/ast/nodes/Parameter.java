@@ -52,12 +52,13 @@ public class Parameter implements Node {
     }
 
     @Override
-    public String toString() {
-        return name + ": " + type;
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + type;
     }
 
     public String getName() {

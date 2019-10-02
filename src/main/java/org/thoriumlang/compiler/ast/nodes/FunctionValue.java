@@ -65,6 +65,11 @@ public class FunctionValue implements Value {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "[%s](%s):%s { %s }",
@@ -79,10 +84,6 @@ public class FunctionValue implements Value {
                         .map(Statement::toString)
                         .collect(Collectors.joining(";"))
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public List<TypeParameter> getTypeParameters() {

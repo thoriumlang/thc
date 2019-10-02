@@ -43,12 +43,13 @@ public class BooleanValue implements Value {
     }
 
     @Override
-    public String toString() {
-        return value.toString();
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return value.toString();
     }
 
     public Boolean getValue() {

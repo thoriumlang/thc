@@ -47,12 +47,13 @@ public class StringValue implements Value {
     }
 
     @Override
-    public String toString() {
-        return String.format("\"%s\"", value);
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\"%s\"", value);
     }
 
     public String getValue() {

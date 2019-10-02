@@ -54,6 +54,11 @@ public class TypeSpecFunction implements TypeSpec {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format("(%s):%s",
                 arguments.stream().
@@ -61,10 +66,6 @@ public class TypeSpecFunction implements TypeSpec {
                         .collect(Collectors.joining(";")),
                 returnType.toString()
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public List<TypeSpec> getArguments() {

@@ -70,6 +70,11 @@ public class Type implements TopLevelNode {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         String method = methods.stream()
                 .map(MethodSignature::toString)
@@ -84,10 +89,6 @@ public class Type implements TopLevelNode {
                 superType.toString(),
                 method.isEmpty() ? "" : String.format("%n%s", method)
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public Visibility getVisibility() {

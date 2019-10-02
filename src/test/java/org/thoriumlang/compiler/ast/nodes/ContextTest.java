@@ -416,5 +416,10 @@ class ContextTest {
         public Context getContext() {
             return new Context(this);
         }
+
+        @Override
+        public NodeId getNodeId() {
+            return null;
+        }
     }
 }

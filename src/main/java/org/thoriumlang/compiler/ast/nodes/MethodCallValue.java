@@ -60,6 +60,11 @@ public class MethodCallValue implements Value {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "%s[%s](%s)",
@@ -71,10 +76,6 @@ public class MethodCallValue implements Value {
                         .map(Object::toString)
                         .collect(Collectors.joining(","))
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public String getMethodName() {

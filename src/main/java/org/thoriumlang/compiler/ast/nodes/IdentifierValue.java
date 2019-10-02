@@ -47,12 +47,13 @@ public class IdentifierValue implements Value {
     }
 
     @Override
-    public String toString() {
-        return value;
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return value;
     }
 
     public String getValue() {

@@ -44,10 +44,6 @@ public abstract class Assignment implements Node {
         this.context = new Context(this);
     }
 
-    public NodeId getNodeId() {
-        return nodeId;
-    }
-
     public String getIdentifier() {
         return identifier;
     }
@@ -63,6 +59,11 @@ public abstract class Assignment implements Node {
     @Override
     public Context getContext() {
         return context;
+    }
+
+    @Override
+    public NodeId getNodeId() {
+        return nodeId;
     }
 
     @Override

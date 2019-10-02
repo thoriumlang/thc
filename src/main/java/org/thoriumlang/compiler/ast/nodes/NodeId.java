@@ -24,6 +24,10 @@ public class NodeId {
         this.id = id;
     }
 
+    public String format(String formatString) {
+        return String.format(formatString, id);
+    }
+
     @Override
     public String toString() {
         return String.format("#%d", id);

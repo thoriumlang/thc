@@ -75,6 +75,11 @@ public class Class implements TopLevelNode {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         String serializedMethods = methods.stream()
                 .map(Method::toString)
@@ -93,10 +98,6 @@ public class Class implements TopLevelNode {
                 serializedAttributes.isEmpty() ? "" : String.format("%n%s", serializedAttributes),
                 serializedMethods.isEmpty() ? "" : String.format("%n%s", serializedMethods)
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public Visibility getVisibility() {

@@ -59,6 +59,11 @@ public class Root implements Node {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         String use = uses.stream()
                 .map(Use::toString)
@@ -69,10 +74,6 @@ public class Root implements Node {
                 use.isEmpty() ? "" : String.format("%s%n", use),
                 topLevelNode.toString()
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public String getNamespace() {

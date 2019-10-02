@@ -52,16 +52,17 @@ public class NestedValue implements Value {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "%s.%s",
                 outer.toString(),
                 inner.toString()
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public Value getOuter() {

@@ -21,4 +21,6 @@ public interface Node {
     <T> T accept(Visitor<? extends T> visitor);
 
     Context getContext();
+
+    NodeId getNodeId();
 }

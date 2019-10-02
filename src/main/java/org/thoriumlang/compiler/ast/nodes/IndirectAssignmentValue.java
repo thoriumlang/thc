@@ -57,6 +57,11 @@ public class IndirectAssignmentValue implements Value {
     }
 
     @Override
+    public NodeId getNodeId() {
+        return nodeId;
+    }
+
+    @Override
     public String toString() {
         return String.format(
                 "INDIRECT %s.%s = %s",
@@ -64,10 +69,6 @@ public class IndirectAssignmentValue implements Value {
                 identifier,
                 value.toString()
         );
-    }
-
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     public Value getIndirectValue() {

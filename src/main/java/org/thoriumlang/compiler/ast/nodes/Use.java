@@ -65,12 +65,13 @@ public class Use implements Node {
     }
 
     @Override
-    public String toString() {
-        return String.format("USE %s : %s", from, to);
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("USE %s : %s", from, to);
     }
 
     public String getFrom() {

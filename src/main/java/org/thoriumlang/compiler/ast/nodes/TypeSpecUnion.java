@@ -48,12 +48,13 @@ public class TypeSpecUnion implements TypeSpec {
     }
 
     @Override
-    public String toString() {
-        return "u:" + types.toString();
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return "u:" + types.toString();
     }
 
     public List<TypeSpec> getTypes() {

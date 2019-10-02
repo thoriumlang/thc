@@ -49,12 +49,13 @@ public class Statement implements Node {
     }
 
     @Override
-    public String toString() {
-        return String.format("%s:%s", value, last);
-    }
-
     public NodeId getNodeId() {
         return nodeId;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", value, last);
     }
 
     public Value getValue() {
