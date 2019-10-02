@@ -15,14 +15,15 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-import java.util.Optional;
+public class JavaClass implements Symbol {
+    private final Class<?> clazz;
 
-public interface SymbolTable {
-    String fqName();
+    public JavaClass(Class<?> clazz) {
+        this.clazz = clazz;
+    }
 
-    Optional<Symbol> find(String name);
-
-    void put(String name, Symbol symbol);
-
-    DefaultSymbolTable createNestedTable(String name);
+    @Override
+    public String toString() {
+        return String.format("(rt.jar: class %s)", clazz.getCanonicalName());
+    }
 }

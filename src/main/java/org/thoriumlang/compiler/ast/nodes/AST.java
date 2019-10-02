@@ -21,6 +21,7 @@ import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
+import org.thoriumlang.compiler.ast.visitor.ParentInjectionVisitor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,12 +37,15 @@ public class AST {
 
     public Root root() throws IOException {
         NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
-        return new TypeFlattenedRoot(
-                nodeIdGenerator,
-                new RootVisitor(nodeIdGenerator, namespace).visit(
-                        parser().root()
-                )
-        ).root();
+        return (Root) new ParentInjectionVisitor()
+                .visit(
+                        new TypeFlattenedRoot(
+                                nodeIdGenerator,
+                                new RootVisitor(nodeIdGenerator, namespace).visit(
+                                        parser().root()
+                                )
+                        ).root()
+                );
     }
 
     private ThoriumParser parser() throws IOException {

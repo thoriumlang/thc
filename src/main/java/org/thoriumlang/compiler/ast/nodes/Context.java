@@ -148,6 +148,11 @@ public class Context {
         }
 
         @Override
+        public String toString() {
+            return String.format("%s(%s)", name, type.getName());
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;

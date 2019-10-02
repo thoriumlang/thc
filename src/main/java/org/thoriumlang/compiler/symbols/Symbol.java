@@ -15,5 +15,5 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-public class Symbol {
+public interface Symbol {
 }

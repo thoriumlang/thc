@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.symbols;
+package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
-import java.util.Optional;
+public class TypeCheckingError {
+    private final String message;
 
-public interface SymbolTable {
-    String fqName();
+    public TypeCheckingError(String message) {
+        this.message = message;
+    }
 
-    Optional<Symbol> find(String name);
-
-    void put(String name, Symbol symbol);
-
-    DefaultSymbolTable createNestedTable(String name);
+    @Override
+    public String toString() {
+        return message;
+    }
 }

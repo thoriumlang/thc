@@ -15,14 +15,16 @@
  */
 package org.thoriumlang.compiler;
 
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.output.Walker;
-import org.thoriumlang.compiler.output.th.ThWalker;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.List;
 
 @SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Compiler {
@@ -35,11 +37,12 @@ public class Compiler {
                 Paths.get(Compiler.class.getResource("/").toURI())
         ).files().forEach(f -> {
             try {
-                Root r = new AST(f.inputStream(), f.namespace()).root();
-                System.out.println(r);
+                System.out.println(String.format("Processing %s", f));
+                Root root = new AST(f.inputStream(), f.namespace()).root();
+                List<TypeCheckingError> typeCheckingError = new TypeChecker().walk(root);
 
-                Walker<String> thWalker = new ThWalker(r);
-                System.out.println(thWalker.walk());
+                typeCheckingError.forEach(System.out::println);
+                root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
             }
             catch (IOException e) {
                 throw new RuntimeException(e);
