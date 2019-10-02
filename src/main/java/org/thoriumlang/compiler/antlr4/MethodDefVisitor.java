@@ -60,7 +60,7 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                         ctx.typeParameter() == null ?
                                 Collections.emptyList() :
                                 ctx.typeParameter().accept(typeParameterVisitor),
-                        ctx.methodParameterDef().stream()
+                        ctx.methodParameter().stream()
                                 .map(p -> p.accept(methodParameterVisitor))
                                 .collect(Collectors.toList()),
                         ctx.typeSpec() == null ?

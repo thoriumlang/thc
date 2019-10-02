@@ -50,7 +50,7 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
                 visibility(ctx),
                 ctx.name.getText(),
                 typeParameters(ctx.typeParameter()),
-                ctx.methodParameterDef().stream()
+                ctx.methodParameter().stream()
                         .map(p -> p.accept(methodParameterVisitor))
                         .collect(Collectors.toList()),
                 ctx.returnType.accept(typeSpecVisitor)

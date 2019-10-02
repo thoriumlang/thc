@@ -107,17 +107,17 @@ typeSpecFunction
 methodSignature
     : visibility=( NAMESPACE | PUBLIC )? name=IDENTIFIER
       ( '[' typeParameter ']' )?
-      '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
+      '(' ( methodParameter ( ',' methodParameter )* )? ')'
       ':' returnType=typeSpec
     ;
-methodParameterDef
+methodParameter
     : IDENTIFIER ':' typeSpec
     ;
 
 methodDef
     : visibility=( PRIVATE | NAMESPACE | PUBLIC )? name=IDENTIFIER
       ( '[' typeParameter ']' )?
-      '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
+      '(' ( methodParameter ( ',' methodParameter )* )? ')'
       ( ':' returnType=typeSpec )?
       '{' statement* '}'
     ;
@@ -156,7 +156,7 @@ indirectValue
     ;
 functionValue
     : ( '[' typeParameter ']' )?
-      '(' ( methodParameterDef ( ',' methodParameterDef )* )? ')'
+      '(' ( methodParameter ( ',' methodParameter )* )? ')'
       ( ':' typeSpec )?
       ( '=>' value | '=>' '{' statement* '}' )
     ;
