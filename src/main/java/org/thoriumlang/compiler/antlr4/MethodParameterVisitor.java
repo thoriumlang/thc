@@ -30,7 +30,7 @@ class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
     }
 
     @Override
-    public Parameter visitMethodParameterDef(ThoriumParser.MethodParameterDefContext ctx) {
+    public Parameter visitMethodParameter(ThoriumParser.MethodParameterContext ctx) {
         return new Parameter(
                 nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),

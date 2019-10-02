@@ -97,8 +97,8 @@ class MethodDefTest {
                         token("}")
                 ).serialize("methodDef")
         ).isEqualTo("(methodDef methodName ( " +
-                "(methodParameterDef id1 : (typeSpec (typeSpecSimple (fqIdentifier type1)))) , " +
-                "(methodParameterDef id2 : (typeSpec (typeSpecSimple (fqIdentifier type2)))) " +
+                "(methodParameter id1 : (typeSpec (typeSpecSimple (fqIdentifier type1)))) , " +
+                "(methodParameter id2 : (typeSpec (typeSpecSimple (fqIdentifier type2)))) " +
                 ") { })");
     }
 

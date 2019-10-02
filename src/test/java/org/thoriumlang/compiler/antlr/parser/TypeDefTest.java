@@ -94,8 +94,8 @@ class TypeDefTest {
                         token("}")
                 ).serialize()
         ).isEqualTo("(root (typeDef type Identifier { " +
-                "(methodSignature public fibonacci ( (methodParameterDef n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
-                "(methodSignature public square ( (methodParameterDef n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
+                "(methodSignature public fibonacci ( (methodParameter n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
+                "(methodSignature public square ( (methodParameter n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
                 "}))"
         );
     }

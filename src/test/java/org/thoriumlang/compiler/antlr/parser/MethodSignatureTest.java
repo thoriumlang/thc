@@ -81,7 +81,7 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo(
-                "(methodSignature public methodName ( (methodParameterDef id : (typeSpec (typeSpecSimple (fqIdentifier type)))) ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
+                "(methodSignature public methodName ( (methodParameter id : (typeSpec (typeSpecSimple (fqIdentifier type)))) ) : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
     @Test
@@ -107,9 +107,9 @@ class MethodSignatureTest {
                         token("typeName", ThoriumLexer.IDENTIFIER)
                 ).serialize("methodSignature")
         ).isEqualTo("(methodSignature public methodName ( " +
-                "(methodParameterDef id1 : (typeSpec (typeSpecSimple (fqIdentifier type1)))) , " +
-                "(methodParameterDef id2 : (typeSpec (typeSpecSimple (fqIdentifier type2)))) , " +
-                "(methodParameterDef id3 : (typeSpec (typeSpecSimple (fqIdentifier type3)))) " +
+                "(methodParameter id1 : (typeSpec (typeSpecSimple (fqIdentifier type1)))) , " +
+                "(methodParameter id2 : (typeSpec (typeSpecSimple (fqIdentifier type2)))) , " +
+                "(methodParameter id3 : (typeSpec (typeSpecSimple (fqIdentifier type3)))) " +
                 ") : (typeSpec (typeSpecSimple (fqIdentifier typeName))))");
     }
 
