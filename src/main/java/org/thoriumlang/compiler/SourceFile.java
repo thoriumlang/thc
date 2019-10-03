@@ -41,4 +41,8 @@ public class SourceFile {
     public String namespace() {
         return namespace;
     }
+
+    public String filename() {
+        return path.getFileName().toString();
+    }
 }

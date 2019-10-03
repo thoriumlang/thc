@@ -1,0 +1,16 @@
+<li id="{{ nodeId }}"
+
+    data-kind="{{ nodeKind }}"
+>
+    <span class="{% if (hasErrors) %}hasError {% endif %}" data-error-target="{{ nodeId }}">
+        <span data-fold-target="fold_{{ nodeId }}">
+            <span class="keyword">{{ visibility }}</span>
+            <span class="keyword">class</span>
+            {{ className }}[{{ join(typeParameters, ', ') }}]: {{ superType }}
+        </span>
+    </span>
+    <ul data-fold="fold_{{ nodeId }}">
+        {{ join(attributes) }}
+        {{ join(methods) }}
+    </ul>
+</li>

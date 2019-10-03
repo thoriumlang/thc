@@ -1,0 +1,7 @@
+<li id="{{ nodeId }}"
+    data-kind="{{ nodeKind }}"
+>
+    <span class="keyword">use</span> <span class="{% if (hasErrors) %}hasError {% endif %}"
+                                           data-error-target="{{ nodeId }}">{{ from }}</span><span
+            class="punctuation">:</span> {{ to }}
+</li>

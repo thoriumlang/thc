@@ -1,0 +1,9 @@
+<span id="{{ nodeId }}"
+      data-kind="{{ nodeKind }}"
+>
+    <span class="keyword">{{ visibility }}</span>
+    {{ name }}
+    [<span data-fold="fold_{{ nodeId }}_types">{{ join(typeParameters, ', ') }}</span><span data-fold-target="fold_{{ nodeId }}_types"></span>]
+    (<span data-fold="fold_{{ nodeId }}_params">{{ join(methodParameters, ', ') }}</span><span data-fold-target="fold_{{ nodeId }}_params"></span>):
+    {{ returnType }}
+</span>

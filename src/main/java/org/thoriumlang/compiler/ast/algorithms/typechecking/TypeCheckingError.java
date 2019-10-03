@@ -15,11 +15,19 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+
 public class TypeCheckingError {
     private final String message;
+    private final Node node;
 
-    public TypeCheckingError(String message) {
+    public TypeCheckingError(String message, Node node) {
         this.message = message;
+        this.node = node;
+    }
+
+    public Node getNode() {
+        return node;
     }
 
     @Override

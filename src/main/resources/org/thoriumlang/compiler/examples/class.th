@@ -3,7 +3,8 @@ use java.util.List : JavaList;
 use org.thoriumlang.compiler.ast.AST;
 
 class MyClass[T] {
-    doSomething[U](p1: String, p2: JavaList, p3: T, p4:U): None {
+    logger: Logger = Logger();
+    doSomething[U](p1: String, p2: JavaList, p3: T, p4:U, p5: Unknown): None {
         none;
     }
 }
