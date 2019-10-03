@@ -15,6 +15,13 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+
 public interface Symbol {
+    /**
+     * @return the node where the symbol is defined.
+     */
+    Node getNode();
+
     String getName();
 }

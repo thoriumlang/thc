@@ -21,18 +21,25 @@ import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
+import java.util.Objects;
+
 public class ThoriumType implements Symbol {
-    private final Node node;
     private final String name;
+    private final Node node;
 
     public ThoriumType(String name, Node node) {
-        this.name = name;
-        this.node = node;
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.node = Objects.requireNonNull(node, "node cannot be null");
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Node getNode() {
+        return node;
     }
 
     @Override

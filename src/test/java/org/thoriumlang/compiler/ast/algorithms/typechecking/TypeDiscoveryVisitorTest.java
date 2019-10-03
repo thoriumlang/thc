@@ -23,6 +23,7 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -203,7 +204,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.emptyList()
                         )
                 ),
-                new JavaClass("TypeName", String.class)
+                new JavaClass("TypeName", new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
         Assertions.assertThat(visitor.visit(node).stream()
@@ -272,7 +273,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.emptyList()
                         )
                 ),
-                new JavaClass("ClassName", String.class)
+                new JavaClass("ClassName", new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
         Assertions.assertThat(visitor.visit(node).stream()

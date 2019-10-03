@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.symbols;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Node;
 
 class DefaultSymbolTableTest {
     @Test
@@ -116,6 +117,11 @@ class DefaultSymbolTableTest {
         @Override
         public String getName() {
             return name;
+        }
+
+        @Override
+        public Node getNode() {
+            return null;
         }
     }
 }

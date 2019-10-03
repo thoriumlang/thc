@@ -15,18 +15,29 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-public class JavaInterface implements Symbol {
-    private final Class clazz;
-    private final String name;
+import org.thoriumlang.compiler.ast.nodes.Node;
 
-    public JavaInterface(String name, Class clazz) {
-        this.name = name;
-        this.clazz = clazz;
+import java.util.Objects;
+
+public class JavaInterface implements Symbol {
+    private final String name;
+    private final Node node;
+    private final Class clazz;
+
+    public JavaInterface(String name, Node node, Class clazz) {
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.node = Objects.requireNonNull(node, "node cannot be null");
+        this.clazz = Objects.requireNonNull(clazz, "clazz cannot be null");
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Node getNode() {
+        return node;
     }
 
     @Override

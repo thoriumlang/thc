@@ -63,7 +63,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     public List<TypeCheckingError> visit(Use node) {
         return javaRuntimeClassLoader.find(node.getFrom())
                 .map(c -> {
-                    getSymbolTable(node).put(fromJavaClass(node.getTo(), c));
+                    getSymbolTable(node).put(fromJavaClass(node.getTo(), node, c));
                     return Collections.<TypeCheckingError>emptyList();
                 })
                 .orElse(Collections.singletonList(
@@ -75,10 +75,10 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
         return SymbolTableAwareNode.wrap(node).getSymbolTable();
     }
 
-    private Symbol fromJavaClass(String name, java.lang.Class clazz) {
+    private Symbol fromJavaClass(String name, Node node, java.lang.Class clazz) {
         return clazz.isInterface() ?
-                new JavaInterface(name, clazz) :
-                new JavaClass(name, clazz);
+                new JavaInterface(name, node, clazz) :
+                new JavaClass(name, node, clazz);
     }
 
     @Override
