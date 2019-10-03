@@ -20,6 +20,18 @@ import org.junit.jupiter.api.Test;
 
 class DefaultSymbolTableTest {
     @Test
+    void fqName_parentRoot() {
+        Assertions.assertThat(new DefaultSymbolTable().fqName())
+                .isEqualTo("root");
+    }
+
+    @Test
+    void fqName() {
+        Assertions.assertThat(new DefaultSymbolTable().createNestedTable("child").fqName())
+                .isEqualTo("root.child");
+    }
+
+    @Test
     void find_unknown() {
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         Assertions.assertThat(symbolTable.find("unknown")).isEmpty();
