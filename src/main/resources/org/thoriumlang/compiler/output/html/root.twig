@@ -7,6 +7,8 @@
         body {
             font-family: 'DejaVu Sans Mono', monospace;
             font-size: smaller;
+            background-color: #333;
+            color: #bbb;
         }
 
         ul, li {
@@ -14,8 +16,8 @@
         }
 
         .hasError {
-            color: red;
             cursor: pointer;
+            border-bottom: 1px dashed red;
         }
 
         .namespace {
@@ -24,15 +26,19 @@
 
         .keyword {
             font-weight: bold;
+            color: darkorange;
         }
 
-        .foldIcon {
+        .icon {
             cursor: pointer;
-            color: silver;
             font-weight: bold;
-            border: 1px solid silver;
             padding: 0 3px;
             user-select: none;
+        }
+
+        .icon.fold {
+            color: seagreen;
+            border: 1px solid seagreen;
         }
 
         #errors {
@@ -42,7 +48,8 @@
         .error {
             border: 1px solid red;
             background-color: pink;
-            padding: 2px;
+            padding: 4px;
+            color: black;
         }
     </style>
 </head>
