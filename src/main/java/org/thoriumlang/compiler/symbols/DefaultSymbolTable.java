@@ -58,7 +58,11 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public Stream<Symbol> symbolsStream() {
-        return symbols.values().stream();
+        return Stream.concat(
+                symbols.values().stream(),
+                parentSymbolTable.symbolsStream()
+                        .filter(s -> !symbols.containsKey(s.getName()))
+        );
     }
 
     @Override

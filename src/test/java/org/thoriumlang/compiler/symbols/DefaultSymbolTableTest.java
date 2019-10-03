@@ -72,12 +72,24 @@ class DefaultSymbolTableTest {
 
     @Test
     void symbolStream() {
-        Symbol symbol = new SymbolStub("someVar");
+        Symbol parentSymbolA = new SymbolStub("A");
+        Symbol parentSymbolB = new SymbolStub("B");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put(symbol);
+        symbolTable.put(parentSymbolA);
+        symbolTable.put(parentSymbolB);
 
-        Assertions.assertThat(symbolTable.symbolsStream())
-                .containsExactly(symbol);
+        Symbol symbolA = new SymbolStub("A");
+        Symbol symbolC = new SymbolStub("C");
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
+        symbolTable.put(symbolA);
+        symbolTable.put(symbolC);
+
+        Assertions.assertThat(nestedSymbolTable.symbolsStream())
+                .containsExactlyInAnyOrder(
+                        symbolA,
+                        symbolC,
+                        parentSymbolB
+                );
     }
 
     @Test
