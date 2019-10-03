@@ -51,6 +51,51 @@
             padding: 4px;
             color: black;
         }
+
+        #symbolTable {
+            border: 1px solid black;
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            width: 30em;
+            background-color: silver;
+            opacity: .7;
+            color: #333333;
+        }
+
+        #symbolTable th {
+            text-align: left;
+        }
+
+        #symbolTableHeader {
+            border-bottom: 1px solid black;
+            padding: 3px;
+        }
+
+        #symbolTable .icon.close {
+            color: red;
+            background-color: lightsalmon;
+            position: absolute;
+            right: 2px;
+            border: 1px solid red;
+            top: 2px;
+        }
+
+        [data-toggle-symbolTable] {
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: saddlebrown;
+        }
+
+        .highlight {
+            background-color: blueviolet;
+        }
+
+        a.nodeRef:visited {
+            color: blue;
+        }
     </style>
 </head>
 
@@ -58,12 +103,19 @@
 <p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
 
 <ul id="{{ nodeId }}"
-    class="{% if (hasErrors) %}hasError {% endif %}"
     data-kind="{{ nodeKind }}"
 >
     {{ join(uses) }}
     {{ toplevel }}
 </ul>
+
+<div id="symbolTable" style="display: none">
+    <div id="symbolTableHeader">
+        <span class="close icon">X</span>
+        <strong>Symbol Table</strong>
+    </div>
+    {{ join(symbolTables) }}
+</div>
 
 <div id="errors" style="display:none">
     {{ join(errors) }}
@@ -72,38 +124,88 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('.hasError')
-            .mousemove(function (e) {
-                $('#errors')
-                    .css({
-                        top: e.pageY + 10,
-                        left: e.pageX + 10
-                    })
-                    .children().hide().parent()
-                    .children('[data-error-target="' + $(this).attr('data-error-target') + '"]').show().parent()
-                    .show();
-            })
-            .mouseleave(function () {
-                $('#errors').hide();
+        /**
+         * Node refs
+         */
+        (function () {
+            $('[data-refNodeId]')
+                .mouseover(function () {
+                    const nodeId = $(this).attr('data-refNodeId');
+                    $('*').filter(function () {
+                        return $(this).attr('id') !== nodeId;
+                    }).removeClass("highlight");
+                    $('#' + nodeId).toggleClass("highlight");
+                })
+                .mouseout(function() {
+                    $('*').removeClass("highlight");
+                });
+        })();
+
+        /**
+         * Symbol table
+         */
+        (function () {
+            $('#symbolTable .close').click(function () {
+                $('#symbolTable').hide();
+                $('[data-toggle-symbolTable]').removeClass("selected");
+                $('*').removeClass("highlight");
             });
 
-        $('[data-fold-target]')
-            .each(function (i, e) {
-                const foldTarget = $(e).attr('data-fold-target');
+            function openTable(table) {
+                $('[data-toggle-symbolTable]').removeClass("selected");
+                $('[data-toggle-symbolTable=' + table + ']').addClass("selected");
+                $('#symbolTable table').hide();
+                $('#' + table).show();
+                $('#symbolTable').show();
+            }
 
-                function fold(e) {
-                    $('[data-fold="' + foldTarget + '"]').toggle();
-                    e.stopPropagation();
-                }
-
-                $('<span class="foldIcon" data-fold="' + foldTarget + '">+</span>')
-                    .insertAfter($(e))
-                    .hide()
-                    .click(fold);
-                $('<span class="foldIcon" data-fold="' + foldTarget + '">-</span>')
-                    .insertAfter($(e))
-                    .click(fold);
+            $('[data-toggle-symbolTable]').click(function () {
+                openTable($(this).attr('data-toggle-symbolTable'));
             });
+        })();
+
+        /**
+         * Error
+         */
+        (function () {
+            $('.hasError')
+                .mousemove(function (e) {
+                    $('#errors')
+                        .css({
+                            top: e.pageY + 10,
+                            left: e.pageX + 10
+                        })
+                        .children().hide().parent()
+                        .children('[data-error-target="' + $(this).attr('data-error-target') + '"]').show().parent()
+                        .show();
+                })
+                .mouseleave(function () {
+                    $('#errors').hide();
+                });
+        })();
+
+        /**
+         * Folding
+         */
+        (function () {
+            $('[data-fold-target]')
+                .each(function (i, e) {
+                    const foldTarget = $(e).attr('data-fold-target');
+
+                    function fold(e) {
+                        $('[data-fold="' + foldTarget + '"]').toggle();
+                        e.stopPropagation();
+                    }
+
+                    $('<span class="fold icon" data-fold="' + foldTarget + '">+</span>')
+                        .insertAfter($(e))
+                        .hide()
+                        .click(fold);
+                    $('<span class="fold icon" data-fold="' + foldTarget + '">-</span>')
+                        .insertAfter($(e))
+                        .click(fold);
+                });
+        })();
     });
 </script>
 </body>

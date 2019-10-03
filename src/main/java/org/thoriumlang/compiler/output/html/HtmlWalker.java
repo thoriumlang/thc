@@ -37,6 +37,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -51,37 +52,41 @@ import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.output.Walker;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.jtwig.JtwigTemplate.classpathTemplate;
 
 @SuppressWarnings("squid:S1192")
 public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     private static final String TEMPLATE_PATH = HtmlWalker.class.getPackage().getName()
             .replace(".", File.separator) + File.separator;
 
-    private static final Map<java.lang.Class, JtwigTemplate> templates =
-            ImmutableMap.<java.lang.Class, JtwigTemplate>builder()
-                    .put(Root.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "root.twig"))
-                    .put(Use.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "use.twig"))
-                    .put(Class.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "class.twig"))
-                    .put(TypeParameter.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "typeParameter.twig"))
-                    .put(TypeSpecSimple.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "typeSpecSimple.twig"))
-                    .put(Attribute.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
-                    .put(NoneValue.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "noneValue.twig"))
-                    .put(MethodCallValue.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "methodCallValue.twig"))
-                    .put(Method.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "method.twig"))
-                    .put(MethodSignature.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
-                    .put(Parameter.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
-                    .put(Statement.class, JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "statement.twig"))
-                    .put(TypeCheckingError.class,
-                            JtwigTemplate.classpathTemplate(TEMPLATE_PATH + "error_typeCheckingError.twig"))
-                    .build();
+    private static final Map<java.lang.Class, JtwigTemplate> templates = ImmutableMap.<java.lang.Class, JtwigTemplate>builder()
+            .put(Root.class, classpathTemplate(TEMPLATE_PATH + "root.twig"))
+            .put(Use.class, classpathTemplate(TEMPLATE_PATH + "use.twig"))
+            .put(Class.class, classpathTemplate(TEMPLATE_PATH + "class.twig"))
+            .put(TypeParameter.class, classpathTemplate(TEMPLATE_PATH + "typeParameter.twig"))
+            .put(TypeSpecSimple.class, classpathTemplate(TEMPLATE_PATH + "typeSpecSimple.twig"))
+            .put(Attribute.class, classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
+            .put(NoneValue.class, classpathTemplate(TEMPLATE_PATH + "noneValue.twig"))
+            .put(MethodCallValue.class, classpathTemplate(TEMPLATE_PATH + "methodCallValue.twig"))
+            .put(Method.class, classpathTemplate(TEMPLATE_PATH + "method.twig"))
+            .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
+            .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
+            .put(Statement.class, classpathTemplate(TEMPLATE_PATH + "statement.twig"))
+            .put(TypeCheckingError.class, classpathTemplate(TEMPLATE_PATH + "error_typeCheckingError.twig"))
+            .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig"))
+            .build();
     private final Root root;
     private final Map<Node, List<TypeCheckingError>> typecheckingErrors;
+    private final List<String> symbolTables;
 
     public HtmlWalker(Root root) {
         this.root = root;
@@ -89,6 +94,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
         this.typecheckingErrors = root.getContext()
                 .get("errors.typechecking", Map.class)
                 .orElse(Collections.emptyMap());
+        this.symbolTables = new LinkedList<>();
     }
 
     @Override
@@ -128,14 +134,19 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
                                 .flatMap(List::stream)
                                 .collect(Collectors.toList())
                         )
+                        .with("symbolTables", symbolTables)
         );
     }
 
     private JtwigModel newModel(Node node) {
         return JtwigModel.newModel()
-                .with("nodeId", node.getNodeId().format("node_%d"))
+                .with("nodeId", formatNodeId(node))
                 .with("nodeKind", node.getClass().getName())
                 .with("hasErrors", typecheckingErrors.containsKey(node));
+    }
+
+    private String formatNodeId(Node node) {
+        return node.getNodeId().format("node_%d");
     }
 
     @Override
@@ -245,8 +256,26 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(NoneValue node) {
-        return templates.get(NoneValue.class)
-                .render(newModel(node));
+        renderSymbolTable(node);
+        return templates.get(NoneValue.class).render(
+                newModel(node)
+        );
+    }
+
+    private void renderSymbolTable(Node node) {
+        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node).getSymbolTable();
+        symbolTables.add(templates.get(SymbolTable.class).render(
+                newModel(node)
+                        .with("nodeId", formatNodeId(node))
+                        .with("name", symbolTable.fqName().replaceFirst("^root\\.", ""))
+                        .with("symbols", symbolTable.symbolsStream()
+                                .map(s -> ImmutableMap.of(
+                                        "name", s.getName(),
+                                        "kind", s.getClass().getSimpleName(),
+                                        "refNodeId", formatNodeId(s.getNode())
+                                ))
+                                .collect(Collectors.toList()))
+        ));
     }
 
     @Override
