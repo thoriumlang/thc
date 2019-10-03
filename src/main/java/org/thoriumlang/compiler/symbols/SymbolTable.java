@@ -16,13 +16,16 @@
 package org.thoriumlang.compiler.symbols;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface SymbolTable {
     String fqName();
 
     Optional<Symbol> find(String name);
 
-    void put(String name, Symbol symbol);
+    Stream<Symbol> symbolsStream();
+
+    void put(Symbol symbol);
 
     DefaultSymbolTable createNestedTable(String name);
 }

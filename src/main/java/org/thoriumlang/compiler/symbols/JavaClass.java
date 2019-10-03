@@ -17,13 +17,20 @@ package org.thoriumlang.compiler.symbols;
 
 public class JavaClass implements Symbol {
     private final Class<?> clazz;
+    private final String name;
 
-    public JavaClass(Class<?> clazz) {
+    public JavaClass(String name, Class<?> clazz) {
+        this.name = name;
         this.clazz = clazz;
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public String toString() {
-        return String.format("(rt.jar: class %s)", clazz.getCanonicalName());
+        return String.format("%s -> (rt.jar: class %s)", name, clazz.getCanonicalName());
     }
 }

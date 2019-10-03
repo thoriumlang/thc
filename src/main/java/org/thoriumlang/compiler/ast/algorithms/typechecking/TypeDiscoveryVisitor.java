@@ -63,7 +63,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     public List<TypeCheckingError> visit(Use node) {
         return javaRuntimeClassLoader.find(node.getFrom())
                 .map(c -> {
-                    getSymbolTable(node).put(node.getTo(), fromJavaClass(c));
+                    getSymbolTable(node).put(fromJavaClass(node.getTo(), c));
                     return Collections.<TypeCheckingError>emptyList();
                 })
                 .orElse(Collections.singletonList(
@@ -75,10 +75,10 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
         return SymbolTableAwareNode.wrap(node).getSymbolTable();
     }
 
-    private Symbol fromJavaClass(java.lang.Class clazz) {
+    private Symbol fromJavaClass(String name, java.lang.Class clazz) {
         return clazz.isInterface() ?
-                new JavaInterface(clazz) :
-                new JavaClass(clazz);
+                new JavaInterface(name, clazz) :
+                new JavaClass(name, clazz);
     }
 
     @Override
@@ -110,9 +110,9 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
             );
         }
 
-        parentSymbolTable.put(name, new ThoriumType(node));
+        parentSymbolTable.put(new ThoriumType(name, node));
 
-        typeParameters.forEach(t -> symbolTable.put(t.getName(), new ThoriumType(t)));
+        typeParameters.forEach(t -> symbolTable.put(new ThoriumType(t.getName(), t)));
 
         return Collections.emptyList();
     }
@@ -145,7 +145,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     public List<TypeCheckingError> visit(MethodSignature node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        node.getTypeParameters().forEach(t -> symbolTable.put(t.getName(), new ThoriumType(t)));
+        node.getTypeParameters().forEach(t -> symbolTable.put(new ThoriumType(t.getName(), t)));
 
         return Collections.emptyList();
     }

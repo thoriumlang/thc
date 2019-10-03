@@ -40,16 +40,14 @@ class DefaultSymbolTableTest {
     @Test
     void find_localSymbol() {
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put("someVar", new Symbol() {
-        });
+        symbolTable.put(new SymbolStub("someVar"));
         Assertions.assertThat(symbolTable.find("someVar")).isNotEmpty();
     }
 
     @Test
     void find_parentSymbol() {
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put("someVar", new Symbol() {
-        });
+        symbolTable.put(new SymbolStub("someVar"));
 
         DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
 
@@ -58,15 +56,13 @@ class DefaultSymbolTableTest {
 
     @Test
     void find_precedence() {
-        Symbol parentSymbol = new Symbol() {
-        };
+        Symbol parentSymbol = new SymbolStub("someVar");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put("someVar", parentSymbol);
+        symbolTable.put(parentSymbol);
 
-        Symbol symbol = new Symbol() {
-        };
+        Symbol symbol = new SymbolStub("someVar");
         DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
-        symbolTable.put("someVar", symbol);
+        symbolTable.put(symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
                 .isNotEmpty()
@@ -75,11 +71,20 @@ class DefaultSymbolTableTest {
     }
 
     @Test
-    void child() {
-        Symbol symbol = new Symbol() {
-        };
+    void symbolStream() {
+        Symbol symbol = new SymbolStub("someVar");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put("someVar", symbol);
+        symbolTable.put(symbol);
+
+        Assertions.assertThat(symbolTable.symbolsStream())
+                .containsExactly(symbol);
+    }
+
+    @Test
+    void child() {
+        Symbol symbol = new SymbolStub("someVar");
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        symbolTable.put(symbol);
 
         DefaultSymbolTable nestedTable = symbolTable.createNestedTable("");
 
@@ -87,5 +92,18 @@ class DefaultSymbolTableTest {
                 .isNotEmpty()
                 .get()
                 .isSameAs(symbol);
+    }
+
+    private static class SymbolStub implements Symbol {
+        private final String name;
+
+        private SymbolStub(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }

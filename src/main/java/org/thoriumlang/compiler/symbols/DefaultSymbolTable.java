@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DefaultSymbolTable implements SymbolTable {
     private final int hashCode;
@@ -56,8 +57,13 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
-    public void put(String name, Symbol symbol) {
-        symbols.put(name, symbol);
+    public Stream<Symbol> symbolsStream() {
+        return symbols.values().stream();
+    }
+
+    @Override
+    public void put(Symbol symbol) {
+        symbols.put(symbol.getName(), symbol);
     }
 
     @Override
@@ -73,8 +79,8 @@ public class DefaultSymbolTable implements SymbolTable {
                 fqName(),
                 symbols.isEmpty() ?
                         "" :
-                        symbols.entrySet().stream()
-                                .map(e -> String.format("%s -> %s", e.getKey(), e.getValue()))
+                        symbolsStream()
+                                .map(Object::toString)
                                 .collect(Collectors.joining("\n   ", "\n   ", "")),
                 childrenSymbolTables.isEmpty() ?
                         "" :

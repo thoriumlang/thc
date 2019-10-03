@@ -203,8 +203,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.emptyList()
                         )
                 ),
-                "TypeName",
-                new JavaClass(String.class)
+                new JavaClass("TypeName", String.class)
         );
 
         Assertions.assertThat(visitor.visit(node).stream()
@@ -273,8 +272,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.emptyList()
                         )
                 ),
-                "ClassName",
-                new JavaClass(String.class)
+                new JavaClass("ClassName", String.class)
         );
 
         Assertions.assertThat(visitor.visit(node).stream()
@@ -369,12 +367,12 @@ class TypeDiscoveryVisitorTest {
                 .find(name);
     }
 
-    private <T extends Node> T putSymbol(T node, String name, Symbol symbol) {
+    private <T extends Node> T putSymbol(T node, Symbol symbol) {
         node
                 .getContext()
                 .get(SymbolTable.class)
                 .orElseThrow(IllegalStateException::new)
-                .put(name, symbol);
+                .put(symbol);
 
         return node;
     }

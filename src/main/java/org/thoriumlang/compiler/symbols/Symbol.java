@@ -16,4 +16,5 @@
 package org.thoriumlang.compiler.symbols;
 
 public interface Symbol {
+    String getName();
 }

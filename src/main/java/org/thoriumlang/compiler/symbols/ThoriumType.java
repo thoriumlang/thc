@@ -23,14 +23,21 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 public class ThoriumType implements Symbol {
     private final Node node;
+    private final String name;
 
-    public ThoriumType(Node node) {
+    public ThoriumType(String name, Node node) {
+        this.name = name;
         this.node = node;
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public String toString() {
-        return String.format("(th: %s)", node.accept(new BaseVisitor<String>() {
+        return String.format("%s -> (th: %s)", name, node.accept(new BaseVisitor<String>() {
             @Override
             public String visit(Type node) {
                 return String.format("type %s", node.getName());

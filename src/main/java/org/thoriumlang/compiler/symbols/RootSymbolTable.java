@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.symbols;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class RootSymbolTable implements SymbolTable {
     @Override
@@ -29,12 +30,17 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
-    public void put(String name, Symbol symbol) {
-        throw new IllegalStateException("Cannot add a symbol to an empty symbol table");
+    public Stream<Symbol> symbolsStream() {
+        return Stream.empty();
+    }
+
+    @Override
+    public void put(Symbol symbol) {
+        throw new IllegalStateException("Cannot add a symbol to the root symbol table");
     }
 
     @Override
     public DefaultSymbolTable createNestedTable(String name) {
-        throw new IllegalStateException("Cannot add a nested symbol table to an empty symbol table");
+        throw new IllegalStateException("Cannot add a nested symbol table to the root symbol table");
     }
 }

@@ -17,13 +17,20 @@ package org.thoriumlang.compiler.symbols;
 
 public class JavaInterface implements Symbol {
     private final Class clazz;
+    private final String name;
 
-    public JavaInterface(Class clazz) {
+    public JavaInterface(String name, Class clazz) {
+        this.name = name;
         this.clazz = clazz;
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
     public String toString() {
-        return String.format("(rt.jar: interface %s)", clazz.getCanonicalName());
+        return String.format("%s -> (rt.jar: interface %s)", name, clazz.getCanonicalName());
     }
 }
