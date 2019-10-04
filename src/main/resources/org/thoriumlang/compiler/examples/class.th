@@ -15,6 +15,8 @@ class MyClass[T] {
 
     logger: Logger = Logger();
 
+    val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
+
     doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {
         val a = 1;
         var b;
@@ -33,8 +35,6 @@ class MyClass[T] {
     f() {
         [U](v: U) => v;
     }
-
-    val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
 
     fibonacci(n: Number): Number {
         logger.info("Fibonacci called");

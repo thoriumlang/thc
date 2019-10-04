@@ -2,7 +2,7 @@
       data-kind="{{ nodeKind }}"
 >
     <span class="keyword">{{ visibility }}</span>
-    <span data-toggle-symbolTable="symbolTable_{{ nodeId }}">{{ name }}</span>
+    <span data-toggle-symbolTable="{{ nodeId }}">{{ name }}</span>
     [<span data-fold="fold_{{ nodeId }}_types">{{ join(typeParameters, ', ') }}</span><span data-fold-target="fold_{{ nodeId }}_types"></span>]
     (<span data-fold="fold_{{ nodeId }}_params">{{ join(methodParameters, ', ') }}</span><span data-fold-target="fold_{{ nodeId }}_params"></span>):
     {{ returnType }}

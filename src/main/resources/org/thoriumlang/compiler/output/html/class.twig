@@ -4,7 +4,7 @@
     <span class="{% if (hasErrors) %}hasError {% endif %}" data-error-target="{{ nodeId }}">
         <span class="keyword">{{ visibility }}</span>
         <span class="keyword">class</span>
-        <span data-toggle-symbolTable="symbolTable_{{ nodeId }}">{{ className }}</span>[{{ join(typeParameters, ', ') }}]:
+        <span data-toggle-symbolTable="{{ nodeId }}">{{ className }}</span>[{{ join(typeParameters, ', ') }}]:
         {{ superType }}
         <span data-fold-target="fold_{{ nodeId }}"></span>
     </span>

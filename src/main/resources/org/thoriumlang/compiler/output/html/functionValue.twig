@@ -2,7 +2,7 @@
       data-kind="{{ nodeKind }}"
 >[{{ join(typeParameters, ', ') }}]({{ join(parameters, ', ') }}):
     {{ returnType }}
-    <span data-toggle-symbolTable="symbolTable_{{ nodeId }}" class="keyword">=&gt;</span>
+    <span data-toggle-symbolTable="{{ nodeId }}" class="keyword">=&gt;</span>
     <span data-fold-target="fold_{{ nodeId }}"></span>
     <ul data-fold="fold_{{ nodeId }}">
     {{ join(statements) }}

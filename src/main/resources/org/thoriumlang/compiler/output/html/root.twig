@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ namespace }}.{{ toplevelName }}</title>
@@ -21,7 +22,7 @@
 
         .hasError {
             cursor: pointer;
-            border-bottom: 1px dashed red;
+            border-bottom: 1px dashed crimson;
         }
 
         .namespace {
@@ -70,7 +71,7 @@
         #symbolTable {
             border: 1px solid black;
             position: fixed;
-            top: 50px;
+            top: 55px;
             right: 20px;
             width: 30em;
             background-color: silver;
@@ -113,25 +114,61 @@
             color: blue;
         }
 
-        #toolbar a:visited {
-            color: navajowhite;
+        #toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin-top: 0;
+            background-color: silver;
+            color: black;
+            padding: 10px 5px;
+            z-index: 999;
+            user-select: none;
+        }
+
+        #toolbar li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        #toolbar a:visited, #toolbar a {
+            color: black;
+            border-left: 5px solid silver;
+            padding-left: 3px;
+            text-decoration: none;
+        }
+
+        #toolbar a:hover {
+            border-left: 5px solid gray;
+        }
+
+        #code {
+            position: absolute;
+            top: 35px
         }
     </style>
 </head>
 
 <body>
 <ul id="toolbar">
-    <li><a id="action_toggleFold" href="#">toggle fold</a></li>
+    <li><a id="action_fold" href="#">fold</a></li>
+    <li><a id="action_highlight" href="#">highlight</a></li>
+    <li><a id="action_deemphasize" href="#">de-emphasize</a></li>
+    <li><a id="action_nextNode" href="#">next</a></li>
+    <li><a id="action_previousNode" href="#">previous</a></li>
 </ul>
-<p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
+<div id="code">
+    <p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
 
-<ul id="{{ nodeId }}"
-    data-kind="{{ nodeKind }}"
->
-    {{ join(uses) }}
-    {{ toplevel }}
-</ul>
-
+    <ul id="{{ nodeId }}"
+        data-kind="{{ nodeKind }}"
+    >
+        {{ join(uses) }}
+        <li>&nbsp;</li>
+        {{ toplevel }}
+    </ul>
+</div>
 <div id="symbolTable" style="display: none">
     <div id="symbolTableHeader">
         <span class="close icon">X</span>
@@ -139,17 +176,47 @@
     </div>
     {{ join(symbolTables) }}
 </div>
-
 <div id="errors" style="display:none">
     <div class="error" data-error-target="not-inferred" style="display: none;">
         type not inferred
     </div>
     {{ join(errors) }}
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        /**
+         * Highlight hash / node nav
+         */
+        (function () {
+            function highlight() {
+                $('.highlight').removeClass('highlight');
+                $(window.location.hash).addClass('highlight');
+            }
+
+            $('#action_highlight').click(function (e) {
+                e.preventDefault();
+                highlight();
+            });
+
+            $('#action_deemphasize').click(function (e) {
+                e.preventDefault();
+                $('.highlight').removeClass('highlight');
+            });
+
+            $('#action_nextNode').click(function (e) {
+                e.preventDefault();
+                window.location.hash = '#node_' + (parseInt(window.location.hash.substr(6)) + 1);
+                highlight();
+            });
+
+            $('#action_previousNode').click(function (e) {
+                e.preventDefault();
+                window.location.hash = '#node_' + (parseInt(window.location.hash.substr(6)) - 1);
+                highlight();
+            });
+        })();
+
         /**
          * Node refs
          */
@@ -157,13 +224,11 @@
             $('[data-refNodeId]')
                 .mouseover(function () {
                     const nodeId = $(this).attr('data-refNodeId');
-                    $('*').filter(function () {
-                        return $(this).attr('id') !== nodeId;
-                    }).removeClass("highlight");
-                    $('#' + nodeId).toggleClass("highlight");
+                    $('.highlight').removeClass('highlight');
+                    $('#' + nodeId).addClass('highlight');
                 })
                 .mouseout(function () {
-                    $('*').removeClass("highlight");
+                    $('.highlight').removeClass('highlight');
                 });
         })();
 
@@ -173,20 +238,22 @@
         (function () {
             $('#symbolTable .close').click(function () {
                 $('#symbolTable').hide();
-                $('[data-toggle-symbolTable]').removeClass("selected");
-                $('*').removeClass("highlight");
+                $('[data-toggle-symbolTable]').removeClass('selected');
+                $('*').removeClass('highlight');
             });
 
             function openTable(table) {
-                $('[data-toggle-symbolTable]').removeClass("selected");
-                $('[data-toggle-symbolTable=' + table + ']').addClass("selected");
+                $('[data-toggle-symbolTable]').removeClass('selected');
+                $('[data-toggle-symbolTable=' + table + ']').addClass('selected');
                 $('#symbolTable table').hide();
                 $('#' + table).show();
                 $('#symbolTable').show();
             }
 
             $('[data-toggle-symbolTable]').click(function () {
-                openTable($(this).attr('data-toggle-symbolTable'));
+                const nodeId = $(this).attr('data-toggle-symbolTable');
+                window.location.hash = nodeId;
+                openTable('symbolTable_' + nodeId);
             });
         })();
 
@@ -231,7 +298,7 @@
                         .insertAfter($(e))
                         .click(fold);
                 });
-            $('#action_toggleFold')
+            $('#action_fold')
                 .click(function (e) {
                     e.preventDefault();
                     $('.icon.fold-fold').each(function (i, el) {
