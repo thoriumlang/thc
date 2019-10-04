@@ -233,7 +233,7 @@
                 });
             $('#action_toggleFold')
                 .click(function (e) {
-                    e.stopPropagation();
+                    e.preventDefault();
                     $('.icon.fold-fold').each(function (i, el) {
                         $(el).trigger('click');
                     })
