@@ -193,6 +193,11 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     }
 
     @Override
+    public String visit(Type node) {
+        return "TODO";
+    }
+
+    @Override
     public String visit(TypeParameter node) {
         return templates.get(node.getClass()).render(
                 newModel(node)
