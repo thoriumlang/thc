@@ -20,7 +20,6 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.Assignment;
-import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -79,7 +78,10 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
             .put(TypeSpecUnion.class, classpathTemplate(TEMPLATE_PATH + "typeSpecComposition.twig"))
             .put(TypeSpecFunction.class, classpathTemplate(TEMPLATE_PATH + "typeSpecFunction.twig"))
             .put(TypeSpecInferred.class, classpathTemplate(TEMPLATE_PATH + "typeSpecInferred.twig"))
-            .put(Attribute.class, classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
+            .put(VarAttribute.class, classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
+            .put(ValAttribute.class, classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
+            .put(VarAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "assignment.twig"))
+            .put(ValAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "assignment.twig"))
             .put(NoneValue.class, classpathTemplate(TEMPLATE_PATH + "noneValue.twig"))
             .put(StringValue.class, classpathTemplate(TEMPLATE_PATH + "stringValue.twig"))
             .put(NumberValue.class, classpathTemplate(TEMPLATE_PATH + "numberValue.twig"))
@@ -249,7 +251,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(VarAttribute node) {
-        return templates.get(Attribute.class).render(
+        return templates.get(node.getClass()).render(
                 visitAssignment(node)
                         .with("kind", "var")
         );
@@ -264,7 +266,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(ValAttribute node) {
-        return templates.get(Attribute.class).render(
+        return templates.get(node.getClass()).render(
                 visitAssignment(node)
                         .with("kind", "val")
         );
@@ -327,7 +329,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(VarAssignmentValue node) {
-        return templates.get(Attribute.class).render(
+        return templates.get(node.getClass()).render(
                 visitAssignment(node)
                         .with("kind", "var")
         );
@@ -335,7 +337,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(ValAssignmentValue node) {
-        return templates.get(Attribute.class).render(
+        return templates.get(node.getClass()).render(
                 visitAssignment(node)
                         .with("kind", "val")
         );
