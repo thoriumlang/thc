@@ -2,13 +2,13 @@
     data-kind="{{ nodeKind }}"
 >
     <span class="{% if (hasErrors) %}hasError {% endif %}" data-error-target="{{ nodeId }}">
-        <span data-fold-target="fold_{{ nodeId }}">
-            <span class="keyword">{{ visibility }}</span>
-            <span class="keyword">class</span>
-            {{ className }}[{{ join(typeParameters, ', ') }}]: {{ superType }}
-        </span>
+        <span class="keyword">{{ visibility }}</span>
+        <span class="keyword">class</span>
+        <span data-toggle-symbolTable="symbolTable_{{ nodeId }}">{{ className }}</span>[{{ join(typeParameters, ', ') }}]:
+        {{ superType }}
+        <span data-fold-target="fold_{{ nodeId }}"></span>
     </span>
-    <ul data-fold="fold_{{ nodeId }}">
+    <ul class="toplevel" data-fold="fold_{{ nodeId }}">
         {{ join(attributes) }}
         {{ join(methods) }}
     </ul>

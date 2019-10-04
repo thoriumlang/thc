@@ -15,6 +15,10 @@
             list-style-type: none;
         }
 
+        .toplevel > li {
+            margin-bottom: 15px;
+        }
+
         .hasError {
             cursor: pointer;
             border-bottom: 1px dashed red;
@@ -29,6 +33,18 @@
             color: darkorange;
         }
 
+        .string {
+            color: seagreen;
+        }
+
+        .number {
+            color: dodgerblue;
+        }
+
+        .inline {
+            display: inline;
+        }
+
         .icon {
             cursor: pointer;
             font-weight: bold;
@@ -38,7 +54,6 @@
 
         .icon.fold {
             color: seagreen;
-            border: 1px solid seagreen;
         }
 
         #errors {
@@ -83,6 +98,7 @@
 
         [data-toggle-symbolTable] {
             cursor: pointer;
+            border-bottom: 1px dotted dodgerblue;
         }
 
         .selected {
@@ -96,10 +112,17 @@
         a.nodeRef:visited {
             color: blue;
         }
+
+        #toolbar a:visited {
+            color: navajowhite;
+        }
     </style>
 </head>
 
 <body>
+<ul id="toolbar">
+    <li><a id="action_toggleFold" href="#">toggle fold</a></li>
+</ul>
 <p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
 
 <ul id="{{ nodeId }}"
@@ -118,6 +141,9 @@
 </div>
 
 <div id="errors" style="display:none">
+    <div class="error" data-error-target="not-inferred" style="display: none;">
+        type not inferred
+    </div>
     {{ join(errors) }}
 </div>
 
@@ -136,7 +162,7 @@
                     }).removeClass("highlight");
                     $('#' + nodeId).toggleClass("highlight");
                 })
-                .mouseout(function() {
+                .mouseout(function () {
                     $('*').removeClass("highlight");
                 });
         })();
@@ -193,17 +219,24 @@
                     const foldTarget = $(e).attr('data-fold-target');
 
                     function fold(e) {
-                        $('[data-fold="' + foldTarget + '"]').toggle();
                         e.stopPropagation();
+                        $('[data-fold="' + foldTarget + '"]').toggle();
                     }
 
-                    $('<span class="fold icon" data-fold="' + foldTarget + '">+</span>')
+                    $('<span class="fold-unfold fold icon" data-fold="' + foldTarget + '">+</span>')
                         .insertAfter($(e))
                         .hide()
                         .click(fold);
-                    $('<span class="fold icon" data-fold="' + foldTarget + '">-</span>')
+                    $('<span class="fold-fold fold icon" data-fold="' + foldTarget + '">-</span>')
                         .insertAfter($(e))
                         .click(fold);
+                });
+            $('#action_toggleFold')
+                .click(function (e) {
+                    e.stopPropagation();
+                    $('.icon.fold-fold').each(function (i, el) {
+                        $(el).trigger('click');
+                    })
                 });
         })();
     });

@@ -1,5 +1,7 @@
 use java.lang.String;
-use java.util.List : JavaList;
+use java.lang.Boolean;
+use java.lang.Exception: Error;
+use java.util.List: JavaList;
 use org.thoriumlang.compiler.ast.AST;
 
 class MyClass[T] {
@@ -13,18 +15,30 @@ class MyClass[T] {
 
     logger: Logger = Logger();
 
-    doSomething[U](p1: String, p2: JavaList, p3: T, p4:U, p5: Unknown): None {
+    doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {
+        val a = 1;
+        var b;
         none;
     }
 
-    adder[A](f: (B, C): D, x: E): (F): G {
-        (y: H) => f(x, y);
+    mayFail(): String | Error {
+        this.doSomething((o: Object) => "ok");
+        "OK".toLower();
+    }
+
+    adder[A, B, C](f: (A, B): C, x: A): (B): C {
+        [D](y: B) => f(x, y);
+    }
+
+    f() {
+        [U](v: U) => v;
     }
 
     val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
 
     fibonacci(n: Number): Number {
         logger.info("Fibonacci called");
+        this.callCount = this.callCount.add(1);
         If(n.eq(0),
             1,
             If(n.eq(1),

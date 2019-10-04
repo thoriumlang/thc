@@ -40,6 +40,7 @@ import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
+import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
@@ -74,9 +75,20 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
             .put(Class.class, classpathTemplate(TEMPLATE_PATH + "class.twig"))
             .put(TypeParameter.class, classpathTemplate(TEMPLATE_PATH + "typeParameter.twig"))
             .put(TypeSpecSimple.class, classpathTemplate(TEMPLATE_PATH + "typeSpecSimple.twig"))
+            .put(TypeSpecIntersection.class, classpathTemplate(TEMPLATE_PATH + "typeSpecComposition.twig"))
+            .put(TypeSpecUnion.class, classpathTemplate(TEMPLATE_PATH + "typeSpecComposition.twig"))
+            .put(TypeSpecFunction.class, classpathTemplate(TEMPLATE_PATH + "typeSpecFunction.twig"))
+            .put(TypeSpecInferred.class, classpathTemplate(TEMPLATE_PATH + "typeSpecInferred.twig"))
             .put(Attribute.class, classpathTemplate(TEMPLATE_PATH + "attribute.twig"))
             .put(NoneValue.class, classpathTemplate(TEMPLATE_PATH + "noneValue.twig"))
+            .put(StringValue.class, classpathTemplate(TEMPLATE_PATH + "stringValue.twig"))
+            .put(NumberValue.class, classpathTemplate(TEMPLATE_PATH + "numberValue.twig"))
+            .put(BooleanValue.class, classpathTemplate(TEMPLATE_PATH + "booleanValue.twig"))
             .put(MethodCallValue.class, classpathTemplate(TEMPLATE_PATH + "methodCallValue.twig"))
+            .put(FunctionValue.class, classpathTemplate(TEMPLATE_PATH + "functionValue.twig"))
+            .put(IdentifierValue.class, classpathTemplate(TEMPLATE_PATH + "identifierValue.twig"))
+            .put(NestedValue.class, classpathTemplate(TEMPLATE_PATH + "nestedValue.twig"))
+            .put(IndirectAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "indirectAssignmentValue.twig"))
             .put(Method.class, classpathTemplate(TEMPLATE_PATH + "method.twig"))
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
@@ -141,7 +153,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     private JtwigModel newModel(Node node) {
         return JtwigModel.newModel()
                 .with("nodeId", formatNodeId(node))
-                .with("nodeKind", node.getClass().getName())
+                .with("nodeKind", node.getClass().getSimpleName())
                 .with("hasErrors", typecheckingErrors.containsKey(node));
     }
 
@@ -160,6 +172,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(Class node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("visibility", node.getVisibility().toString().toLowerCase())
@@ -198,22 +211,40 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(TypeSpecIntersection node) {
-        return "TODO";
+        return visitTypeSpecComposition(node, node.getTypes(), "|");
+    }
+
+    private String visitTypeSpecComposition(Node node, List<TypeSpec> typeSpecs, String mode) {
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("mode", mode)
+                        .with("types", typeSpecs.stream()
+                                .map(t -> t.accept(this))
+                                .collect(Collectors.toList()))
+        );
     }
 
     @Override
     public String visit(TypeSpecUnion node) {
-        return "TODO";
+        return visitTypeSpecComposition(node, node.getTypes(), "&");
     }
 
     @Override
     public String visit(TypeSpecFunction node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("returnType", node.getReturnType().accept(this))
+                        .with("arguments", node.getArguments().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+        );
     }
 
     @Override
     public String visit(TypeSpecInferred node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+        );
     }
 
     @Override
@@ -241,23 +272,31 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(StringValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("value", node.getValue())
+        );
     }
 
     @Override
     public String visit(NumberValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("value", node.getValue())
+        );
     }
 
     @Override
     public String visit(BooleanValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("value", node.getValue())
+        );
     }
 
     @Override
     public String visit(NoneValue node) {
-        renderSymbolTable(node);
-        return templates.get(NoneValue.class).render(
+        return templates.get(node.getClass()).render(
                 newModel(node)
         );
     }
@@ -280,22 +319,36 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(IdentifierValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("name", node.getValue())
+        );
     }
 
     @Override
     public String visit(VarAssignmentValue node) {
-        return "TODO";
+        return templates.get(Attribute.class).render(
+                visitAssignment(node)
+                        .with("kind", "var")
+        );
     }
 
     @Override
     public String visit(ValAssignmentValue node) {
-        return "TODO";
+        return templates.get(Attribute.class).render(
+                visitAssignment(node)
+                        .with("kind", "val")
+        );
     }
 
     @Override
     public String visit(IndirectAssignmentValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("indirectValue", node.getIndirectValue().accept(this))
+                        .with("identifier", node.getIdentifier())
+                        .with("value", node.getValue().accept(this))
+        );
     }
 
     @Override
@@ -314,12 +367,29 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(NestedValue node) {
-        return "TODO";
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("outer", node.getOuter().accept(this))
+                        .with("inner", node.getInner().accept(this))
+        );
     }
 
     @Override
     public String visit(FunctionValue node) {
-        return "TODO";
+        renderSymbolTable(node);
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("returnType", node.getReturnType().accept(this))
+                        .with("typeParameters", node.getTypeParameters().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+                        .with("parameters", node.getParameters().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+                        .with("statements", node.getStatements().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+        );
     }
 
     @Override
@@ -335,6 +405,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(MethodSignature node) {
+        renderSymbolTable(node);
         return templates.get(MethodSignature.class).render(
                 newModel(node)
                         .with("visibility", node.getVisibility().toString().toLowerCase())
