@@ -1,0 +1,8 @@
+<li id="{{ nodeId }}"
+    data-kind="{{ nodeKind }}"
+>
+    <span data-fold-target="fold_{{ nodeId }}">{{ signature }}</span>
+    <ul data-fold="fold_{{ nodeId }}">
+        {{ join(statements) }}
+    </ul>
+</li>

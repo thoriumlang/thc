@@ -15,13 +15,20 @@
  */
 package org.thoriumlang.compiler.it;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.SourceFiles;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
+import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
 
 import java.io.BufferedReader;
@@ -29,6 +36,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,7 +71,7 @@ class IntegrationTest {
                 );
     }
 
-    private SourceFile sourceFile(String path,Function<String, String> filenameGenerator)
+    private SourceFile sourceFile(String path, Function<String, String> filenameGenerator)
             throws URISyntaxException, IOException {
         return new SourceFiles(
                 Paths.get(IntegrationTest.class.getResource("/").toURI()),
@@ -134,5 +143,49 @@ class IntegrationTest {
 
     private String generatedSourceFilename(String path) {
         return path.substring(path.lastIndexOf("/") + 1) + ".out.th";
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues",
+            "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple"
+    })
+    void html(String path) throws Exception {
+        HttpResponse<String> uniResponse = Unirest.post("http://localhost:8888/")
+                .header("User-Agent",
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36")
+                .header("Content-Type", "text/html; charset=UTF-8")
+                .queryString("out", "gnu")
+                .body(generateHtmlDocument(path))
+                .asString();
+        Assertions.assertThat(uniResponse.getBody())
+                .isEmpty();
+    }
+
+    private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+
+        Root root = new AST(
+                sourceFile.inputStream(),
+                sourceFile.namespace()
+        ).root();
+
+        root.getContext().put("errors.typechecking", Map.class, new TypeChecker().walk(root)
+                .stream()
+                .collect(Collectors.toMap(
+                        TypeCheckingError::getNode,
+                        Collections::singletonList,
+                        Lists::merge
+                )));
+
+        return new HtmlWalker(
+                root
+        ).walk();
     }
 }

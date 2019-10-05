@@ -19,12 +19,18 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Compiler {
@@ -43,6 +49,18 @@ public class Compiler {
 
                 typeCheckingError.forEach(System.out::println);
                 root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
+
+                root.getContext().put("errors.typechecking", Map.class, typeCheckingError
+                        .stream()
+                        .collect(Collectors.toMap(
+                                TypeCheckingError::getNode,
+                                Collections::singletonList,
+                                Lists::merge
+                        )));
+
+                new FileOutputStream("/tmp/" + f.filename() + ".html").write(
+                        new HtmlWalker(root).walk().getBytes()
+                );
             }
             catch (IOException e) {
                 throw new RuntimeException(e);

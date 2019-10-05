@@ -43,7 +43,7 @@ public class TypeChecker {
                 new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
                         .map(t -> (TypeSpecSimple) t)
                         .filter(t -> !getSymbolTable(t).find(t.getType()).isPresent())
-                        .map(t -> new TypeCheckingError(String.format("symbol not found: %s", t.getType())))
+                        .map(t -> new TypeCheckingError(String.format("symbol not found: %s", t.getType()), t))
                         .collect(Collectors.toList());
 
         return Lists.merge(

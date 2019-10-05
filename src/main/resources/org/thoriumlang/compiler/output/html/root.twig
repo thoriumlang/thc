@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ namespace }}.{{ toplevelName }}</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans Mono', monospace;
+            font-size: smaller;
+            background-color: #333;
+            color: #bbb;
+        }
+
+        ul, li {
+            list-style-type: none;
+        }
+
+        .toplevel > li {
+            margin-bottom: 15px;
+        }
+
+        .hasError {
+            cursor: pointer;
+            border-bottom: 1px dashed crimson;
+        }
+
+        .namespace {
+            font-style: italic
+        }
+
+        .keyword {
+            font-weight: bold;
+            color: darkorange;
+        }
+
+        .string {
+            color: seagreen;
+        }
+
+        .number {
+            color: dodgerblue;
+        }
+
+        .inline {
+            display: inline;
+        }
+
+        .icon {
+            cursor: pointer;
+            font-weight: bold;
+            padding: 0 3px;
+            user-select: none;
+        }
+
+        .icon.fold {
+            color: seagreen;
+        }
+
+        #errors {
+            position: absolute;
+        }
+
+        .error {
+            border: 1px solid red;
+            background-color: pink;
+            padding: 4px;
+            color: black;
+        }
+
+        #symbolTable {
+            border: 1px solid black;
+            position: fixed;
+            top: 55px;
+            right: 20px;
+            width: 30em;
+            background-color: silver;
+            opacity: .7;
+            color: #333333;
+        }
+
+        #symbolTable th {
+            text-align: left;
+        }
+
+        #symbolTableHeader {
+            border-bottom: 1px solid black;
+            padding: 3px;
+        }
+
+        #symbolTable .icon.close {
+            color: red;
+            background-color: lightsalmon;
+            position: absolute;
+            right: 2px;
+            border: 1px solid red;
+            top: 2px;
+        }
+
+        [data-toggle-symbolTable] {
+            cursor: pointer;
+            border-bottom: 1px dotted dodgerblue;
+        }
+
+        .selected {
+            background-color: saddlebrown;
+        }
+
+        .highlight {
+            background-color: blueviolet;
+        }
+
+        a.nodeRef:visited {
+            color: blue;
+        }
+
+        #toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            margin-top: 0;
+            background-color: silver;
+            color: black;
+            padding: 10px 5px;
+            z-index: 999;
+            user-select: none;
+        }
+
+        #toolbar li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        #toolbar a:visited, #toolbar a {
+            color: black;
+            border-left: 5px solid silver;
+            padding-left: 3px;
+            text-decoration: none;
+        }
+
+        #toolbar a:hover {
+            border-left: 5px solid gray;
+        }
+
+        #code {
+            position: absolute;
+            top: 35px
+        }
+    </style>
+</head>
+
+<body>
+<ul id="toolbar">
+    <li><a id="action_fold" href="#">fold</a></li>
+    <li><a id="action_highlight" href="#">highlight</a></li>
+    <li><a id="action_deemphasize" href="#">de-emphasize</a></li>
+    <li><a id="action_nextNode" href="#">next</a></li>
+    <li><a id="action_previousNode" href="#">previous</a></li>
+</ul>
+<div id="code">
+    <p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
+
+    <ul id="{{ nodeId }}"
+        data-kind="{{ nodeKind }}"
+    >
+        {{ join(uses) }}
+        <li>&nbsp;</li>
+        {{ toplevel }}
+    </ul>
+</div>
+<div id="symbolTable" style="display: none">
+    <div id="symbolTableHeader">
+        <span class="close icon">X</span>
+        <strong>Symbol Table</strong>
+    </div>
+    {{ join(symbolTables) }}
+</div>
+<div id="errors" style="display:none">
+    <div class="error" data-error-target="not-inferred" style="display: none;">
+        type not inferred
+    </div>
+    {{ join(errors) }}
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        /**
+         * Highlight hash / node nav
+         */
+        (function () {
+            function highlight() {
+                $('.highlight').removeClass('highlight');
+                $(window.location.hash).addClass('highlight');
+            }
+
+            $('#action_highlight').click(function (e) {
+                e.preventDefault();
+                highlight();
+            });
+
+            $('#action_deemphasize').click(function (e) {
+                e.preventDefault();
+                $('.highlight').removeClass('highlight');
+            });
+
+            $('#action_nextNode').click(function (e) {
+                e.preventDefault();
+                window.location.hash = '#node_' + (parseInt(window.location.hash.substr(6)) + 1);
+                highlight();
+            });
+
+            $('#action_previousNode').click(function (e) {
+                e.preventDefault();
+                window.location.hash = '#node_' + (parseInt(window.location.hash.substr(6)) - 1);
+                highlight();
+            });
+        })();
+
+        /**
+         * Node refs
+         */
+        (function () {
+            $('[data-refNodeId]')
+                .mouseover(function () {
+                    const nodeId = $(this).attr('data-refNodeId');
+                    $('.highlight').removeClass('highlight');
+                    $('#' + nodeId).addClass('highlight');
+                })
+                .mouseout(function () {
+                    $('.highlight').removeClass('highlight');
+                });
+        })();
+
+        /**
+         * Symbol table
+         */
+        (function () {
+            $('#symbolTable .close').click(function () {
+                $('#symbolTable').hide();
+                $('[data-toggle-symbolTable]').removeClass('selected');
+                $('*').removeClass('highlight');
+            });
+
+            function openTable(table) {
+                $('[data-toggle-symbolTable]').removeClass('selected');
+                $('[data-toggle-symbolTable=' + table + ']').addClass('selected');
+                $('#symbolTable table').hide();
+                $('#' + table).show();
+                $('#symbolTable').show();
+            }
+
+            $('[data-toggle-symbolTable]').click(function () {
+                const nodeId = $(this).attr('data-toggle-symbolTable');
+                window.location.hash = nodeId;
+                openTable('symbolTable_' + nodeId);
+            });
+        })();
+
+        /**
+         * Error
+         */
+        (function () {
+            $('.hasError')
+                .mousemove(function (e) {
+                    $('#errors')
+                        .css({
+                            top: e.pageY + 10,
+                            left: e.pageX + 10
+                        })
+                        .children().hide().parent()
+                        .children('[data-error-target="' + $(this).attr('data-error-target') + '"]').show().parent()
+                        .show();
+                })
+                .mouseleave(function () {
+                    $('#errors').hide();
+                });
+        })();
+
+        /**
+         * Folding
+         */
+        (function () {
+            $('[data-fold-target]')
+                .each(function (i, e) {
+                    const foldTarget = $(e).attr('data-fold-target');
+
+                    function fold(e) {
+                        e.stopPropagation();
+                        $('[data-fold="' + foldTarget + '"]').toggle();
+                    }
+
+                    $('<span class="fold-unfold fold icon" data-fold="' + foldTarget + '">+</span>')
+                        .insertAfter($(e))
+                        .hide()
+                        .click(fold);
+                    $('<span class="fold-fold fold icon" data-fold="' + foldTarget + '">-</span>')
+                        .insertAfter($(e))
+                        .click(fold);
+                });
+            $('#action_fold')
+                .click(function (e) {
+                    e.preventDefault();
+                    $('.icon.fold-fold').each(function (i, el) {
+                        $(el).trigger('click');
+                    })
+                });
+        })();
+    });
+</script>
+</body>
+</html>

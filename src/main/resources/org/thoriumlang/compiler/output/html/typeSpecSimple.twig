@@ -1,0 +1,4 @@
+<span id="{{ nodeId }}"
+      data-kind="{{ nodeKind }}"
+><span class="{% if (hasErrors) %}hasError {% endif %}"
+       data-error-target="{{ nodeId }}">{{ typeName }}</span>[{{ join(arguments, ', ') }}]</span>

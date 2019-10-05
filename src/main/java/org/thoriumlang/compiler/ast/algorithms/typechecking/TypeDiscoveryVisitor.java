@@ -67,7 +67,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
                     return Collections.<TypeCheckingError>emptyList();
                 })
                 .orElse(Collections.singletonList(
-                        new TypeCheckingError(String.format("symbol not found: %s", node.getFrom()))
+                        new TypeCheckingError(String.format("symbol not found: %s", node.getFrom()), node)
                 ));
     }
 
@@ -106,7 +106,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
 
         if (parentSymbolTable.find(name).isPresent()) {
             return Collections.singletonList(
-                    new TypeCheckingError(String.format("symbol already defined: %s", name))
+                    new TypeCheckingError(String.format("symbol already defined: %s", name), node)
             );
         }
 

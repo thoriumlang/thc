@@ -1,9 +1,50 @@
 use java.lang.String;
-use java.util.List : JavaList;
+use java.lang.Boolean;
+use java.lang.Exception: Error;
+use java.util.List: JavaList;
 use org.thoriumlang.compiler.ast.AST;
 
 class MyClass[T] {
-    doSomething[U](p1: String, p2: JavaList, p3: T, p4:U): None {
+    val hash = () => 0;
+    val str = () => "none";
+    val eq = (o: Object) => "return default";
+    is = (t: Type) => "return default";
+    match: (Object): Boolean = (o: Object) => Case(o)
+                                                .when(none, true)
+                                                .otherwise(false);
+
+    logger: Logger = Logger();
+
+    val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
+
+    doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {
+        val a = 1;
+        var b;
         none;
+    }
+
+    mayFail(): String | Error {
+        this.doSomething((o: Object) => "ok");
+        "OK".toLower();
+    }
+
+    adder[A, B, C](f: (A, B): C, x: A): (B): C {
+        [D](y: B) => f(x, y);
+    }
+
+    f() {
+        [U](v: U) => v;
+    }
+
+    fibonacci(n: Number): Number {
+        logger.info("Fibonacci called");
+        this.callCount = this.callCount.add(1);
+        If(n.eq(0),
+            1,
+            If(n.eq(1),
+                1,
+                add(fibonacci(n.sub(1)), fibonacci(n.sub(2)))
+            )
+        );
     }
 }
