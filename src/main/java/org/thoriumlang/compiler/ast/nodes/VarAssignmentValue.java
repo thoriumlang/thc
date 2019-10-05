@@ -17,9 +17,27 @@ package org.thoriumlang.compiler.ast.nodes;
 
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public class VarAssignmentValue extends Assignment implements AssignmentValue {
+import java.util.Objects;
+
+public class VarAssignmentValue extends AssignmentValue {
+    private final String identifier;
+    private final TypeSpec type;
+    private final Value value;
+
     public VarAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        super(nodeId, identifier, type, value);
+        super(nodeId);
+        if (identifier == null) {
+            throw new NullPointerException("identifier cannot be null");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
+        if (value == null) {
+            throw new NullPointerException("value cannot be null");
+        }
+        this.identifier = identifier;
+        this.type = type;
+        this.value = value;
     }
 
     @Override
@@ -31,9 +49,41 @@ public class VarAssignmentValue extends Assignment implements AssignmentValue {
     public String toString() {
         return String.format(
                 "VAR %s:%s = %s",
-                getType().toString(),
-                getIdentifier(),
-                getValue().toString()
+                type.toString(),
+                identifier,
+                value.toString()
         );
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        VarAssignmentValue that = (VarAssignmentValue) o;
+        return getNodeId().equals(that.getNodeId()) &&
+                identifier.equals(that.identifier) &&
+                type.equals(that.type) &&
+                value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNodeId(), identifier, type, value);
     }
 }

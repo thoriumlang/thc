@@ -15,5 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface Value extends Node {
+public abstract class Value extends Node {
+    protected Value(NodeId nodeId) {
+        super(nodeId);
+    }
 }

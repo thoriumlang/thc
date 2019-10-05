@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
-import org.thoriumlang.compiler.ast.nodes.Assignment;
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -270,12 +270,12 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     @Override
     public String visit(VarAttribute node) {
         return templates.get(node.getClass()).render(
-                visitAssignment(node)
+                visitAttribute(node)
                         .with("kind", "var")
         );
     }
 
-    private JtwigModel visitAssignment(Assignment node) {
+    private JtwigModel visitAttribute(Attribute node) {
         return newModel(node)
                 .with("name", node.getIdentifier())
                 .with("type", node.getType().accept(this))
@@ -285,7 +285,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     @Override
     public String visit(ValAttribute node) {
         return templates.get(node.getClass()).render(
-                visitAssignment(node)
+                visitAttribute(node)
                         .with("kind", "val")
         );
     }
@@ -348,7 +348,10 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     @Override
     public String visit(VarAssignmentValue node) {
         return templates.get(node.getClass()).render(
-                visitAssignment(node)
+                newModel(node)
+                        .with("name", node.getIdentifier())
+                        .with("type", node.getType().accept(this))
+                        .with("value", node.getValue().accept(this))
                         .with("kind", "var")
         );
     }
@@ -356,7 +359,10 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
     @Override
     public String visit(ValAssignmentValue node) {
         return templates.get(node.getClass()).render(
-                visitAssignment(node)
+                newModel(node)
+                        .with("name", node.getIdentifier())
+                        .with("type", node.getType().accept(this))
+                        .with("value", node.getValue().accept(this))
                         .with("kind", "val")
         );
     }

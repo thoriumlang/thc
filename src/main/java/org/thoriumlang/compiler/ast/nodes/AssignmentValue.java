@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface AssignmentValue extends Value {
-
+abstract class AssignmentValue extends Value {
+    AssignmentValue(NodeId nodeId) {
+        super(nodeId);
+    }
 }

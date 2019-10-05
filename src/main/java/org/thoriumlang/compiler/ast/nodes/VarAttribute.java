@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast.nodes;
 
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public class VarAttribute extends Assignment implements Attribute {
+public class VarAttribute extends Attribute {
     public VarAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
         super(nodeId, identifier, type, value);
     }
@@ -34,5 +34,20 @@ public class VarAttribute extends Assignment implements Attribute {
                 getType(),
                 getValue()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        VarAttribute that = (VarAttribute) o;
+        return getNodeId().equals(that.getNodeId()) &&
+                getIdentifier().equals(that.getIdentifier()) &&
+                getType().equals(that.getType()) &&
+                getValue().equals(that.getValue());
     }
 }

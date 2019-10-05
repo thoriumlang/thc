@@ -19,54 +19,34 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class Use implements Node {
-    private final NodeId nodeId;
+public class Use extends Node {
     private final String from;
     private final String to;
-    private final Context context;
 
     public Use(NodeId nodeId, String from, String to) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (from == null) {
             throw new NullPointerException("from cannot be null");
         }
         if (to == null) {
             throw new NullPointerException("to cannot be null");
         }
-        this.nodeId = nodeId;
         this.from = from;
         this.to = to;
-        this.context = new Context(this);
     }
 
     public Use(NodeId nodeId, String from) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (from == null) {
             throw new NullPointerException("from cannot be null");
         }
-        this.nodeId = nodeId;
         this.from = from;
         this.to = from.substring(from.lastIndexOf('.') + 1);
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -91,13 +71,13 @@ public class Use implements Node {
             return false;
         }
         Use use = (Use) o;
-        return nodeId.equals(use.nodeId) &&
+        return getNodeId().equals(use.getNodeId()) &&
                 from.equals(use.from) &&
                 to.equals(use.to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, from, to);
+        return Objects.hash(getNodeId(), from, to);
     }
 }

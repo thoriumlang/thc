@@ -19,14 +19,13 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class IndirectAssignmentValue implements Value {
-    private final NodeId nodeId;
+public class IndirectAssignmentValue extends AssignmentValue {
     private final Value indirectValue;
     private final String identifier;
     private final Value value;
-    private final Context context;
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
+        super(nodeId);
         if (nodeId == null) {
             throw new NullPointerException("nodeId cannot be null");
         }
@@ -39,26 +38,14 @@ public class IndirectAssignmentValue implements Value {
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
-        this.nodeId = nodeId;
         this.indirectValue = indirectValue;
         this.identifier = identifier;
         this.value = value;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -92,7 +79,7 @@ public class IndirectAssignmentValue implements Value {
             return false;
         }
         IndirectAssignmentValue that = (IndirectAssignmentValue) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 indirectValue.equals(that.indirectValue) &&
                 identifier.equals(that.identifier) &&
                 value.equals(that.value);
@@ -100,6 +87,6 @@ public class IndirectAssignmentValue implements Value {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, indirectValue, identifier, value);
+        return Objects.hash(getNodeId(), indirectValue, identifier, value);
     }
 }

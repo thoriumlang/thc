@@ -21,41 +21,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TypeSpecFunction implements TypeSpec {
-    private final NodeId nodeId;
+public class TypeSpecFunction extends TypeSpec {
     private final List<TypeSpec> arguments;
     private final TypeSpec returnType;
-    private final Context context;
 
     public TypeSpecFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (arguments == null) {
             throw new NullPointerException("arguments cannot be null");
         }
         if (returnType == null) {
             throw new NullPointerException("returnType cannot be null");
         }
-        this.nodeId = nodeId;
         this.arguments = arguments;
         this.returnType = returnType;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -86,13 +70,13 @@ public class TypeSpecFunction implements TypeSpec {
             return false;
         }
         TypeSpecFunction that = (TypeSpecFunction) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 arguments.equals(that.arguments) &&
                 returnType.equals(that.returnType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, arguments, returnType);
+        return Objects.hash(getNodeId(), arguments, returnType);
     }
 }

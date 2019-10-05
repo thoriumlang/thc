@@ -19,32 +19,20 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class BooleanValue implements Value {
-    private final NodeId nodeId;
+public class BooleanValue extends Value {
     private final Boolean value;
-    private final Context context;
 
     public BooleanValue(NodeId nodeId, boolean value) {
+        super(nodeId);
         if (nodeId == null) {
             throw new NullPointerException("nodeId cannot be null");
         }
-        this.nodeId = nodeId;
         this.value = value;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -65,12 +53,12 @@ public class BooleanValue implements Value {
             return false;
         }
         BooleanValue that = (BooleanValue) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 value.equals(that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, value);
+        return Objects.hash(getNodeId(), value);
     }
 }

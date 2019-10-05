@@ -19,38 +19,22 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class Statement implements Node {
-    private final NodeId nodeId;
+public class Statement extends Node {
     private final Value value;
     private final boolean last;
-    private final Context context;
 
     public Statement(NodeId nodeId, Value value, boolean last) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (value == null) {
             throw new NullPointerException("value cannot be null");
         }
-        this.nodeId = nodeId;
         this.value = value;
         this.last = last;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -76,12 +60,12 @@ public class Statement implements Node {
         }
         Statement statement = (Statement) o;
         return last == statement.last &&
-                nodeId.equals(statement.nodeId) &&
+                getNodeId().equals(statement.getNodeId()) &&
                 value.equals(statement.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, value, last);
+        return Objects.hash(getNodeId(), value, last);
     }
 }

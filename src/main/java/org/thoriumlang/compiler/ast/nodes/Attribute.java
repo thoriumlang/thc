@@ -15,5 +15,43 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface Attribute extends Node {
+import java.util.Objects;
+
+public abstract class Attribute extends Node {
+    private final String identifier;
+    private final TypeSpec type;
+    private final Value value;
+
+    Attribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
+        super(nodeId);
+        if (identifier == null) {
+            throw new NullPointerException("identifier cannot be null");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
+        if (value == null) {
+            throw new NullPointerException("value cannot be null");
+        }
+        this.identifier = identifier;
+        this.type = type;
+        this.value = value;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNodeId(), identifier, type, value);
+    }
 }

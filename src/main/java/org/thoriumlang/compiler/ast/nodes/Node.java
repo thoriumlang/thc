@@ -17,10 +17,24 @@ package org.thoriumlang.compiler.ast.nodes;
 
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public interface Node {
-    <T> T accept(Visitor<? extends T> visitor);
+import java.util.Objects;
 
-    Context getContext();
+public abstract class Node {
+    private final Context context;
+    private final NodeId nodeId;
 
-    NodeId getNodeId();
+    protected Node(NodeId nodeId) {
+        this.context = new Context(this);
+        this.nodeId = Objects.requireNonNull(nodeId, "nodeId cannot be null");
+    }
+
+    public abstract <T> T accept(Visitor<? extends T> visitor);
+
+    public Context getContext() {
+        return context;
+    }
+
+    public NodeId getNodeId() {
+        return nodeId;
+    }
 }
