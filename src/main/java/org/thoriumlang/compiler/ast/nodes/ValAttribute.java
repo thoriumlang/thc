@@ -35,19 +35,4 @@ public class ValAttribute extends Attribute {
                 getValue()
         );
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ValAttribute that = (ValAttribute) o;
-        return getNodeId().equals(that.getNodeId()) &&
-                getIdentifier().equals(that.getIdentifier()) &&
-                getType().equals(that.getType()) &&
-                getValue().equals(that.getValue());
-    }
 }

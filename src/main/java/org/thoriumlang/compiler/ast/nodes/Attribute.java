@@ -51,6 +51,21 @@ public abstract class Attribute extends Node {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attribute attribute = (Attribute) o;
+        return getNodeId().equals(attribute.getNodeId()) &&
+                identifier.equals(attribute.identifier) &&
+                type.equals(attribute.type) &&
+                value.equals(attribute.value);
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(getNodeId(), identifier, type, value);
     }
