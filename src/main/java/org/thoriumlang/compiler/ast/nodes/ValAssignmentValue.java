@@ -20,24 +20,14 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class ValAssignmentValue extends AssignmentValue {
-    private final String identifier;
     private final TypeSpec type;
-    private final Value value;
 
     public ValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        super(nodeId);
-        if (identifier == null) {
-            throw new NullPointerException("identifier cannot be null");
-        }
+        super(nodeId, identifier, value);
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.identifier = identifier;
         this.type = type;
-        this.value = value;
     }
 
     @Override
@@ -50,21 +40,13 @@ public class ValAssignmentValue extends AssignmentValue {
         return String.format(
                 "VAL %s:%s = %s",
                 type.toString(),
-                identifier,
-                value.toString()
+                getIdentifier(),
+                getValue().toString()
         );
-    }
-
-    public String getIdentifier() {
-        return identifier;
     }
 
     public TypeSpec getType() {
         return type;
-    }
-
-    public Value getValue() {
-        return value;
     }
 
     @Override
@@ -77,13 +59,13 @@ public class ValAssignmentValue extends AssignmentValue {
         }
         ValAssignmentValue that = (ValAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                identifier.equals(that.identifier) &&
+                getIdentifier().equals(that.getIdentifier()) &&
                 type.equals(that.type) &&
-                value.equals(that.value);
+                getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), identifier, type, value);
+        return Objects.hash(getNodeId(), getIdentifier(), getValue(), type);
     }
 }

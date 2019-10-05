@@ -21,26 +21,13 @@ import java.util.Objects;
 
 public class IndirectAssignmentValue extends AssignmentValue {
     private final Value indirectValue;
-    private final String identifier;
-    private final Value value;
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
-        super(nodeId);
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId, identifier, value);
         if (indirectValue == null) {
             throw new NullPointerException("indirectValue cannot be null");
         }
-        if (identifier == null) {
-            throw new NullPointerException("identifier cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
         this.indirectValue = indirectValue;
-        this.identifier = identifier;
-        this.value = value;
     }
 
     @Override
@@ -53,21 +40,13 @@ public class IndirectAssignmentValue extends AssignmentValue {
         return String.format(
                 "INDIRECT %s.%s = %s",
                 indirectValue.toString(),
-                identifier,
-                value.toString()
+                getIdentifier(),
+                getValue().toString()
         );
     }
 
     public Value getIndirectValue() {
         return indirectValue;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Value getValue() {
-        return value;
     }
 
     @Override
@@ -81,12 +60,12 @@ public class IndirectAssignmentValue extends AssignmentValue {
         IndirectAssignmentValue that = (IndirectAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
                 indirectValue.equals(that.indirectValue) &&
-                identifier.equals(that.identifier) &&
-                value.equals(that.value);
+                getIdentifier().equals(that.getIdentifier()) &&
+                getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), indirectValue, identifier, value);
+        return Objects.hash(getNodeId(), getIndirectValue(), getValue(), indirectValue);
     }
 }
