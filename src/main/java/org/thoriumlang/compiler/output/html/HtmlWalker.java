@@ -72,6 +72,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
             .put(Root.class, classpathTemplate(TEMPLATE_PATH + "root.twig"))
             .put(Use.class, classpathTemplate(TEMPLATE_PATH + "use.twig"))
             .put(Class.class, classpathTemplate(TEMPLATE_PATH + "class.twig"))
+            .put(Type.class, classpathTemplate(TEMPLATE_PATH + "type.twig"))
             .put(TypeParameter.class, classpathTemplate(TEMPLATE_PATH + "typeParameter.twig"))
             .put(TypeSpecSimple.class, classpathTemplate(TEMPLATE_PATH + "typeSpecSimple.twig"))
             .put(TypeSpecIntersection.class, classpathTemplate(TEMPLATE_PATH + "typeSpecComposition.twig"))
@@ -194,7 +195,19 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
 
     @Override
     public String visit(Type node) {
-        return "TODO";
+        renderSymbolTable(node);
+        return templates.get(node.getClass()).render(
+                newModel(node)
+                        .with("visibility", node.getVisibility().toString().toLowerCase())
+                        .with("typeName", node.getName())
+                        .with("typeParameters", node.getTypeParameters().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+                        .with("superType", node.getSuperType().accept(this))
+                        .with("methods", node.getMethods().stream()
+                                .map(n -> n.accept(this))
+                                .collect(Collectors.toList()))
+        );
     }
 
     @Override
