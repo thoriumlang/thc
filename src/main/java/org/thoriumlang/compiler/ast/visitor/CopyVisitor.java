@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.visitor;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -220,6 +221,15 @@ public abstract class CopyVisitor implements Visitor<Node> {
         return new IndirectAssignmentValue(
                 node.getNodeId(),
                 (Value) node.getIndirectValue().accept(this),
+                node.getIdentifier(),
+                (Value) node.getValue().accept(this)
+        );
+    }
+
+    @Override
+    public Node visit(DirectAssignmentValue node) {
+        return new DirectAssignmentValue(
+                node.getNodeId(),
                 node.getIdentifier(),
                 (Value) node.getValue().accept(this)
         );

@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -138,14 +139,21 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                     Mode.VAR
             );
         }
-        return new NewAssignmentValue(
+        if (ctx.VAL() != null) {
+            return new NewAssignmentValue(
+                    nodeIdGenerator.next(),
+                    ctx.IDENTIFIER().getSymbol().getText(),
+                    ctx.typeSpec() == null ?
+                            new TypeSpecInferred(nodeIdGenerator.next()) :
+                            ctx.typeSpec().accept(typeSpecVisitor),
+                    ctx.value().accept(this),
+                    Mode.VAL
+            );
+        }
+        return new DirectAssignmentValue(
                 nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
-                ctx.typeSpec() == null ?
-                        new TypeSpecInferred(nodeIdGenerator.next()) :
-                        ctx.typeSpec().accept(typeSpecVisitor),
-                ctx.value().accept(this),
-                Mode.VAL
+                ctx.value().accept(this)
         );
     }
 

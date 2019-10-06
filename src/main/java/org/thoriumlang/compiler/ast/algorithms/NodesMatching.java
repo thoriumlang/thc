@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -222,6 +223,14 @@ public class NodesMatching implements Visitor<List<Node>> {
         return Lists.merge(
                 matches(node),
                 recursiveMatch(node.getIndirectValue()),
+                recursiveMatch(node.getValue())
+        );
+    }
+
+    @Override
+    public List<Node> visit(DirectAssignmentValue node) {
+        return Lists.merge(
+                matches(node),
                 recursiveMatch(node.getValue())
         );
     }

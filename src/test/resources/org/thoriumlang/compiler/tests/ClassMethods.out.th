@@ -22,7 +22,7 @@ namespace class Class[T] : S {
   }
 
   private method4() {
-    return val a = 1;
+    return a = 1;
   }
 
   private method5() {

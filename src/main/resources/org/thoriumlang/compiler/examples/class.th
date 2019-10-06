@@ -22,6 +22,7 @@ class MyClass[T] {
     doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {
         val a = 1;
         var b;
+        b = 666;
         none;
     }
 

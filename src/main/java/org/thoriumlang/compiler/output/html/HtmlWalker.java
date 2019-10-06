@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -48,6 +49,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.output.Walker;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
@@ -61,7 +63,7 @@ import java.util.stream.Collectors;
 import static org.jtwig.JtwigTemplate.classpathTemplate;
 
 @SuppressWarnings("squid:S1192")
-public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
+public class HtmlWalker implements Visitor<String>, Walker<String> {
     private static final String TEMPLATE_PATH = HtmlWalker.class.getPackage().getName()
             .replace(".", File.separator) + File.separator;
 
@@ -87,6 +89,7 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
             .put(NestedValue.class, classpathTemplate(TEMPLATE_PATH + "nestedValue.twig"))
             .put(NewAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "newAssignment.twig"))
             .put(IndirectAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "indirectAssignmentValue.twig"))
+            .put(DirectAssignmentValue.class, classpathTemplate(TEMPLATE_PATH + "directAssignmentValue.twig"))
             .put(Method.class, classpathTemplate(TEMPLATE_PATH + "method.twig"))
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
@@ -344,6 +347,15 @@ public class HtmlWalker extends BaseVisitor<String> implements Walker<String> {
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("indirectValue", node.getIndirectValue().accept(this))
+                        .with("identifier", node.getIdentifier())
+                        .with("value", node.getValue().accept(this))
+        );
+    }
+
+    @Override
+    public String visit(DirectAssignmentValue node) {
+        return templates.get(node.getClass()).render(
+                newModel(node)
                         .with("identifier", node.getIdentifier())
                         .with("value", node.getValue().accept(this))
         );

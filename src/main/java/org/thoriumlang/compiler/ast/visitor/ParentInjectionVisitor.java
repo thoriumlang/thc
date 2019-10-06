@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.visitor;
 
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -113,6 +114,12 @@ public class ParentInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(IndirectAssignmentValue node) {
         setParentRecursively(node.getIndirectValue(), node);
+        setParentRecursively(node.getValue(), node);
+        return node;
+    }
+
+    @Override
+    public Node visit(DirectAssignmentValue node) {
         setParentRecursively(node.getValue(), node);
         return node;
     }

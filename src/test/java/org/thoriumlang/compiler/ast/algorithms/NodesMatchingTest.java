@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -266,6 +267,15 @@ class NodesMatchingTest {
                                                                         Collections.emptyList()),
                                                                 new NoneValue(nodeIdGenerator.next()),
                                                                 Mode.VAR
+                                                        ),
+                                                        false
+                                                ),
+                                                new Statement(
+                                                        nodeIdGenerator.next(),
+                                                        new DirectAssignmentValue(
+                                                                nodeIdGenerator.next(),
+                                                                s.get(),
+                                                                new NoneValue(nodeIdGenerator.next())
                                                         ),
                                                         false
                                                 ),

@@ -26,6 +26,7 @@ import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -377,6 +378,20 @@ class ParentInjectionVisitorTest {
 
         assertParent(value1, indirectAssignmentValue);
         assertParent(value2, indirectAssignmentValue);
+    }
+
+    @Test
+    void directAssignmentValue() {
+        Value value1 = new NoneValue(nodeIdGenerator.next());
+        DirectAssignmentValue directAssignmentValue = new DirectAssignmentValue(
+                nodeIdGenerator.next(),
+                "id",
+                value1
+        );
+
+        parentInjectionVisitor.visit(directAssignmentValue);
+
+        assertParent(value1, directAssignmentValue);
     }
 
     @Test

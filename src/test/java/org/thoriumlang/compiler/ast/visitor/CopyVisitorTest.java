@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -367,6 +368,18 @@ class CopyVisitorTest {
         Value value = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
+                "identifier",
+                new NoneValue(nodeIdGenerator.next())
+        );
+        Assertions.assertThat(value.accept(visitor()))
+                .isEqualTo(value)
+                .isNotSameAs(value);
+    }
+
+    @Test
+    void visitDirectAssignmentValue() {
+        Value value = new DirectAssignmentValue(
+                nodeIdGenerator.next(),
                 "identifier",
                 new NoneValue(nodeIdGenerator.next())
         );

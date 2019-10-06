@@ -1,5 +1,4 @@
 val a: T = 1,(value (assignmentValue val a : (typeSpec (typeSpecSimple (fqIdentifier T))) = (value (directValue 1))))
-a: T = 1,(value (assignmentValue a : (typeSpec (typeSpecSimple (fqIdentifier T))) = (value (directValue 1))))
 var a = 1,(value (assignmentValue var a = (value (directValue 1))))
 a = 1,(value (assignmentValue a = (value (directValue 1))))
 var a: T = 1,(value (assignmentValue var a : (typeSpec (typeSpecSimple (fqIdentifier T))) = (value (directValue 1))))

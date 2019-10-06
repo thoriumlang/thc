@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.visitor;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -135,6 +136,11 @@ public abstract class IdentityVisitor implements Visitor<Node> {
 
     @Override
     public Node visit(IndirectAssignmentValue node) {
+        return node;
+    }
+
+    @Override
+    public Node visit(DirectAssignmentValue node) {
         return node;
     }
 

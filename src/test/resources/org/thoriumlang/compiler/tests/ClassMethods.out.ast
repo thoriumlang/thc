@@ -5,7 +5,7 @@ PRIVATE emptyMethod1 [] (a: A[], b: B[]) : C[] { none:true }
 PRIVATE method1 [] () : inferred { true:true }
 PRIVATE method2 [] () : inferred { false:true }
 PRIVATE method3 [] () : inferred { "string":true }
-PRIVATE method4 [] () : inferred { VAL inferred:a = 1:true }
+PRIVATE method4 [] () : inferred { DIRECT a = 1:true }
 PRIVATE method5 [] () : inferred { VAR inferred:a = 1:true }
 PRIVATE method6 [] () : inferred { VAL inferred:a = 1:true }
 PRIVATE method7 [] () : inferred { a[]():true }

@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.output.th;
 
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -97,6 +98,14 @@ class ValueVisitor extends BaseVisitor<String> {
     public String visit(IndirectAssignmentValue node) {
         return String.format("%s.%s = %s",
                 node.getIndirectValue().accept(this),
+                node.getIdentifier(),
+                node.getValue().accept(this)
+        );
+    }
+
+    @Override
+    public String visit(DirectAssignmentValue node) {
+        return String.format("%s = %s",
                 node.getIdentifier(),
                 node.getValue().accept(this)
         );

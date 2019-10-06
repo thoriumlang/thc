@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -192,6 +193,14 @@ class BaseVisitorTest {
     void visitIndirectAssignmentValue() {
         Assertions.assertThat(
                 visitor().visit((IndirectAssignmentValue) null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitDrectAssignmentValue() {
+        Assertions.assertThat(
+                visitor().visit((DirectAssignmentValue) null)
         )
                 .isEqualTo(null);
     }
