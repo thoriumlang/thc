@@ -18,11 +18,10 @@ package org.thoriumlang.compiler.antlr4;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 
 class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
     private final NodeIdGenerator nodeIdGenerator;
@@ -39,17 +38,18 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
     @Override
     public Attribute visitAttributeDef(ThoriumParser.AttributeDefContext ctx) {
         if (ctx.VAR() != null) {
-            return new VarAttribute(
+            return new Attribute(
                     nodeIdGenerator.next(),
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
                             new NoneValue(nodeIdGenerator.next()) :
-                            ctx.value().accept(valueVisitor)
+                            ctx.value().accept(valueVisitor),
+                    Mode.VAR
             );
         }
 
-        return new ValAttribute(
+        return new Attribute(
                 nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
@@ -57,7 +57,8 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                         ctx.typeSpec().accept(typeSpecVisitor),
                 ctx.value() == null ?
                         new NoneValue(nodeIdGenerator.next()) :
-                        ctx.value().accept(valueVisitor)
+                        ctx.value().accept(valueVisitor),
+                Mode.VAL
         );
     }
 }

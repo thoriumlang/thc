@@ -21,17 +21,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Root implements Node {
-    private final NodeId nodeId;
+public class Root extends Node {
     private final String namespace;
     private final List<Use> uses;
     private final TopLevelNode topLevelNode;
-    private final Context context;
 
     public Root(NodeId nodeId, String namespace, List<Use> uses, TopLevelNode topLevel) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (namespace == null) {
             throw new NullPointerException("namespace cannot be null");
         }
@@ -41,26 +37,14 @@ public class Root implements Node {
         if (topLevel == null) {
             throw new NullPointerException("topLevel cannot be null");
         }
-        this.nodeId = nodeId;
         this.namespace = namespace;
         this.uses = uses;
         this.topLevelNode = topLevel;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -97,7 +81,7 @@ public class Root implements Node {
             return false;
         }
         Root root = (Root) o;
-        return nodeId.equals(root.nodeId) &&
+        return getNodeId().equals(root.getNodeId()) &&
                 namespace.equals(root.namespace) &&
                 uses.equals(root.uses) &&
                 topLevelNode.equals(root.topLevelNode);
@@ -105,6 +89,6 @@ public class Root implements Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, namespace, uses, topLevelNode);
+        return Objects.hash(getNodeId(), namespace, uses, topLevelNode);
     }
 }

@@ -21,41 +21,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TypeSpecSimple implements TypeSpec {
-    private final NodeId nodeId;
+public class TypeSpecSimple extends TypeSpec {
     private final String type;
     private final List<TypeSpec> arguments;
-    private final Context context;
 
     public TypeSpecSimple(NodeId nodeId, String type, List<TypeSpec> arguments) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
         if (arguments == null) {
             throw new NullPointerException("arguments cannot be null");
         }
-        this.nodeId = nodeId;
         this.type = type;
         this.arguments = arguments;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -86,13 +70,13 @@ public class TypeSpecSimple implements TypeSpec {
             return false;
         }
         TypeSpecSimple that = (TypeSpecSimple) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 type.equals(that.type) &&
                 arguments.equals(that.arguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, type, arguments);
+        return Objects.hash(getNodeId(), type, arguments);
     }
 }

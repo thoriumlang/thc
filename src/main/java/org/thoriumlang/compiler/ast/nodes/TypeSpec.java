@@ -15,5 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface TypeSpec extends Node {
+public abstract class TypeSpec extends Node {
+    protected TypeSpec(NodeId nodeId) {
+        super(nodeId);
+    }
 }

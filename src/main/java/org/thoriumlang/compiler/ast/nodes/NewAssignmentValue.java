@@ -19,15 +19,20 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class BooleanValue extends Value {
-    private final Boolean value;
+public class NewAssignmentValue extends AssignmentValue {
+    private final TypeSpec type;
+    private final Mode mode;
 
-    public BooleanValue(NodeId nodeId, boolean value) {
-        super(nodeId);
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
+    public NewAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value, Mode mode) {
+        super(nodeId, identifier, value);
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
         }
-        this.value = value;
+        if (mode == null) {
+            throw new NullPointerException("mode cannot be null");
+        }
+        this.type = type;
+        this.mode = mode;
     }
 
     @Override
@@ -37,11 +42,21 @@ public class BooleanValue extends Value {
 
     @Override
     public String toString() {
-        return value.toString();
+        return String.format(
+                "%s %s:%s = %s",
+                mode.toString(),
+                type.toString(),
+                getIdentifier(),
+                getValue().toString()
+        );
     }
 
-    public Boolean getValue() {
-        return value;
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Mode getMode() {
+        return mode;
     }
 
     @Override
@@ -52,13 +67,15 @@ public class BooleanValue extends Value {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BooleanValue that = (BooleanValue) o;
+        NewAssignmentValue that = (NewAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                value.equals(that.value);
+                getIdentifier().equals(that.getIdentifier()) &&
+                type.equals(that.type) &&
+                getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), value);
+        return Objects.hash(getNodeId(), getIdentifier(), getValue(), type, mode);
     }
 }

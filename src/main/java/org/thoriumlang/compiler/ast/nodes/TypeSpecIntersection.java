@@ -20,36 +20,20 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.List;
 import java.util.Objects;
 
-public class TypeSpecIntersection implements TypeSpec {
-    private final NodeId nodeId;
+public class TypeSpecIntersection extends TypeSpec {
     private final List<TypeSpec> types;
-    private final Context context;
 
     public TypeSpecIntersection(NodeId nodeId, List<TypeSpec> types) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (types == null) {
             throw new NullPointerException("types cannot be null");
         }
-        this.nodeId = nodeId;
         this.types = types;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -70,12 +54,12 @@ public class TypeSpecIntersection implements TypeSpec {
             return false;
         }
         TypeSpecIntersection that = (TypeSpecIntersection) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 types.equals(that.types);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, types);
+        return Objects.hash(getTypes(), types);
     }
 }

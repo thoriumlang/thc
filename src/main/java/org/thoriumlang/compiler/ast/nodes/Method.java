@@ -21,41 +21,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Method implements Node {
+public class Method extends Node {
     private final MethodSignature signature;
     private final List<Statement> statements;
-    private final NodeId nodeId;
-    private final Context context;
 
     public Method(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (signature == null) {
             throw new NullPointerException("signature cannot be null");
         }
         if (statements == null) {
             throw new NullPointerException("statements cannot be null");
         }
-        this.nodeId = nodeId;
         this.signature = signature;
         this.statements = statements;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -86,13 +70,13 @@ public class Method implements Node {
             return false;
         }
         Method method = (Method) o;
-        return signature.equals(method.signature) &&
-                statements.equals(method.statements) &&
-                nodeId.equals(method.nodeId);
+        return getNodeId().equals(method.getNodeId()) &&
+                signature.equals(method.signature) &&
+                statements.equals(method.statements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(signature, statements, nodeId);
+        return Objects.hash(getNodeId(), signature, statements);
     }
 }

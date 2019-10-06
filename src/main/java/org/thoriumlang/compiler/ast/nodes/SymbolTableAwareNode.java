@@ -18,10 +18,11 @@ package org.thoriumlang.compiler.ast.nodes;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-public class SymbolTableAwareNode implements Node {
+public class SymbolTableAwareNode extends Node {
     private final Node node;
 
     private SymbolTableAwareNode(Node node) {
+        super(node.getNodeId());
         this.node = node;
     }
 
@@ -40,11 +41,6 @@ public class SymbolTableAwareNode implements Node {
     @Override
     public Context getContext() {
         return node.getContext();
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return node.getNodeId();
     }
 
     public SymbolTable setSymbolTable(SymbolTable symbolTable) {

@@ -406,19 +406,13 @@ class ContextTest {
                 .isSameAs(node);
     }
 
-    private static class NodeStub implements Node {
+    private static class NodeStub extends Node {
+        NodeStub() {
+            super(new NodeId(1L));
+        }
+
         @Override
         public <T> T accept(Visitor<? extends T> visitor) {
-            return null;
-        }
-
-        @Override
-        public Context getContext() {
-            return new Context(this);
-        }
-
-        @Override
-        public NodeId getNodeId() {
             return null;
         }
     }

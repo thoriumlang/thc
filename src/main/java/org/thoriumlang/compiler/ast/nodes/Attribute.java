@@ -15,5 +15,85 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface Attribute extends Node {
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+
+import java.util.Objects;
+
+public class Attribute extends Node {
+    private final String identifier;
+    private final TypeSpec type;
+    private final Value value;
+    private final Mode mode;
+
+    public Attribute(NodeId nodeId, String identifier, TypeSpec type, Value value, Mode mode) {
+        super(nodeId);
+        if (identifier == null) {
+            throw new NullPointerException("identifier cannot be null");
+        }
+        if (type == null) {
+            throw new NullPointerException("type cannot be null");
+        }
+        if (value == null) {
+            throw new NullPointerException("value cannot be null");
+        }
+        if (mode == null) {
+            throw new NullPointerException("mode cannot be null");
+        }
+        this.identifier = identifier;
+        this.type = type;
+        this.value = value;
+        this.mode = mode;
+    }
+
+    @Override
+    public <T> T accept(Visitor<? extends T> visitor) {
+        return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s: %s = %s",
+                mode.toString(),
+                identifier,
+                type,
+                value
+        );
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public TypeSpec getType() {
+        return type;
+    }
+
+    public Value getValue() {
+        return value;
+    }
+
+    public Mode getMode() {
+        return mode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attribute attribute = (Attribute) o;
+        return getNodeId().equals(attribute.getNodeId()) &&
+                identifier.equals(attribute.identifier) &&
+                type.equals(attribute.type) &&
+                value.equals(attribute.value) &&
+                mode == attribute.mode;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNodeId(), identifier, type, value, mode);
+    }
 }

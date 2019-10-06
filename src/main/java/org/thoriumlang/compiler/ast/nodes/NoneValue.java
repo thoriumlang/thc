@@ -19,31 +19,14 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class NoneValue implements Value {
-    private final NodeId nodeId;
-    private final Context context;
-
+public class NoneValue extends Value {
     public NoneValue(NodeId nodeId) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
-        this.nodeId = nodeId;
-        this.context = new Context(this);
+        super(nodeId);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -60,11 +43,11 @@ public class NoneValue implements Value {
             return false;
         }
         NoneValue noneValue = (NoneValue) o;
-        return nodeId.equals(noneValue.nodeId);
+        return getNodeId().equals(noneValue.getNodeId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId);
+        return Objects.hash(getNodeId());
     }
 }

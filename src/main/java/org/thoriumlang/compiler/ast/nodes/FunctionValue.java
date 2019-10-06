@@ -21,19 +21,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class FunctionValue implements Value {
-    private final NodeId nodeId;
+public class FunctionValue extends Value {
     private final List<TypeParameter> typeParameters;
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
     private final List<Statement> statements;
-    private final Context context;
 
     public FunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (typeParameters == null) {
             throw new NullPointerException("typeParameters cannot be null");
         }
@@ -46,27 +42,15 @@ public class FunctionValue implements Value {
         if (statements == null) {
             throw new NullPointerException("statements cannot be null");
         }
-        this.nodeId = nodeId;
         this.typeParameters = typeParameters;
         this.parameters = parameters;
         this.returnType = returnType;
         this.statements = statements;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return this.context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -111,7 +95,7 @@ public class FunctionValue implements Value {
             return false;
         }
         FunctionValue that = (FunctionValue) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 typeParameters.equals(that.typeParameters) &&
                 parameters.equals(that.parameters) &&
                 returnType.equals(that.returnType) &&
@@ -120,6 +104,6 @@ public class FunctionValue implements Value {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, typeParameters, parameters, returnType, statements);
+        return Objects.hash(getNodeId(), typeParameters, parameters, returnType, statements);
     }
 }

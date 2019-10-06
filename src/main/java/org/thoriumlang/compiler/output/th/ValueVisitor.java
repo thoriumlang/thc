@@ -21,13 +21,12 @@ import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.helpers.Indent;
 
@@ -78,8 +77,9 @@ class ValueVisitor extends BaseVisitor<String> {
     }
 
     @Override
-    public String visit(VarAssignmentValue node) {
-        return String.format("var %s%s = %s",
+    public String visit(NewAssignmentValue node) {
+        return String.format("%s %s%s = %s",
+                node.getMode().toString().toLowerCase(),
                 node.getIdentifier(),
                 type(node.getType()),
                 node.getValue().accept(this)
@@ -91,15 +91,6 @@ class ValueVisitor extends BaseVisitor<String> {
         return type.isEmpty() ?
                 "" :
                 String.format(": %s", type);
-    }
-
-    @Override
-    public String visit(ValAssignmentValue node) {
-        return String.format("val %s%s = %s",
-                node.getIdentifier(),
-                type(node.getType()),
-                node.getValue().accept(this)
-        );
     }
 
     @Override

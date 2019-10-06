@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.visitor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -26,7 +27,9 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -41,11 +44,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.util.Collections;
@@ -160,7 +159,7 @@ class IdentityVisitorTest {
                         )
                 ),
                 Collections.singletonList(
-                        new VarAttribute(
+                        new Attribute(
                                 nodeIdGenerator.next(),
                                 "attribute",
                                 new TypeSpecSimple(
@@ -168,7 +167,8 @@ class IdentityVisitorTest {
                                         "None",
                                         Collections.emptyList()
                                 ),
-                                new NoneValue(nodeIdGenerator.next())
+                                new NoneValue(nodeIdGenerator.next()),
+                                Mode.VAR
                         )
                 )
         );
@@ -331,24 +331,26 @@ class IdentityVisitorTest {
     }
 
     @Test
-    void visitVarAssignmentValue() {
-        Value value = new VarAssignmentValue(
+    void visitNewAssignmentValue_val() {
+        Value value = new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAL
         );
         Assertions.assertThat(value.accept(visitor()))
                 .isSameAs(value);
     }
 
     @Test
-    void visitValAssignmentValue() {
-        Value value = new ValAssignmentValue(
+    void visitNewAssignmentValue_var() {
+        Value value = new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAR
         );
         Assertions.assertThat(value.accept(visitor()))
                 .isSameAs(value);
@@ -440,8 +442,8 @@ class IdentityVisitorTest {
     }
 
     @Test
-    void visitVarAttribute() {
-        VarAttribute varAttribute = new VarAttribute(
+    void visitAttribute_var() {
+        Attribute attribute = new Attribute(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(
@@ -449,15 +451,16 @@ class IdentityVisitorTest {
                         "None",
                         Collections.emptyList()
                 ),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAR
         );
-        Assertions.assertThat(varAttribute.accept(visitor()))
-                .isSameAs(varAttribute);
+        Assertions.assertThat(attribute.accept(visitor()))
+                .isSameAs(attribute);
     }
 
     @Test
-    void visitValAttribute() {
-        ValAttribute valAttribute = new ValAttribute(
+    void visitAttribute_val() {
+        Attribute attribute = new Attribute(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(
@@ -465,10 +468,11 @@ class IdentityVisitorTest {
                         "None",
                         Collections.emptyList()
                 ),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAL
         );
-        Assertions.assertThat(valAttribute.accept(visitor()))
-                .isSameAs(valAttribute);
+        Assertions.assertThat(attribute.accept(visitor()))
+                .isSameAs(attribute);
     }
 
     private IdentityVisitor visitor() {

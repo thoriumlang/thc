@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.visitor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -26,7 +27,9 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -41,11 +44,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.util.Collections;
@@ -163,7 +162,7 @@ class CopyVisitorTest {
                         )
                 ),
                 Collections.singletonList(
-                        new VarAttribute(
+                        new Attribute(
                                 nodeIdGenerator.next(),
                                 "attribute",
                                 new TypeSpecSimple(
@@ -171,7 +170,8 @@ class CopyVisitorTest {
                                         "None",
                                         Collections.emptyList()
                                 ),
-                                new NoneValue(nodeIdGenerator.next())
+                                new NoneValue(nodeIdGenerator.next()),
+                                Mode.VAL
                         )
                 )
         );
@@ -349,25 +349,13 @@ class CopyVisitorTest {
     }
 
     @Test
-    void visitVarAssignmentValue() {
-        Value value = new VarAssignmentValue(
+    void visitAssignmentValue() {
+        Value value = new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                new NoneValue(nodeIdGenerator.next())
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
-    }
-
-    @Test
-    void visitValAssignmentValue() {
-        Value value = new ValAssignmentValue(
-                nodeIdGenerator.next(),
-                "identifier",
-                new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAR
         );
         Assertions.assertThat(value.accept(visitor()))
                 .isEqualTo(value)
@@ -466,8 +454,8 @@ class CopyVisitorTest {
     }
 
     @Test
-    void visitVarAttribute() {
-        VarAttribute varAttribute = new VarAttribute(
+    void visitAttribute() {
+        Attribute attribute = new Attribute(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(
@@ -475,28 +463,12 @@ class CopyVisitorTest {
                         "None",
                         Collections.emptyList()
                 ),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAL
         );
-        Assertions.assertThat(varAttribute.accept(visitor()))
-                .isEqualTo(varAttribute)
-                .isNotSameAs(varAttribute);
-    }
-
-    @Test
-    void visitValAttribute() {
-        ValAttribute valAttribute = new ValAttribute(
-                nodeIdGenerator.next(),
-                "identifier",
-                new TypeSpecSimple(
-                        nodeIdGenerator.next(),
-                        "None",
-                        Collections.emptyList()
-                ),
-                new NoneValue(nodeIdGenerator.next())
-        );
-        Assertions.assertThat(valAttribute.accept(visitor()))
-                .isEqualTo(valAttribute)
-                .isNotSameAs(valAttribute);
+        Assertions.assertThat(attribute.accept(visitor()))
+                .isEqualTo(attribute)
+                .isNotSameAs(attribute);
     }
 
     private CopyVisitor visitor() {

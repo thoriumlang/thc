@@ -15,25 +15,6 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-import org.thoriumlang.compiler.ast.visitor.Visitor;
-
-public class ValAssignmentValue extends Assignment implements AssignmentValue {
-    public ValAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        super(nodeId, identifier, type, value);
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "VAL %s:%s = %s",
-                getType().toString(),
-                getIdentifier(),
-                getValue().toString()
-        );
-    }
+public enum Mode {
+    VAL, VAR;
 }

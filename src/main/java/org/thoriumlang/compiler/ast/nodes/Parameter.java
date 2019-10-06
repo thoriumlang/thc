@@ -19,41 +19,25 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class Parameter implements Node {
-    private final NodeId nodeId;
+public class Parameter extends Node {
     private final String name;
     private final TypeSpec type;
-    private final Context context;
 
     public Parameter(NodeId nodeId, String name, TypeSpec type) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (name == null) {
             throw new NullPointerException("name cannot be null");
         }
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
-        this.nodeId = nodeId;
         this.name = name;
         this.type = type;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -78,13 +62,13 @@ public class Parameter implements Node {
             return false;
         }
         Parameter parameter = (Parameter) o;
-        return nodeId.equals(parameter.nodeId) &&
+        return getNodeId().equals(parameter.getNodeId()) &&
                 name.equals(parameter.name) &&
                 type.equals(parameter.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, name, type);
+        return Objects.hash(getNodeId(), name, type);
     }
 }

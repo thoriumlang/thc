@@ -15,6 +15,27 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface AssignmentValue extends Value {
+abstract class AssignmentValue extends Value {
+    private final String identifier;
+    private final Value value;
 
+    AssignmentValue(NodeId nodeId, String identifier, Value value) {
+        super(nodeId);
+        if (identifier == null) {
+            throw new NullPointerException("identifier cannot be null");
+        }
+        if (value == null) {
+            throw new NullPointerException("value cannot be null");
+        }
+        this.identifier = identifier;
+        this.value = value;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public Value getValue() {
+        return value;
+    }
 }

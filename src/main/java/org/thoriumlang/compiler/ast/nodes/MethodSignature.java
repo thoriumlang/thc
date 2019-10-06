@@ -21,20 +21,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MethodSignature implements Node {
-    private final NodeId nodeId;
+public class MethodSignature extends Node {
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
     private final List<Parameter> parameters;
     private final TypeSpec returnType;
-    private final Context context;
 
     public MethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -50,28 +46,16 @@ public class MethodSignature implements Node {
         if (returnType == null) {
             throw new NullPointerException("returnType cannot be null");
         }
-        this.nodeId = nodeId;
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
         this.parameters = parameters;
         this.returnType = returnType;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -118,7 +102,7 @@ public class MethodSignature implements Node {
             return false;
         }
         MethodSignature that = (MethodSignature) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 visibility == that.visibility &&
                 name.equals(that.name) &&
                 typeParameters.equals(that.typeParameters) &&
@@ -128,6 +112,6 @@ public class MethodSignature implements Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, visibility, name, typeParameters, parameters, returnType);
+        return Objects.hash(getNodeId(), visibility, name, typeParameters, parameters, returnType);
     }
 }

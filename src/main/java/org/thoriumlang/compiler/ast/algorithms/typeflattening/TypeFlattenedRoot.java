@@ -22,13 +22,14 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
-public class TypeFlattenedRoot implements Node {
+public class TypeFlattenedRoot extends Node {
     private final NodeIdGenerator nodeIdGenerator;
     private final Root root;
     private final Context context;
     private Root flattenedTypesRootCache;
 
     public TypeFlattenedRoot(NodeIdGenerator nodeIdGenerator, Root root) {
+        super(root.getNodeId());
         this.nodeIdGenerator = nodeIdGenerator;
         this.root = root;
         this.context = new Context(this);

@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -26,7 +27,9 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -42,10 +45,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.util.Arrays;
@@ -244,27 +243,29 @@ class NodesMatchingTest {
                                                 ),
                                                 new Statement(
                                                         nodeIdGenerator.next(),
-                                                        new ValAssignmentValue(
+                                                        new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
                                                                 s.get(),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),
                                                                         Collections.emptyList()),
-                                                                new NoneValue(nodeIdGenerator.next())
+                                                                new NoneValue(nodeIdGenerator.next()),
+                                                                Mode.VAL
                                                         ),
                                                         false
                                                 ),
                                                 new Statement(
                                                         nodeIdGenerator.next(),
-                                                        new VarAssignmentValue(
+                                                        new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
                                                                 s.get(),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),
                                                                         Collections.emptyList()),
-                                                                new NoneValue(nodeIdGenerator.next())
+                                                                new NoneValue(nodeIdGenerator.next()),
+                                                                Mode.VAR
                                                         ),
                                                         false
                                                 ),
@@ -280,17 +281,19 @@ class NodesMatchingTest {
                                 )
                         ),
                         Arrays.asList(
-                                new ValAttribute(
+                                new Attribute(
                                         nodeIdGenerator.next(),
                                         s.get(),
                                         new TypeSpecSimple(nodeIdGenerator.next(), s.get(), Collections.emptyList()),
-                                        new NoneValue(nodeIdGenerator.next())
+                                        new NoneValue(nodeIdGenerator.next()),
+                                        Mode.VAL
                                 ),
-                                new VarAttribute(
+                                new Attribute(
                                         nodeIdGenerator.next(),
                                         s.get(),
                                         new TypeSpecSimple(nodeIdGenerator.next(), s.get(), Collections.emptyList()),
-                                        new NoneValue(nodeIdGenerator.next())
+                                        new NoneValue(nodeIdGenerator.next()),
+                                        Mode.VAR
                                 )
                         )
                 )

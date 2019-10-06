@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.visitor;
 
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
@@ -22,6 +23,7 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -31,10 +33,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 
 public class ParentInjectionVisitor extends IdentityVisitor {
     @Override
@@ -106,14 +104,7 @@ public class ParentInjectionVisitor extends IdentityVisitor {
     }
 
     @Override
-    public Node visit(VarAssignmentValue node) {
-        setParentRecursively(node.getType(), node);
-        setParentRecursively(node.getValue(), node);
-        return node;
-    }
-
-    @Override
-    public Node visit(ValAssignmentValue node) {
+    public Node visit(NewAssignmentValue node) {
         setParentRecursively(node.getType(), node);
         setParentRecursively(node.getValue(), node);
         return node;
@@ -163,14 +154,7 @@ public class ParentInjectionVisitor extends IdentityVisitor {
     }
 
     @Override
-    public Node visit(VarAttribute node) {
-        setParentRecursively(node.getType(), node);
-        setParentRecursively(node.getValue(), node);
-        return node;
-    }
-
-    @Override
-    public Node visit(ValAttribute node) {
+    public Node visit(Attribute node) {
         setParentRecursively(node.getType(), node);
         setParentRecursively(node.getValue(), node);
         return node;

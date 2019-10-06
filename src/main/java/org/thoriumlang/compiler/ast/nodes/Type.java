@@ -21,20 +21,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Type implements TopLevelNode {
-    private final NodeId nodeId;
+public class Type extends TopLevelNode {
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
     private final TypeSpec superType;
     private final List<MethodSignature> methods;
-    private final Context context;
 
     public Type(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<MethodSignature> methods) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId);
         if (visibility == null) {
             throw new NullPointerException("visibility cannot be null");
         }
@@ -50,28 +46,16 @@ public class Type implements TopLevelNode {
         if (methods == null) {
             throw new NullPointerException("methods cannot be null");
         }
-        this.nodeId = nodeId;
         this.visibility = visibility;
         this.name = name;
         this.typeParameters = typeParameters;
         this.superType = superType;
         this.methods = methods;
-        this.context = new Context(this);
     }
 
     @Override
     public <T> T accept(Visitor<? extends T> visitor) {
         return visitor.visit(this);
-    }
-
-    @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
     }
 
     @Override
@@ -120,7 +104,7 @@ public class Type implements TopLevelNode {
             return false;
         }
         Type type = (Type) o;
-        return nodeId.equals(type.nodeId) &&
+        return getNodeId().equals(type.getNodeId()) &&
                 visibility == type.visibility &&
                 name.equals(type.name) &&
                 typeParameters.equals(type.typeParameters) &&
@@ -130,6 +114,6 @@ public class Type implements TopLevelNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, visibility, name, typeParameters, superType, methods);
+        return Objects.hash(getNodeId(), visibility, name, typeParameters, superType, methods);
     }
 }

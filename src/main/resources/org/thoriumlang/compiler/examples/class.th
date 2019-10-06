@@ -15,6 +15,8 @@ class MyClass[T] {
 
     logger: Logger = Logger();
 
+    var callCount: Number = 0;
+
     val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
 
     doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {

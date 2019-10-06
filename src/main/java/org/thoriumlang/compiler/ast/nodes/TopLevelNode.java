@@ -15,5 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-public interface TopLevelNode extends Node {
+public abstract class TopLevelNode extends Node {
+    TopLevelNode(NodeId nodeId) {
+        super(nodeId);
+    }
 }

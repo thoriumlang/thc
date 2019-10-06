@@ -19,31 +19,15 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class IndirectAssignmentValue implements Value {
-    private final NodeId nodeId;
+public class IndirectAssignmentValue extends AssignmentValue {
     private final Value indirectValue;
-    private final String identifier;
-    private final Value value;
-    private final Context context;
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
+        super(nodeId, identifier, value);
         if (indirectValue == null) {
             throw new NullPointerException("indirectValue cannot be null");
         }
-        if (identifier == null) {
-            throw new NullPointerException("identifier cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.nodeId = nodeId;
         this.indirectValue = indirectValue;
-        this.identifier = identifier;
-        this.value = value;
-        this.context = new Context(this);
     }
 
     @Override
@@ -52,35 +36,17 @@ public class IndirectAssignmentValue implements Value {
     }
 
     @Override
-    public Context getContext() {
-        return context;
-    }
-
-    @Override
-    public NodeId getNodeId() {
-        return nodeId;
-    }
-
-    @Override
     public String toString() {
         return String.format(
                 "INDIRECT %s.%s = %s",
                 indirectValue.toString(),
-                identifier,
-                value.toString()
+                getIdentifier(),
+                getValue().toString()
         );
     }
 
     public Value getIndirectValue() {
         return indirectValue;
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public Value getValue() {
-        return value;
     }
 
     @Override
@@ -92,14 +58,14 @@ public class IndirectAssignmentValue implements Value {
             return false;
         }
         IndirectAssignmentValue that = (IndirectAssignmentValue) o;
-        return nodeId.equals(that.nodeId) &&
+        return getNodeId().equals(that.getNodeId()) &&
                 indirectValue.equals(that.indirectValue) &&
-                identifier.equals(that.identifier) &&
-                value.equals(that.value);
+                getIdentifier().equals(that.getIdentifier()) &&
+                getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId, indirectValue, identifier, value);
+        return Objects.hash(getNodeId(), getIndirectValue(), getValue(), indirectValue);
     }
 }
