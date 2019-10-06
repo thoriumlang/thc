@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -24,6 +25,7 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -39,10 +41,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.collections.Lists;
 
@@ -211,16 +209,7 @@ public class NodesMatching implements Visitor<List<Node>> {
     }
 
     @Override
-    public List<Node> visit(VarAssignmentValue node) {
-        return Lists.merge(
-                matches(node),
-                recursiveMatch(node.getType()),
-                recursiveMatch(node.getValue())
-        );
-    }
-
-    @Override
-    public List<Node> visit(ValAssignmentValue node) {
+    public List<Node> visit(NewAssignmentValue node) {
         return Lists.merge(
                 matches(node),
                 recursiveMatch(node.getType()),
@@ -284,16 +273,7 @@ public class NodesMatching implements Visitor<List<Node>> {
     }
 
     @Override
-    public List<Node> visit(VarAttribute node) {
-        return Lists.merge(
-                matches(node),
-                recursiveMatch(node.getType()),
-                recursiveMatch(node.getValue())
-        );
-    }
-
-    @Override
-    public List<Node> visit(ValAttribute node) {
+    public List<Node> visit(Attribute node) {
         return Lists.merge(
                 matches(node),
                 recursiveMatch(node.getType()),

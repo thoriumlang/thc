@@ -22,7 +22,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 import java.util.Collections;
 
-class VarAttributeTest {
+class NewAssignmentValueTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -33,11 +33,12 @@ class VarAttributeTest {
     @Test
     void constructor_nodeId() {
         try {
-            new VarAttribute(
+            new NewAssignmentValue(
                     null,
                     "identifier",
-                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    new NoneValue(nodeIdGenerator.next())
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAR
             );
         }
         catch (NullPointerException e) {
@@ -51,11 +52,12 @@ class VarAttributeTest {
     @Test
     void constructor_identifier() {
         try {
-            new VarAttribute(
+            new NewAssignmentValue(
                     nodeIdGenerator.next(),
                     null,
-                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    new NoneValue(nodeIdGenerator.next())
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAR
             );
         }
         catch (NullPointerException e) {
@@ -69,11 +71,12 @@ class VarAttributeTest {
     @Test
     void constructor_type() {
         try {
-            new VarAttribute(
+            new NewAssignmentValue(
                     nodeIdGenerator.next(),
                     "identifier",
                     null,
-                    new NoneValue(nodeIdGenerator.next())
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAR
             );
         }
         catch (NullPointerException e) {
@@ -87,11 +90,12 @@ class VarAttributeTest {
     @Test
     void constructor_value() {
         try {
-            new VarAttribute(
+            new NewAssignmentValue(
                     nodeIdGenerator.next(),
                     "identifier",
-                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    null
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    null,
+                    Mode.VAR
             );
         }
         catch (NullPointerException e) {
@@ -103,48 +107,71 @@ class VarAttributeTest {
     }
 
     @Test
+    void constructor_mode() {
+        try {
+            new NewAssignmentValue(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                    new NoneValue(nodeIdGenerator.next()),
+                    null
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("mode cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void accept() {
         Assertions.assertThat(
-                new VarAttribute(
+                new NewAssignmentValue(
                         nodeIdGenerator.next(),
                         "identifier",
-                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAR
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visit(VarAttribute node) {
-                                return String.format("%s:%s:%s:%s",
+                            public String visit(NewAssignmentValue node) {
+                                return String.format("%s:%s:%s:%s:%s",
                                         node.getNodeId(),
+                                        node.getMode().toString(),
+                                        node.getType().toString(),
                                         node.getIdentifier(),
-                                        node.getType(),
-                                        node.getValue()
+                                        node.getValue().toString()
                                 );
                             }
                         })
-        ).isEqualTo("#1:identifier:None[]:none");
+        ).isEqualTo("#1:VAR:T[]:identifier:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new VarAttribute(
+                new NewAssignmentValue(
                         nodeIdGenerator.next(),
                         "identifier",
-                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAL
                 ).toString()
-        ).isEqualTo("VAR identifier: None[] = none");
+        ).isEqualTo("VAL T[]:identifier = none");
     }
 
     @Test
     void getContext() {
         Assertions.assertThat(
-                new VarAttribute(
+                new NewAssignmentValue(
                         nodeIdGenerator.next(),
                         "identifier",
-                        new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAR
                 ).getContext()
         ).isNotNull();
     }

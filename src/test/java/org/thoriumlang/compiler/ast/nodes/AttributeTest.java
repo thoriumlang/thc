@@ -22,7 +22,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 import java.util.Collections;
 
-public class ValAttributeTest {
+class AttributeTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -33,11 +33,12 @@ public class ValAttributeTest {
     @Test
     void constructor_nodeId() {
         try {
-            new ValAttribute(
+            new Attribute(
                     null,
-                    null,
+                    "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    new NoneValue(nodeIdGenerator.next())
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAL
             );
         }
         catch (NullPointerException e) {
@@ -51,11 +52,12 @@ public class ValAttributeTest {
     @Test
     void constructor_identifier() {
         try {
-            new ValAttribute(
+            new Attribute(
                     nodeIdGenerator.next(),
                     null,
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    new NoneValue(nodeIdGenerator.next())
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAL
             );
         }
         catch (NullPointerException e) {
@@ -69,11 +71,12 @@ public class ValAttributeTest {
     @Test
     void constructor_type() {
         try {
-            new ValAttribute(
+            new Attribute(
                     nodeIdGenerator.next(),
                     "identifier",
                     null,
-                    new NoneValue(nodeIdGenerator.next())
+                    new NoneValue(nodeIdGenerator.next()),
+                    Mode.VAL
             );
         }
         catch (NullPointerException e) {
@@ -87,11 +90,12 @@ public class ValAttributeTest {
     @Test
     void constructor_value() {
         try {
-            new ValAttribute(
+            new Attribute(
                     nodeIdGenerator.next(),
                     "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                    null
+                    null,
+                    Mode.VAL
             );
         }
         catch (NullPointerException e) {
@@ -103,48 +107,71 @@ public class ValAttributeTest {
     }
 
     @Test
+    void constructor_mode() {
+        try {
+            new Attribute(
+                    nodeIdGenerator.next(),
+                    "identifier",
+                    new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
+                    new NoneValue(nodeIdGenerator.next()),
+                    null
+            );
+        }
+        catch (NullPointerException e) {
+            Assertions.assertThat(e.getMessage())
+                    .isEqualTo("mode cannot be null");
+            return;
+        }
+        Assertions.fail("NPE not thrown");
+    }
+
+    @Test
     void accept() {
         Assertions.assertThat(
-                new ValAttribute(
+                new Attribute(
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAL
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visit(ValAttribute node) {
-                                return String.format("%s:%s:%s:%s",
+                            public String visit(Attribute node) {
+                                return String.format("%s:%s:%s:%s:%s",
                                         node.getNodeId(),
+                                        node.getMode().toString(),
                                         node.getIdentifier(),
                                         node.getType(),
                                         node.getValue()
                                 );
                             }
                         })
-        ).isEqualTo("#1:identifier:None[]:none");
+        ).isEqualTo("#1:VAL:identifier:None[]:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new ValAttribute(
+                new Attribute(
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAR
                 ).toString()
-        ).isEqualTo("VAL identifier: None[] = none");
+        ).isEqualTo("VAR identifier: None[] = none");
     }
 
     @Test
     void getContext() {
         Assertions.assertThat(
-                new ValAttribute(
+                new Attribute(
                         nodeIdGenerator.next(),
                         "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                        new NoneValue(nodeIdGenerator.next())
+                        new NoneValue(nodeIdGenerator.next()),
+                        Mode.VAL
                 ).getContext()
         ).isNotNull();
     }

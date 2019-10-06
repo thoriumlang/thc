@@ -212,11 +212,12 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute(
+                                new Attribute(
                                         nodeIdGenerator.next(),
                                         "attribute",
                                         new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
-                                        new NoneValue(nodeIdGenerator.next())
+                                        new NoneValue(nodeIdGenerator.next()),
+                                        Mode.VAR
                                 )
                         )
                 ).accept(new BaseVisitor<String>() {
@@ -283,7 +284,7 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute(
+                                new Attribute(
                                         nodeIdGenerator.next(),
                                         "attribute",
                                         new TypeSpecSimple(
@@ -291,7 +292,8 @@ class ClassTest {
                                                 "None",
                                                 Collections.emptyList()
                                         ),
-                                        new NoneValue(nodeIdGenerator.next())
+                                        new NoneValue(nodeIdGenerator.next()),
+                                        Mode.VAR
                                 )
                         )
                 ).toString()
@@ -335,7 +337,7 @@ class ClassTest {
                                 )
                         ),
                         Collections.singletonList(
-                                new VarAttribute(
+                                new Attribute(
                                         nodeIdGenerator.next(),
                                         "attribute",
                                         new TypeSpecSimple(
@@ -343,7 +345,8 @@ class ClassTest {
                                                 "None",
                                                 Collections.emptyList()
                                         ),
-                                        new NoneValue(nodeIdGenerator.next())
+                                        new NoneValue(nodeIdGenerator.next()),
+                                        Mode.VAR
                                 )
                         )
                 ).toString()

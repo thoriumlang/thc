@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.visitor;
 
+import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -24,6 +25,7 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
@@ -38,10 +40,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 
 public interface Visitor<T> {
     T visit(Root node);
@@ -78,9 +76,7 @@ public interface Visitor<T> {
 
     T visit(IdentifierValue node);
 
-    T visit(VarAssignmentValue node);
-
-    T visit(ValAssignmentValue node);
+    T visit(NewAssignmentValue node);
 
     T visit(IndirectAssignmentValue node);
 
@@ -94,7 +90,5 @@ public interface Visitor<T> {
 
     T visit(Method node);
 
-    T visit(VarAttribute node);
-
-    T visit(ValAttribute node);
+    T visit(Attribute node);
 }

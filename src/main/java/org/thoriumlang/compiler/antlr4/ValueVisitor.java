@@ -22,7 +22,9 @@ import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -30,9 +32,7 @@ import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
 import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.Collections;
@@ -126,7 +126,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
             );
         }
         if (ctx.VAR() != null) {
-            return new VarAssignmentValue(
+            return new NewAssignmentValue(
                     nodeIdGenerator.next(),
                     ctx.IDENTIFIER().getSymbol().getText(),
                     ctx.typeSpec() == null ?
@@ -134,16 +134,18 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             ctx.typeSpec().accept(typeSpecVisitor),
                     ctx.value() == null ?
                             new NoneValue(nodeIdGenerator.next()) :
-                            ctx.value().accept(this)
+                            ctx.value().accept(this),
+                    Mode.VAR
             );
         }
-        return new ValAssignmentValue(
+        return new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 ctx.IDENTIFIER().getSymbol().getText(),
                 ctx.typeSpec() == null ?
                         new TypeSpecInferred(nodeIdGenerator.next()) :
                         ctx.typeSpec().accept(typeSpecVisitor),
-                ctx.value().accept(this)
+                ctx.value().accept(this),
+                Mode.VAL
         );
     }
 

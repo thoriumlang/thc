@@ -24,7 +24,9 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -42,11 +44,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 
 import java.util.stream.Collectors;
 
@@ -208,22 +206,13 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visit(VarAssignmentValue node) {
-        return new VarAssignmentValue(
+    public Node visit(NewAssignmentValue node) {
+        return new NewAssignmentValue(
                 node.getNodeId(),
                 node.getIdentifier(),
                 (TypeSpec) node.getType().accept(this),
-                (Value) node.getValue().accept(this)
-        );
-    }
-
-    @Override
-    public Node visit(ValAssignmentValue node) {
-        return new ValAssignmentValue(
-                node.getNodeId(),
-                node.getIdentifier(),
-                (TypeSpec) node.getType().accept(this),
-                (Value) node.getValue().accept(this)
+                (Value) node.getValue().accept(this),
+                node.getMode()
         );
     }
 
@@ -298,22 +287,13 @@ public abstract class CopyVisitor implements Visitor<Node> {
     }
 
     @Override
-    public Node visit(VarAttribute node) {
-        return new VarAttribute(
+    public Node visit(Attribute node) {
+        return new Attribute(
                 node.getNodeId(),
                 node.getIdentifier(),
                 (TypeSpec) node.getType().accept(this),
-                (Value) node.getValue().accept(this)
-        );
-    }
-
-    @Override
-    public Node visit(ValAttribute node) {
-        return new ValAttribute(
-                node.getNodeId(),
-                node.getIdentifier(),
-                (TypeSpec) node.getType().accept(this),
-                (Value) node.getValue().accept(this)
+                (Value) node.getValue().accept(this),
+                node.getMode()
         );
     }
 }

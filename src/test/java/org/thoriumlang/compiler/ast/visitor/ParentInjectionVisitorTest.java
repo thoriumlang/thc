@@ -31,7 +31,9 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
+import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
+import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
@@ -47,11 +49,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.nodes.ValAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.ValAttribute;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.ast.nodes.VarAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.VarAttribute;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.io.IOException;
@@ -167,11 +165,12 @@ class ParentInjectionVisitorTest {
                 ),
                 Collections.emptyList()
         );
-        Attribute attribute = new VarAttribute(
+        Attribute attribute = new Attribute(
                 nodeIdGenerator.next(),
                 "attributeName",
                 new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
-                new NoneValue(nodeIdGenerator.next())
+                new NoneValue(nodeIdGenerator.next()),
+                Mode.VAR
         );
         Class clazz = new Class(
                 nodeIdGenerator.next(),
@@ -258,37 +257,21 @@ class ParentInjectionVisitorTest {
     }
 
     @Test
-    void varAttribute() {
+    void attribute() {
         TypeSpec type = new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList());
         Value value = new NoneValue(nodeIdGenerator.next());
-        VarAttribute varAttribute = new VarAttribute(
+        Attribute attribute = new Attribute(
                 nodeIdGenerator.next(),
                 "identifier",
                 type,
-                value
+                value,
+                Mode.VAR
         );
 
-        parentInjectionVisitor.visit(varAttribute);
+        parentInjectionVisitor.visit(attribute);
 
-        assertParent(type, varAttribute);
-        assertParent(value, varAttribute);
-    }
-
-    @Test
-    void valAttribute() {
-        TypeSpec type = new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList());
-        Value value = new NoneValue(nodeIdGenerator.next());
-        ValAttribute valAttribute = new ValAttribute(
-                nodeIdGenerator.next(),
-                "identifier",
-                type,
-                value
-        );
-
-        parentInjectionVisitor.visit(valAttribute);
-
-        assertParent(type, valAttribute);
-        assertParent(value, valAttribute);
+        assertParent(type, attribute);
+        assertParent(value, attribute);
     }
 
     @Test
@@ -362,37 +345,21 @@ class ParentInjectionVisitorTest {
     }
 
     @Test
-    void varAssignmentValue() {
+    void newAssignmentValue() {
         TypeSpec typeSpec = new TypeSpecSimple(nodeIdGenerator.next(), "T1", Collections.emptyList());
         Value value = new NoneValue(nodeIdGenerator.next());
-        VarAssignmentValue varAssignmentValue = new VarAssignmentValue(
+        NewAssignmentValue newAssignmentValue = new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "id",
                 typeSpec,
-                value
+                value,
+                Mode.VAR
         );
 
-        parentInjectionVisitor.visit(varAssignmentValue);
+        parentInjectionVisitor.visit(newAssignmentValue);
 
-        assertParent(typeSpec, varAssignmentValue);
-        assertParent(value, varAssignmentValue);
-    }
-
-    @Test
-    void valAssignmentValue() {
-        TypeSpec typeSpec = new TypeSpecSimple(nodeIdGenerator.next(), "T1", Collections.emptyList());
-        Value value = new NoneValue(nodeIdGenerator.next());
-        ValAssignmentValue valAssignmentValue = new ValAssignmentValue(
-                nodeIdGenerator.next(),
-                "id",
-                typeSpec,
-                value
-        );
-
-        parentInjectionVisitor.visit(valAssignmentValue);
-
-        assertParent(typeSpec, valAssignmentValue);
-        assertParent(value, valAssignmentValue);
+        assertParent(typeSpec, newAssignmentValue);
+        assertParent(value, newAssignmentValue);
     }
 
     @Test

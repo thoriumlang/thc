@@ -87,7 +87,7 @@ class SymbolTableAwareNodeTest {
         NoneValue value = new NoneValue(nodeIdGenerator.next());
 
         SymbolTableAwareNode childNode = SymbolTableAwareNode.wrap(value);
-        SymbolTableAwareNode parentNode = SymbolTableAwareNode.wrap(new ValAssignmentValue(
+        SymbolTableAwareNode parentNode = SymbolTableAwareNode.wrap(new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "id",
                 new TypeSpecSimple(
@@ -95,7 +95,8 @@ class SymbolTableAwareNodeTest {
                         "T",
                         Collections.emptyList()
                 ),
-                value
+                value,
+                Mode.VAL
         ));
 
         value.getContext().put("parent", Node.class, parentNode);

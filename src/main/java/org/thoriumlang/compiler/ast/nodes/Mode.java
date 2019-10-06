@@ -15,24 +15,6 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
-import org.thoriumlang.compiler.ast.visitor.Visitor;
-
-public class ValAttribute extends Attribute {
-    public ValAttribute(NodeId nodeId, String identifier, TypeSpec type, Value value) {
-        super(nodeId, identifier, type, value);
-    }
-
-    @Override
-    public <T> T accept(Visitor<? extends T> visitor) {
-        return visitor.visit(this);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("VAL %s: %s = %s",
-                getIdentifier(),
-                getType(),
-                getValue()
-        );
-    }
+public enum Mode {
+    VAL, VAR;
 }
