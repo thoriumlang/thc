@@ -24,7 +24,6 @@ import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
-import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
