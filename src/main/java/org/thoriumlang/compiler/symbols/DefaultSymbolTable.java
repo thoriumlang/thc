@@ -31,9 +31,6 @@ public class DefaultSymbolTable implements SymbolTable {
     private final Set<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
-    @SuppressWarnings(value = {
-            "squid:S2245" // the hashCode value doesn't need to be given by a secure random number generator
-    })
     DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
         this.hashCode = new Random().nextInt();
         this.name = name;
