@@ -63,6 +63,20 @@ class ContextTest {
     }
 
     @Test
+    void putAll() {
+        Context sourceContext = new NodeStub().getContext();
+        sourceContext.put(Object.class, new Object());
+        sourceContext.put("someStrKey", String.class, "someStrVal");
+
+        Context destinationContext = new NodeStub().getContext();
+        destinationContext.put(Object.class, new Object());
+        destinationContext.putAll(sourceContext);
+
+        Assertions.assertThat(destinationContext.get(Object.class))
+                .get()
+                .isSameAs(sourceContext.get(Object.class).orElse(null));
+    }
+    @Test
     void get_keyType_nullKey() {
         Context context = new NodeStub().getContext();
         try {
@@ -389,7 +403,6 @@ class ContextTest {
         Assertions.assertThat(context.contains(String.class))
                 .isFalse();
     }
-
 
     @Test
     void contains_type_typeAbsent() {

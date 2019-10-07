@@ -31,6 +31,7 @@ import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Mode;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
+import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
@@ -45,7 +46,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.nodes.Value;
+import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.util.Collections;
@@ -59,8 +60,27 @@ class CopyVisitorTest {
     }
 
     @Test
+    void visitUse() {
+        Node node = new Use(nodeIdGenerator.next(), "from", "to")
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
+    }
+
+    private void makeAssertions(Node node) {
+        Assertions.assertThat(node.accept(visitor()))
+                .isEqualTo(node)
+                .isNotSameAs(node)
+                .extracting(Node::getContext)
+                .extracting(c -> c.get(Object.class))
+                .isEqualTo(node.getContext().get(Object.class));
+    }
+
+    @Test
     void visitRoot_type() {
-        Root root = new Root(
+        Node node = new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(), // FIXME
@@ -76,15 +96,18 @@ class CopyVisitorTest {
                         ),
                         Collections.emptyList()
                 )
-        );
-        Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root)
-                .isNotSameAs(root);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
+
 
     @Test
     void visitRoot_clazz() {
-        Root root = new Root(
+        Node node = new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(), // FIXME
@@ -101,15 +124,17 @@ class CopyVisitorTest {
                         Collections.emptyList(),
                         Collections.emptyList()
                 )
-        );
-        Assertions.assertThat(root.accept(visitor()))
-                .isEqualTo(root)
-                .isNotSameAs(root);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitType() {
-        Type type = new Type(
+        Node node = new Type(
                 nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "name",
@@ -120,15 +145,17 @@ class CopyVisitorTest {
                         Collections.emptyList()
                 ),
                 Collections.emptyList()
-        );
-        Assertions.assertThat(type.accept(visitor()))
-                .isEqualTo(type)
-                .isNotSameAs(type);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitClass() {
-        Class clazz = new Class(
+        Node node = new Class(
                 nodeIdGenerator.next(),
                 Visibility.NAMESPACE,
                 "name",
@@ -175,15 +202,17 @@ class CopyVisitorTest {
                                 Mode.VAL
                         )
                 )
-        );
-        Assertions.assertThat(clazz.accept(visitor()))
-                .isEqualTo(clazz)
-                .isNotSameAs(clazz);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeIntersection() {
-        TypeSpecIntersection typeSpec = new TypeSpecIntersection(
+        Node node = new TypeSpecIntersection(
                 nodeIdGenerator.next(),
                 Collections.singletonList(
                         new TypeSpecSimple(
@@ -192,15 +221,17 @@ class CopyVisitorTest {
                                 Collections.emptyList()
                         )
                 )
-        );
-        Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeUnion() {
-        TypeSpecUnion typeSpec = new TypeSpecUnion(
+        Node node = new TypeSpecUnion(
                 nodeIdGenerator.next(),
                 Collections.singletonList(
                         new TypeSpecSimple(
@@ -209,27 +240,31 @@ class CopyVisitorTest {
                                 Collections.emptyList()
                         )
                 )
-        );
-        Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeSingle() {
-        TypeSpecSimple typeSpec = new TypeSpecSimple(
+        Node node = new TypeSpecSimple(
                 nodeIdGenerator.next(),
                 "type",
                 Collections.emptyList()
-        );
-        Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeFunction() {
-        TypeSpecFunction typeSpec = new TypeSpecFunction(
+        Node node = new TypeSpecFunction(
                 nodeIdGenerator.next(),
                 Collections.singletonList(
                         new TypeSpecSimple(
@@ -243,23 +278,27 @@ class CopyVisitorTest {
                         "Object",
                         Collections.emptyList()
                 )
-        );
-        Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeInferred() {
-        TypeSpecInferred typeSpec = new TypeSpecInferred(nodeIdGenerator.next());
-        Assertions.assertThat(typeSpec.accept(visitor()))
-                .isEqualTo(typeSpec)
-                .isNotSameAs(typeSpec);
+        Node node = new TypeSpecInferred(nodeIdGenerator.next())
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitMethodSignature() {
-        MethodSignature methodSignature = new MethodSignature(
+        Node node = new MethodSignature(
                 nodeIdGenerator.next(),
                 Visibility.PRIVATE,
                 "name",
@@ -270,15 +309,17 @@ class CopyVisitorTest {
                         "type",
                         Collections.emptyList()
                 )
-        );
-        Assertions.assertThat(methodSignature.accept(visitor()))
-                .isEqualTo(methodSignature)
-                .isNotSameAs(methodSignature);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitParameter() {
-        Parameter parameter = new Parameter(
+        Node node = new Parameter(
                 nodeIdGenerator.next(),
                 "name",
                 new TypeSpecSimple(
@@ -286,162 +327,192 @@ class CopyVisitorTest {
                         "type",
                         Collections.emptyList()
                 )
-        );
-        Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter)
-                .isNotSameAs(parameter);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitTypeParameter() {
-        TypeParameter parameter = new TypeParameter(nodeIdGenerator.next(), "name");
-        Assertions.assertThat(parameter.accept(visitor()))
-                .isEqualTo(parameter)
-                .isNotSameAs(parameter);
+        Node node = new TypeParameter(nodeIdGenerator.next(), "name")
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitStringValue() {
-        Value value = new StringValue(nodeIdGenerator.next(), "value");
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new StringValue(nodeIdGenerator.next(), "value")
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitNumberValue() {
-        Value value = new NumberValue(nodeIdGenerator.next(), "1");
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new NumberValue(nodeIdGenerator.next(), "1")
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitBooleanValue_true() {
-        Value value = new BooleanValue(nodeIdGenerator.next(), true);
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new BooleanValue(nodeIdGenerator.next(), true)
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitBooleanValue_false() {
-        Value value = new BooleanValue(nodeIdGenerator.next(), false);
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new BooleanValue(nodeIdGenerator.next(), false)
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitNoneValue() {
-        Value value = new NoneValue(nodeIdGenerator.next());
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new NoneValue(nodeIdGenerator.next())
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
 
     @Test
     void visitIdentifierValue() {
-        Value value = new IdentifierValue(nodeIdGenerator.next(), "id");
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        Node node = new IdentifierValue(nodeIdGenerator.next(), "id")
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitAssignmentValue() {
-        Value value = new NewAssignmentValue(
+        Node node = new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAR
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitIndirectAssignmentValue() {
-        Value value = new IndirectAssignmentValue(
+        Node node = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
                 "identifier",
                 new NoneValue(nodeIdGenerator.next())
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitDirectAssignmentValue() {
-        Value value = new DirectAssignmentValue(
+        Node node = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 new NoneValue(nodeIdGenerator.next())
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitMethodCallValue() {
-        Value value = new MethodCallValue(
+        Node node = new MethodCallValue(
                 nodeIdGenerator.next(),
                 "identifier",
                 Collections.emptyList(),
                 Collections.emptyList()
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitNestedValue() {
-        Value value = new NestedValue(
+        Node node = new NestedValue(
                 nodeIdGenerator.next(),
                 new BooleanValue(nodeIdGenerator.next(), true),
                 new BooleanValue(nodeIdGenerator.next(), false)
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitFunctionValue() {
-        Value value = new FunctionValue(
+        Node node = new FunctionValue(
                 nodeIdGenerator.next(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 new TypeSpecSimple(nodeIdGenerator.next(), "None", Collections.emptyList()),
                 Collections.emptyList()
-        );
-        Assertions.assertThat(value.accept(visitor()))
-                .isEqualTo(value)
-                .isNotSameAs(value);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitStatement() {
-        Statement statement = new Statement(
+        Node node = new Statement(
                 nodeIdGenerator.next(),
                 new BooleanValue(nodeIdGenerator.next(), true),
                 false
-        );
-        Assertions.assertThat(statement.accept(visitor()))
-                .isEqualTo(statement)
-                .isNotSameAs(statement);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitMethod() {
-        Method method = new Method(
+        Node node = new Method(
                 nodeIdGenerator.next(),
                 new MethodSignature(
                         nodeIdGenerator.next(),
@@ -460,15 +531,17 @@ class CopyVisitorTest {
                         new BooleanValue(nodeIdGenerator.next(), true),
                         false
                 ))
-        );
-        Assertions.assertThat(method.accept(visitor()))
-                .isEqualTo(method)
-                .isNotSameAs(method);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     @Test
     void visitAttribute() {
-        Attribute attribute = new Attribute(
+        Node node = new Attribute(
                 nodeIdGenerator.next(),
                 "identifier",
                 new TypeSpecSimple(
@@ -478,10 +551,12 @@ class CopyVisitorTest {
                 ),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
-        );
-        Assertions.assertThat(attribute.accept(visitor()))
-                .isEqualTo(attribute)
-                .isNotSameAs(attribute);
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
     }
 
     private CopyVisitor visitor() {

@@ -138,6 +138,11 @@ public class Context {
         return map.containsKey(key);
     }
 
+    public Context putAll(Context other) {
+        map.putAll(other.map);
+        return this;
+    }
+
     private static class Key {
         private final String name;
         private final java.lang.Class type;

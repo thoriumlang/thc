@@ -58,14 +58,18 @@ public abstract class CopyVisitor implements Visitor<Node> {
                         .map(u -> (Use) u.accept(this))
                         .collect(Collectors.toList()),
                 (TopLevelNode) node.getTopLevelNode().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(Use node) {
-        return new Use(
-                node.getNodeId(), node.getFrom(), node.getTo()
-        );
+        return new Use(node.getNodeId(), node.getFrom(), node.getTo())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -81,7 +85,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getMethods().stream()
                         .map(m -> (MethodSignature) m.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -100,7 +107,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getAttributes().stream()
                         .map(a -> (Attribute) a.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -110,7 +120,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getTypes().stream()
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -120,7 +133,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getTypes().stream()
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -131,7 +147,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getArguments().stream()
                         .map(a -> (TypeSpec) a.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -142,12 +161,18 @@ public abstract class CopyVisitor implements Visitor<Node> {
                         .map(t -> (TypeSpec) t.accept(this))
                         .collect(Collectors.toList()),
                 (TypeSpec) node.getReturnType().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(TypeSpecInferred node) {
-        return new TypeSpecInferred(node.getNodeId());
+        return new TypeSpecInferred(node.getNodeId())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -163,7 +188,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                         .map(p -> (Parameter) p.accept(this))
                         .collect(Collectors.toList()),
                 (TypeSpec) node.getReturnType().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -172,37 +200,58 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getNodeId(),
                 node.getName(),
                 (TypeSpec) node.getType().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(TypeParameter node) {
-        return new TypeParameter(node.getNodeId(), node.getName());
+        return new TypeParameter(node.getNodeId(), node.getName())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(StringValue node) {
-        return new StringValue(node.getNodeId(), node.getValue());
+        return new StringValue(node.getNodeId(), node.getValue())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(NumberValue node) {
-        return new NumberValue(node.getNodeId(), node.getValue());
+        return new NumberValue(node.getNodeId(), node.getValue())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(BooleanValue node) {
-        return new BooleanValue(node.getNodeId(), node.getValue());
+        return new BooleanValue(node.getNodeId(), node.getValue())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(NoneValue node) {
-        return new NoneValue(node.getNodeId());
+        return new NoneValue(node.getNodeId())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
     public Node visit(IdentifierValue node) {
-        return new IdentifierValue(node.getNodeId(), node.getValue());
+        return new IdentifierValue(node.getNodeId(), node.getValue())
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -213,7 +262,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -223,7 +275,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 (Value) node.getIndirectValue().accept(this),
                 node.getIdentifier(),
                 (Value) node.getValue().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -232,7 +287,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getNodeId(),
                 node.getIdentifier(),
                 (Value) node.getValue().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -246,7 +304,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getMethodArguments().stream()
                         .map(v -> (Value) v.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -255,7 +316,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getNodeId(),
                 (Value) node.getOuter().accept(this),
                 (Value) node.getInner().accept(this)
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -272,7 +336,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getStatements().stream()
                         .map(s -> (Statement) s.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -281,7 +348,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getNodeId(),
                 (Value) node.getValue().accept(this),
                 node.isLast()
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -292,7 +362,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 node.getStatements().stream()
                         .map(s -> (Statement) s.accept(this))
                         .collect(Collectors.toList())
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 
     @Override
@@ -303,6 +376,9 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()
-        );
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
     }
 }
