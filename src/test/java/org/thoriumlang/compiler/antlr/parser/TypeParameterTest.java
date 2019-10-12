@@ -23,7 +23,7 @@ import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import static org.thoriumlang.compiler.antlr.parser.TokenStub.token;
 
 @Tag("parser")
-class typeParameterTest {
+class TypeParameterTest {
     @Test
     void one() {
         Assertions.assertThat(

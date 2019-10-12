@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
@@ -40,7 +41,10 @@ public class TypeFlatteningVisitor extends CopyVisitor {
         return new TypeSpecIntersection(
                 nodeIdGenerator.next(),
                 flattenTypeIntersection(node.getTypes())
-        );
+        )
+                .getContext()
+                .copyFrom(SourcePosition.class, node)
+                .getNode();
     }
 
     private List<TypeSpec> flattenTypeIntersection(List<TypeSpec> types) {
@@ -64,7 +68,10 @@ public class TypeFlatteningVisitor extends CopyVisitor {
         return new TypeSpecUnion(
                 nodeIdGenerator.next(),
                 flattenTypeUnion(node.getTypes())
-        );
+        )
+                .getContext()
+                .copyFrom(SourcePosition.class, node)
+                .getNode();
     }
 
     private List<TypeSpec> flattenTypeUnion(List<TypeSpec> types) {

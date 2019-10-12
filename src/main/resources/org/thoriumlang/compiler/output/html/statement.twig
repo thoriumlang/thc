@@ -1,3 +1,5 @@
 <li id="{{ nodeId }}"
+    data-line="{{ line }}"
+    data-char="{{ char }}"
     data-kind="{{ nodeKind }}"
 >{% if (isLast) %}<span class="keyword">return</span> {% endif %}{{ value }}</li>

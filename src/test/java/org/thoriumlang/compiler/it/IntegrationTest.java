@@ -23,10 +23,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.SourceFiles;
+import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
@@ -187,5 +189,45 @@ class IntegrationTest {
         return new HtmlWalker(
                 root
         ).walk();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues"
+    })
+    void sourceLocation_normalizedSource(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);
+        Assertions
+                .assertThat(
+                        new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
+                                .visit(new AST(sourceFile.inputStream(), sourceFile.namespace()).root())
+                )
+                .isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "/org/thoriumlang/compiler/tests/type",
+            "/org/thoriumlang/compiler/tests/type2",
+            "/org/thoriumlang/compiler/tests/use",
+            "/org/thoriumlang/compiler/tests/class",
+            "/org/thoriumlang/compiler/tests/ClassMethods",
+            "/org/thoriumlang/compiler/tests/ClassAttributes",
+            "/org/thoriumlang/compiler/tests/FunctionsAsValues"
+    })
+    void sourceLocation_rawSource(String path) throws IOException, URISyntaxException {
+        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+        Assertions
+                .assertThat(
+                        new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
+                                .visit(new AST(sourceFile.inputStream(), sourceFile.namespace()).root())
+                )
+                .isEmpty();
     }
 }

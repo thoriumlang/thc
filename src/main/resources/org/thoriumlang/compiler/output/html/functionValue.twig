@@ -1,5 +1,7 @@
 <div class="inline" id="{{ nodeId }}"
-      data-kind="{{ nodeKind }}"
+     data-line="{{ line }}"
+     data-char="{{ char }}"
+     data-kind="{{ nodeKind }}"
 >[{{ join(typeParameters, ', ') }}]({{ join(parameters, ', ') }}):
     {{ returnType }}
     <span data-toggle-symbolTable="{{ nodeId }}" class="keyword">=&gt;</span>

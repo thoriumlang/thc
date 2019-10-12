@@ -15,8 +15,10 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -29,16 +31,22 @@ import java.util.stream.Collectors;
 
 class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final MethodDefVisitor methodDefVisitor;
     private final AttributeDefVisitor attributeDefVisitor;
     private final TypeParameterVisitor typeParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
 
-    ClassDefVisitor(NodeIdGenerator nodeIdGenerator, MethodDefVisitor methodDefVisitor,
+    ClassDefVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider,
+            MethodDefVisitor methodDefVisitor,
             AttributeDefVisitor attributeDefVisitor,
             TypeParameterVisitor typeParameterVisitor,
-            TypeSpecVisitor typeSpecVisitor) {
+            TypeSpecVisitor typeSpecVisitor
+    ) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
         this.methodDefVisitor = methodDefVisitor;
         this.attributeDefVisitor = attributeDefVisitor;
         this.typeParameterVisitor = typeParameterVisitor;
@@ -47,22 +55,25 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
 
     @Override
     public Class visitClassDef(ThoriumParser.ClassDefContext ctx) {
-        return new Class(
-                nodeIdGenerator.next(),
-                visibility(ctx),
-                ctx.IDENTIFIER().getSymbol().getText(),
-                typeParameters(ctx.typeParameter()),
-                implementsSpec(ctx.implementsSpec()),
-                ctx.methodDef() == null ?
-                        Collections.emptyList() :
-                        ctx.methodDef().stream()
-                                .map(m -> m.accept(methodDefVisitor))
-                                .collect(Collectors.toList()),
-                ctx.attributeDef() == null ?
-                        Collections.emptyList() :
-                        ctx.attributeDef().stream()
-                                .map(a -> a.accept(attributeDefVisitor))
-                                .collect(Collectors.toList())
+        return sourcePositionProvider.provide(
+                new Class(
+                        nodeIdGenerator.next(),
+                        visibility(ctx),
+                        ctx.IDENTIFIER().getSymbol().getText(),
+                        typeParameters(ctx.typeParameter()),
+                        implementsSpec(ctx),
+                        ctx.methodDef() == null ?
+                                Collections.emptyList() :
+                                ctx.methodDef().stream()
+                                        .map(m -> m.accept(methodDefVisitor))
+                                        .collect(Collectors.toList()),
+                        ctx.attributeDef() == null ?
+                                Collections.emptyList() :
+                                ctx.attributeDef().stream()
+                                        .map(a -> a.accept(attributeDefVisitor))
+                                        .collect(Collectors.toList())
+                ),
+                ctx.start
         );
     }
 
@@ -78,9 +89,9 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                 ctx.accept(typeParameterVisitor);
     }
 
-    private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
-        return ctx == null ?
-                typeSpecVisitor.object() :
-                ctx.typeSpec().accept(typeSpecVisitor);
+    private TypeSpec implementsSpec(ThoriumParser.ClassDefContext classDefContext) {
+        return classDefContext.implementsSpec() == null ?
+                typeSpecVisitor.object(classDefContext.start) :
+                classDefContext.implementsSpec().typeSpec().accept(typeSpecVisitor);
     }
 }

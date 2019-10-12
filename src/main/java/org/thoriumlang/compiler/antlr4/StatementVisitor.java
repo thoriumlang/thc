@@ -15,19 +15,27 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 
 class StatementVisitor extends ThoriumBaseVisitor<Statement> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final boolean last;
     private ValueVisitor valueVisitor;
 
-    StatementVisitor(NodeIdGenerator nodeIdGenerator, boolean last) {
+    StatementVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider,
+            boolean last
+    ) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
         this.last = last;
     }
 
@@ -40,10 +48,13 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
         if (valueVisitor == null) {
             throw new IllegalStateException("value visitor not set; call setValueVisitor()");
         }
-        return new Statement(
-                nodeIdGenerator.next(),
-                ctx.value().accept(valueVisitor),
-                last || isReturnStatement(ctx)
+        return sourcePositionProvider.provide(
+                new Statement(
+                        nodeIdGenerator.next(),
+                        ctx.value().accept(valueVisitor),
+                        last || isReturnStatement(ctx)
+                ),
+                ctx.start
         );
     }
 
@@ -51,11 +62,17 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
         return ctx.RETURN() != null;
     }
 
-    public Statement none() {
-        return new Statement(
-                nodeIdGenerator.next(),
-                new NoneValue(nodeIdGenerator.next()),
-                true
+    public Statement none(Token start) {
+        return sourcePositionProvider.provide(
+                new Statement(
+                        nodeIdGenerator.next(),
+                        sourcePositionProvider.provide(
+                                new NoneValue(nodeIdGenerator.next()),
+                                start
+                        ),
+                        true
+                ),
+                start
         );
     }
 }

@@ -15,8 +15,12 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenSource;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 
@@ -26,9 +30,14 @@ import java.util.stream.Collectors;
 
 class TypeParameterVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
 
-    TypeParameterVisitor(NodeIdGenerator nodeIdGenerator) {
+    TypeParameterVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider
+    ) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
     }
 
     @Override
@@ -37,9 +46,12 @@ class TypeParameterVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
             return Collections.emptyList();
         }
         return ctx.IDENTIFIER().stream()
-                .map(i -> new TypeParameter(
-                        nodeIdGenerator.next(),
-                        i.getSymbol().getText()
+                .map(i -> sourcePositionProvider.provide(
+                        new TypeParameter(
+                                nodeIdGenerator.next(),
+                                i.getSymbol().getText()
+                        ),
+                        i.getSymbol()
                 ))
                 .collect(Collectors.toList());
     }

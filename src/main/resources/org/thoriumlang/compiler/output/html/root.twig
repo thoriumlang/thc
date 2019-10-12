@@ -21,10 +21,12 @@
     <p class="namespace">{{ namespace }}.{{ toplevelName }}</p>
 
     <ul id="{{ nodeId }}"
+        data-line="{{ line }}"
+        data-char="{{ char }}"
         data-kind="{{ nodeKind }}"
     >
         {{ join(uses) }}
-        <li>&nbsp;</li>
+        <li></li>
         {{ toplevel }}
     </ul>
 </div>

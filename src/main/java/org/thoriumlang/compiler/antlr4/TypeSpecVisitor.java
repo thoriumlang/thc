@@ -15,8 +15,10 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -33,11 +35,15 @@ import java.util.stream.Collectors;
 
 class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final FqIdentifierVisitor fqIdentifierVisitor;
 
-    TypeSpecVisitor(NodeIdGenerator nodeIdGenerator,
+    TypeSpecVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourceSourcePositionProvider,
             FqIdentifierVisitor fqIdentifierVisitor) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourceSourcePositionProvider;
         this.fqIdentifierVisitor = fqIdentifierVisitor;
     }
 
@@ -66,10 +72,13 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
 
     @Override
     public TypeSpec visitTypeSpecSimple(ThoriumParser.TypeSpecSimpleContext ctx) {
-        return new TypeSpecSimple(
-                nodeIdGenerator.next(),
-                ctx.fqIdentifier().accept(fqIdentifierVisitor),
-                visitArguments(ctx.typeArguments())
+        return sourcePositionProvider.provide(
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        ctx.fqIdentifier().accept(fqIdentifierVisitor),
+                        visitArguments(ctx.typeArguments())
+                ),
+                ctx.start
         );
     }
 
@@ -85,22 +94,28 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
     @Override
     public TypeSpec visitTypeSpecOptional(ThoriumParser.TypeSpecOptionalContext ctx) {
         if (ctx.typeSpecSimple() != null) {
-            return new TypeSpecIntersection(
-                    nodeIdGenerator.next(),
-                    Arrays.asList(
-                            ctx.typeSpecSimple().accept(this),
-                            none()
-                    )
+            return sourcePositionProvider.provide(
+                    new TypeSpecIntersection(
+                            nodeIdGenerator.next(),
+                            Arrays.asList(
+                                    ctx.typeSpecSimple().accept(this),
+                                    none(ctx.start)
+                            )
+                    ),
+                    ctx.start
             );
         }
 
         if (ctx.typeSpec() != null) {
-            return new TypeSpecIntersection(
-                    nodeIdGenerator.next(),
-                    Arrays.asList(
-                            ctx.typeSpec().accept(this),
-                            none()
-                    )
+            return sourcePositionProvider.provide(
+                    new TypeSpecIntersection(
+                            nodeIdGenerator.next(),
+                            Arrays.asList(
+                                    ctx.typeSpec().accept(this),
+                                    none(ctx.start)
+                            )
+                    ),
+                    ctx.start
             );
         }
 
@@ -109,22 +124,28 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
         }
 
         if (ctx.typeSpecUnion() != null) {
-            return new TypeSpecIntersection(
-                    nodeIdGenerator.next(),
-                    Arrays.asList(
-                            ctx.typeSpecUnion().accept(this),
-                            none()
-                    )
+            return sourcePositionProvider.provide(
+                    new TypeSpecIntersection(
+                            nodeIdGenerator.next(),
+                            Arrays.asList(
+                                    ctx.typeSpecUnion().accept(this),
+                                    none(ctx.start)
+                            )
+                    ),
+                    ctx.start
             );
         }
 
         if (ctx.typeSpecIntersection() != null) {
-            return new TypeSpecIntersection(
-                    nodeIdGenerator.next(),
-                    Arrays.asList(
-                            ctx.typeSpecIntersection().accept(this),
-                            none()
-                    )
+            return sourcePositionProvider.provide(
+                    new TypeSpecIntersection(
+                            nodeIdGenerator.next(),
+                            Arrays.asList(
+                                    ctx.typeSpecIntersection().accept(this),
+                                    none(ctx.start)
+                            )
+                    ),
+                    ctx.start
             );
         }
 
@@ -151,9 +172,12 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         .collect(Collectors.toList())
         );
 
-        return new TypeSpecUnion(
-                nodeIdGenerator.next(),
-                types
+        return sourcePositionProvider.provide(
+                new TypeSpecUnion(
+                        nodeIdGenerator.next(),
+                        types
+                ),
+                ctx.start
         );
     }
 
@@ -201,34 +225,46 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         .collect(Collectors.toList())
         );
 
-        return new TypeSpecIntersection(
-                nodeIdGenerator.next(),
-                types
+        return sourcePositionProvider.provide(
+                new TypeSpecIntersection(
+                        nodeIdGenerator.next(),
+                        types
+                ),
+                ctx.start
         );
     }
 
     @Override
     public TypeSpec visitTypeSpecFunction(ThoriumParser.TypeSpecFunctionContext ctx) {
-        return new TypeSpecFunction(
-                nodeIdGenerator.next(),
-                visitArguments(ctx.typeArguments()),
-                ctx.typeSpec().accept(this)
+        return sourcePositionProvider.provide(
+                new TypeSpecFunction(
+                        nodeIdGenerator.next(),
+                        visitArguments(ctx.typeArguments()),
+                        ctx.typeSpec().accept(this)
+                ),
+                ctx.start
         );
     }
 
-    public TypeSpecSimple object() {
-        return new TypeSpecSimple(
-                nodeIdGenerator.next(),
-                "org.thoriumlang.Object",
-                Collections.emptyList()
+    public TypeSpecSimple object(Token token) {
+        return sourcePositionProvider.provide(
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "org.thoriumlang.Object",
+                        Collections.emptyList()
+                ),
+                token
         );
     }
 
-    public TypeSpecSimple none() {
-        return new TypeSpecSimple(
-                nodeIdGenerator.next(),
-                "org.thoriumlang.None",
-                Collections.emptyList()
+    public TypeSpecSimple none(Token token) {
+        return sourcePositionProvider.provide(
+                new TypeSpecSimple(
+                        nodeIdGenerator.next(),
+                        "org.thoriumlang.None",
+                        Collections.emptyList()
+                ),
+                token
         );
     }
 }

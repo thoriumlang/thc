@@ -20,7 +20,7 @@ namespace class ClassAttributes : org.thoriumlang.Object {
     return a.add(b);
   };
   val add2: (A, B): C = (a: A, b: B): C => {
-    a.add(b);
+    a.add2(b);
     return 1;
   };
   val attributeWithoutType = 1;

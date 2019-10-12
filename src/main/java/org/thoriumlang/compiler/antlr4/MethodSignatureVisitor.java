@@ -15,8 +15,12 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenSource;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -28,15 +32,20 @@ import java.util.stream.Collectors;
 
 class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final TypeParameterVisitor typeParameterVisitor;
 
-    MethodSignatureVisitor(NodeIdGenerator nodeIdGenerator,
+    MethodSignatureVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
-            TypeParameterVisitor typeParameterVisitor) {
+            TypeParameterVisitor typeParameterVisitor
+    ) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
         this.typeParameterVisitor = typeParameterVisitor;
@@ -44,16 +53,18 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
 
     @Override
     public MethodSignature visitMethodSignature(ThoriumParser.MethodSignatureContext ctx) {
-
-        return new MethodSignature(
-                nodeIdGenerator.next(),
-                visibility(ctx),
-                ctx.name.getText(),
-                typeParameters(ctx.typeParameter()),
-                ctx.methodParameter().stream()
-                        .map(p -> p.accept(methodParameterVisitor))
-                        .collect(Collectors.toList()),
-                ctx.returnType.accept(typeSpecVisitor)
+        return sourcePositionProvider.provide(
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        visibility(ctx),
+                        ctx.name.getText(),
+                        typeParameters(ctx.typeParameter()),
+                        ctx.methodParameter().stream()
+                                .map(p -> p.accept(methodParameterVisitor))
+                                .collect(Collectors.toList()),
+                        ctx.returnType.accept(typeSpecVisitor)
+                ),
+                ctx.start
         );
     }
 

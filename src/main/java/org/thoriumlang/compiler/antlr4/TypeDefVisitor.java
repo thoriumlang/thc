@@ -15,8 +15,10 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -29,15 +31,19 @@ import java.util.stream.Collectors;
 
 class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final MethodSignatureVisitor methodSignatureVisitor;
     private final TypeParameterVisitor typeParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
 
-    TypeDefVisitor(NodeIdGenerator nodeIdGenerator,
+    TypeDefVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider,
             MethodSignatureVisitor methodSignatureVisitor,
             TypeParameterVisitor typeParameterVisitor,
             TypeSpecVisitor typeSpecVisitor) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
         this.methodSignatureVisitor = methodSignatureVisitor;
         this.typeParameterVisitor = typeParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -45,15 +51,18 @@ class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
 
     @Override
     public Type visitTypeDef(ThoriumParser.TypeDefContext ctx) {
-        return new Type(
-                nodeIdGenerator.next(),
-                visibility(ctx),
-                ctx.IDENTIFIER().getSymbol().getText(),
-                typeParameters(ctx.typeParameter()),
-                implementsSpec(ctx.implementsSpec()),
-                ctx.methodSignature().stream()
-                        .map(method -> method.accept(methodSignatureVisitor))
-                        .collect(Collectors.toList())
+        return sourcePositionProvider.provide(
+                new Type(
+                        nodeIdGenerator.next(),
+                        visibility(ctx),
+                        ctx.IDENTIFIER().getSymbol().getText(),
+                        typeParameters(ctx.typeParameter()),
+                        implementsSpec(ctx),
+                        ctx.methodSignature().stream()
+                                .map(method -> method.accept(methodSignatureVisitor))
+                                .collect(Collectors.toList())
+                ),
+                ctx.start
         );
     }
 
@@ -70,10 +79,10 @@ class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
         return ctx.accept(typeParameterVisitor);
     }
 
-    private TypeSpec implementsSpec(ThoriumParser.ImplementsSpecContext ctx) {
-        if (ctx == null) {
-            return typeSpecVisitor.object();
+    private TypeSpec implementsSpec(ThoriumParser.TypeDefContext ctx) {
+        if (ctx.implementsSpec() == null) {
+            return typeSpecVisitor.object(ctx.start);
         }
-        return ctx.typeSpec().accept(typeSpecVisitor);
+        return ctx.implementsSpec().typeSpec().accept(typeSpecVisitor);
     }
 }

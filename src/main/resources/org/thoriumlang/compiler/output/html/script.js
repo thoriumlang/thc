@@ -11,8 +11,8 @@ $(document).ready(function () {
      * Breadcrumb
      */
     (function () {
-        const breadcrumbRow = (nodeId, kind) => `
-                <li class="breadcrumb__element" data-refNodeId="${nodeId}"><a href="#${nodeId}">${kind}</a></li>
+        const breadcrumbRow = (nodeId, kind, line, col) => `
+                <li class="breadcrumb__element" data-refNodeId="${nodeId}"><a href="#${nodeId}">${kind}</a> L${line}:${col}</li>
             `;
 
         $('[data-kind]').click(function (e) {
@@ -23,13 +23,23 @@ $(document).ready(function () {
             $('#breadcrumb ul')
                 .empty()
                 .append(
-                    $(breadcrumbRow($(this).attr('id'), $(this).attr('data-kind')))
+                    $(breadcrumbRow(
+                        $(this).attr('id'),
+                        $(this).attr('data-kind'),
+                        $(this).attr('data-line'),
+                        $(this).attr('data-char')
+                    ))
                 );
 
             $(this).parents('[data-kind]').each(
                 function () {
                     $('#breadcrumb ul').append(
-                        $(breadcrumbRow($(this).attr('id'), $(this).attr('data-kind')))
+                        $(breadcrumbRow(
+                            $(this).attr('id'),
+                            $(this).attr('data-kind'),
+                            $(this).attr('data-line'),
+                            $(this).attr('data-char')
+                        ))
                     );
                 }
             );

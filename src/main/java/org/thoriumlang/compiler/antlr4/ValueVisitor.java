@@ -15,8 +15,10 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -42,19 +44,23 @@ import java.util.stream.Collectors;
 
 class ValueVisitor extends ThoriumBaseVisitor<Value> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final TypeParameterVisitor typeParameterVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    ValueVisitor(NodeIdGenerator nodeIdGenerator,
+    ValueVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourceSourcePositionProvider,
             TypeParameterVisitor typeParameterVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
             StatementVisitor statementVisitorForLast) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourceSourcePositionProvider;
         this.typeParameterVisitor = typeParameterVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -89,101 +95,148 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
 
     @Override
     public Value visitFunctionValue(ThoriumParser.FunctionValueContext ctx) {
-        return new FunctionValue(
-                nodeIdGenerator.next(),
-                ctx.typeParameter() == null ?
-                        Collections.emptyList() :
-                        ctx.typeParameter().accept(typeParameterVisitor),
-                ctx.methodParameter().stream()
-                        .map(p -> p.accept(methodParameterVisitor))
-                        .collect(Collectors.toList()),
-                ctx.typeSpec() == null ?
-                        new TypeSpecInferred(nodeIdGenerator.next()) :
-                        ctx.typeSpec().accept(typeSpecVisitor),
-                ctx.value() != null ?
-                        Collections.singletonList(new Statement(
-                                nodeIdGenerator.next(),
-                                ctx.value().accept(this), true
-                        )) :
-                        Lists.append(
-                                Lists.withoutLast(ctx.statement()).stream()
-                                        .map(s -> s.accept(statementVisitorForNotLast))
-                                        .collect(Collectors.toList()),
-                                Lists.last(ctx.statement())
-                                        .map(s -> s.accept(statementVisitorForLast))
-                                        .orElse(statementVisitorForLast.none())
-                        )
+        return sourcePositionProvider.provide(
+                new FunctionValue(
+                        nodeIdGenerator.next(),
+                        ctx.typeParameter() == null ?
+                                Collections.emptyList() :
+                                ctx.typeParameter().accept(typeParameterVisitor),
+                        ctx.methodParameter().stream()
+                                .map(p -> p.accept(methodParameterVisitor))
+                                .collect(Collectors.toList()),
+                        ctx.typeSpec() == null ?
+                                sourcePositionProvider.provide(
+                                        new TypeSpecInferred(nodeIdGenerator.next()),
+                                        ctx.start
+                                ) :
+                                ctx.typeSpec().accept(typeSpecVisitor),
+                        ctx.value() != null ?
+                                Collections.singletonList(
+                                        sourcePositionProvider.provide(
+                                                new Statement(
+                                                        nodeIdGenerator.next(),
+                                                        ctx.value().accept(this), true
+                                                ),
+                                                ctx.start
+                                        )
+                                ) :
+                                Lists.append(
+                                        Lists.withoutLast(ctx.statement()).stream()
+                                                .map(s -> s.accept(statementVisitorForNotLast))
+                                                .collect(Collectors.toList()),
+                                        Lists.last(ctx.statement())
+                                                .map(s -> s.accept(statementVisitorForLast))
+                                                .orElse(statementVisitorForLast.none(ctx.start))
+                                )
+                ),
+                ctx.start
         );
     }
 
     @Override
     public Value visitAssignmentValue(ThoriumParser.AssignmentValueContext ctx) {
         if (ctx.indirectValue() != null) {
-            return new IndirectAssignmentValue(
-                    nodeIdGenerator.next(),
-                    ctx.indirectValue().accept(this),
-                    ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.value().accept(this)
+            return sourcePositionProvider.provide(
+                    new IndirectAssignmentValue(
+                            nodeIdGenerator.next(),
+                            ctx.indirectValue().accept(this),
+                            ctx.IDENTIFIER().getSymbol().getText(),
+                            ctx.value().accept(this)
+                    ),
+                    ctx.start
             );
         }
         if (ctx.VAR() != null) {
-            return new NewAssignmentValue(
-                    nodeIdGenerator.next(),
-                    ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.typeSpec() == null ?
-                            new TypeSpecInferred(nodeIdGenerator.next()) :
-                            ctx.typeSpec().accept(typeSpecVisitor),
-                    ctx.value() == null ?
-                            new NoneValue(nodeIdGenerator.next()) :
-                            ctx.value().accept(this),
-                    Mode.VAR
+            return sourcePositionProvider.provide(
+                    new NewAssignmentValue(
+                            nodeIdGenerator.next(),
+                            ctx.IDENTIFIER().getSymbol().getText(),
+                            ctx.typeSpec() == null ?
+                                    sourcePositionProvider.provide(
+                                            new TypeSpecInferred(nodeIdGenerator.next()),
+                                            ctx.start
+                                    ) :
+                                    ctx.typeSpec().accept(typeSpecVisitor),
+                            ctx.value() == null ?
+                                    sourcePositionProvider.provide(
+                                            new NoneValue(nodeIdGenerator.next()),
+                                            ctx.start
+                                    ) :
+                                    ctx.value().accept(this),
+                            Mode.VAR
+                    ),
+                    ctx.start
             );
         }
         if (ctx.VAL() != null) {
-            return new NewAssignmentValue(
-                    nodeIdGenerator.next(),
-                    ctx.IDENTIFIER().getSymbol().getText(),
-                    ctx.typeSpec() == null ?
-                            new TypeSpecInferred(nodeIdGenerator.next()) :
-                            ctx.typeSpec().accept(typeSpecVisitor),
-                    ctx.value().accept(this),
-                    Mode.VAL
+            return sourcePositionProvider.provide(
+                    new NewAssignmentValue(
+                            nodeIdGenerator.next(),
+                            ctx.IDENTIFIER().getSymbol().getText(),
+                            ctx.typeSpec() == null ?
+                                    sourcePositionProvider.provide(
+                                            new TypeSpecInferred(nodeIdGenerator.next()),
+                                            ctx.start
+                                    ) :
+                                    ctx.typeSpec().accept(typeSpecVisitor),
+                            ctx.value().accept(this),
+                            Mode.VAL
+                    ),
+                    ctx.start
             );
         }
-        return new DirectAssignmentValue(
-                nodeIdGenerator.next(),
-                ctx.IDENTIFIER().getSymbol().getText(),
-                ctx.value().accept(this)
+        return sourcePositionProvider.provide(
+                new DirectAssignmentValue(
+                        nodeIdGenerator.next(),
+                        ctx.IDENTIFIER().getSymbol().getText(),
+                        ctx.value().accept(this)
+                ),
+                ctx.start
         );
     }
 
     @Override
     public Value visitDirectValue(ThoriumParser.DirectValueContext ctx) {
         if (ctx.NUMBER() != null) {
-            return new NumberValue(
-                    nodeIdGenerator.next(),
-                    ctx.NUMBER().getSymbol().getText()
+            return sourcePositionProvider.provide(
+                    new NumberValue(
+                            nodeIdGenerator.next(),
+                            ctx.NUMBER().getSymbol().getText()
+                    ),
+                    ctx.start
             );
         }
 
         if (ctx.STRING() != null) {
             String str = ctx.STRING().getSymbol().getText();
-            return new StringValue(
-                    nodeIdGenerator.next(),
-                    str.substring(1, str.length() - 1)
+            return sourcePositionProvider.provide(
+                    new StringValue(
+                            nodeIdGenerator.next(),
+                            str.substring(1, str.length() - 1)
+                    ),
+                    ctx.start
             );
         }
 
         if (ctx.TRUE() != null) {
-            return new BooleanValue(nodeIdGenerator.next(), true);
+            return sourcePositionProvider.provide(
+                    new BooleanValue(nodeIdGenerator.next(), true),
+                    ctx.start
+            );
         }
 
         if (ctx.FALSE() != null) {
-            return new BooleanValue(nodeIdGenerator.next(), false);
+            return sourcePositionProvider.provide(
+                    new BooleanValue(nodeIdGenerator.next(), false),
+                    ctx.start
+            );
         }
 
         if (ctx.NONE() != null) {
-            return new NoneValue(nodeIdGenerator.next());
+            return sourcePositionProvider.provide(
+                    new NoneValue(nodeIdGenerator.next()),
+                    ctx.start
+            );
         }
 
         throw new IllegalStateException("Value is none of [NUMBER, STRING, TRUE, FALSE, NONE]");
@@ -192,34 +245,49 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     @Override
     public Value visitIndirectValue(ThoriumParser.IndirectValueContext ctx) {
         if (ctx.THIS() != null) {
-            return new IdentifierValue(nodeIdGenerator.next(), "this");
+            return sourcePositionProvider.provide(
+                    new IdentifierValue(nodeIdGenerator.next(), "this"),
+                    ctx.start
+            );
         }
 
         if (ctx.indirectValue() != null) {
             return isMethodCall(ctx) ?
-                    new NestedValue(
-                            nodeIdGenerator.next(),
-                            ctx.indirectValue().accept(this),
-                            methodCall(ctx)
+                    sourcePositionProvider.provide(
+                            new NestedValue(
+                                    nodeIdGenerator.next(),
+                                    ctx.indirectValue().accept(this),
+                                    methodCall(ctx)
+                            ),
+                            ctx.start
                     ) :
-                    new NestedValue(
-                            nodeIdGenerator.next(),
-                            ctx.indirectValue().accept(this),
-                            identifier(ctx)
+                    sourcePositionProvider.provide(
+                            new NestedValue(
+                                    nodeIdGenerator.next(),
+                                    ctx.indirectValue().accept(this),
+                                    identifier(ctx)
+                            ),
+                            ctx.start
                     );
         }
 
         if (ctx.directValue() != null) {
             return isMethodCall(ctx) ?
-                    new NestedValue(
-                            nodeIdGenerator.next(),
-                            ctx.directValue().accept(this),
-                            methodCall(ctx)
+                    sourcePositionProvider.provide(
+                            new NestedValue(
+                                    nodeIdGenerator.next(),
+                                    ctx.directValue().accept(this),
+                                    methodCall(ctx)
+                            ),
+                            ctx.start
                     ) :
-                    new NestedValue(
-                            nodeIdGenerator.next(),
-                            ctx.directValue().accept(this),
-                            identifier(ctx)
+                    sourcePositionProvider.provide(
+                            new NestedValue(
+                                    nodeIdGenerator.next(),
+                                    ctx.directValue().accept(this),
+                                    identifier(ctx)
+                            ),
+                            ctx.start
                     );
         }
 
@@ -237,11 +305,14 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     }
 
     private MethodCallValue methodCall(ThoriumParser.IndirectValueContext ctx) {
-        return new MethodCallValue(
-                nodeIdGenerator.next(),
-                ctx.IDENTIFIER().getSymbol().getText(),
-                typeArguments(ctx),
-                methodArguments(ctx)
+        return sourcePositionProvider.provide(
+                new MethodCallValue(
+                        nodeIdGenerator.next(),
+                        ctx.IDENTIFIER().getSymbol().getText(),
+                        typeArguments(ctx),
+                        methodArguments(ctx)
+                ),
+                ctx.start
         );
     }
 
@@ -262,9 +333,12 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     }
 
     private IdentifierValue identifier(ThoriumParser.IndirectValueContext ctx) {
-        return new IdentifierValue(
-                nodeIdGenerator.next(),
-                ctx.IDENTIFIER().getSymbol().getText()
+        return sourcePositionProvider.provide(
+                new IdentifierValue(
+                        nodeIdGenerator.next(),
+                        ctx.IDENTIFIER().getSymbol().getText()
+                ),
+                ctx.start
         );
     }
 }

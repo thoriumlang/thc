@@ -19,7 +19,7 @@ class MyClass[T] {
 
     val add: (Number, Number): Number = (a: Number, b: Number): Number => a.add(b);
 
-    doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): None {
+    doSomething[U](p1: String, p2: JavaList[U], p3: T, p4:U, p5: Unknown): Something? {
         val a = 1;
         var b;
         b = 666;

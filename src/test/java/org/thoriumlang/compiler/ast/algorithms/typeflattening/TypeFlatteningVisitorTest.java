@@ -18,7 +18,9 @@ package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
@@ -126,5 +128,59 @@ class TypeFlatteningVisitorTest {
                                 )
                         ).toString()
                 );
+    }
+
+    @Test
+    void visitTypeSpecIntersection_sourcePosition() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        Node spec = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        (TypeSpecSimple) new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TD",
+                                Collections.emptyList()
+                        ).getContext().put(SourcePosition.class, new SourcePosition(2, 0)).getNode(),
+                        (TypeSpecSimple) new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TE",
+                                Collections.emptyList()
+                        ).getContext().put(SourcePosition.class, new SourcePosition(3, 0)).getNode()
+                )
+        ).getContext().put(SourcePosition.class, new SourcePosition(1, 0)).getNode();
+
+        Node flattened = spec.accept(visitor);
+
+        Assertions.assertThat(flattened.getContext().get(SourcePosition.class))
+                .get()
+                .extracting(SourcePosition::toString)
+                .isEqualTo("1:0");
+    }
+
+    @Test
+    void visitTypeSpecUnion_sourcePosition() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        Node spec = new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        (TypeSpecSimple) new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TD",
+                                Collections.emptyList()
+                        ).getContext().put(SourcePosition.class, new SourcePosition(2, 0)).getNode(),
+                        (TypeSpecSimple) new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TE",
+                                Collections.emptyList()
+                        ).getContext().put(SourcePosition.class, new SourcePosition(3, 0)).getNode()
+                )
+        ).getContext().put(SourcePosition.class, new SourcePosition(1, 0)).getNode();
+
+        Node flattened = spec.accept(visitor);
+
+        Assertions.assertThat(flattened.getContext().get(SourcePosition.class))
+                .get()
+                .extracting(SourcePosition::toString)
+                .isEqualTo("1:0");
     }
 }

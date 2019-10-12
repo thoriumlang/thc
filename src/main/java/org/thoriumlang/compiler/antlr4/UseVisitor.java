@@ -15,9 +15,11 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Use;
 
@@ -27,19 +29,26 @@ import java.util.stream.Collectors;
 
 class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourceSourcePositionProvider;
 
-    UseVisitor(NodeIdGenerator nodeIdGenerator) {
+    UseVisitor(NodeIdGenerator nodeIdGenerator, SourcePositionProvider<Token> sourceSourcePositionProvider) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourceSourcePositionProvider = sourceSourcePositionProvider;
     }
 
     @Override
     public List<Use> visitUse(ThoriumParser.UseContext ctx) {
         if (ctx.baseFqIdentifier != null) {
             if (ctx.star != null) {
-                return Collections.singletonList(new Use(
-                        nodeIdGenerator.next(),
-                        fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER()) + ".*"
-                ));
+                return Collections.singletonList(
+                        sourceSourcePositionProvider.provide(
+                                new Use(
+                                        nodeIdGenerator.next(),
+                                        fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER()) + ".*"
+                                ),
+                                ctx.start
+                        )
+                );
             }
 
             if (ctx.useAs() != null && !ctx.useAs().isEmpty()) {
@@ -49,18 +58,26 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                         .collect(Collectors.toList());
             }
 
-            return Collections.singletonList(new Use(
-                    nodeIdGenerator.next(),
-                    fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER())
-            ));
+            return Collections.singletonList(
+                    sourceSourcePositionProvider.provide(
+                            new Use(
+                                    nodeIdGenerator.next(),
+                                    fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER())
+                            ),
+                            ctx.start
+                    )
+            );
         }
 
         if (ctx.useAs() != null && ctx.useAs().size() == 1) {
             return Collections.singletonList(
-                    new Use(
-                            nodeIdGenerator.next(),
-                            fqIdentifier(ctx.useAs().get(0).fqIdentifier().IDENTIFIER()),
-                            ctx.useAs().get(0).alias.getText()
+                    sourceSourcePositionProvider.provide(
+                            new Use(
+                                    nodeIdGenerator.next(),
+                                    fqIdentifier(ctx.useAs().get(0).fqIdentifier().IDENTIFIER()),
+                                    ctx.useAs().get(0).alias.getText()
+                            ),
+                            ctx.start
                     )
             );
         }
@@ -76,21 +93,27 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
 
     private Use getUse(String base, ThoriumParser.UseAsContext ctx) {
         if (ctx.alias != null) {
-            return new Use(
-                    nodeIdGenerator.next(),
-                    String.format("%s.%s",
-                            base,
-                            fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
+            return sourceSourcePositionProvider.provide(
+                    new Use(
+                            nodeIdGenerator.next(),
+                            String.format("%s.%s",
+                                    base,
+                                    fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
+                            ),
+                            ctx.alias.getText()
                     ),
-                    ctx.alias.getText()
+                    ctx.start
             );
         }
-        return new Use(
-                nodeIdGenerator.next(),
-                String.format("%s.%s",
-                        base,
-                        fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
-                )
+        return sourceSourcePositionProvider.provide(
+                new Use(
+                        nodeIdGenerator.next(),
+                        String.format("%s.%s",
+                                base,
+                                fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
+                        )
+                ),
+                ctx.start
         );
     }
 }

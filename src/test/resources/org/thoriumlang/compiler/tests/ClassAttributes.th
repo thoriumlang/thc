@@ -15,6 +15,6 @@ class ClassAttributes {
     val a: Number = (1);
     val b: Number = ((2));
     val add: (A, B): C = (a: A, b: B): C => a.add(b);
-    val add2: (A, B): C = (a: A, b: B): C => { a.add(b); 1; };
+    val add2: (A, B): C = (a: A, b: B): C => { a.add2(b); 1; };
     val attributeWithoutType = 1;
 }

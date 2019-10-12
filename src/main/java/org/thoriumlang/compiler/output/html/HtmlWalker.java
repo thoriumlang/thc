@@ -36,6 +36,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
@@ -58,6 +59,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.jtwig.JtwigTemplate.classpathTemplate;
@@ -154,10 +156,14 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private JtwigModel newModel(Node node) {
+        Optional<SourcePosition> sourcePosition = node.getContext().get(SourcePosition.class);
+
         return JtwigModel.newModel()
                 .with("nodeId", formatNodeId(node))
                 .with("nodeKind", node.getClass().getSimpleName())
-                .with("hasErrors", typecheckingErrors.containsKey(node));
+                .with("hasErrors", typecheckingErrors.containsKey(node))
+                .with("line", sourcePosition.map(p -> String.valueOf(p.getLine())).orElse("?"))
+                .with("char", sourcePosition.map(p -> String.valueOf(p.getChar())).orElse("?"));
     }
 
     private String formatNodeId(Node node) {

@@ -15,8 +15,10 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
+import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -29,19 +31,24 @@ import java.util.stream.Collectors;
 
 class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
     private final NodeIdGenerator nodeIdGenerator;
+    private final SourcePositionProvider<Token> sourcePositionProvider;
     private final TypeParameterVisitor typeParameterVisitor;
     private final MethodParameterVisitor methodParameterVisitor;
     private final TypeSpecVisitor typeSpecVisitor;
     private final StatementVisitor statementVisitorForNotLast;
     private final StatementVisitor statementVisitorForLast;
 
-    MethodDefVisitor(NodeIdGenerator nodeIdGenerator,
+    MethodDefVisitor(
+            NodeIdGenerator nodeIdGenerator,
+            SourcePositionProvider<Token> sourcePositionProvider,
             TypeParameterVisitor typeParameterVisitor,
             MethodParameterVisitor methodParameterVisitor,
             TypeSpecVisitor typeSpecVisitor,
             StatementVisitor statementVisitorForNotLast,
-            StatementVisitor statementVisitorForLast) {
+            StatementVisitor statementVisitorForLast
+    ) {
         this.nodeIdGenerator = nodeIdGenerator;
+        this.sourcePositionProvider = sourcePositionProvider;
         this.typeParameterVisitor = typeParameterVisitor;
         this.methodParameterVisitor = methodParameterVisitor;
         this.typeSpecVisitor = typeSpecVisitor;
@@ -51,30 +58,39 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
 
     @Override
     public Method visitMethodDef(ThoriumParser.MethodDefContext ctx) {
-        return new Method(
-                nodeIdGenerator.next(),
-                new MethodSignature(
+        return sourcePositionProvider.provide(
+                new Method(
                         nodeIdGenerator.next(),
-                        visibility(ctx),
-                        ctx.IDENTIFIER().getSymbol().getText(),
-                        ctx.typeParameter() == null ?
-                                Collections.emptyList() :
-                                ctx.typeParameter().accept(typeParameterVisitor),
-                        ctx.methodParameter().stream()
-                                .map(p -> p.accept(methodParameterVisitor))
-                                .collect(Collectors.toList()),
-                        ctx.typeSpec() == null ?
-                                new TypeSpecInferred(nodeIdGenerator.next()) :
-                                ctx.typeSpec().accept(typeSpecVisitor)
+                        sourcePositionProvider.provide(
+                                new MethodSignature(
+                                        nodeIdGenerator.next(),
+                                        visibility(ctx),
+                                        ctx.IDENTIFIER().getSymbol().getText(),
+                                        ctx.typeParameter() == null ?
+                                                Collections.emptyList() :
+                                                ctx.typeParameter().accept(typeParameterVisitor),
+                                        ctx.methodParameter().stream()
+                                                .map(p -> p.accept(methodParameterVisitor))
+                                                .collect(Collectors.toList()),
+                                        ctx.typeSpec() == null ?
+                                                sourcePositionProvider.provide(
+                                                        new TypeSpecInferred(nodeIdGenerator.next()),
+                                                        ctx.start
+                                                ) :
+                                                ctx.typeSpec().accept(typeSpecVisitor)
+                                ),
+                                ctx.start
+                        ),
+                        Lists.append(
+                                Lists.withoutLast(ctx.statement()).stream()
+                                        .map(s -> s.accept(statementVisitorForNotLast))
+                                        .collect(Collectors.toList()),
+                                Lists.last(ctx.statement())
+                                        .map(s -> s.accept(statementVisitorForLast))
+                                        .orElse(statementVisitorForLast.none(ctx.start))
+                        )
                 ),
-                Lists.append(
-                        Lists.withoutLast(ctx.statement()).stream()
-                                .map(s -> s.accept(statementVisitorForNotLast))
-                                .collect(Collectors.toList()),
-                        Lists.last(ctx.statement())
-                                .map(s -> s.accept(statementVisitorForLast))
-                                .orElse(statementVisitorForLast.none())
-                )
+                ctx.start
         );
     }
 
