@@ -1,0 +1,168 @@
+body {
+    font-family: 'DejaVu Sans Mono', monospace;
+    font-size: smaller;
+    background-color: #333;
+    color: #bbb;
+}
+
+ul, li {
+    list-style-type: none;
+}
+
+th {
+    text-align: left;
+}
+
+a:visited {
+    color: blue;
+}
+
+.toplevel > li {
+    margin-bottom: 15px;
+}
+
+.hasError {
+    cursor: pointer;
+    border-bottom: 1px dashed crimson;
+}
+
+.namespace {
+    font-style: italic
+}
+
+.keyword {
+    font-weight: bold;
+    color: darkorange;
+}
+
+.string {
+    color: seagreen;
+}
+
+.number {
+    color: dodgerblue;
+}
+
+.inline {
+    display: inline;
+}
+
+.icon {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 3px;
+    user-select: none;
+}
+
+.icon.fold {
+    color: seagreen;
+}
+
+#errors {
+    position: absolute;
+}
+
+.error {
+    border: 1px solid red;
+    background-color: pink;
+    padding: 4px;
+    color: black;
+}
+
+[data-toggle-symbolTable] {
+    border-bottom: 1px dotted dodgerblue;
+}
+
+[data-kind] {
+    cursor: pointer;
+}
+
+.highlight, .highlight * {
+    background-color: saddlebrown;
+}
+
+#code {
+    position: absolute;
+    top: 35px
+}
+
+/** right pane */
+
+.right-pane {
+    position: fixed;
+    top: 55px;
+    right: 20px;
+    width: 30em;
+}
+
+.box {
+    border: 1px solid black;
+    background-color: silver;
+    opacity: .7;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.box__header {
+    border-bottom: 1px solid black;
+    padding: 3px;
+    position: relative;
+}
+
+.box__content {
+    padding: 3px
+}
+
+.box__close {
+    color: red;
+    background-color: lightsalmon;
+    position: absolute;
+    right: 3px;
+    border: 1px solid red;
+    top: 2px;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 3px;
+    user-select: none;
+}
+
+/** breadcrumb */
+
+.breadcrumb {
+    padding: 0 5px;
+}
+
+.breadcrumb__element {
+    padding: 2px 0;
+}
+
+/** toolbar */
+
+.toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-top: 0;
+    background-color: silver;
+    color: black;
+    padding: 10px 5px;
+    z-index: 999;
+    user-select: none;
+}
+
+.toolbar li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.toolbar a:visited, .toolbar a {
+    color: black;
+    border-left: 5px solid silver;
+    padding-left: 3px;
+    text-decoration: none;
+}
+
+.toolbar a:hover {
+    border-left: 5px solid gray;
+}

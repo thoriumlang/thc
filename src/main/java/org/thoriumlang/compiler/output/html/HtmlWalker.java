@@ -119,6 +119,8 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     public String visit(Root node) {
         return templates.get(node.getClass()).render(
                 newModel(node)
+                        .with("css", classpathTemplate(TEMPLATE_PATH + "style.css").render(new JtwigModel()))
+                        .with("js", classpathTemplate(TEMPLATE_PATH + "script.js").render(new JtwigModel()))
                         .with("namespace", node.getNamespace())
                         .with("toplevelName", node.getTopLevelNode().accept(new BaseVisitor<String>() {
                             @Override
