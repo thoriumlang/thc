@@ -76,6 +76,20 @@ class ContextTest {
                 .get()
                 .isSameAs(sourceContext.get(Object.class).orElse(null));
     }
+
+    @Test
+    void copyFrom() {
+        Context sourceContext = new NodeStub().getContext();
+        sourceContext.put(Object.class, new Object());
+
+        Context destinationContext = new NodeStub().getContext();
+        destinationContext.copyFrom(Object.class, sourceContext.getNode());
+
+        Assertions.assertThat(destinationContext.get(Object.class))
+                .get()
+                .isSameAs(sourceContext.get(Object.class).orElse(new Object()));
+    }
+
     @Test
     void get_keyType_nullKey() {
         Context context = new NodeStub().getContext();

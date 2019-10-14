@@ -143,6 +143,13 @@ public class Context {
         return this;
     }
 
+    public <T> Context copyFrom(java.lang.Class<T> type, Node source) {
+        source.getContext().get(type).ifPresent(
+                v -> put(type, v)
+        );
+        return this;
+    }
+
     private static class Key {
         private final String name;
         private final java.lang.Class type;
