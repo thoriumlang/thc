@@ -69,12 +69,12 @@ a:visited {
     color: black;
 }
 
-[data-toggle-symbolTable] {
-    border-bottom: 1px dotted dodgerblue;
-}
-
 [data-kind] {
     cursor: pointer;
+}
+
+.selected, .selected * {
+    background-color: saddlebrown;
 }
 
 .highlight, .highlight * {
@@ -84,6 +84,13 @@ a:visited {
 #code {
     position: absolute;
     top: 35px
+}
+
+/** Symbol table */
+.symbolTable__link {
+    text-decoration: underline blue;
+    color: blue;
+    cursor: pointer;
 }
 
 /** right pane */
@@ -134,6 +141,12 @@ a:visited {
 
 .breadcrumb__element {
     padding: 2px 0;
+}
+
+.breadcrumb__link {
+    text-decoration: underline blue;
+    color: blue;
+    cursor: pointer;
 }
 
 /** toolbar */

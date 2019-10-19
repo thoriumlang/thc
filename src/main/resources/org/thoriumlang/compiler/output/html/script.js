@@ -1,37 +1,85 @@
 $(document).ready(function () {
-    function highlight(element) {
-        $(element).addClass('highlight');
+    function select(element) {
+        highlight();
+        $('.selected').removeClass('selected');
+        $(element).addClass('selected');
+        setHash($(element).attr('id'));
     }
 
-    function reset() {
+    function highlight(element) {
         $('.highlight').removeClass('highlight');
+        if (element) {
+            $(element).addClass('highlight');
+        }
     }
+
+    function setHash(hash) {
+        const el = document.getElementById(hash);
+        el.removeAttribute('id');
+        window.location.hash = hash;
+        el.setAttribute('id', hash);
+    }
+
+    /**
+     * Update url hash
+     */
+    (function () {
+        $('[data-kind]').click(function (e) {
+            e.stopPropagation();
+            select($(this));
+        });
+        $(document).on('click', '[data-refNodeId]', function (e) {
+            e.stopPropagation();
+            select($('#' + $(this).attr('data-refNodeId')));
+        })
+    })();
+
+    const HashChangeHook = {
+        hooks: [],
+
+        register: function (callback) {
+            HashChangeHook.hooks.push(callback);
+        },
+
+        call: function (nodeId) {
+            for (let i = 0; i < HashChangeHook.hooks.length; ++i) {
+                HashChangeHook.hooks[i](nodeId);
+            }
+        }
+    };
+
+    $(window).on('hashchange', function () {
+        const nodeId = window.location.hash.substr(1);
+        HashChangeHook.call(nodeId);
+    });
 
     /**
      * Breadcrumb
      */
     (function () {
+        $('#breadcrumb_close').click(function () {
+            $('#breadcrumb').hide();
+        });
+
         const breadcrumbRow = (nodeId, kind, line, col) => `
-                <li class="breadcrumb__element" data-refNodeId="${nodeId}"><a href="#${nodeId}">${kind}</a> L${line}:${col}</li>
+                <li class="breadcrumb__element" data-refNodeId="${nodeId}"><span class="breadcrumb__link">${kind}</span> L${line}:${col}</li>
             `;
 
-        $('[data-kind]').click(function (e) {
-            e.stopPropagation();
-            reset();
-            highlight(this);
+        HashChangeHook.register(function (nodeId) {
+            const node = $('#' + nodeId);
 
             $('#breadcrumb ul')
                 .empty()
                 .append(
                     $(breadcrumbRow(
-                        $(this).attr('id'),
-                        $(this).attr('data-kind'),
-                        $(this).attr('data-line'),
-                        $(this).attr('data-char')
+                        node.attr('id'),
+                        node.attr('data-kind'),
+                        node.attr('data-line'),
+                        node.attr('data-char')
                     ))
                 );
 
-            $(this).parents('[data-kind]').each(
+            node.parents('[data-kind]').each(
                 function () {
                     $('#breadcrumb ul').append(
                         $(breadcrumbRow(
@@ -46,11 +94,6 @@ $(document).ready(function () {
 
             $('#breadcrumb').show();
         });
-
-        $('#breadcrumb_close').click(function () {
-            $('#breadcrumb').hide();
-            reset();
-        });
     })();
 
     /**
@@ -64,7 +107,6 @@ $(document).ready(function () {
 
         $('#action_resetHighlight').click(function (e) {
             e.preventDefault();
-            reset();
         });
 
         $('#action_nextNode').click(function (e) {
@@ -81,16 +123,15 @@ $(document).ready(function () {
     })();
 
     /**
-     * Node refs
+     * This highlight the node currently under the mouse pointer
      */
     (function () {
         $(document)
             .on('mouseenter', '[data-refNodeId]', function () {
-                reset();
                 highlight($('#' + $(this).attr('data-refNodeId')));
             })
             .on('mouseleave', '[data-refNodeId]', function () {
-                reset();
+                highlight();
             });
     })();
 
@@ -100,19 +141,12 @@ $(document).ready(function () {
     (function () {
         $('#symbolTable_close').click(function () {
             $('#symbolTable').hide();
-            reset();
         });
 
-        function openTable(table) {
+        HashChangeHook.register(function (nodeId) {
             $('#symbolTable table').hide();
-            $('#symbolTable_' + table).show();
+            $('#symbolTable_' + nodeId).show();
             $('#symbolTable').show();
-        }
-
-        $('[data-toggle-symbolTable]').click(function () {
-            const nodeId = $(this).attr('data-toggle-symbolTable');
-            window.location.hash = nodeId;
-            openTable(nodeId);
         });
     })();
 
@@ -165,4 +199,7 @@ $(document).ready(function () {
                 })
             });
     })();
+
+    const nodeId = window.location.hash.substr(1);
+    HashChangeHook.call(nodeId);
 });

@@ -9,7 +9,7 @@
     {% for symbol in symbols %}
     <tr>
         <td>{{ symbol.kind }}</td>
-        <td><a class="nodeRef" data-refNodeId="{{ symbol.refNodeId }}" href="#{{ symbol.refNodeId }}">{{ symbol.name }}</a></td>
+        <td><span class="symbolTable__link" data-refNodeId="{{ symbol.refNodeId }}">{{ symbol.name }}</span></td>
     </tr>
     {% endfor %}
 </table>

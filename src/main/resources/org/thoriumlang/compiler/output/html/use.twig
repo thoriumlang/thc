@@ -1,8 +1,9 @@
-<li data-line="{{ line }}"
+<li id="{{ nodeId }}"
+    data-line="{{ line }}"
     data-char="{{ char }}"
     data-kind="{{ nodeKind }}"
 >
-    <span id="{{ nodeId }}">
+    <span>
         <span class="keyword">use</span> <span class="{% if (hasErrors) %}hasError {% endif %}"
                                                data-error-target="{{ nodeId }}">{{ from }}</span><span
                 class="punctuation">:</span> {{ to }}
