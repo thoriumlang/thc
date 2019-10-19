@@ -119,6 +119,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Root node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("css", classpathTemplate(TEMPLATE_PATH + "style.css").render(new JtwigModel()))
@@ -172,6 +173,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Use node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("from", node.getFrom())
@@ -218,6 +220,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(TypeParameter node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("name", node.getName())
@@ -226,6 +229,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(TypeSpecSimple node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("typeName", node.getType())
@@ -241,6 +245,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private String visitTypeSpecComposition(Node node, List<TypeSpec> typeSpecs, String mode) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("mode", mode)
@@ -257,6 +262,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(TypeSpecFunction node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("returnType", node.getReturnType().accept(this))
@@ -268,6 +274,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(TypeSpecInferred node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
         );
@@ -275,6 +282,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Attribute node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("name", node.getIdentifier())
@@ -286,6 +294,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(StringValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("value", node.getValue())
@@ -294,6 +303,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(NumberValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("value", node.getValue())
@@ -302,6 +312,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(BooleanValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("value", node.getValue())
@@ -310,6 +321,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(NoneValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
         );
@@ -333,6 +345,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(IdentifierValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("name", node.getValue())
@@ -341,6 +354,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(NewAssignmentValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("name", node.getIdentifier())
@@ -352,6 +366,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(IndirectAssignmentValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("indirectValue", node.getIndirectValue().accept(this))
@@ -362,6 +377,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(DirectAssignmentValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("identifier", node.getIdentifier())
@@ -371,6 +387,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(MethodCallValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("methodName", node.getMethodName())
@@ -385,6 +402,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(NestedValue node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("outer", node.getOuter().accept(this))
@@ -412,6 +430,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Method node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("signature", node.getSignature().accept(this))
@@ -440,6 +459,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Parameter node) {
+        renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("name", node.getName())
@@ -449,6 +469,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
 
     @Override
     public String visit(Statement node) {
+        renderSymbolTable(node);
         return templates.get(Statement.class).render(
                 newModel(node)
                         .with("isLast", node.isLast())
