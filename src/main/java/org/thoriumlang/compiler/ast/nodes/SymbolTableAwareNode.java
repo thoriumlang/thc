@@ -54,8 +54,11 @@ public class SymbolTableAwareNode extends Node {
                 .orElseGet(() ->
                         wrap(
                                 node.getContext()
-                                        .get("parent", Node.class)
-                                        .orElseThrow(() -> new IllegalStateException("Root reached"))
+                                        .get(Family.class)
+                                        .orElseThrow(() -> new IllegalStateException("No family found for node"))
+                                        .parent()
+                                        .orElseThrow(() -> new IllegalStateException("No parent found in family"))
+                                        .node()
                         ).getSymbolTable()
                 );
     }

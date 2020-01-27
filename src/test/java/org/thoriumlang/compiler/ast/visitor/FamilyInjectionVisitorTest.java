@@ -461,7 +461,7 @@ class FamilyInjectionVisitorTest {
                         new CommonTokenStream(
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
-                                                ParentInjectionVisitorTest.class.getResourceAsStream(
+                                                FamilyInjectionVisitor.class.getResourceAsStream(
                                                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                                                 )
                                         )
@@ -486,7 +486,7 @@ class FamilyInjectionVisitorTest {
                         new CommonTokenStream(
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
-                                                ParentInjectionVisitorTest.class.getResourceAsStream(
+                                                FamilyInjectionVisitor.class.getResourceAsStream(
                                                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                                                 )
                                         )

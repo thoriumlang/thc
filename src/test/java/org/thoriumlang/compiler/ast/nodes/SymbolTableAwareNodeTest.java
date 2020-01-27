@@ -99,7 +99,7 @@ class SymbolTableAwareNodeTest {
                 Mode.VAL
         ));
 
-        value.getContext().put("parent", Node.class, parentNode);
+        value.getContext().put(Family.class, new Family(value, new Family(parentNode)));
 
         SymbolTable symbolTable = new DefaultSymbolTable();
         parentNode.setSymbolTable(symbolTable);
@@ -116,7 +116,7 @@ class SymbolTableAwareNodeTest {
             node.getSymbolTable();
         }
         catch (IllegalStateException e) {
-            Assertions.assertThat(e).hasMessage("Root reached");
+            Assertions.assertThat(e).hasMessage("No family found for node");
             return;
         }
         Assertions.fail("Exception expected but not thrown");

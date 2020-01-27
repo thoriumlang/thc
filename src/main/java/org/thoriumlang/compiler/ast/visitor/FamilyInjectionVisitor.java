@@ -45,6 +45,11 @@ public class FamilyInjectionVisitor extends IdentityVisitor {
         return node;
     }
 
+    private Family family(Node node) {
+        return node.getContext().get(Family.class)
+                .orElseGet(() -> new Family(node));
+    }
+
     private void setFamilyRecursively(Node target, Family parent) {
         Family family = new Family(target, parent);
         target.getContext().put(Family.class, family);
@@ -58,11 +63,6 @@ public class FamilyInjectionVisitor extends IdentityVisitor {
         node.getTypeParameters().forEach(n -> setFamilyRecursively(n, family));
         setFamilyRecursively(node.getSuperType(), family);
         return node;
-    }
-
-    private Family family(Node node) {
-        return node.getContext().get(Family.class)
-                .orElseGet(() -> new Family(node));
     }
 
     @Override
