@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Lists {
     private Lists() {
@@ -63,5 +64,21 @@ public class Lists {
             list.addAll(l);
         }
         return list;
+    }
+
+    public static <T> Optional<Integer> indexOf(List<T> list, Predicate<T> predicate) {
+        for (int i = 0; i < list.size(); i++) {
+            if (predicate.test(list.get(i))) {
+                return Optional.of(i);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static <T> Optional<T> get(List<T> list, int index) {
+        if (index >= list.size() || index < 0) {
+            return Optional.empty();
+        }
+        return Optional.of(list.get(index));
     }
 }

@@ -99,4 +99,39 @@ class ListsTest {
                 Lists.merge(Collections.singletonList("A"), Collections.singletonList("B"))
         ).containsExactly("A", "B");
     }
+
+    @Test
+    void indexOf_nodeFound() {
+        Assertions.assertThat(Lists.indexOf(Collections.singletonList("A"), s -> true))
+                .get()
+                .isEqualTo(0);
+    }
+
+    @Test
+    void indexOf_firstNodeFound() {
+        Assertions.assertThat(Lists.indexOf(Arrays.asList("A", "B"), s -> true))
+                .get()
+                .isEqualTo(0);
+    }
+
+    @Test
+    void indexOf_nodeNotFound() {
+        Assertions.assertThat(Lists.indexOf(Collections.singletonList("A"), s -> false))
+                .isEmpty();
+    }
+
+    @Test
+    void get_nodeFound() {
+        Assertions.assertThat(Lists.get(Collections.singletonList("A"), 0))
+                .get()
+                .isEqualTo("A");
+    }
+
+    @Test
+    void get_nodeNotFound() {
+        Assertions.assertThat(Lists.get(Collections.singletonList("A"), 1))
+                .isEmpty();
+        Assertions.assertThat(Lists.get(Collections.singletonList("A"), -1))
+                .isEmpty();
+    }
 }
