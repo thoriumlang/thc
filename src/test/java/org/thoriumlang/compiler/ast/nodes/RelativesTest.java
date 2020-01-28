@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class FamilyTest {
+class RelativesTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -37,25 +37,25 @@ class FamilyTest {
     @Test
     void node() {
         Node node = new FamilyTestNode();
-        Family family = new Family(node);
+        Relatives relatives = new Relatives(node);
 
-        Assertions.assertThat(family.node())
+        Assertions.assertThat(relatives.node())
                 .isSameAs(node);
     }
 
     @Test
     void noParent() {
-        Family family = new Family(new FamilyTestNode());
-        Assertions.assertThat(family.parent())
+        Relatives relatives = new Relatives(new FamilyTestNode());
+        Assertions.assertThat(relatives.parent())
                 .isEmpty();
     }
 
     @Test
     void parent() {
-        Family parent = new Family(new FamilyTestNode());
-        Family family = new Family(new FamilyTestNode(), parent);
+        Relatives parent = new Relatives(new FamilyTestNode());
+        Relatives relatives = new Relatives(new FamilyTestNode(), parent);
 
-        Assertions.assertThat(family.parent())
+        Assertions.assertThat(relatives.parent())
                 .get()
                 .isSameAs(parent);
     }
@@ -80,18 +80,18 @@ class FamilyTest {
                 Collections.singletonList(methodSignature)
         );
 
-        Family parentFamily = new Family(type);
-        Family childFamily = new Family(methodSignature, parentFamily);
-        methodSignature.getContext().put(Family.class, childFamily);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives childRelatives = new Relatives(methodSignature, parentRelatives);
+        methodSignature.getContext().put(Relatives.class, childRelatives);
 
         Assertions.assertThat(
-                parentFamily.children(new BaseVisitor<List<Node>>() {
+                parentRelatives.children(new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());
                     }
                 })
-        ).containsExactly(childFamily);
+        ).containsExactly(childRelatives);
     }
 
     @Test
@@ -114,18 +114,18 @@ class FamilyTest {
                 Collections.singletonList(methodSignature)
         );
 
-        Family parentFamily = new Family(type);
-        Family childFamily = new Family(methodSignature, parentFamily);
-        methodSignature.getContext().put(Family.class, childFamily);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives childRelatives = new Relatives(methodSignature, parentRelatives);
+        methodSignature.getContext().put(Relatives.class, childRelatives);
 
         Assertions.assertThat(
-                childFamily.siblings(new BaseVisitor<List<Node>>() {
+                childRelatives.siblings(new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());
                     }
                 })
-        ).containsExactly(childFamily);
+        ).containsExactly(childRelatives);
     }
 
     @Test
@@ -156,20 +156,20 @@ class FamilyTest {
                 Arrays.asList(methodSignature1, methodSignature2)
         );
 
-        Family parentFamily = new Family(type);
-        Family methodSignature1Family = new Family(methodSignature1, parentFamily);
-        Family methodSignature2Family = new Family(methodSignature2, parentFamily);
-        methodSignature1.getContext().put(Family.class, methodSignature1Family);
-        methodSignature2.getContext().put(Family.class, methodSignature2Family);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives methodSignature1Relatives = new Relatives(methodSignature1, parentRelatives);
+        Relatives methodSignature2Relatives = new Relatives(methodSignature2, parentRelatives);
+        methodSignature1.getContext().put(Relatives.class, methodSignature1Relatives);
+        methodSignature2.getContext().put(Relatives.class, methodSignature2Relatives);
 
         Assertions.assertThat(
-                methodSignature1Family.nextSibling(new BaseVisitor<List<Node>>() {
+                methodSignature1Relatives.nextSibling(new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());
                     }
                 })
-        ).get().isSameAs(methodSignature2Family);
+        ).get().isSameAs(methodSignature2Relatives);
     }
 
     @Test
@@ -200,20 +200,20 @@ class FamilyTest {
                 Arrays.asList(methodSignature1, methodSignature2)
         );
 
-        Family parentFamily = new Family(type);
-        Family methodSignature1Family = new Family(methodSignature1, parentFamily);
-        Family methodSignature2Family = new Family(methodSignature2, parentFamily);
-        methodSignature1.getContext().put(Family.class, methodSignature1Family);
-        methodSignature2.getContext().put(Family.class, methodSignature2Family);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives methodSignature1Relatives = new Relatives(methodSignature1, parentRelatives);
+        Relatives methodSignature2Relatives = new Relatives(methodSignature2, parentRelatives);
+        methodSignature1.getContext().put(Relatives.class, methodSignature1Relatives);
+        methodSignature2.getContext().put(Relatives.class, methodSignature2Relatives);
 
         Assertions.assertThat(
-                methodSignature2Family.previousSibling(new BaseVisitor<List<Node>>() {
+                methodSignature2Relatives.previousSibling(new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());
                     }
                 })
-        ).get().isSameAs(methodSignature1Family);
+        ).get().isSameAs(methodSignature1Relatives);
     }
 
     @Test
@@ -236,18 +236,18 @@ class FamilyTest {
                 Collections.singletonList(methodSignature)
         );
 
-        Family parentFamily = new Family(type);
-        Family childFamily = new Family(methodSignature, parentFamily);
-        methodSignature.getContext().put(Family.class, childFamily);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives childRelatives = new Relatives(methodSignature, parentRelatives);
+        methodSignature.getContext().put(Relatives.class, childRelatives);
 
         Assertions.assertThat(
-                childFamily.sibling(0, new BaseVisitor<List<Node>>() {
+                childRelatives.sibling(0, new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());
                     }
                 })
-        ).get().isSameAs(childFamily);
+        ).get().isSameAs(childRelatives);
     }
 
     @Test
@@ -270,12 +270,12 @@ class FamilyTest {
                 Collections.singletonList(methodSignature)
         );
 
-        Family parentFamily = new Family(type);
-        Family childFamily = new Family(methodSignature, parentFamily);
-        methodSignature.getContext().put(Family.class, childFamily);
+        Relatives parentRelatives = new Relatives(type);
+        Relatives childRelatives = new Relatives(methodSignature, parentRelatives);
+        methodSignature.getContext().put(Relatives.class, childRelatives);
 
         Assertions.assertThat(
-                childFamily.sibling(10, new BaseVisitor<List<Node>>() {
+                childRelatives.sibling(10, new BaseVisitor<List<Node>>() {
                     @Override
                     public List<Node> visit(Type node) {
                         return new ArrayList<>(node.getMethods());

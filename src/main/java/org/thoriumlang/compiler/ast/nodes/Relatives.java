@@ -23,16 +23,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Family {
+public class Relatives {
     private final Node node;
-    private final Family parent;
+    private final Relatives parent;
 
-    public Family(Node node, Family parent) {
+    public Relatives(Node node, Relatives parent) {
         this.node = node;
         this.parent = parent;
     }
 
-    public Family(Node node) {
+    public Relatives(Node node) {
         this(node, null);
     }
 
@@ -40,35 +40,35 @@ public class Family {
         return node;
     }
 
-    public Optional<Family> parent() {
+    public Optional<Relatives> parent() {
         return Optional.ofNullable(parent);
     }
 
-    public List<Family> children(Visitor<List<Node>> visitor) {
+    public List<Relatives> children(Visitor<List<Node>> visitor) {
         return node.accept(visitor).stream()
                 .map(n -> n.getContext()
-                        .get(Family.class)
+                        .get(Relatives.class)
                         .orElseThrow(() -> new IllegalStateException("No family found in node's context")))
                 .collect(Collectors.toList());
     }
 
-    public List<Family> siblings(Visitor<List<Node>> visitor) {
+    public List<Relatives> siblings(Visitor<List<Node>> visitor) {
         return parent()
                 .map(p -> p.children(visitor))
                 .orElse(Collections.emptyList());
     }
 
-    public Optional<Family> nextSibling(Visitor<List<Node>> visitor) {
+    public Optional<Relatives> nextSibling(Visitor<List<Node>> visitor) {
         return sibling(1, visitor);
     }
 
-    public Optional<Family> sibling(int index, Visitor<List<Node>> visitor) {
-        List<Family> siblings = siblings(visitor);
+    public Optional<Relatives> sibling(int index, Visitor<List<Node>> visitor) {
+        List<Relatives> siblings = siblings(visitor);
         return Lists.indexOf(siblings, n -> n.node().getNodeId().equals(node.getNodeId()))
                 .flatMap(i -> Lists.get(siblings, i + index));
     }
 
-    public Optional<Family> previousSibling(Visitor<List<Node>> visitor) {
+    public Optional<Relatives> previousSibling(Visitor<List<Node>> visitor) {
         return sibling(-1, visitor);
     }
 }

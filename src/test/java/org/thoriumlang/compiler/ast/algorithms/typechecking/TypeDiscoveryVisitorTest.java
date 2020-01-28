@@ -30,7 +30,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
-import org.thoriumlang.compiler.ast.visitor.FamilyInjectionVisitor;
+import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
@@ -349,7 +349,7 @@ class TypeDiscoveryVisitorTest {
 
     @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
     private <T extends Node> T injectParents(T node) {
-        return (T) node.accept(new FamilyInjectionVisitor());
+        return (T) node.accept(new RelativesInjectionVisitor());
     }
 
     @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input

@@ -54,7 +54,7 @@ public class SymbolTableAwareNode extends Node {
                 .orElseGet(() ->
                         wrap(
                                 node.getContext()
-                                        .get(Family.class)
+                                        .get(Relatives.class)
                                         .orElseThrow(() -> new IllegalStateException("No family found for node"))
                                         .parent()
                                         .orElseThrow(() -> new IllegalStateException("No parent found in family"))

@@ -99,7 +99,7 @@ class SymbolTableAwareNodeTest {
                 Mode.VAL
         ));
 
-        value.getContext().put(Family.class, new Family(value, new Family(parentNode)));
+        value.getContext().put(Relatives.class, new Relatives(value, new Relatives(parentNode)));
 
         SymbolTable symbolTable = new DefaultSymbolTable();
         parentNode.setSymbolTable(symbolTable);

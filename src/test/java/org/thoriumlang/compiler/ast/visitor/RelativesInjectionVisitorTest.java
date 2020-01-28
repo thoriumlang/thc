@@ -27,7 +27,7 @@ import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.Family;
+import org.thoriumlang.compiler.ast.nodes.Relatives;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -58,14 +58,14 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-class FamilyInjectionVisitorTest {
+class RelativesInjectionVisitorTest {
     private NodeIdGenerator nodeIdGenerator;
-    private FamilyInjectionVisitor familyInjectionVisitor;
+    private RelativesInjectionVisitor relativesInjectionVisitor;
 
     @BeforeEach
     void setup() {
         this.nodeIdGenerator = new NodeIdGenerator();
-        this.familyInjectionVisitor = new FamilyInjectionVisitor();
+        this.relativesInjectionVisitor = new RelativesInjectionVisitor();
     }
 
     @Test
@@ -86,14 +86,14 @@ class FamilyInjectionVisitorTest {
                 type
         );
 
-        familyInjectionVisitor.visit(root);
+        relativesInjectionVisitor.visit(root);
 
         assertParent(use, root);
         assertParent(type, root);
     }
 
     private void assertParent(Node child, Node parent) {
-        Assertions.assertThat(child.getContext().get(Family.class))
+        Assertions.assertThat(child.getContext().get(Relatives.class))
                 .get()
                 .matches(f -> f.parent().isPresent() && f.parent().get().node().getNodeId().equals(parent.getNodeId()));
     }
@@ -117,7 +117,7 @@ class FamilyInjectionVisitorTest {
                 clazz
         );
 
-        familyInjectionVisitor.visit(root);
+        relativesInjectionVisitor.visit(root);
 
         assertParent(use, root);
         assertParent(clazz, root);
@@ -144,7 +144,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(methodSignature)
         );
 
-        familyInjectionVisitor.visit(type);
+        relativesInjectionVisitor.visit(type);
 
         assertParent(typeParameter, type);
         assertParent(superType, type);
@@ -184,7 +184,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(attribute)
         );
 
-        familyInjectionVisitor.visit(clazz);
+        relativesInjectionVisitor.visit(clazz);
 
         assertParent(typeParameter, clazz);
         assertParent(superType, clazz);
@@ -210,7 +210,7 @@ class FamilyInjectionVisitorTest {
                 returnType
         );
 
-        familyInjectionVisitor.visit(methodSignature);
+        relativesInjectionVisitor.visit(methodSignature);
 
         assertParent(typeParameter, methodSignature);
         assertParent(parameter, methodSignature);
@@ -238,7 +238,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(statement)
         );
 
-        familyInjectionVisitor.visit(method);
+        relativesInjectionVisitor.visit(method);
 
         assertParent(methodSignature, method);
         assertParent(statement, method);
@@ -253,7 +253,7 @@ class FamilyInjectionVisitorTest {
                 type
         );
 
-        familyInjectionVisitor.visit(parameter);
+        relativesInjectionVisitor.visit(parameter);
 
         assertParent(type, parameter);
     }
@@ -270,7 +270,7 @@ class FamilyInjectionVisitorTest {
                 Mode.VAR
         );
 
-        familyInjectionVisitor.visit(attribute);
+        relativesInjectionVisitor.visit(attribute);
 
         assertParent(type, attribute);
         assertParent(value, attribute);
@@ -285,7 +285,7 @@ class FamilyInjectionVisitorTest {
                 false
         );
 
-        familyInjectionVisitor.visit(statement);
+        relativesInjectionVisitor.visit(statement);
 
         assertParent(value, statement);
     }
@@ -299,7 +299,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(argument)
         );
 
-        familyInjectionVisitor.visit(typeSpecSimple);
+        relativesInjectionVisitor.visit(typeSpecSimple);
 
         assertParent(argument, typeSpecSimple);
     }
@@ -312,7 +312,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(type)
         );
 
-        familyInjectionVisitor.visit(typeSpecUnion);
+        relativesInjectionVisitor.visit(typeSpecUnion);
 
         assertParent(type, typeSpecUnion);
     }
@@ -325,7 +325,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(type)
         );
 
-        familyInjectionVisitor.visit(typeSpecIntersection);
+        relativesInjectionVisitor.visit(typeSpecIntersection);
 
         assertParent(type, typeSpecIntersection);
     }
@@ -340,7 +340,7 @@ class FamilyInjectionVisitorTest {
                 returnType
         );
 
-        familyInjectionVisitor.visit(typeSpecFunction);
+        relativesInjectionVisitor.visit(typeSpecFunction);
 
         assertParent(argument, typeSpecFunction);
         assertParent(returnType, typeSpecFunction);
@@ -358,7 +358,7 @@ class FamilyInjectionVisitorTest {
                 Mode.VAR
         );
 
-        familyInjectionVisitor.visit(newAssignmentValue);
+        relativesInjectionVisitor.visit(newAssignmentValue);
 
         assertParent(typeSpec, newAssignmentValue);
         assertParent(value, newAssignmentValue);
@@ -375,7 +375,7 @@ class FamilyInjectionVisitorTest {
                 value2
         );
 
-        familyInjectionVisitor.visit(indirectAssignmentValue);
+        relativesInjectionVisitor.visit(indirectAssignmentValue);
 
         assertParent(value1, indirectAssignmentValue);
         assertParent(value2, indirectAssignmentValue);
@@ -390,7 +390,7 @@ class FamilyInjectionVisitorTest {
                 value1
         );
 
-        familyInjectionVisitor.visit(directAssignmentValue);
+        relativesInjectionVisitor.visit(directAssignmentValue);
 
         assertParent(value1, directAssignmentValue);
     }
@@ -406,7 +406,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(value)
         );
 
-        familyInjectionVisitor.visit(methodCallValue);
+        relativesInjectionVisitor.visit(methodCallValue);
 
         assertParent(typeArgument, methodCallValue);
         assertParent(value, methodCallValue);
@@ -422,7 +422,7 @@ class FamilyInjectionVisitorTest {
                 value2
         );
 
-        familyInjectionVisitor.visit(nestedValue);
+        relativesInjectionVisitor.visit(nestedValue);
 
         assertParent(value1, nestedValue);
         assertParent(value2, nestedValue);
@@ -446,7 +446,7 @@ class FamilyInjectionVisitorTest {
                 Collections.singletonList(statement)
         );
 
-        familyInjectionVisitor.visit(functionValue);
+        relativesInjectionVisitor.visit(functionValue);
 
         assertParent(typeParameter, functionValue);
         assertParent(parameter, functionValue);
@@ -461,7 +461,7 @@ class FamilyInjectionVisitorTest {
                         new CommonTokenStream(
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
-                                                FamilyInjectionVisitor.class.getResourceAsStream(
+                                                RelativesInjectionVisitor.class.getResourceAsStream(
                                                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                                                 )
                                         )
@@ -470,10 +470,10 @@ class FamilyInjectionVisitorTest {
                 ).root()
         );
 
-        familyInjectionVisitor.visit(root);
+        relativesInjectionVisitor.visit(root);
 
         List<Node> missingParents = new NodesMatching(
-                n -> !n.getContext().get(Family.class).isPresent() && n != root
+                n -> !n.getContext().get(Relatives.class).isPresent() && n != root
         ).visit(root);
 
         Assertions.assertThat(missingParents).isEmpty();
@@ -486,7 +486,7 @@ class FamilyInjectionVisitorTest {
                         new CommonTokenStream(
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
-                                                FamilyInjectionVisitor.class.getResourceAsStream(
+                                                RelativesInjectionVisitor.class.getResourceAsStream(
                                                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                                                 )
                                         )
@@ -495,7 +495,7 @@ class FamilyInjectionVisitorTest {
                 ).root()
         );
 
-        familyInjectionVisitor.visit(root);
+        relativesInjectionVisitor.visit(root);
 
         Statement someStatement = ((Class) root.getTopLevelNode()).getMethods().get(0).getStatements().get(0);
         Assertions.assertThat(
@@ -510,7 +510,7 @@ class FamilyInjectionVisitorTest {
 
     private Node parent(Node node) {
         return node.getContext()
-                .get(Family.class)
+                .get(Relatives.class)
                 .orElseThrow(() -> new IllegalStateException("No family found for node " + node))
                 .parent()
                 .orElseThrow(() -> new IllegalStateException("No parent found for node" + node))
