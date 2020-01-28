@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typeflattening;
 
-import org.thoriumlang.compiler.ast.nodes.Context;
+import org.thoriumlang.compiler.ast.context.Context;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeId;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;

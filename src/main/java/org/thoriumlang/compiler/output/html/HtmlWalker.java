@@ -39,7 +39,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
+import org.thoriumlang.compiler.ast.context.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;

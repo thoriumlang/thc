@@ -27,7 +27,7 @@ import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
-import org.thoriumlang.compiler.ast.nodes.Relatives;
+import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;

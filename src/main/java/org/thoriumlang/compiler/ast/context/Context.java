@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.nodes;
+package org.thoriumlang.compiler.ast.context;
+
+import org.thoriumlang.compiler.ast.nodes.Node;
 
 import java.util.HashMap;
 import java.util.Map;

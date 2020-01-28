@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
+import org.thoriumlang.compiler.ast.context.Context;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;

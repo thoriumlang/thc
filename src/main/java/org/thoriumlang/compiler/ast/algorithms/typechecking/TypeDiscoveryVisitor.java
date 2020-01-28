@@ -20,7 +20,7 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.nodes.SymbolTableAwareNode;
+import org.thoriumlang.compiler.ast.context.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
