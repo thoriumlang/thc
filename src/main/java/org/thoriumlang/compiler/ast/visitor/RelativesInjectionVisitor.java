@@ -15,10 +15,10 @@
  */
 package org.thoriumlang.compiler.ast.visitor;
 
+import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
-import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -35,6 +35,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.nodes.Use;
 
 public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
@@ -45,9 +46,14 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
         return node;
     }
 
+    @Override
+    public Node visit(Use node) {
+        family(node);
+        return node;
+    }
+
     private Relatives family(Node node) {
-        return node.getContext().get(Relatives.class)
-                .orElseGet(() -> new Relatives(node));
+        return node.getContext().putIfAbsentAndGet(Relatives.class, new Relatives(node));
     }
 
     private void setFamilyRecursively(Node target, Relatives parent) {

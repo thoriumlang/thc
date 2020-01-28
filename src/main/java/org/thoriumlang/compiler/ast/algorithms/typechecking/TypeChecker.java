@@ -18,7 +18,6 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.context.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
@@ -53,6 +52,8 @@ public class TypeChecker {
     }
 
     private SymbolTable getSymbolTable(Node node) {
-        return SymbolTableAwareNode.wrap(node).getSymbolTable();
+        return node.getContext()
+                .get(SymbolTable.class)
+                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 }

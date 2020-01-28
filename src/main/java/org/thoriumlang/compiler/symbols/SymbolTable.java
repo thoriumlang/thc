@@ -28,4 +28,6 @@ public interface SymbolTable {
     void put(Symbol symbol);
 
     DefaultSymbolTable createNestedTable(String name);
+
+    SymbolTable parent();
 }

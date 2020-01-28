@@ -78,6 +78,11 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
+    public SymbolTable parent() {
+        return parentSymbolTable;
+    }
+
+    @Override
     public String toString() {
         return String.format("%s:%s%s",
                 fqName(),

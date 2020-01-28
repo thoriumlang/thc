@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 
@@ -37,15 +38,17 @@ public class AST {
 
     public Root root() throws IOException {
         NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
-        return (Root) new RelativesInjectionVisitor()
-                .visit(
+
+        return (Root) new SymbolTableInitializationVisitor().visit(
+                (Root) new RelativesInjectionVisitor().visit(
                         new TypeFlattenedRoot(
                                 nodeIdGenerator,
                                 new RootVisitor(nodeIdGenerator, namespace).visit(
                                         parser().root()
                                 )
                         ).root()
-                );
+                )
+        );
     }
 
     private ThoriumParser parser() throws IOException {

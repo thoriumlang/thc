@@ -20,7 +20,6 @@ import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.context.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -72,7 +71,9 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     }
 
     private SymbolTable getSymbolTable(Node node) {
-        return SymbolTableAwareNode.wrap(node).getSymbolTable();
+        return node.getContext()
+                .get(SymbolTable.class)
+                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 
     private Symbol fromJavaClass(String name, Node node, java.lang.Class clazz) {
@@ -82,7 +83,6 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     }
 
     @Override
-    @SuppressWarnings("squid:S3864") // ok to use peek()
     public List<TypeCheckingError> visit(Type node) {
         List<TypeCheckingError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
 
@@ -90,27 +90,22 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
             return errors;
         }
 
-        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node).getSymbolTable();
-
         return node.getMethods().stream()
-                .peek(m -> SymbolTableAwareNode.wrap(m).setSymbolTable(symbolTable.createNestedTable(m.getName())))
                 .map(m -> m.accept(this))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     private List<TypeCheckingError> visitTopLevel(TopLevelNode node, String name, List<TypeParameter> typeParameters) {
-        SymbolTable parentSymbolTable = getSymbolTable(node);
-        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node)
-                .setSymbolTable(parentSymbolTable.createNestedTable(name));
+        SymbolTable symbolTable = getSymbolTable(node);
 
-        if (parentSymbolTable.find(name).isPresent()) {
+        if (symbolTable.find(name).isPresent()) {
             return Collections.singletonList(
                     new TypeCheckingError(String.format("symbol already defined: %s", name), node)
             );
         }
 
-        parentSymbolTable.put(new ThoriumType(name, node));
+        symbolTable.parent().put(new ThoriumType(name, node));
 
         typeParameters.forEach(t -> symbolTable.put(new ThoriumType(t.getName(), t)));
 
@@ -133,11 +128,6 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
 
     @Override
     public List<TypeCheckingError> visit(Method node) {
-        SymbolTableAwareNode symbolTableAwareNode = SymbolTableAwareNode.wrap(node);
-        symbolTableAwareNode.setSymbolTable(
-                symbolTableAwareNode.getSymbolTable().createNestedTable(node.getSignature().getName())
-        );
-
         return node.getSignature().accept(this);
     }
 
