@@ -49,7 +49,7 @@ public class Relatives {
         return node.accept(visitor).stream()
                 .map(n -> n.getContext()
                         .get(Relatives.class)
-                        .orElseThrow(() -> new IllegalStateException("No family found in node's context")))
+                        .orElseThrow(() -> new IllegalStateException("No relatives found in node's context")))
                 .collect(Collectors.toList());
     }
 

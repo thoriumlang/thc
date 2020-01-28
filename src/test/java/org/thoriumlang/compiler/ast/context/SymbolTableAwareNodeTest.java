@@ -124,7 +124,7 @@ class SymbolTableAwareNodeTest {
             node.getSymbolTable();
         }
         catch (IllegalStateException e) {
-            Assertions.assertThat(e).hasMessage("No family found for node");
+            Assertions.assertThat(e).hasMessage("No relatives found for node");
             return;
         }
         Assertions.fail("Exception expected but not thrown");

@@ -511,7 +511,7 @@ class RelativesInjectionVisitorTest {
     private Node parent(Node node) {
         return node.getContext()
                 .get(Relatives.class)
-                .orElseThrow(() -> new IllegalStateException("No family found for node " + node))
+                .orElseThrow(() -> new IllegalStateException("No relatives found for node " + node))
                 .parent()
                 .orElseThrow(() -> new IllegalStateException("No parent found for node" + node))
                 .node();
