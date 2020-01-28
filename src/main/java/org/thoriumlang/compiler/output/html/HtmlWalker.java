@@ -39,7 +39,6 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.context.SymbolTableAwareNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
@@ -55,6 +54,7 @@ import org.thoriumlang.compiler.output.Walker;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,6 +122,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
+                        .with("date", LocalDateTime.now())
                         .with("css", classpathTemplate(TEMPLATE_PATH + "style.css").render(new JtwigModel()))
                         .with("js", classpathTemplate(TEMPLATE_PATH + "script.js").render(new JtwigModel()))
                         .with("namespace", node.getNamespace())
@@ -328,7 +329,9 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private void renderSymbolTable(Node node) {
-        SymbolTable symbolTable = SymbolTableAwareNode.wrap(node).getSymbolTable();
+        SymbolTable symbolTable = node.getContext()
+                .get(SymbolTable.class)
+                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
         symbolTables.add(templates.get(SymbolTable.class).render(
                 newModel(node)
                         .with("nodeId", formatNodeId(node))
