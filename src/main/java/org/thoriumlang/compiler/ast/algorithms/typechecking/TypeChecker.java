@@ -29,9 +29,6 @@ import java.util.stream.Collectors;
 public class TypeChecker {
     public List<TypeCheckingError> walk(Root root) {
         List<TypeCheckingError> discoveryErrors = root
-                .getContext()
-                .put(SymbolTable.class, new DefaultSymbolTable())
-                .getNode()
                 .accept(
                         new TypeDiscoveryVisitor(
                                 new RTJarJavaRuntimeClassLoader()
