@@ -31,6 +31,7 @@ public class DefaultSymbolTable implements SymbolTable {
     private final Set<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
+    @SuppressWarnings("java:S2245")
     DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
         this.hashCode = new Random().nextInt();
         this.name = name;
