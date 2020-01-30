@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
@@ -34,6 +35,7 @@ import org.thoriumlang.compiler.symbols.ThoriumType;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -83,6 +85,15 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
     }
 
     @Override
+    public List<TypeCheckingError> visit(TypeParameter node) {
+        getSymbolTable(node).put(
+                new ThoriumType(node.getName(), node)
+        );
+
+        return Collections.emptyList();
+    }
+
+    @Override
     public List<TypeCheckingError> visit(Type node) {
         List<TypeCheckingError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
 
@@ -107,9 +118,10 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
 
         symbolTable.parent().put(new ThoriumType(name, node));
 
-        typeParameters.forEach(t -> symbolTable.put(new ThoriumType(t.getName(), t)));
-
-        return Collections.emptyList();
+        return typeParameters.stream()
+                .map(p -> p.accept(this))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -120,23 +132,44 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<TypeCheckingError>> {
             return errors;
         }
 
-        return node.getMethods().stream()
-                .map(m -> m.accept(this))
+        return Lists.merge(
+                node.getAttributes().stream()
+                        .map(a -> a.getValue().accept(this))
+                        .filter(Objects::nonNull)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()),
+                node.getMethods().stream()
+                        .map(m -> m.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public List<TypeCheckingError> visit(Method node) {
+        return Lists.merge(
+                node.getSignature().accept(this),
+                node.getStatements().stream()
+                        .map(s -> s.getValue().accept(this))
+                        .filter(Objects::nonNull)
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Override
+    public List<TypeCheckingError> visit(MethodSignature node) {
+        return node.getTypeParameters().stream()
+                .map(p -> p.accept(this))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<TypeCheckingError> visit(Method node) {
-        return node.getSignature().accept(this);
-    }
-
-    @Override
-    public List<TypeCheckingError> visit(MethodSignature node) {
-        SymbolTable symbolTable = getSymbolTable(node);
-
-        node.getTypeParameters().forEach(t -> symbolTable.put(new ThoriumType(t.getName(), t)));
-
-        return Collections.emptyList();
+    public List<TypeCheckingError> visit(FunctionValue node) {
+        return node.getTypeParameters().stream()
+                .map(p -> p.accept(this))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 }

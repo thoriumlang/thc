@@ -40,10 +40,13 @@ class TypeCheckerTest {
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest",
                 "symbol not found: UnknownSupertype",
                 "symbol not found: UnknownAttributeValType",
+                "symbol not found: UnknownAttributeTypeParameterType",
+                "symbol not found: UnknownFunctionValueParameterType1",
                 "symbol not found: UnknownParameterType",
-                "symbol not found: UnknownTypeParameterType",
+                "symbol not found: UnknownMethodTypeParameterType",
                 "symbol not found: UnknownReturnType",
-                "symbol not found: UnknownValType"
+                "symbol not found: UnknownValType",
+                "symbol not found: UnknownFunctionValueParameterType2"
         );
     }
 }

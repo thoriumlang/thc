@@ -33,6 +33,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.nodes.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -328,7 +329,12 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                                     }
                                 }
                         ).orElseGet(() -> getParent(node))
-                ).createNestedTable("$")
+                ).createNestedTable(
+                        node.getContext()
+                                .get(SourcePosition.class)
+                                .map(p -> String.format("[%s]", p.toString()))
+                                .orElse("[?]")
+                )
         );
 
         node.getValue().accept(this);

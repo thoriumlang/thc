@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializationVisitor;
+import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
@@ -38,9 +39,13 @@ import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class TypeDiscoveryVisitorTest {
     private static JavaRuntimeClassLoader classLoader = name -> name.equals(String.class.getName()) ?
@@ -55,6 +60,34 @@ class TypeDiscoveryVisitorTest {
     @BeforeEach
     void setup() {
         visitor = new TypeDiscoveryVisitor(classLoader);
+    }
+
+    @Test
+    void fullTable() throws IOException {
+        Root root = new AST(
+                TypeDiscoveryVisitorTest.class.getResourceAsStream(
+                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                ),
+                "namespace"
+        ).root();
+
+        visitor.visit(root);
+
+        Assertions.assertThat(
+                root.getContext()
+                        .get(SymbolTable.class)
+                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                        .toString()
+
+        ).isEqualTo(
+                new BufferedReader(
+                        new InputStreamReader(
+                                TypeDiscoveryVisitorTest.class.getResourceAsStream(
+                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.types"
+                                )
+                        )
+                ).lines().collect(Collectors.joining("\n"))
+        );
     }
 
     @Test
@@ -465,6 +498,10 @@ class TypeDiscoveryVisitorTest {
                 .get()
                 .isInstanceOf(ThoriumType.class);
     }
+
+
+    // FIXME implement tests for missing type params (FunctionValue) in both attributes and stmts
+
 
     @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
     private <T extends Node> T injectParents(T node) {

@@ -8,7 +8,7 @@ class MyClass[T] {
     val hash = () => 0;
     val str = () => "none";
     val eq = (o: Object) => "return default";
-    is = (t: Type) => "return default";
+    is = [W](t: W) => "return default";
     match: (Object): Boolean = (o: Object) => Case(o)
                                                 .when(none, true)
                                                 .otherwise(false);

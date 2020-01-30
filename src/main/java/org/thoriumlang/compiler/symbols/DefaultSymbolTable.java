@@ -15,12 +15,12 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +28,7 @@ public class DefaultSymbolTable implements SymbolTable {
     private final int hashCode;
     private final String name;
     private final SymbolTable parentSymbolTable;
-    private final Set<DefaultSymbolTable> childrenSymbolTables;
+    private final List<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
     @SuppressWarnings("java:S2245")
@@ -37,7 +37,7 @@ public class DefaultSymbolTable implements SymbolTable {
         this.name = name;
         this.parentSymbolTable = parentSymbolTable;
         this.symbols = new HashMap<>();
-        this.childrenSymbolTables = new HashSet<>();
+        this.childrenSymbolTables = new ArrayList<>();
     }
 
     public DefaultSymbolTable() {
@@ -89,14 +89,15 @@ public class DefaultSymbolTable implements SymbolTable {
                 fqName(),
                 symbols.isEmpty() ?
                         "" :
-                        symbolsStream()
+                        symbols.values().stream()
                                 .map(Object::toString)
                                 .collect(Collectors.joining("\n   ", "\n   ", "")),
                 childrenSymbolTables.isEmpty() ?
                         "" :
                         childrenSymbolTables.stream()
                                 .map(DefaultSymbolTable::toString)
-                                .collect(Collectors.joining("\n", "\n", ""))
+                                .map(s -> s.replace("\n", "\n   "))
+                                .collect(Collectors.joining("\n", "\n   ", ""))
         );
     }
 
