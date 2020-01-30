@@ -85,19 +85,20 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public String toString() {
+        final String IDENT = "\n   ";
         return String.format("%s:%s%s",
                 fqName(),
                 symbols.isEmpty() ?
                         "" :
                         symbols.values().stream()
                                 .map(Object::toString)
-                                .collect(Collectors.joining("\n   ", "\n   ", "")),
+                                .collect(Collectors.joining(IDENT, IDENT, "")),
                 childrenSymbolTables.isEmpty() ?
                         "" :
                         childrenSymbolTables.stream()
                                 .map(DefaultSymbolTable::toString)
-                                .map(s -> s.replace("\n", "\n   "))
-                                .collect(Collectors.joining("\n", "\n   ", ""))
+                                .map(s -> s.replace("\n", IDENT))
+                                .collect(Collectors.joining("\n", IDENT, ""))
         );
     }
 
