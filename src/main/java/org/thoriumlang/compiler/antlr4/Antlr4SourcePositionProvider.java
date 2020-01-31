@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.antlr4;
 import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.ast.SourcePositionProvider;
 import org.thoriumlang.compiler.ast.nodes.Node;
-import org.thoriumlang.compiler.ast.nodes.SourcePosition;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 
 public class Antlr4SourcePositionProvider implements SourcePositionProvider<Token> {
     @Override

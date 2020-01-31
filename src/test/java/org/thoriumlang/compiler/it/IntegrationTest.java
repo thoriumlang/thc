@@ -28,7 +28,7 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
 import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.nodes.SourcePosition;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;

@@ -36,7 +36,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.nodes.SourcePosition;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;

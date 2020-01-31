@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.nodes.SourcePosition;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
