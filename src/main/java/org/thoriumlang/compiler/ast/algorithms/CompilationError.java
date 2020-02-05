@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms.typechecking;
+package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
-public class TypeCheckingError {
+public class CompilationError {
     private final String message;
     private final Node node;
 
-    public TypeCheckingError(String message, Node node) {
+    public CompilationError(String message, Node node) {
         this.message = message;
         this.node = node;
     }

@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.ast.algorithms.Algorithm;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -25,20 +27,21 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TypeChecker {
-    public List<TypeCheckingError> walk(Root root) {
-        List<TypeCheckingError> discoveryErrors = root
+public class TypeChecker implements Algorithm {
+    @Override
+    public List<CompilationError> walk(Root root) {
+        List<CompilationError> discoveryErrors = root
                 .accept(
                         new TypeDiscoveryVisitor(
                                 new RTJarJavaRuntimeClassLoader()
                         )
                 );
 
-        List<TypeCheckingError> typeNotFoundErrors =
+        List<CompilationError> typeNotFoundErrors =
                 new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
                         .map(t -> (TypeSpecSimple) t)
                         .filter(t -> !getSymbolTable(t).find(t.getType()).isPresent())
-                        .map(t -> new TypeCheckingError(String.format("symbol not found: %s", t.getType()), t))
+                        .map(t -> new CompilationError(String.format("symbol not found: %s", t.getType()), t))
                         .collect(Collectors.toList());
 
         return Lists.merge(

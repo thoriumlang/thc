@@ -18,8 +18,9 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializationVisitor;
-import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
@@ -168,7 +169,7 @@ class TypeDiscoveryVisitorTest {
         )));
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(TypeCheckingError::toString))
+                .map(CompilationError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound");
         Assertions.assertThat(getSymbol(root, "notFound"))
@@ -348,7 +349,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(TypeCheckingError::toString))
+                .map(CompilationError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName");
 
@@ -429,7 +430,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(TypeCheckingError::toString))
+                .map(CompilationError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: ClassName");
 

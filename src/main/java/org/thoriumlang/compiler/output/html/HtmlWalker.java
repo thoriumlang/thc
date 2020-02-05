@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.output.html;
 import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -96,11 +96,11 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
             .put(Statement.class, classpathTemplate(TEMPLATE_PATH + "statement.twig"))
-            .put(TypeCheckingError.class, classpathTemplate(TEMPLATE_PATH + "error_typeCheckingError.twig"))
+            .put(CompilationError.class, classpathTemplate(TEMPLATE_PATH + "error_typeCheckingError.twig"))
             .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig"))
             .build();
     private final Root root;
-    private final Map<Node, List<TypeCheckingError>> typecheckingErrors;
+    private final Map<Node, List<CompilationError>> typecheckingErrors;
     private final List<String> symbolTables;
 
     public HtmlWalker(Root root) {

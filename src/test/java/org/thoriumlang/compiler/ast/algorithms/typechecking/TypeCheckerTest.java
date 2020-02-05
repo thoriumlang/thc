@@ -17,7 +17,8 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.nodes.AST;
+import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 
 import java.io.IOException;
 
@@ -35,7 +36,7 @@ class TypeCheckerTest {
                                 ).root()
                         )
                         .stream()
-                        .map(TypeCheckingError::toString)
+                        .map(CompilationError::toString)
         ).containsExactly(
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest",
                 "symbol not found: UnknownSupertype",

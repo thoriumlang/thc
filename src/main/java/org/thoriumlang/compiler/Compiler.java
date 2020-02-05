@@ -15,9 +15,9 @@
  */
 package org.thoriumlang.compiler;
 
+import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
-import org.thoriumlang.compiler.ast.nodes.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
@@ -27,8 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -44,16 +44,23 @@ public class Compiler {
         ).files().forEach(f -> {
             try {
                 System.out.println(String.format("Processing %s", f));
-                Root root = new AST(f.inputStream(), f.namespace()).root();
-                List<TypeCheckingError> typeCheckingError = new TypeChecker().walk(root);
+                AST ast = new AST(
+                        f.inputStream(),
+                        f.namespace(),
+                        Collections.singletonList(
+                                new TypeChecker()
+                        )
+                );
+                Root root = ast.root();
 
-                typeCheckingError.forEach(System.out::println);
+                ast.errors().forEach(System.out::println);
+
                 root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
 
-                root.getContext().put("errors.typechecking", Map.class, typeCheckingError
+                root.getContext().put("errors.typechecking", Map.class, ast.errors()
                         .stream()
                         .collect(Collectors.toMap(
-                                TypeCheckingError::getNode,
+                                CompilationError::getNode,
                                 Collections::singletonList,
                                 Lists::merge
                         )));

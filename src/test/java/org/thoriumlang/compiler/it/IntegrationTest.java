@@ -23,10 +23,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceFile;
 import org.thoriumlang.compiler.SourceFiles;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckingError;
-import org.thoriumlang.compiler.ast.nodes.AST;
+import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.collections.Lists;
@@ -181,7 +181,7 @@ class IntegrationTest {
         root.getContext().put("errors.typechecking", Map.class, new TypeChecker().walk(root)
                 .stream()
                 .collect(Collectors.toMap(
-                        TypeCheckingError::getNode,
+                        CompilationError::getNode,
                         Collections::singletonList,
                         Lists::merge
                 )));
