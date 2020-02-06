@@ -36,8 +36,16 @@ class MyClass[T] {
         [D](y: B) => f(x, y);
     }
 
-    f() {
-        [U](v: U) => v;
+    f(p: String) {
+        var pOrig = p;
+        var p: Integer;
+        var q = p.add(1);
+        [U](v: U, p: U) => {
+            v;
+            var pOrig = p;
+            var p: Object;
+            return false;
+        };
     }
 
     fibonacci(n: Number): Number {
