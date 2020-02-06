@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.symbols;
+package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
-import java.util.Optional;
-import java.util.stream.Stream;
+import org.thoriumlang.compiler.ast.algorithms.Algorithm;
+import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.nodes.Root;
 
-public interface SymbolTable {
-    String fqName();
+import java.util.List;
 
-    Optional<Symbol> find(String name);
-
-    Optional<Symbol> findInScope(String name);
-
-    Stream<Symbol> symbolsStream();
-
-    void put(Symbol symbol);
-
-    DefaultSymbolTable createScope(String name);
-
-    DefaultSymbolTable append(String name);
-
-    SymbolTable parent();
+public class SymbolicNameChecker implements Algorithm {
+    @Override
+    public List<CompilationError> walk(Root root) {
+        return root.accept(
+                new SymbolicNameDiscoveryVisitor()
+        );
+    }
 }

@@ -28,7 +28,7 @@ class DefaultSymbolTableTest {
 
     @Test
     void fqName() {
-        Assertions.assertThat(new DefaultSymbolTable().createNestedTable("child").fqName())
+        Assertions.assertThat(new DefaultSymbolTable().createScope("child").fqName())
                 .isEqualTo("root.child");
     }
 
@@ -53,6 +53,47 @@ class DefaultSymbolTableTest {
         DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar")).isNotEmpty();
+    }
+
+    @Test
+    void findInScope_exists() {
+        Symbol parentSymbol = new SymbolStub("someVar");
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        symbolTable.put(parentSymbol);
+
+        Symbol symbol = new SymbolStub("someVar");
+        DefaultSymbolTable nestedSymbolTable = symbolTable.append("");
+        symbolTable.put(symbol);
+
+        Assertions.assertThat(nestedSymbolTable.find("someVar"))
+                .isNotEmpty()
+                .get()
+                .isSameAs(symbol);
+    }
+
+    @Test
+    void findInScope_existsInBlock() {
+        Symbol parentSymbol = new SymbolStub("someVar");
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        symbolTable.put(parentSymbol);
+
+        DefaultSymbolTable nestedSymbolTable = symbolTable.append("");
+
+        Assertions.assertThat(nestedSymbolTable.findInScope("someVar"))
+                .get()
+                .isSameAs(parentSymbol);
+    }
+
+    @Test
+    void findInScope_unknownInBlock() {
+        Symbol parentSymbol = new SymbolStub("someVar");
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        symbolTable.put(parentSymbol);
+
+        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("").append("");
+
+        Assertions.assertThat(nestedSymbolTable.findInScope("someVar"))
+                .isEmpty();
     }
 
     @Test
@@ -94,14 +135,28 @@ class DefaultSymbolTableTest {
     }
 
     @Test
-    void child() {
+    void createScope() {
         Symbol symbol = new SymbolStub("someVar");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put(symbol);
 
-        DefaultSymbolTable nestedTable = symbolTable.createNestedTable("");
+        DefaultSymbolTable nestedTable = symbolTable.createScope("");
 
         Assertions.assertThat(nestedTable.find("someVar"))
+                .isNotEmpty()
+                .get()
+                .isSameAs(symbol);
+    }
+
+    @Test
+    void append() {
+        Symbol symbol = new SymbolStub("someVar");
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        symbolTable.put(symbol);
+
+        DefaultSymbolTable nestedTable = symbolTable.append("");
+
+        Assertions.assertThat(nestedTable.findInScope("someVar"))
                 .isNotEmpty()
                 .get()
                 .isSameAs(symbol);

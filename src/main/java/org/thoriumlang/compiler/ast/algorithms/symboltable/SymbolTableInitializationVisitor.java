@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast.algorithms.symboltable;
 
 import org.thoriumlang.compiler.ast.context.Relatives;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -33,7 +34,6 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -98,7 +98,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Type node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createNestedTable(node.getName())
+                getSymbolTable(getParent(node)).createScope(node.getName())
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));
@@ -112,7 +112,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Class node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createNestedTable(node.getName())
+                getSymbolTable(getParent(node)).createScope(node.getName())
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));
@@ -191,7 +191,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
                             @Override
                             public SymbolTable visit(Type parentNode) {
-                                return getSymbolTable(parentNode).createNestedTable(node.getName());
+                                return getSymbolTable(parentNode).createScope(node.getName());
                             }
                         })
         );
@@ -300,12 +300,21 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
     @Override
     public Node visit(FunctionValue node) {
-        node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
+        node.getContext().put(
+                SymbolTable.class,
+                getSymbolTable(getParent(node)).createScope("[anon]")
+        );
 
-        node.getStatements().forEach(n -> n.accept(this));
         node.getReturnType().accept(this);
         node.getParameters().forEach(n -> n.accept(this));
         node.getTypeParameters().forEach(n -> n.accept(this));
+
+        node.getContext().put(
+                SymbolTable.class,
+                getSymbolTable(node).createScope("[body]")
+        );
+
+        node.getStatements().forEach(n -> n.accept(this));
 
         return node;
     }
@@ -329,7 +338,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                                     }
                                 }
                         ).orElseGet(() -> getParent(node))
-                ).createNestedTable(
+                ).append(
                         node.getContext()
                                 .get(SourcePosition.class)
                                 .map(p -> String.format("[%s]", p.toString()))
@@ -346,10 +355,16 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Method node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createNestedTable(node.getSignature().getName())
+                getSymbolTable(getParent(node)).createScope(node.getSignature().getName())
         );
 
         node.getSignature().accept(this);
+
+        node.getContext().put(
+                SymbolTable.class,
+                getSymbolTable(node).createScope("[body]")
+        );
+
         node.getStatements().forEach(s -> s.accept(this));
 
         return node;
@@ -359,7 +374,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Attribute node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createNestedTable(node.getIdentifier())
+                getSymbolTable(getParent(node)).createScope(node.getIdentifier())
         );
 
         node.getType().accept(this);

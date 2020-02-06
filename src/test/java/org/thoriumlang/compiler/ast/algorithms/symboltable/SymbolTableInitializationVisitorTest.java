@@ -357,7 +357,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(clazz.getMethods().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == clazz.getContext()
+                        st.parent().parent() == clazz.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -423,6 +423,38 @@ class SymbolTableInitializationVisitorTest {
                 .get()
                 .matches(st ->
                         st == method.getContext()
+                                .get(SymbolTable.class)
+                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                                // signature's symbol table is the parent of the method's symbol table
+                                // this is because the method's symbol table is the method's body symbol table
+                                .parent()
+                );
+    }
+    @Test
+    void method_body() {
+        Method method = injectParents(new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "method",
+                        Collections.emptyList(),
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList())
+                ),
+                Collections.singletonList(
+                        new Statement(nodeIdGenerator.next(), new NoneValue(nodeIdGenerator.next()), true)
+                )
+        ));
+
+        method.getContext().put(Relatives.class, new Relatives(method, new Relatives(parent())));
+
+        visitor.visit(method);
+
+        Assertions.assertThat(method.getStatements().get(0).getContext().get(SymbolTable.class))
+                .get()
+                .matches(st ->
+                        st.parent() == method.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -788,7 +820,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(value.getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st == parent.getContext()
+                        st.parent().parent() == parent.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );

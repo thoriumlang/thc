@@ -30,6 +30,11 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
+    public Optional<Symbol> findInScope(String name) {
+        return Optional.empty();
+    }
+
+    @Override
     public Stream<Symbol> symbolsStream() {
         return Stream.empty();
     }
@@ -40,7 +45,12 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
-    public DefaultSymbolTable createNestedTable(String name) {
+    public DefaultSymbolTable createScope(String name) {
+        throw new IllegalStateException("Cannot add a nested symbol table to the root symbol table");
+    }
+
+    @Override
+    public DefaultSymbolTable append(String name) {
         throw new IllegalStateException("Cannot add a nested symbol table to the root symbol table");
     }
 

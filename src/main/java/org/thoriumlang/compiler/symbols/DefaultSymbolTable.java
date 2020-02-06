@@ -28,16 +28,22 @@ public class DefaultSymbolTable implements SymbolTable {
     private final int hashCode;
     private final String name;
     private final SymbolTable parentSymbolTable;
+    private final boolean blockBoundary;
     private final List<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
-    @SuppressWarnings("java:S2245")
-    DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
+    private DefaultSymbolTable(String name, SymbolTable parentSymbolTable, boolean blockBoundary) {
         this.hashCode = new Random().nextInt();
         this.name = name;
         this.parentSymbolTable = parentSymbolTable;
+        this.blockBoundary = blockBoundary;
         this.symbols = new HashMap<>();
         this.childrenSymbolTables = new ArrayList<>();
+    }
+
+    @SuppressWarnings("java:S2245")
+    DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
+        this(name, parentSymbolTable, false);
     }
 
     public DefaultSymbolTable() {
@@ -58,6 +64,16 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
+    public Optional<Symbol> findInScope(String name) {
+        return Optional.ofNullable(
+                symbols.getOrDefault(
+                        name,
+                        (blockBoundary ? null : parentSymbolTable.findInScope(name).orElse(null))
+                )
+        );
+    }
+
+    @Override
     public Stream<Symbol> symbolsStream() {
         return Stream.concat(
                 symbols.values().stream(),
@@ -72,7 +88,14 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
-    public DefaultSymbolTable createNestedTable(String name) {
+    public DefaultSymbolTable createScope(String name) {
+        DefaultSymbolTable childTable = new DefaultSymbolTable(name, this, true);
+        childrenSymbolTables.add(childTable);
+        return childTable;
+    }
+
+    @Override
+    public DefaultSymbolTable append(String name) {
         DefaultSymbolTable childTable = new DefaultSymbolTable(name, this);
         childrenSymbolTables.add(childTable);
         return childTable;
@@ -86,8 +109,9 @@ public class DefaultSymbolTable implements SymbolTable {
     @Override
     public String toString() {
         final String IDENT = "\n   ";
-        return String.format("%s:%s%s",
+        return String.format("%s%s:%s%s",
                 fqName(),
+                blockBoundary ? " --" : "",
                 symbols.isEmpty() ?
                         "" :
                         symbols.values().stream()

@@ -17,6 +17,7 @@ package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
@@ -47,8 +48,9 @@ public class Compiler {
                 AST ast = new AST(
                         f.inputStream(),
                         f.namespace(),
-                        Collections.singletonList(
-                                new TypeChecker()
+                        Arrays.asList(
+                                new TypeChecker(),
+                                new SymbolicNameChecker()
                         )
                 );
                 Root root = ast.root();
@@ -57,7 +59,7 @@ public class Compiler {
 
                 root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
 
-                root.getContext().put("errors.typechecking", Map.class, ast.errors()
+                root.getContext().put("compilationErrors", Map.class, ast.errors()
                         .stream()
                         .collect(Collectors.toMap(
                                 CompilationError::getNode,

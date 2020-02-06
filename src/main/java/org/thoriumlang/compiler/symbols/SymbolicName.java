@@ -15,23 +15,29 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-import java.util.Optional;
-import java.util.stream.Stream;
+import org.thoriumlang.compiler.ast.nodes.Node;
 
-public interface SymbolTable {
-    String fqName();
+public class SymbolicName implements Symbol {
+    private final String name;
+    private final Node node;
 
-    Optional<Symbol> find(String name);
+    public SymbolicName(String name, Node node) {
+        this.name = name;
+        this.node = node;
+    }
 
-    Optional<Symbol> findInScope(String name);
+    @Override
+    public Node getNode() {
+        return node;
+    }
 
-    Stream<Symbol> symbolsStream();
+    @Override
+    public String getName() {
+        return name;
+    }
 
-    void put(Symbol symbol);
-
-    DefaultSymbolTable createScope(String name);
-
-    DefaultSymbolTable append(String name);
-
-    SymbolTable parent();
+    @Override
+    public String toString() {
+        return name;
+    }
 }

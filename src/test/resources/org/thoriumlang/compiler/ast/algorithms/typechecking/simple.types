@@ -2,25 +2,35 @@ root:
    JavaList -> (rt.jar: interface java.util.List)
    TestClass -> (th: class TestClass)
    String -> (rt.jar: class java.lang.String)
-   root.TestClass:
+   root.TestClass --:
       U -> (th: param U)
-      root.TestClass.method1:
+      root.TestClass.method1 --:
          T -> (th: param T)
-         root.TestClass.method1.[20:9]:
-            root.TestClass.method1.[20:9].[21:9]:
-               root.TestClass.method1.[20:9].[21:9].[22:9]:
-                  root.TestClass.method1.[20:9].[21:9].[22:9].[23:9]:
-   root.TestClass.method2:
-         root.TestClass.method2.[27:9]:
-            W -> (th: param W)
-            root.TestClass.method2.[27:9].[27:9]:
-         root.TestClass.method2.[27:9].[28:9]:
-               root.TestClass.method2.[27:9].[28:9].[28:9]:
-   root.TestClass.someValue:
-   root.TestClass.someObject:
-   root.TestClass.someU:
-   root.TestClass.someMethod1:
-         V -> (th: param V)
-         root.TestClass.someMethod1.[10:23]:
-   root.TestClass.someMethod2:
-         root.TestClass.someMethod2.[11:23]:
+         root.TestClass.method1.[body] --:
+            root.TestClass.method1.[body].[20:9]:
+               root.TestClass.method1.[body].[20:9].[21:9]:
+                  root.TestClass.method1.[body].[20:9].[21:9].[22:9]:
+                     root.TestClass.method1.[body].[20:9].[21:9].[22:9].[23:9]:
+   root.TestClass.method2 --:
+         root.TestClass.method2.[body] --:
+            root.TestClass.method2.[body].[27:9]:
+               root.TestClass.method2.[body].[27:9].[anon] --:
+                  W -> (th: param W)
+                  root.TestClass.method2.[body].[27:9].[anon].[body] --:
+                     root.TestClass.method2.[body].[27:9].[anon].[body].[27:9]:
+            root.TestClass.method2.[body].[27:9].[28:9]:
+                  root.TestClass.method2.[body].[27:9].[28:9].[anon] --:
+                     root.TestClass.method2.[body].[27:9].[28:9].[anon].[body] --:
+                        root.TestClass.method2.[body].[27:9].[28:9].[anon].[body].[28:9]:
+   root.TestClass.someValue --:
+   root.TestClass.someObject --:
+   root.TestClass.someU --:
+   root.TestClass.someMethod1 --:
+         root.TestClass.someMethod1.[anon] --:
+            V -> (th: param V)
+            root.TestClass.someMethod1.[anon].[body] --:
+               root.TestClass.someMethod1.[anon].[body].[10:23]:
+   root.TestClass.someMethod2 --:
+         root.TestClass.someMethod2.[anon] --:
+            root.TestClass.someMethod2.[anon].[body] --:
+               root.TestClass.someMethod2.[anon].[body].[11:23]:

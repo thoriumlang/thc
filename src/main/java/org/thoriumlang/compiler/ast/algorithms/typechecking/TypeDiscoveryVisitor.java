@@ -63,6 +63,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
     @Override
     public List<CompilationError> visit(Use node) {
+        // FIXME duplicate use name
         return javaRuntimeClassLoader.find(node.getFrom())
                 .map(c -> {
                     getSymbolTable(node).put(fromJavaClass(node.getTo(), node, c));

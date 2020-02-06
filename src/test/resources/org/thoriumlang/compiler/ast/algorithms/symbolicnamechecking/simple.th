@@ -1,0 +1,44 @@
+use java.lang.String;
+use java.util.List : JavaList;
+use org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest;
+use java.lang.Object;
+
+class TestClass[U]: UnknownSupertype | Object {
+    val someValue: UnknownAttributeValType[UnknownAttributeTypeParameterType];
+    val someObject: Object;
+    val someU: U;
+    val someU: U;
+    val someMethod1 = [V](v: V, u: U) => none;
+    val someMethod2 = (t: UnknownFunctionValueParameterType1) => none;
+
+    public method1[T](
+      p0: Object,
+      p1: UnknownParameterType,
+      p2: JavaList[String | UnknownMethodTypeParameterType],
+      p3: T,
+      p4: U,
+      p4: U,
+      someValue: Object
+    ): String | UnknownReturnType {
+        val someVal1: T = p3;
+        val someVal2: T = p3;
+        val someVal3: Object = none;
+        var someVar4: UnknownValType;
+        someVar4 = 1;
+        var someVal2: U;
+        var someVar4: UnknownValType;
+        var p0 : Object;
+        var someObject : Object;
+    }
+
+    public method2() {
+        [W](w: W) => w;
+        (y: UnknownFunctionValueParameterType2) => y;
+        var x: Object;
+        () => {
+            var x: Object;
+        };
+    }
+
+    public method2() {}
+}

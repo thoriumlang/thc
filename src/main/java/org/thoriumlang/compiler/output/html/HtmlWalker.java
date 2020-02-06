@@ -96,18 +96,18 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
             .put(Statement.class, classpathTemplate(TEMPLATE_PATH + "statement.twig"))
-            .put(CompilationError.class, classpathTemplate(TEMPLATE_PATH + "error_typeCheckingError.twig"))
+            .put(CompilationError.class, classpathTemplate(TEMPLATE_PATH + "compilationError.twig"))
             .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig"))
             .build();
     private final Root root;
-    private final Map<Node, List<CompilationError>> typecheckingErrors;
+    private final Map<Node, List<CompilationError>> compilationErrors;
     private final List<String> symbolTables;
 
     public HtmlWalker(Root root) {
         this.root = root;
         //noinspection unchecked
-        this.typecheckingErrors = root.getContext()
-                .get("errors.typechecking", Map.class)
+        this.compilationErrors = root.getContext()
+                .get("compilationErrors", Map.class)
                 .orElse(Collections.emptyMap());
         this.symbolTables = new LinkedList<>();
     }
@@ -141,7 +141,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
                                 .map(n -> n.accept(this))
                                 .collect(Collectors.toList()))
                         .with("toplevel", node.getTopLevelNode().accept(this))
-                        .with("errors", typecheckingErrors.values().stream()
+                        .with("errors", compilationErrors.values().stream()
                                 .map(
                                         es -> es.stream()
                                                 .map(e -> templates.get(e.getClass()).render(
@@ -163,7 +163,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         return JtwigModel.newModel()
                 .with("nodeId", formatNodeId(node))
                 .with("nodeKind", node.getClass().getSimpleName())
-                .with("hasErrors", typecheckingErrors.containsKey(node))
+                .with("hasErrors", compilationErrors.containsKey(node))
                 .with("line", sourcePosition.map(p -> String.valueOf(p.getLine())).orElse("?"))
                 .with("char", sourcePosition.map(p -> String.valueOf(p.getChar())).orElse("?"));
     }
