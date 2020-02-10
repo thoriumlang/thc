@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java</artifactId>
-            <version>3.4.01</version>
+            <version>3.4.03</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
