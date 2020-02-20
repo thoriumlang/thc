@@ -3,40 +3,34 @@ use java.util.List : JavaList;
 use org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest;
 use java.lang.Object;
 
-class TestClass[U]: UnknownSupertype | Object {
-    val someValue: UnknownAttributeValType[UnknownAttributeTypeParameterType];
-    val someObject: Object;
-    val someU: U;
-    val someU: U;
-    val someMethod1 = [V](v: V, u: U) => none;
-    val someMethod2 = (t: UnknownFunctionValueParameterType1) => none;
+class TestClass {
+    val someValue;
+    val someU;
+    val someU;
+    val otherValue = otherValue;
+    val someMethod1 = () => none;
+    val someMethod2 = () => none;
 
-    public method1[T](
-      p0: Object,
-      p1: UnknownParameterType,
-      p2: JavaList[String | UnknownMethodTypeParameterType],
-      p3: T,
-      p4: U,
-      p4: U,
-      someValue: Object
-    ): String | UnknownReturnType {
-        val someVal1: T = p3;
-        val someVal2: T = p3;
-        val someVal3: Object = none;
-        var someVar4: UnknownValType;
+    public method1[T](p0: Object, p1: Object, p2: Object, p2: Object) {
+        var someVar1 = p1;
+        var someVar2;
+        var someVar2;
+        var someVar3;
+        var someVar4;
         someVar4 = 1;
-        var someVal2: U;
-        var someVar4: UnknownValType;
-        var p0 : Object;
-        var someObject : Object;
+        var p0: Object;
+        var someVar5 = p3;
     }
 
     public method2() {
-        [W](w: W) => w;
+        var i = i.add(1).add(i);
+        [W](w: W) => w.add(i);
         (y: UnknownFunctionValueParameterType2) => y;
-        var x: Object;
+        var x;
+        var z;
         () => {
-            var x: Object;
+            var x: Object = y;
+            z;
         };
     }
 

@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
@@ -29,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Disabled
 class SymbolicNameDiscoveryVisitorTest {
     private SymbolicNameDiscoveryVisitor visitor;
 

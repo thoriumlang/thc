@@ -39,7 +39,8 @@ class MyClass[T] {
     f(p: String) {
         var pOrig = p;
         var p: Integer;
-        var q = p.add(1);
+        var q = p.add(1).add(z);
+        var i = i.add(1).add(i);
         [U](v: U, p: U) => {
             v;
             var pOrig = p;

@@ -50,11 +50,6 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
-    public DefaultSymbolTable append(String name) {
-        throw new IllegalStateException("Cannot add a nested symbol table to the root symbol table");
-    }
-
-    @Override
     public SymbolTable parent() {
         throw new IllegalStateException("Cannot get the parent of the root symbol table");
     }

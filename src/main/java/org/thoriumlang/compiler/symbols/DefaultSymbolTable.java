@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.symbols;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,22 +29,15 @@ public class DefaultSymbolTable implements SymbolTable {
     private final int hashCode;
     private final String name;
     private final SymbolTable parentSymbolTable;
-    private final boolean blockBoundary;
     private final List<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
 
-    private DefaultSymbolTable(String name, SymbolTable parentSymbolTable, boolean blockBoundary) {
+    DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
         this.hashCode = new Random().nextInt();
         this.name = name;
         this.parentSymbolTable = parentSymbolTable;
-        this.blockBoundary = blockBoundary;
         this.symbols = new HashMap<>();
         this.childrenSymbolTables = new ArrayList<>();
-    }
-
-    @SuppressWarnings("java:S2245")
-    DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
-        this(name, parentSymbolTable, false);
     }
 
     public DefaultSymbolTable() {
@@ -65,12 +59,7 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public Optional<Symbol> findInScope(String name) {
-        return Optional.ofNullable(
-                symbols.getOrDefault(
-                        name,
-                        (blockBoundary ? null : parentSymbolTable.findInScope(name).orElse(null))
-                )
-        );
+        return Optional.ofNullable(symbols.get(name));
     }
 
     @Override
@@ -89,13 +78,6 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public DefaultSymbolTable createScope(String name) {
-        DefaultSymbolTable childTable = new DefaultSymbolTable(name, this, true);
-        childrenSymbolTables.add(childTable);
-        return childTable;
-    }
-
-    @Override
-    public DefaultSymbolTable append(String name) {
         DefaultSymbolTable childTable = new DefaultSymbolTable(name, this);
         childrenSymbolTables.add(childTable);
         return childTable;
@@ -108,22 +90,31 @@ public class DefaultSymbolTable implements SymbolTable {
 
     @Override
     public String toString() {
-        final String IDENT = "\n   ";
-        return String.format("%s%s:%s%s",
-                fqName(),
-                blockBoundary ? " --" : "",
-                symbols.isEmpty() ?
-                        "" :
-                        symbols.values().stream()
-                                .map(Object::toString)
-                                .collect(Collectors.joining(IDENT, IDENT, "")),
-                childrenSymbolTables.isEmpty() ?
-                        "" :
-                        childrenSymbolTables.stream()
-                                .map(DefaultSymbolTable::toString)
-                                .map(s -> s.replace("\n", IDENT))
-                                .collect(Collectors.joining("\n", IDENT, ""))
+        return String.join("\n", toStringInternal());
+
+    }
+
+    private List<String> toStringInternal() {
+        List<String> lines = new ArrayList<>();
+
+        lines.addAll(
+                symbols.values().stream()
+                        .map(Object::toString)
+                        .map(s -> String.format("  %s", s))
+                        .collect(Collectors.toList())
         );
+
+        lines.addAll(
+                childrenSymbolTables.stream()
+                        .map(DefaultSymbolTable::toStringInternal)
+                        .flatMap(Collection::stream)
+                        .map(s -> String.format("  %s", s))
+                        .collect(Collectors.toList())
+        );
+
+        lines.add(0, String.format("%s:", fqName()));
+
+        return lines;
     }
 
     @Override

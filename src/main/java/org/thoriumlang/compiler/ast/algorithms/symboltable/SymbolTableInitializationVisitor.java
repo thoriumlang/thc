@@ -50,7 +50,6 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -302,7 +301,14 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(FunctionValue node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope("[anon]")
+                getSymbolTable(getParent(node))
+                        .createScope(
+                                String.format("[anon:%s]", node.getContext().get(SourcePosition.class)
+                                        .map(SourcePosition::getLine)
+                                        .map(Object::toString)
+                                        .orElse("?")
+                                )
+                        )
         );
 
         node.getReturnType().accept(this);
@@ -321,30 +327,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
     @Override
     public Node visit(Statement node) {
-        node.getContext().put(
-                SymbolTable.class,
-                getSymbolTable(
-                        getLeftSibling(
-                                node,
-                                new BaseVisitor<List<Node>>() {
-                                    @Override
-                                    public List<Node> visit(Method node) {
-                                        return new ArrayList<>(node.getStatements());
-                                    }
-
-                                    @Override
-                                    public List<Node> visit(FunctionValue node) {
-                                        return new ArrayList<>(node.getStatements());
-                                    }
-                                }
-                        ).orElseGet(() -> getParent(node))
-                ).append(
-                        node.getContext()
-                                .get(SourcePosition.class)
-                                .map(p -> String.format("[%s]", p.toString()))
-                                .orElse("[?]")
-                )
-        );
+        node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
 
         node.getValue().accept(this);
 

@@ -56,13 +56,13 @@ class DefaultSymbolTableTest {
     }
 
     @Test
-    void findInScope_exists() {
+    void findInScope_knownInScope() {
         Symbol parentSymbol = new SymbolStub("someVar");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put(parentSymbol);
 
         Symbol symbol = new SymbolStub("someVar");
-        DefaultSymbolTable nestedSymbolTable = symbolTable.append("");
+        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("");
         symbolTable.put(symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
@@ -72,25 +72,12 @@ class DefaultSymbolTableTest {
     }
 
     @Test
-    void findInScope_existsInBlock() {
+    void findInScope_unknownInScope() {
         Symbol parentSymbol = new SymbolStub("someVar");
         DefaultSymbolTable symbolTable = new DefaultSymbolTable();
         symbolTable.put(parentSymbol);
 
-        DefaultSymbolTable nestedSymbolTable = symbolTable.append("");
-
-        Assertions.assertThat(nestedSymbolTable.findInScope("someVar"))
-                .get()
-                .isSameAs(parentSymbol);
-    }
-
-    @Test
-    void findInScope_unknownInBlock() {
-        Symbol parentSymbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put(parentSymbol);
-
-        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("").append("");
+        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("").createScope("");
 
         Assertions.assertThat(nestedSymbolTable.findInScope("someVar"))
                 .isEmpty();
@@ -143,20 +130,6 @@ class DefaultSymbolTableTest {
         DefaultSymbolTable nestedTable = symbolTable.createScope("");
 
         Assertions.assertThat(nestedTable.find("someVar"))
-                .isNotEmpty()
-                .get()
-                .isSameAs(symbol);
-    }
-
-    @Test
-    void append() {
-        Symbol symbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
-        symbolTable.put(symbol);
-
-        DefaultSymbolTable nestedTable = symbolTable.append("");
-
-        Assertions.assertThat(nestedTable.findInScope("someVar"))
                 .isNotEmpty()
                 .get()
                 .isSameAs(symbol);

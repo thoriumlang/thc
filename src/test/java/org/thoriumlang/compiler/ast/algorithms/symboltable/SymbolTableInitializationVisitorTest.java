@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms.symboltable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -55,9 +56,13 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class SymbolTableInitializationVisitorTest {
     private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
@@ -430,6 +435,7 @@ class SymbolTableInitializationVisitorTest {
                                 .parent()
                 );
     }
+
     @Test
     void method_body() {
         Method method = injectParents(new Method(
@@ -454,7 +460,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(method.getStatements().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == method.getContext()
+                        st == method.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -853,14 +859,14 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(method.getStatements().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == method.getContext()
+                        st == method.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
         Assertions.assertThat(method.getStatements().get(1).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == method.getStatements().get(0).getContext()
+                        st == method.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -888,17 +894,45 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(functionValue.getStatements().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == functionValue.getContext()
+                        st == functionValue.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
         Assertions.assertThat(functionValue.getStatements().get(1).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == functionValue.getStatements().get(0).getContext()
+                        st == functionValue.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
+    }
+
+    @Test
+    void full() throws IOException {
+        Root root = new AST(
+                SymbolTableInitializationVisitorTest.class.getResourceAsStream(
+                        "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.th"
+                ),
+                "namespace"
+        ).root();
+
+        visitor.visit(root);
+
+        Assertions.assertThat(
+                root.getContext()
+                        .get(SymbolTable.class)
+                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                        .toString()
+
+        ).isEqualTo(
+                new BufferedReader(
+                        new InputStreamReader(
+                                SymbolTableInitializationVisitorTest.class.getResourceAsStream(
+                                        "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.tables"
+                                )
+                        )
+                ).lines().collect(Collectors.joining("\n"))
+        );
     }
 
     private Node parent() {

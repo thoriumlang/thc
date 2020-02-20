@@ -31,7 +31,5 @@ public interface SymbolTable {
 
     DefaultSymbolTable createScope(String name);
 
-    DefaultSymbolTable append(String name);
-
     SymbolTable parent();
 }

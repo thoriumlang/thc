@@ -16,7 +16,6 @@
 package org.thoriumlang.compiler.it;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
@@ -46,7 +45,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Disabled
 class ASTIntegrationTest {
     @Test
     void symbols() throws IOException {

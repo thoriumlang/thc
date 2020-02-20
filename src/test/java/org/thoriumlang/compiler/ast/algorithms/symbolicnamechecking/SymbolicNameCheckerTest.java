@@ -16,12 +16,14 @@
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 
 import java.io.IOException;
 
+@Disabled
 class SymbolicNameCheckerTest {
     @Test
     void walk() throws IOException {
@@ -30,13 +32,26 @@ class SymbolicNameCheckerTest {
                         .walk(
                                 new AST(
                                         SymbolicNameCheckerTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                                                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
                                         ),
                                         "namespace"
                                 ).root()
                         )
                         .stream()
                         .map(CompilationError::toString)
-        ).isEmpty(); // TODO this should not be empty
+        ).containsExactly(
+                "symbol already defined: someU (9)",
+                "symbol already defined: p2 (14)",
+                "symbol already defined: someVar2 (17)",
+                "symbol already defined: method2 (37)",
+                "symbol not found: otherValue (10)",
+                "symbol not found: p3 (22)",
+                "symbol not found: i (26)",
+                "symbol not found: i (26)",
+                "symbol not found: add (26)",
+                "symbol not found: add (26)",
+                "symbol not found: add (27)",
+                "symbol not found: y (32)"
+                );
     }
 }

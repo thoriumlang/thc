@@ -1,0 +1,14 @@
+root:
+  root.TestClass:
+    root.TestClass.method:
+      root.TestClass.method.[body]:
+        root.TestClass.method.[body].[anon:11]:
+          root.TestClass.method.[body].[anon:11].[body]:
+        root.TestClass.method.[body].[anon:12]:
+          root.TestClass.method.[body].[anon:12].[body]:
+            root.TestClass.method.[body].[anon:12].[body].[anon:13]:
+              root.TestClass.method.[body].[anon:12].[body].[anon:13].[body]:
+    root.TestClass.function:
+      root.TestClass.function.[anon:7]:
+        root.TestClass.function.[anon:7].[body]:
+    root.TestClass.attribute:
