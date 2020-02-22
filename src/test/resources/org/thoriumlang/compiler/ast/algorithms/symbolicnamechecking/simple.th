@@ -34,5 +34,11 @@ class TestClass {
         };
     }
 
-    public method2() {}
+    public method2() {
+        p0 = null;
+    }
+
+    public someValue() {}
+
+    val method1;
 }

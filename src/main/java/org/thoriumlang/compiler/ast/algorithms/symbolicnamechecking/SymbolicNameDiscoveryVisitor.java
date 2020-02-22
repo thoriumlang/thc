@@ -18,14 +18,23 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
+import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
+import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
+import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
+import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
+import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
+import org.thoriumlang.compiler.ast.nodes.NestedValue;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NoneValue;
+import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
+import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
@@ -34,10 +43,9 @@ import org.thoriumlang.compiler.symbols.SymbolicName;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
+class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     @Override
     public List<CompilationError> visit(Root node) {
         return node.getTopLevelNode().accept(this);
@@ -66,26 +74,107 @@ public class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationEr
     public List<CompilationError> visit(Attribute node) {
         SymbolTable symbolTable = getSymbolTable(node).parent();
 
-        if (symbolTable.findInScope(node.getIdentifier()).isPresent()) {
-            return Collections.singletonList(error(node.getIdentifier(), node));
-        }
-
-        symbolTable.put(
-                new SymbolicName(node.getIdentifier(), node)
+        List<CompilationError> errors = Lists.merge(
+                symbolTable.findInScope(node.getIdentifier()).isPresent() ?
+                        Collections.singletonList(
+                                new CompilationError(String.format(
+                                        "symbol already defined: %s (%d)",
+                                        node.getIdentifier(),
+                                        node.getContext().get(SourcePosition.class)
+                                                .orElseThrow(
+                                                        () -> new IllegalStateException("no source position found"))
+                                                .getLine()
+                                ), node)
+                        ) :
+                        Collections.emptyList(),
+                node.getValue().accept(this)
         );
 
-        return Optional.ofNullable(node.getValue().accept(this))
-                .orElse(Collections.emptyList());
+        symbolTable.put(new SymbolicName(node.getIdentifier(), node));
+
+        return errors;
     }
 
-    private CompilationError error(String name, Node node) {
-        return new CompilationError(String.format(
-                "symbol already defined: %s (%d)",
-                name,
-                node.getContext().get(SourcePosition.class)
-                        .orElseThrow(() -> new IllegalStateException("no source position found"))
-                        .getLine()
-        ), node);
+    @Override
+    public List<CompilationError> visit(StringValue node) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<CompilationError> visit(NumberValue node) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<CompilationError> visit(BooleanValue node) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<CompilationError> visit(NoneValue node) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<CompilationError> visit(IdentifierValue node) {
+        if (!getSymbolTable(node).find(node.getValue()).isPresent()) {
+            return Collections.singletonList(undefinedError(node.getValue(), node));
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<CompilationError> visit(DirectAssignmentValue node) {
+        List<CompilationError> errors = node.getValue().accept(this);
+
+        if (!getSymbolTable(node).find(node.getIdentifier()).isPresent()) {
+            errors = Lists.append(errors, undefinedError(node.getIdentifier(), node));
+        }
+
+        return errors;
+    }
+
+    @Override
+    public List<CompilationError> visit(IndirectAssignmentValue node) {
+        List<CompilationError> errors = Lists.merge(
+                node.getIndirectValue().accept(this),
+                node.getValue().accept(this)
+        );
+
+        if (!getSymbolTable(node).find(node.getIdentifier()).isPresent()) {
+            errors = Lists.append(errors, undefinedError(node.getIdentifier(), node));
+        }
+
+        return errors;
+    }
+
+    @Override
+    public List<CompilationError> visit(MethodCallValue node) {
+        List<CompilationError> errors = Lists.merge(
+                node.getMethodArguments().stream()
+                        .map(n -> n.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList()),
+                node.getTypeArguments().stream()
+                        .map(n -> n.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())
+        );
+
+        if (!getSymbolTable(node).find(node.getMethodName()).isPresent()) {
+            errors = Lists.append(errors, undefinedError(node.getMethodName(), node));
+        }
+
+        return errors;
+    }
+
+    @Override
+    public List<CompilationError> visit(NestedValue node) {
+        return Lists.merge(
+                node.getInner().accept(this),
+                node.getOuter().accept(this)
+        );
     }
 
     @Override
@@ -93,15 +182,22 @@ public class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationEr
         // the first parent is the signature's symbol table; the second parent is the enclosing class
         SymbolTable symbolTable = getSymbolTable(node).parent().parent();
 
-        if (symbolTable.findInScope(node.getSignature().getName()).isPresent()) {
-            return Collections.singletonList(error(node.getSignature().getName(), node));
-        }
+        List<CompilationError> errors = symbolTable.findInScope(node.getSignature().getName()).isPresent() ?
+                Collections.singletonList(
+                        new CompilationError(String.format(
+                                "symbol already defined: %s (%d)",
+                                node.getSignature().getName(),
+                                node.getContext().get(SourcePosition.class)
+                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                        .getLine()
+                        ), node)
+                ) :
+                Collections.emptyList();
 
-        symbolTable.put(
-                new SymbolicName(node.getSignature().getName(), node)
-        );
+        symbolTable.put(new SymbolicName(node.getSignature().getName(), node));
 
         return Lists.merge(
+                errors,
                 node.getSignature().getParameters().stream()
                         .map(p -> p.accept(this))
                         .flatMap(List::stream)
@@ -117,36 +213,30 @@ public class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationEr
     public List<CompilationError> visit(Parameter node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        if (symbolTable.findInScope(node.getName()).isPresent()) {
-            return Collections.singletonList(error(node.getName(), node));
-        }
+        List<CompilationError> errors = alreadyDefined(node.getName(), node);
 
-        symbolTable.put(
-                new SymbolicName(node.getName(), node)
-        );
+        symbolTable.put(new SymbolicName(node.getName(), node));
 
-        return Collections.emptyList();
+        return errors;
     }
 
     @Override
     public List<CompilationError> visit(Statement node) {
-        return Optional.ofNullable(node.getValue().accept(this))
-                .orElse(Collections.emptyList());
+        return node.getValue().accept(this);
     }
 
     @Override
     public List<CompilationError> visit(NewAssignmentValue node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        if (symbolTable.findInScope(node.getIdentifier()).isPresent()) {
-            return Collections.singletonList(error(node.getIdentifier(), node));
-        }
-
-        symbolTable.put(
-                new SymbolicName(node.getIdentifier(), node)
+        List<CompilationError> errors = Lists.merge(
+                alreadyDefined(node.getIdentifier(), node),
+                node.getValue().accept(this)
         );
 
-        return Collections.emptyList();
+        symbolTable.put(new SymbolicName(node.getIdentifier(), node));
+
+        return errors;
     }
 
     @Override
@@ -167,5 +257,31 @@ public class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationEr
         return node.getContext()
                 .get(SymbolTable.class)
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
+    }
+
+    private List<CompilationError> alreadyDefined(String identifier, Node node) {
+        if (getSymbolTable(node).findInScope(identifier).isPresent()) {
+            return Collections.singletonList(
+                    new CompilationError(String.format(
+                            "symbol already defined: %s (%d)",
+                            identifier,
+                            node.getContext().get(SourcePosition.class)
+                                    .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                    .getLine()
+                    ), node)
+            );
+        }
+
+        return Collections.emptyList();
+    }
+
+    private CompilationError undefinedError(String name, Node node) {
+        return new CompilationError(String.format(
+                "symbol not found: %s (%d)",
+                name,
+                node.getContext().get(SourcePosition.class)
+                        .orElseThrow(() -> new IllegalStateException("no source position found"))
+                        .getLine()
+        ), node);
     }
 }

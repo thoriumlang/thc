@@ -16,42 +16,65 @@
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.stream.Collectors;
 
-@Disabled
 class SymbolicNameCheckerTest {
     @Test
     void walk() throws IOException {
+        Root root = new AST(
+                SymbolicNameCheckerTest.class.getResourceAsStream(
+                        "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
+                ),
+                "namespace"
+        ).root();
+
         Assertions.assertThat(
                 new SymbolicNameChecker()
-                        .walk(
-                                new AST(
-                                        SymbolicNameCheckerTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
-                                        ),
-                                        "namespace"
-                                ).root()
-                        )
+                        .walk(root)
                         .stream()
                         .map(CompilationError::toString)
         ).containsExactly(
                 "symbol already defined: someU (9)",
+                "symbol not found: otherValue (10)",
+                "symbol already defined: method1 (14)",
                 "symbol already defined: p2 (14)",
                 "symbol already defined: someVar2 (17)",
-                "symbol already defined: method2 (37)",
-                "symbol not found: otherValue (10)",
                 "symbol not found: p3 (22)",
                 "symbol not found: i (26)",
+                "symbol not found: add (26)",
+                "symbol not found: add (26)",
                 "symbol not found: i (26)",
-                "symbol not found: add (26)",
-                "symbol not found: add (26)",
                 "symbol not found: add (27)",
-                "symbol not found: y (32)"
-                );
+                "symbol not found: y (32)",
+                "symbol already defined: method2 (37)",
+                "symbol not found: null (38)",
+                "symbol not found: p0 (38)",
+                "symbol already defined: someValue (41)"
+        );
+
+        Assertions.assertThat(
+                root.getContext()
+                        .get(SymbolTable.class)
+                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                        .toString()
+
+        ).isEqualTo(
+                new BufferedReader(
+                        new InputStreamReader(
+                                SymbolicNameCheckerTest.class.getResourceAsStream(
+                                        "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
+                                )
+                        )
+                ).lines().collect(Collectors.joining("\n"))
+        );
     }
 }

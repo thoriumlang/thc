@@ -44,8 +44,10 @@ class MyClass[T] {
         [U](v: U, p: U) => {
             v;
             var pOrig = p;
+            p = true;
             var p: Object;
-            return false;
+            p = 1;
+            return p.eq(false);
         };
     }
 

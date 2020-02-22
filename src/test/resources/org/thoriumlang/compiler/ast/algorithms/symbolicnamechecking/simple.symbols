@@ -1,69 +1,49 @@
 root:
-   root.TestClass --:
-      method1
-      method2
-      someMethod2
-      someValue
-      someObject
-      someMethod1
-      someU
-      root.TestClass.method1 --:
-         p0
-         p1
-         p2
-         p3
-         p4
-         someValue
-         root.TestClass.method1.[body] --:
-            root.TestClass.method1.[body].[23:9]:
-               someVal1
-               root.TestClass.method1.[body].[23:9].[24:9]:
-                  someVal2
-                  root.TestClass.method1.[body].[23:9].[24:9].[25:9]:
-                     someVal3
-                     root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9]:
-                        someVar4
-                        root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9].[27:9]:
-                           root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9].[27:9].[28:9]:
-                              root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9].[27:9].[28:9].[29:9]:
-                                 root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9].[27:9].[28:9].[29:9].[30:9]:
-                                    p0
-                                    root.TestClass.method1.[body].[23:9].[24:9].[25:9].[26:9].[27:9].[28:9].[29:9].[30:9].[31:9]:
-                                       someObject
-   root.TestClass.method2 --:
-         root.TestClass.method2.[body] --:
-            root.TestClass.method2.[body].[35:9]:
-               root.TestClass.method2.[body].[35:9].[anon] --:
-                  w
-                  root.TestClass.method2.[body].[35:9].[anon].[body] --:
-                     root.TestClass.method2.[body].[35:9].[anon].[body].[35:9]:
-            root.TestClass.method2.[body].[35:9].[36:9]:
-                  root.TestClass.method2.[body].[35:9].[36:9].[anon] --:
-                     y
-                     root.TestClass.method2.[body].[35:9].[36:9].[anon].[body] --:
-                        root.TestClass.method2.[body].[35:9].[36:9].[anon].[body].[36:9]:
-               root.TestClass.method2.[body].[35:9].[36:9].[37:9]:
-                     x
-                     root.TestClass.method2.[body].[35:9].[36:9].[37:9].[38:9]:
-                        root.TestClass.method2.[body].[35:9].[36:9].[37:9].[38:9].[anon] --:
-                           root.TestClass.method2.[body].[35:9].[36:9].[37:9].[38:9].[anon].[body] --:
-                              root.TestClass.method2.[body].[35:9].[36:9].[37:9].[38:9].[anon].[body].[39:13]:
-                                 x
-   root.TestClass.method2 --:
-         root.TestClass.method2.[body] --:
-            root.TestClass.method2.[body].[43:5]:
-   root.TestClass.someValue --:
-   root.TestClass.someObject --:
-   root.TestClass.someU --:
-   root.TestClass.someU --:
-   root.TestClass.someMethod1 --:
-         root.TestClass.someMethod1.[anon] --:
-            u
-            v
-            root.TestClass.someMethod1.[anon].[body] --:
-               root.TestClass.someMethod1.[anon].[body].[11:23]:
-   root.TestClass.someMethod2 --:
-         root.TestClass.someMethod2.[anon] --:
-            t
-            root.TestClass.someMethod2.[anon].[body] --:
-               root.TestClass.someMethod2.[anon].[body].[12:23]:
+  root.TestClass:
+    method1
+    method2
+    someMethod2
+    someValue
+    someMethod1
+    someU
+    otherValue
+    root.TestClass.method1:
+      p0
+      p1
+      p2
+      root.TestClass.method1.[body]:
+        p0
+        someVar5
+        someVar3
+        someVar4
+        someVar1
+        someVar2
+    root.TestClass.method2:
+      root.TestClass.method2.[body]:
+        x
+        i
+        z
+        root.TestClass.method2.[body].[anon:27]:
+          w
+          root.TestClass.method2.[body].[anon:27].[body]:
+        root.TestClass.method2.[body].[anon:28]:
+          y
+          root.TestClass.method2.[body].[anon:28].[body]:
+        root.TestClass.method2.[body].[anon:31]:
+          root.TestClass.method2.[body].[anon:31].[body]:
+            x
+    root.TestClass.method2:
+      root.TestClass.method2.[body]:
+    root.TestClass.someValue:
+      root.TestClass.someValue.[body]:
+    root.TestClass.someValue:
+    root.TestClass.someU:
+    root.TestClass.someU:
+    root.TestClass.otherValue:
+    root.TestClass.someMethod1:
+      root.TestClass.someMethod1.[anon:11]:
+        root.TestClass.someMethod1.[anon:11].[body]:
+    root.TestClass.someMethod2:
+      root.TestClass.someMethod2.[anon:12]:
+        root.TestClass.someMethod2.[anon:12].[body]:
+    root.TestClass.method1:

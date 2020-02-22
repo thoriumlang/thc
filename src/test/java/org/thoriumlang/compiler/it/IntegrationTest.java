@@ -28,6 +28,7 @@ import org.thoriumlang.compiler.SourceFiles;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Function;
@@ -178,7 +180,11 @@ class IntegrationTest {
 
         Root root = new AST(
                 sourceFile.inputStream(),
-                sourceFile.namespace()
+                sourceFile.namespace(),
+                Arrays.asList(
+                        new TypeChecker(),
+                        new SymbolicNameChecker()
+                )
         ).root();
 
         root.getContext().put("compilationErrors", Map.class, new TypeChecker().walk(root)
