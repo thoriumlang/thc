@@ -22,35 +22,35 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 class DefaultSymbolTableTest {
     @Test
     void fqName_parentRoot() {
-        Assertions.assertThat(new DefaultSymbolTable().fqName())
+        Assertions.assertThat(new DefaultSymbolTable(null).fqName())
                 .isEqualTo("root");
     }
 
     @Test
     void fqName() {
-        Assertions.assertThat(new DefaultSymbolTable().createScope("child").fqName())
+        Assertions.assertThat(new DefaultSymbolTable(null).createScope(null, "child").fqName())
                 .isEqualTo("root.child");
     }
 
     @Test
     void find_unknown() {
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         Assertions.assertThat(symbolTable.find("unknown")).isEmpty();
     }
 
     @Test
     void find_localSymbol() {
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(new SymbolStub("someVar"));
         Assertions.assertThat(symbolTable.find("someVar")).isNotEmpty();
     }
 
     @Test
     void find_parentSymbol() {
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(new SymbolStub("someVar"));
 
-        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable(null, "", symbolTable);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar")).isNotEmpty();
     }
@@ -58,11 +58,11 @@ class DefaultSymbolTableTest {
     @Test
     void findInScope_knownInScope() {
         Symbol parentSymbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(parentSymbol);
 
         Symbol symbol = new SymbolStub("someVar");
-        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("");
+        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope(null, "");
         symbolTable.put(symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
@@ -74,10 +74,12 @@ class DefaultSymbolTableTest {
     @Test
     void findInScope_unknownInScope() {
         Symbol parentSymbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(parentSymbol);
 
-        DefaultSymbolTable nestedSymbolTable = symbolTable.createScope("").createScope("");
+        DefaultSymbolTable nestedSymbolTable = symbolTable
+                .createScope(null, "")
+                .createScope(null, "");
 
         Assertions.assertThat(nestedSymbolTable.findInScope("someVar"))
                 .isEmpty();
@@ -86,11 +88,11 @@ class DefaultSymbolTableTest {
     @Test
     void find_precedence() {
         Symbol parentSymbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(parentSymbol);
 
         Symbol symbol = new SymbolStub("someVar");
-        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable(null, "", symbolTable);
         symbolTable.put(symbol);
 
         Assertions.assertThat(nestedSymbolTable.find("someVar"))
@@ -103,13 +105,13 @@ class DefaultSymbolTableTest {
     void symbolStream() {
         Symbol parentSymbolA = new SymbolStub("A");
         Symbol parentSymbolB = new SymbolStub("B");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(parentSymbolA);
         symbolTable.put(parentSymbolB);
 
         Symbol symbolA = new SymbolStub("A");
         Symbol symbolC = new SymbolStub("C");
-        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable("", symbolTable);
+        DefaultSymbolTable nestedSymbolTable = new DefaultSymbolTable(null, "", symbolTable);
         symbolTable.put(symbolA);
         symbolTable.put(symbolC);
 
@@ -124,10 +126,10 @@ class DefaultSymbolTableTest {
     @Test
     void createScope() {
         Symbol symbol = new SymbolStub("someVar");
-        DefaultSymbolTable symbolTable = new DefaultSymbolTable();
+        DefaultSymbolTable symbolTable = new DefaultSymbolTable(null);
         symbolTable.put(symbol);
 
-        DefaultSymbolTable nestedTable = symbolTable.createScope("");
+        DefaultSymbolTable nestedTable = symbolTable.createScope(null, "");
 
         Assertions.assertThat(nestedTable.find("someVar"))
                 .isNotEmpty()

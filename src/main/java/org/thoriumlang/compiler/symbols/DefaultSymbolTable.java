@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,17 +33,19 @@ public class DefaultSymbolTable implements SymbolTable {
     private final SymbolTable parentSymbolTable;
     private final List<DefaultSymbolTable> childrenSymbolTables;
     private final Map<String, Symbol> symbols;
+    private final Node node;
 
-    DefaultSymbolTable(String name, SymbolTable parentSymbolTable) {
+    DefaultSymbolTable(Node node, String name, SymbolTable parentSymbolTable) {
         this.hashCode = new Random().nextInt();
+        this.node=node;
         this.name = name;
         this.parentSymbolTable = parentSymbolTable;
         this.symbols = new HashMap<>();
         this.childrenSymbolTables = new ArrayList<>();
     }
 
-    public DefaultSymbolTable() {
-        this("root", new RootSymbolTable());
+    public DefaultSymbolTable(Node node) {
+        this(node, "root", new RootSymbolTable());
     }
 
     @Override
@@ -77,8 +81,8 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
-    public DefaultSymbolTable createScope(String name) {
-        DefaultSymbolTable childTable = new DefaultSymbolTable(name, this);
+    public DefaultSymbolTable createScope(Node node, String name) {
+        DefaultSymbolTable childTable = new DefaultSymbolTable(node, name, this);
         childrenSymbolTables.add(childTable);
         return childTable;
     }
@@ -86,6 +90,11 @@ public class DefaultSymbolTable implements SymbolTable {
     @Override
     public SymbolTable parent() {
         return parentSymbolTable;
+    }
+
+    @Override
+    public Node node() {
+        return node;
     }
 
     @Override

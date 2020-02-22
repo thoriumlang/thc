@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -29,7 +31,9 @@ public interface SymbolTable {
 
     void put(Symbol symbol);
 
-    DefaultSymbolTable createScope(String name);
+    DefaultSymbolTable createScope(Node node, String name);
 
     SymbolTable parent();
+
+    Node node();
 }

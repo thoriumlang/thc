@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -36,7 +37,6 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -335,6 +335,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         symbolTables.add(templates.get(SymbolTable.class).render(
                 newModel(node)
                         .with("nodeId", formatNodeId(node))
+                        .with("sourceNodeId", formatNodeId(symbolTable.node()))
                         .with("name", symbolTable.fqName().replaceFirst("^root\\.", ""))
                         .with("hash", Integer.toHexString(symbolTable.hashCode()))
                         .with("symbols", symbolTable.symbolsStream()

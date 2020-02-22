@@ -15,6 +15,8 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -45,12 +47,17 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
-    public DefaultSymbolTable createScope(String name) {
+    public DefaultSymbolTable createScope(Node node, String name) {
         throw new IllegalStateException("Cannot add a nested symbol table to the root symbol table");
     }
 
     @Override
     public SymbolTable parent() {
         throw new IllegalStateException("Cannot get the parent of the root symbol table");
+    }
+
+    @Override
+    public Node node() {
+        throw new IllegalStateException("Cannot get the node of the root symbol table");
     }
 }

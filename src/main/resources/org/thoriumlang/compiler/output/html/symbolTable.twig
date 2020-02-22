@@ -1,6 +1,9 @@
 <table id="symbolTable_{{ nodeId }}">
     <tr>
-        <th colspan="2">{{ name }} ({{ hash }})</th>
+        <th colspan="2">
+            <span class="symbolTable__link" data-refNodeId="{{ sourceNodeId }}">{{ name }}</span>
+            ({{ hash }})
+        </th>
     </tr>
     <tr>
         <th>Kind</th>

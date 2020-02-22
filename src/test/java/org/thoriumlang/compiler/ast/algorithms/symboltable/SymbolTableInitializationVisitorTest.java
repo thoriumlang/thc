@@ -938,7 +938,7 @@ class SymbolTableInitializationVisitorTest {
     private Node parent() {
         return new Parent(nodeIdGenerator.next())
                 .getContext()
-                .put(SymbolTable.class, new DefaultSymbolTable())
+                .put(SymbolTable.class, new DefaultSymbolTable(null))
                 .getNode();
     }
 
