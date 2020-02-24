@@ -17,10 +17,13 @@ package org.thoriumlang.compiler.ast.context;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Context {
     private static final String KEY_CANNOT_BE_NULL = "key cannot be null";
@@ -74,7 +77,7 @@ public class Context {
         if (type == null) {
             throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
         }
-        return Optional.ofNullable((T) get(new Key(key, type)));
+        return (Optional<T>) get(new Key(key, type));
     }
 
     @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
@@ -82,13 +85,15 @@ public class Context {
         if (type == null) {
             throw new IllegalArgumentException(TYPE_CANNOT_BE_NULL);
         }
-        return Optional.ofNullable((T) get(new Key(null, type)));
+        return (Optional<T>) get(new Key(null, type));
     }
 
-    private Object get(Key key) {
-        return map.get(key);
+    public Optional<Object> get(Key key) {
+        if (key == null) {
+            throw new IllegalArgumentException(KEY_CANNOT_BE_NULL);
+        }
+        return Optional.ofNullable(map.get(key));
     }
-
 
     public <T> T require(java.lang.Class<T> type) {
         return get(type)
@@ -126,9 +131,10 @@ public class Context {
         return (T) putIfAbsentAndGet(new Key(null, type), value);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent") // we're sure because we put it in if absent
     private Object putIfAbsentAndGet(Key key, Object value) {
         map.putIfAbsent(key, value);
-        return get(key);
+        return get(key).get();
     }
 
     public <T> boolean contains(String key, java.lang.Class<T> type) {
@@ -164,7 +170,13 @@ public class Context {
         return this;
     }
 
-    private static class Key {
+    public List<Key> keys() {
+        return map.keySet().stream()
+                .sorted(Comparator.comparing(Key::toString))
+                .collect(Collectors.toList());
+    }
+
+    public static class Key {
         private final String name;
         private final java.lang.Class<?> type;
 

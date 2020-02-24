@@ -27,8 +27,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.put(null, String.class, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("key cannot be null");
             return;
@@ -41,8 +40,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.put("key", null, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -55,8 +53,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.put("key", String.class, null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("value cannot be null");
             return;
@@ -97,8 +94,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.get(null, String.class);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("key cannot be null");
             return;
@@ -111,8 +107,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.get("key", null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -165,8 +160,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet(null, String.class, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("key cannot be null");
             return;
@@ -179,8 +173,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet("key", null, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -193,8 +186,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet("key", String.class, null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("value cannot be null");
             return;
@@ -222,8 +214,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.contains(null, String.class);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("key cannot be null");
             return;
@@ -236,8 +227,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.contains("key", null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -281,8 +271,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.put(null, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -295,8 +284,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.put(String.class, null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("value cannot be null");
             return;
@@ -308,9 +296,8 @@ class ContextTest {
     void get_type_nullType() {
         Context context = new NodeStub().getContext();
         try {
-            context.get(null);
-        }
-        catch (IllegalArgumentException e) {
+            context.get((Class<Object>) null);
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -341,6 +328,14 @@ class ContextTest {
     }
 
     @Test
+    void get_key_null() {
+        Context context = new NodeStub().getContext();
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> context.get((Context.Key) null))
+                .withMessage("key cannot be null");
+    }
+
+    @Test
     void put_type_returnsContext() {
         Context context = new NodeStub().getContext();
 
@@ -353,8 +348,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet(null, "Hello");
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -367,8 +361,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.putIfAbsentAndGet(String.class, null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("value cannot be null");
             return;
@@ -396,8 +389,7 @@ class ContextTest {
         Context context = new NodeStub().getContext();
         try {
             context.contains(null);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("type cannot be null");
             return;
@@ -467,7 +459,22 @@ class ContextTest {
                 .hasMessage("no key(java.lang.String) found");
     }
 
-    private static class NodeStub extends Node {
+    @Test
+    void keys_empty() {
+        NodeStub node = new NodeStub();
+        Assertions.assertThat(node.getContext().keys())
+                .isEmpty();
+    }
+
+    @Test
+    void keys_nonEmpty() {
+        NodeStub node = new NodeStub();
+        node.getContext().put(String.class, "someStuff");
+        Assertions.assertThat(node.getContext().keys())
+                .hasSize(1);
+    }
+
+    private static class NodeStub extends Node { // TODO extract it in a test helpers package
         NodeStub() {
             super(new NodeId(1L));
         }

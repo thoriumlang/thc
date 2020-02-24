@@ -1,0 +1,6 @@
+class Class {
+    method(): Class {
+        false;
+        true;
+    }
+}

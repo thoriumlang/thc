@@ -1,0 +1,6 @@
+class Class {
+    method(): Class {
+        return false;
+        true; // TODO multiple return: https://github.com/thoriumlang/thc/issues/54
+    }
+}

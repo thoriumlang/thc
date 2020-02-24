@@ -1,0 +1,3 @@
+class Class {
+    var a: Class;
+}

@@ -21,5 +21,6 @@ public interface Symbol {
     /**
      * @return the node where the symbol is defined.
      */
+    // FIXME rename to getDefiningNode
     Node getNode();
 }

@@ -1,0 +1,75 @@
+{
+  "symbolTables": [
+    {
+      "name": "[root]",
+      "symbols": []
+    },
+    {
+      "name": "org",
+      "parentTableName": "",
+      "symbols": []
+    },
+    {
+      "name": "org.thoriumlang",
+      "parentTableName": "org",
+      "symbols": [
+        {
+          "name": "Object",
+          "definition": "(th-rt: org.thoriumlang.Object)"
+        }
+      ]
+    },
+    {
+      "name": "org.thoriumlang.compiler",
+      "parentTableName": "org.thoriumlang",
+      "symbols": []
+    },
+    {
+      "name": "org.thoriumlang.compiler.it",
+      "parentTableName": "org.thoriumlang.compiler",
+      "symbols": [
+        {
+          "name": "Type",
+          "kind": "(th: type Type)",
+          "definition": {
+            "visibility": "NAMESPACE",
+            "name": "Type",
+            "typeParameters": [],
+            "superType": {
+              "type": "org.thoriumlang.Object",
+              "arguments": [],
+              "context": {
+                "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
+                "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body]"
+              },
+              "nodeId": 3
+            },
+            "methods": [],
+            "context": {
+              "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
+              "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body]"
+            },
+            "nodeId": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "org.thoriumlang.compiler.it.Type",
+      "parentTableName": "org.thoriumlang.compiler.it",
+      "symbols": [
+        {
+          "name": "Type",
+          "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it.Type)",
+          "nodeRef": 2
+        }
+      ]
+    },
+    {
+      "name": "org.thoriumlang.compiler.it.Type.[body]",
+      "parentTableName": "org.thoriumlang.compiler.it.Type",
+      "symbols": []
+    }
+  ],
+  "errors": []
+}

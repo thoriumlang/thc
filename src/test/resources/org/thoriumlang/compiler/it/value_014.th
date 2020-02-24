@@ -1,0 +1,5 @@
+class Class {
+    method(): Class {
+        [T](p: Class[T]) => none;
+    }
+}

@@ -1,0 +1,2 @@
+type Type : Super[T] {
+}

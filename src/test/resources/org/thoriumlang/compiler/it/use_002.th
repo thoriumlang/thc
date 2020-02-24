@@ -1,0 +1,3 @@
+use java.lang.String;
+type Type {
+}

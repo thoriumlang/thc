@@ -1,0 +1,5 @@
+class Class {
+    method(): Class {
+        this; // TODO "symbol not found: this" https://github.com/thoriumlang/thc/issues/30
+    }
+}
