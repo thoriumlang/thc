@@ -12,7 +12,7 @@ addons:
   sonarcloud:
     organization: "thoriumlang"
     token:
-      secure: $SONAR_TOKEN
+        secure: "h/HiOEOVBYQ20/q/E+tv0rdrYhPh3pIcCtJsjza7jmETMuyF6Jrb9YjjPvsf51f0+2saY6ehSbK0ZS3+TdWYhHGJhpn3OWUNxBafMjGdnwjcJ6d222J4V9oMjWBlo0R+0DVCnGv41V8Vp6CAb5eCQTBvi7S8slltuVoI8LgG1XIe/SomNo2Q2rxeHgJ/e1xUCNvT4ZbUAB0wcvrRMHuLV61W0fnrDBWz10CEYL4VqZzUP72JyEVbv+F9GrVaTZ25hH3pBtCVkN4uQ8xSaoHrio/y30YjrLrpwozZDCXouw0AZwYopUkY6rf8WhHHr6Ok1NNC5ou7iK0+v2QATCC4R9Zij+JJvvL6jarrcfNxsdUXb9Z/WFskTzEWTWeMK6uRcfp1Kii67kN3wrAoleq9cbskQo5rFVPlGsls2EkHdVU8fDU7lH3IhFakTqqkXgeodgG3I26AXlPCUXzP4DsFGhlm9FeDLfnbCiZWmy2Iufw/N/IaBZyU/Qivo22NrDzLmywy6hQFDNIrxdrFFCelg+FbWHU2y0qS9XEuxTCucF3g7wpP44BbUIX+cp8hgaBITWl0CYM5fgDDcaQ+4rrHImiQbxvb3jlV4BU4yXsFP0bUgD/snUlhym7Vs+hDuLf+OJth4IvKpQG3MpU+3iPQaEKgIxLR4tQRr9dSmxiwR+A="
 script:
   - mvn install
   - mvn sonar:sonar -Dsonar.java.libraries=target
