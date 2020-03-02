@@ -12,7 +12,7 @@ addons:
   sonarcloud:
     organization: "thoriumlang"
     token:
-      secure: $SONARQUBE_TOKEN
+      secure: $SONAR_TOKEN
 script:
   - mvn install
   - mvn sonar:sonar -Dsonar.java.libraries=target
