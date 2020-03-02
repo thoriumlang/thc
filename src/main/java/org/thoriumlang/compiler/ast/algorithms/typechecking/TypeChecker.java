@@ -28,6 +28,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TypeChecker implements Algorithm {
+    private final MissingTypeLoader missingTypeLoader;
+
+    public TypeChecker(MissingTypeLoader missingTypeLoader) {
+        this.missingTypeLoader = missingTypeLoader;
+    }
+
+    public TypeChecker() {
+        this((namespace, type) -> false);
+    }
+
     @Override
     public List<CompilationError> walk(Root root) {
         List<CompilationError> discoveryErrors = root
@@ -41,6 +51,7 @@ public class TypeChecker implements Algorithm {
                 new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
                         .map(t -> (TypeSpecSimple) t)
                         .filter(t -> !getSymbolTable(t).find(t.getType()).isPresent())
+                        .filter(t -> !missingTypeLoader.load(root.getNamespace(), t.getType()))
                         .map(t -> new CompilationError(String.format("symbol not found: %s", t.getType()), t))
                         .collect(Collectors.toList());
 

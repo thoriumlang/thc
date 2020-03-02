@@ -1,26 +1,27 @@
 root:
-  JavaList -> (rt.jar: interface java.util.List)
   TestClass -> (th: class TestClass)
-  String -> (rt.jar: class java.lang.String)
   root.TestClass:
-    U -> (th: param U)
-    root.TestClass.method1:
-      T -> (th: param T)
-      root.TestClass.method1.[body]:
-    root.TestClass.method2:
-      root.TestClass.method2.[body]:
-        root.TestClass.method2.[body].[anon:27]:
-          W -> (th: param W)
-          root.TestClass.method2.[body].[anon:27].[body]:
-        root.TestClass.method2.[body].[anon:28]:
-          root.TestClass.method2.[body].[anon:28].[body]:
-    root.TestClass.someValue:
-    root.TestClass.someObject:
-    root.TestClass.someU:
-    root.TestClass.someMethod1:
-      root.TestClass.someMethod1.[anon:10]:
-        V -> (th: param V)
-        root.TestClass.someMethod1.[anon:10].[body]:
-    root.TestClass.someMethod2:
-      root.TestClass.someMethod2.[anon:11]:
-        root.TestClass.someMethod2.[anon:11].[body]:
+    JavaList -> (rt.jar: interface java.util.List)
+    String -> (rt.jar: class java.lang.String)
+    root.TestClass.[body]:
+      U -> (th: param U)
+      root.TestClass.[body].method1:
+        T -> (th: param T)
+        root.TestClass.[body].method1.[body]:
+      root.TestClass.[body].method2:
+        root.TestClass.[body].method2.[body]:
+          root.TestClass.[body].method2.[body].[anon:27]:
+            W -> (th: param W)
+            root.TestClass.[body].method2.[body].[anon:27].[body]:
+          root.TestClass.[body].method2.[body].[anon:28]:
+            root.TestClass.[body].method2.[body].[anon:28].[body]:
+      root.TestClass.[body].someValue:
+      root.TestClass.[body].someObject:
+      root.TestClass.[body].someU:
+      root.TestClass.[body].someMethod1:
+        root.TestClass.[body].someMethod1.[anon:10]:
+          V -> (th: param V)
+          root.TestClass.[body].someMethod1.[anon:10].[body]:
+      root.TestClass.[body].someMethod2:
+        root.TestClass.[body].someMethod2.[anon:11]:
+          root.TestClass.[body].someMethod2.[anon:11].[body]:

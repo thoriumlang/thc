@@ -335,7 +335,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         symbolTables.add(templates.get(SymbolTable.class).render(
                 newModel(node)
                         .with("nodeId", formatNodeId(node))
-                        .with("sourceNodeId", formatNodeId(symbolTable.node()))
+                        .with("sourceNodeId", symbolTable.node().map(this::formatNodeId).orElse(""))
                         .with("name", symbolTable.fqName().replaceFirst("^root\\.", ""))
                         .with("hash", Integer.toHexString(symbolTable.hashCode()))
                         .with("symbols", symbolTable.symbolsStream()

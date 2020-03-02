@@ -79,6 +79,7 @@ public class Type extends TopLevelNode {
         return visibility;
     }
 
+    @Override
     public String getName() {
         return name;
     }

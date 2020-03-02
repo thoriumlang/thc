@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
@@ -33,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.FlatMapVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
@@ -54,6 +56,7 @@ class ASTIntegrationTest {
                 ),
                 "org.thoriumlang",
                 Arrays.asList(
+                        new SymbolTableInitializer(new DefaultSymbolTable()),
                         new TypeChecker(),
                         new SymbolicNameChecker()
                 )

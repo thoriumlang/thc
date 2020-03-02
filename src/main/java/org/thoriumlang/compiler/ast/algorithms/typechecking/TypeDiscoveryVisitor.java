@@ -118,7 +118,10 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
             );
         }
 
-        symbolTable.parent().put(new ThoriumType(name, node));
+        symbolTable       // [body]
+                .parent() // type or class
+                .parent() // root
+                .put(new ThoriumType(name, node));
 
         return typeParameters.stream()
                 .map(p -> p.accept(this))

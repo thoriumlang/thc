@@ -19,9 +19,9 @@ import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.ast.SourcePositionProvider;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Use;
 
 import java.util.Collection;

@@ -1,14 +1,14 @@
-root:
-  root.TestClass:
-    root.TestClass.method:
-      root.TestClass.method.[body]:
-        root.TestClass.method.[body].[anon:11]:
-          root.TestClass.method.[body].[anon:11].[body]:
-        root.TestClass.method.[body].[anon:12]:
-          root.TestClass.method.[body].[anon:12].[body]:
-            root.TestClass.method.[body].[anon:12].[body].[anon:13]:
-              root.TestClass.method.[body].[anon:12].[body].[anon:13].[body]:
-    root.TestClass.function:
-      root.TestClass.function.[anon:7]:
-        root.TestClass.function.[anon:7].[body]:
-    root.TestClass.attribute:
+root.TestClass:
+  root.TestClass.[body]:
+    root.TestClass.[body].method:
+      root.TestClass.[body].method.[body]:
+        root.TestClass.[body].method.[body].[anon:11]:
+          root.TestClass.[body].method.[body].[anon:11].[body]:
+        root.TestClass.[body].method.[body].[anon:12]:
+          root.TestClass.[body].method.[body].[anon:12].[body]:
+            root.TestClass.[body].method.[body].[anon:12].[body].[anon:13]:
+              root.TestClass.[body].method.[body].[anon:12].[body].[anon:13].[body]:
+    root.TestClass.[body].function:
+      root.TestClass.[body].function.[anon:7]:
+        root.TestClass.[body].function.[anon:7].[body]:
+    root.TestClass.[body].attribute:

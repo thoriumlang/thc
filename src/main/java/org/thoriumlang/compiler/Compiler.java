@@ -18,10 +18,12 @@ package org.thoriumlang.compiler;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
@@ -49,6 +51,7 @@ public class Compiler {
                         f.inputStream(),
                         f.namespace(),
                         Arrays.asList(
+                                new SymbolTableInitializer(new DefaultSymbolTable()),
                                 new TypeChecker(),
                                 new SymbolicNameChecker()
                         )

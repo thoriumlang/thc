@@ -35,5 +35,5 @@ public interface SymbolTable {
 
     SymbolTable parent();
 
-    Node node();
+    Optional<Node> node();
 }

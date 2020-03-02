@@ -19,22 +19,28 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 class SymbolicNameCheckerTest {
     @Test
     void walk() throws IOException {
+        SymbolTable rootSymbolTable = new DefaultSymbolTable();
+        SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
                 ),
-                "namespace"
+                "namespace",
+                Collections.singletonList(symbolTableInitializer)
         ).root();
 
         Assertions.assertThat(
@@ -61,20 +67,15 @@ class SymbolicNameCheckerTest {
                 "symbol already defined: someValue (41)"
         );
 
-        Assertions.assertThat(
-                root.getContext()
-                        .get(SymbolTable.class)
-                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                        .toString()
-
-        ).isEqualTo(
-                new BufferedReader(
-                        new InputStreamReader(
-                                SymbolicNameCheckerTest.class.getResourceAsStream(
-                                        "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
+        Assertions.assertThat(rootSymbolTable.toString())
+                .isEqualTo(
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        SymbolicNameCheckerTest.class.getResourceAsStream(
+                                                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
+                                        )
                                 )
-                        )
-                ).lines().collect(Collectors.joining("\n"))
-        );
+                        ).lines().collect(Collectors.joining("\n"))
+                );
     }
 }

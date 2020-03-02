@@ -19,7 +19,6 @@ import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.condition.DisabledIfSystemProperties;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -29,12 +28,14 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -162,7 +163,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues",
             "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple"
     })
-    @DisabledIfSystemProperty(named="skipHtml", matches = "true")
+    @DisabledIfSystemProperty(named = "skipHtml", matches = "true")
     void html(String path) throws Exception {
         HttpResponse<String> uniResponse = Unirest.post("http://localhost:8888/")
                 .header("User-Agent",
@@ -182,6 +183,7 @@ class IntegrationTest {
                 sourceFile.inputStream(),
                 sourceFile.namespace(),
                 Arrays.asList(
+                        new SymbolTableInitializer(new DefaultSymbolTable()),
                         new TypeChecker(),
                         new SymbolicNameChecker()
                 )

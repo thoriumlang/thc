@@ -37,15 +37,15 @@ public class DefaultSymbolTable implements SymbolTable {
 
     DefaultSymbolTable(Node node, String name, SymbolTable parentSymbolTable) {
         this.hashCode = new Random().nextInt();
-        this.node=node;
+        this.node = node;
         this.name = name;
         this.parentSymbolTable = parentSymbolTable;
         this.symbols = new HashMap<>();
         this.childrenSymbolTables = new ArrayList<>();
     }
 
-    public DefaultSymbolTable(Node node) {
-        this(node, "root", new RootSymbolTable());
+    public DefaultSymbolTable() {
+        this(null, "root", new RootSymbolTable());
     }
 
     @Override
@@ -93,8 +93,8 @@ public class DefaultSymbolTable implements SymbolTable {
     }
 
     @Override
-    public Node node() {
-        return node;
+    public Optional<Node> node() {
+        return Optional.ofNullable(node);
     }
 
     @Override

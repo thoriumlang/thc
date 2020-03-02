@@ -18,7 +18,6 @@ package org.thoriumlang.compiler.ast.context;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeId;

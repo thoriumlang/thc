@@ -88,6 +88,7 @@ public class Class extends TopLevelNode {
         return visibility;
     }
 
+    @Override
     public String getName() {
         return name;
     }

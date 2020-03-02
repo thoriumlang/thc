@@ -71,7 +71,7 @@ class SymbolTableInitializationVisitorTest {
 
     @BeforeEach
     void setup() {
-        visitor = new SymbolTableInitializationVisitor();
+        visitor = new SymbolTableInitializationVisitor(new DefaultSymbolTable());
     }
 
     @Test
@@ -938,7 +938,7 @@ class SymbolTableInitializationVisitorTest {
     private Node parent() {
         return new Parent(nodeIdGenerator.next())
                 .getContext()
-                .put(SymbolTable.class, new DefaultSymbolTable(null))
+                .put(SymbolTable.class, new DefaultSymbolTable())
                 .getNode();
     }
 

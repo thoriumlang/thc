@@ -22,7 +22,6 @@ import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -61,15 +60,13 @@ public class AST {
 
         synchronized (inputStream) {
             if (root == null) {
-                root = (Root) new SymbolTableInitializationVisitor().visit(
-                        (Root) new RelativesInjectionVisitor().visit(
-                                new TypeFlattenedRoot(
-                                        nodeIdGenerator,
-                                        new RootVisitor(nodeIdGenerator, namespace).visit(
-                                                parser().root()
-                                        )
-                                ).root()
-                        )
+                root = (Root) new RelativesInjectionVisitor().visit(
+                        new TypeFlattenedRoot(
+                                nodeIdGenerator,
+                                new RootVisitor(nodeIdGenerator, namespace).visit(
+                                        parser().root()
+                                )
+                        ).root()
                 );
             }
 

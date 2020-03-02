@@ -17,11 +17,10 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializationVisitor;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
@@ -35,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
@@ -66,30 +66,28 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void fullTable() throws IOException {
+        SymbolTable rootSymbolTable = new DefaultSymbolTable();
+        SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                 ),
-                "namespace"
+                "namespace",
+                Collections.singletonList(symbolTableInitializer)
         ).root();
 
         visitor.visit(root);
 
-        Assertions.assertThat(
-                root.getContext()
-                        .get(SymbolTable.class)
-                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                        .toString()
-
-        ).isEqualTo(
-                new BufferedReader(
-                        new InputStreamReader(
-                                TypeDiscoveryVisitorTest.class.getResourceAsStream(
-                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.types"
+        Assertions.assertThat(rootSymbolTable.toString())
+                .isEqualTo(
+                        new BufferedReader(
+                                new InputStreamReader(
+                                        TypeDiscoveryVisitorTest.class.getResourceAsStream(
+                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.types"
+                                        )
                                 )
-                        )
-                ).lines().collect(Collectors.joining("\n"))
-        );
+                        ).lines().collect(Collectors.joining("\n"))
+                );
     }
 
     @Test
@@ -505,14 +503,13 @@ class TypeDiscoveryVisitorTest {
     // FIXME implement tests for missing type params (FunctionValue) in both attributes and stmts
 
 
-    @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
-    private <T extends Node> T injectParents(T node) {
-        return (T) node.accept(new RelativesInjectionVisitor());
+    private Root injectParents(Root node) {
+        return (Root) node.accept(new RelativesInjectionVisitor());
     }
 
-    @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input
-    private <T extends Node> T injectSymbolTable(T node) {
-        return (T) node.accept(new SymbolTableInitializationVisitor());
+    private Root injectSymbolTable(Root node) {
+        new SymbolTableInitializer(new DefaultSymbolTable()).walk(node);
+        return node;
     }
 
     private Optional<Symbol> getSymbol(Node node, String name) {

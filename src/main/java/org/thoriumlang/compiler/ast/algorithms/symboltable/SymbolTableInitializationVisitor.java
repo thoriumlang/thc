@@ -46,17 +46,21 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
-import org.thoriumlang.compiler.ast.visitor.Visitor;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.util.List;
-import java.util.Optional;
+class SymbolTableInitializationVisitor extends IdentityVisitor {
+    private final SymbolTable rootSymbolTable;
 
-public class SymbolTableInitializationVisitor extends IdentityVisitor {
+    SymbolTableInitializationVisitor(SymbolTable rootSymbolTable) {
+        this.rootSymbolTable = rootSymbolTable;
+    }
+
     @Override
     public Node visit(Root node) {
-        node.getContext().put(SymbolTable.class, new DefaultSymbolTable(node));
+        node.getContext().put(
+                SymbolTable.class,
+                rootSymbolTable.createScope(node, node.getTopLevelNode().getName())
+        );
 
         node.getUses().forEach(n -> n.accept(this));
         node.getTopLevelNode().accept(this);
@@ -85,19 +89,11 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                 .node();
     }
 
-    private Optional<Node> getLeftSibling(Node node, Visitor<List<Node>> visitor) {
-        return node.getContext()
-                .get(Relatives.class)
-                .orElseThrow(() -> new IllegalStateException("Relatives not found"))
-                .previousSibling(visitor)
-                .map(Relatives::node);
-    }
-
     @Override
     public Node visit(Type node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope(node, node.getName())
+                getSymbolTable(getParent(node)).createScope(node, "[body]")
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));
@@ -111,7 +107,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Class node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope(node, node.getName())
+                getSymbolTable(getParent(node)).createScope(node, "[body]")
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));

@@ -57,7 +57,7 @@ public class RootSymbolTable implements SymbolTable {
     }
 
     @Override
-    public Node node() {
-        throw new IllegalStateException("Cannot get the node of the root symbol table");
+    public Optional<Node> node() {
+        return Optional.empty();
     }
 }

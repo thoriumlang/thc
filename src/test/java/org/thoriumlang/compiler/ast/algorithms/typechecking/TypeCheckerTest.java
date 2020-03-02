@@ -19,8 +19,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 
 import java.io.IOException;
+import java.util.Collections;
 
 class TypeCheckerTest {
     @Test
@@ -32,7 +35,8 @@ class TypeCheckerTest {
                                         TypeCheckerTest.class.getResourceAsStream(
                                                 "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                                         ),
-                                        "namespace"
+                                        "namespace",
+                                        Collections.singletonList(new SymbolTableInitializer(new DefaultSymbolTable()))
                                 ).root()
                         )
                         .stream()
