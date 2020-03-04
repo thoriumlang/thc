@@ -34,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -171,6 +172,11 @@ public abstract class IdentityVisitor implements Visitor<Node> {
 
     @Override
     public Node visit(Attribute node) {
+        return node;
+    }
+
+    @Override
+    public Node visit(Reference node) {
         return node;
     }
 }

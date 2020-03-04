@@ -34,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -205,7 +206,8 @@ public class NodesMatching implements Visitor<List<Node>> {
     @Override
     public List<Node> visit(IdentifierValue node) {
         return Lists.merge(
-                matches(node)
+                matches(node),
+                recursiveMatch(node.getReference())
         );
     }
 
@@ -213,6 +215,7 @@ public class NodesMatching implements Visitor<List<Node>> {
     public List<Node> visit(NewAssignmentValue node) {
         return Lists.merge(
                 matches(node),
+                recursiveMatch(node.getReference()),
                 recursiveMatch(node.getType()),
                 recursiveMatch(node.getValue())
         );
@@ -222,6 +225,7 @@ public class NodesMatching implements Visitor<List<Node>> {
     public List<Node> visit(IndirectAssignmentValue node) {
         return Lists.merge(
                 matches(node),
+                recursiveMatch(node.getReference()),
                 recursiveMatch(node.getIndirectValue()),
                 recursiveMatch(node.getValue())
         );
@@ -231,6 +235,7 @@ public class NodesMatching implements Visitor<List<Node>> {
     public List<Node> visit(DirectAssignmentValue node) {
         return Lists.merge(
                 matches(node),
+                recursiveMatch(node.getReference()),
                 recursiveMatch(node.getValue())
         );
     }
@@ -287,6 +292,13 @@ public class NodesMatching implements Visitor<List<Node>> {
                 matches(node),
                 recursiveMatch(node.getType()),
                 recursiveMatch(node.getValue())
+        );
+    }
+
+    @Override
+    public List<Node> visit(Reference node) {
+        return Lists.merge(
+                matches(node)
         );
     }
 }

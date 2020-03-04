@@ -20,14 +20,14 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class IdentifierValue extends Value {
-    private final String value;
+    private final Reference reference;
 
-    public IdentifierValue(NodeId nodeId, String value) {
+    public IdentifierValue(NodeId nodeId, Reference reference) {
         super(nodeId);
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
+        if (reference == null) {
+            throw new NullPointerException("reference cannot be null");
         }
-        this.value = value;
+        this.reference = reference;
     }
 
     @Override
@@ -37,11 +37,11 @@ public class IdentifierValue extends Value {
 
     @Override
     public String toString() {
-        return value;
+        return reference.toString();
     }
 
-    public String getValue() {
-        return value;
+    public Reference getReference() {
+        return reference;
     }
 
     @Override
@@ -54,11 +54,11 @@ public class IdentifierValue extends Value {
         }
         IdentifierValue that = (IdentifierValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                value.equals(that.value);
+                reference.equals(that.reference);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), value);
+        return Objects.hash(getNodeId(), reference);
     }
 }

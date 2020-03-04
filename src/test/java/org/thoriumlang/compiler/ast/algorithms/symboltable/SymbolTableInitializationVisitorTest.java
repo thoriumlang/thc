@@ -19,6 +19,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -42,6 +43,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -679,7 +681,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         IdentifierValue value = injectParents(new IdentifierValue(
                 nodeIdGenerator.next(),
-                "string"
+                new Reference(nodeIdGenerator.next(), "string")
         ));
 
         value.getContext().put(Relatives.class, new Relatives(value, new Relatives(parent)));
@@ -700,7 +702,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         NewAssignmentValue value = injectParents(new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "string",
+                new Reference(nodeIdGenerator.next(), "string"),
                 new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
@@ -724,7 +726,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         DirectAssignmentValue value = injectParents(new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                "string",
+                new Reference(nodeIdGenerator.next(), "string"),
                 new NoneValue(nodeIdGenerator.next())
         ));
 
@@ -747,7 +749,7 @@ class SymbolTableInitializationVisitorTest {
         IndirectAssignmentValue value = injectParents(new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                "string",
+                new Reference(nodeIdGenerator.next(), "string"),
                 new NoneValue(nodeIdGenerator.next())
         ));
 
@@ -769,7 +771,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         MethodCallValue value = injectParents(new MethodCallValue(
                 nodeIdGenerator.next(),
-                "methosName",
+                "methodName",
                 Collections.emptyList(),
                 Collections.emptyList()
         ));
@@ -827,6 +829,24 @@ class SymbolTableInitializationVisitorTest {
                 .get()
                 .matches(st ->
                         st.parent().parent() == parent.getContext()
+                                .get(SymbolTable.class)
+                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                );
+    }
+
+    @Test
+    void targetReference() {
+        Node parent = parent();
+        Reference value = injectParents(new Reference(nodeIdGenerator.next(), "string"));
+
+        value.getContext().put(Relatives.class, new Relatives(value, new Relatives(parent)));
+
+        visitor.visit(value);
+
+        Assertions.assertThat(value.getContext().get(SymbolTable.class))
+                .get()
+                .matches(st ->
+                        st == parent.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -917,6 +937,10 @@ class SymbolTableInitializationVisitorTest {
         ).root();
 
         visitor.visit(root);
+
+        Assertions.assertThat(
+                new NodesMatching(n -> !n.getContext().get(SymbolTable.class).isPresent()).visit(root)
+        ).isEmpty();
 
         Assertions.assertThat(
                 root.getContext()

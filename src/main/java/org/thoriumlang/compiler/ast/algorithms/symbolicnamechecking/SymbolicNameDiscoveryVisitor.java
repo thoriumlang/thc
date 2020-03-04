@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -35,14 +36,17 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolicName;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
@@ -117,36 +121,40 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
     @Override
     public List<CompilationError> visit(IdentifierValue node) {
-        if (!getSymbolTable(node).find(node.getValue()).isPresent()) {
-            return Collections.singletonList(undefinedError(node.getValue(), node));
+        return node.getReference().accept(this);
+    }
+
+    @Override
+    public List<CompilationError> visit(Reference node) {
+        Optional<Node> referencedNode = getSymbolTable(node)
+                .find(node.getName())
+                .map(Symbol::getNode);
+
+        if (!referencedNode.isPresent()) {
+            return Collections.singletonList(undefinedError(node.getName(), node));
         }
+
+        node.getContext().put(ReferencedNode.class, new ReferencedNode(referencedNode.get()));
 
         return Collections.emptyList();
     }
 
     @Override
     public List<CompilationError> visit(DirectAssignmentValue node) {
-        List<CompilationError> errors = node.getValue().accept(this);
-
-        if (!getSymbolTable(node).find(node.getIdentifier()).isPresent()) {
-            errors = Lists.append(errors, undefinedError(node.getIdentifier(), node));
-        }
-
-        return errors;
+        return Lists.merge(
+                node.getReference().accept(this),
+                node.getValue().accept(this)
+        );
     }
 
     @Override
     public List<CompilationError> visit(IndirectAssignmentValue node) {
-        List<CompilationError> errors = Lists.merge(
+        // TODO cover with tests
+        return Lists.merge(
+                node.getReference().accept(this),
                 node.getIndirectValue().accept(this),
                 node.getValue().accept(this)
         );
-
-        if (!getSymbolTable(node).find(node.getIdentifier()).isPresent()) {
-            errors = Lists.append(errors, undefinedError(node.getIdentifier(), node));
-        }
-
-        return errors;
     }
 
     @Override
@@ -230,11 +238,13 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         SymbolTable symbolTable = getSymbolTable(node);
 
         List<CompilationError> errors = Lists.merge(
-                alreadyDefined(node.getIdentifier(), node),
+                alreadyDefined(node.getReference().getName(), node),
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new SymbolicName(node.getIdentifier(), node));
+        symbolTable.put(new SymbolicName(node.getReference().getName(), node));
+
+        node.getReference().accept(this);
 
         return errors;
     }

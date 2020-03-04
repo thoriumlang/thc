@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -39,6 +40,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
@@ -353,8 +355,17 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
-                        .with("name", node.getValue())
+                        .with("name", node.getReference().accept(this))
+                        .with("referencedNodeId", referencedNodeId(node.getReference()))
         );
+    }
+
+    private String referencedNodeId(Reference node) {
+        return node.getContext()
+                .get(ReferencedNode.class)
+                .map(ReferencedNode::node)
+                .map(this::formatNodeId)
+                .orElse("node_0");
     }
 
     @Override
@@ -362,7 +373,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
-                        .with("name", node.getIdentifier())
+                        .with("name", node.getReference().accept(this))
                         .with("type", node.getType().accept(this))
                         .with("value", node.getValue().accept(this))
                         .with("kind", node.getMode().toString().toLowerCase())
@@ -375,7 +386,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         return templates.get(node.getClass()).render(
                 newModel(node)
                         .with("indirectValue", node.getIndirectValue().accept(this))
-                        .with("identifier", node.getIdentifier())
+                        .with("identifier", node.getReference().accept(this))
                         .with("value", node.getValue().accept(this))
         );
     }
@@ -385,8 +396,9 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
-                        .with("identifier", node.getIdentifier())
+                        .with("identifier", node.getReference().accept(this))
                         .with("value", node.getValue().accept(this))
+                        .with("referencedNodeId", referencedNodeId(node.getReference()))
         );
     }
 
@@ -480,5 +492,10 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
                         .with("isLast", node.isLast())
                         .with("value", node.getValue().accept(this))
         );
+    }
+
+    @Override
+    public String visit(Reference node) {
+        return node.getName();
     }
 }

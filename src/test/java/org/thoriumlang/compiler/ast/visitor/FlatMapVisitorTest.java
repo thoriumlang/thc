@@ -38,6 +38,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -132,12 +133,25 @@ class FlatMapVisitorTest {
 
     @Test
     void identifierValue() {
-        Node node = new IdentifierValue(nodeIdGenerator.next(), "value");
+        Node node = new IdentifierValue(
+                nodeIdGenerator.next(),
+                new Reference(nodeIdGenerator.next(), "value")
+        );
 
         List<Class> result = node.accept(visitor());
 
         Assertions.assertThat(result)
                 .containsExactly(IdentifierValue.class);
+    }
+
+    @Test
+    void targetReference() {
+        Node node = new Reference(nodeIdGenerator.next(), "value");
+
+        List<Class> result = node.accept(visitor());
+
+        Assertions.assertThat(result)
+                .containsExactly(Reference.class);
     }
 
     @Test
@@ -416,7 +430,7 @@ class FlatMapVisitorTest {
     void newAssignmentValue() {
         Node node = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new TypeSpecInferred(nodeIdGenerator.next()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
@@ -436,7 +450,7 @@ class FlatMapVisitorTest {
     void directAssignmentValue() {
         Node node = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         );
 
@@ -453,8 +467,11 @@ class FlatMapVisitorTest {
     void indirectAssignmentValue() {
         Node node = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
-                new IdentifierValue(nodeIdGenerator.next(), "identifier"),
-                "identifier",
+                new IdentifierValue(
+                        nodeIdGenerator.next(),
+                        new Reference(nodeIdGenerator.next(), "value")
+                ),
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         );
 

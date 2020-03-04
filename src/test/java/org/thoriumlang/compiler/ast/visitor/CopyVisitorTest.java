@@ -39,6 +39,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -398,7 +399,10 @@ class CopyVisitorTest {
 
     @Test
     void visitIdentifierValue() {
-        Node node = new IdentifierValue(nodeIdGenerator.next(), "id")
+        Node node = new IdentifierValue(
+                nodeIdGenerator.next(),
+                new Reference(nodeIdGenerator.next(), "id")
+        )
                 .getContext()
                 .put(Object.class, new Object())
                 .getNode();
@@ -410,7 +414,7 @@ class CopyVisitorTest {
     void visitAssignmentValue() {
         Node node = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAR
@@ -427,7 +431,7 @@ class CopyVisitorTest {
         Node node = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         )
                 .getContext()
@@ -441,7 +445,7 @@ class CopyVisitorTest {
     void visitDirectAssignmentValue() {
         Node node = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         )
                 .getContext()
@@ -551,6 +555,19 @@ class CopyVisitorTest {
                 ),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
+        )
+                .getContext()
+                .put(Object.class, new Object())
+                .getNode();
+
+        makeAssertions(node);
+    }
+
+    @Test
+    void visitTargetReference() {
+        Node node = new Reference(
+                nodeIdGenerator.next(),
+                "identifier"
         )
                 .getContext()
                 .put(Object.class, new Object())

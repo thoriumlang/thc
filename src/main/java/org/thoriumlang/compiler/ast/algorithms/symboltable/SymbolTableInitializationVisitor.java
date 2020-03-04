@@ -36,6 +36,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -241,6 +242,13 @@ class SymbolTableInitializationVisitor extends IdentityVisitor {
     @Override
     public Node visit(IdentifierValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
+        node.getReference().accept(this);
+        return node;
+    }
+
+    @Override
+    public Node visit(Reference node) {
+        node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
         return node;
     }
 
@@ -248,6 +256,7 @@ class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(NewAssignmentValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
 
+        node.getReference().accept(this);
         node.getType().accept(this);
         node.getValue().accept(this);
 
@@ -258,6 +267,7 @@ class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(DirectAssignmentValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
 
+        node.getReference().accept(this);
         node.getValue().accept(this);
 
         return node;
@@ -267,6 +277,7 @@ class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(IndirectAssignmentValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
 
+        node.getReference().accept(this);
         node.getValue().accept(this);
         node.getIndirectValue().accept(this);
 

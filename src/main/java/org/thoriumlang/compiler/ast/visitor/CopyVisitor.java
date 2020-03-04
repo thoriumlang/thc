@@ -34,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -248,7 +249,10 @@ public abstract class CopyVisitor implements Visitor<Node> {
 
     @Override
     public Node visit(IdentifierValue node) {
-        return new IdentifierValue(node.getNodeId(), node.getValue())
+        return new IdentifierValue(
+                node.getNodeId(),
+                (Reference) node.getReference().accept(this)
+        )
                 .getContext()
                 .putAll(node.getContext())
                 .getNode();
@@ -258,7 +262,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     public Node visit(NewAssignmentValue node) {
         return new NewAssignmentValue(
                 node.getNodeId(),
-                node.getIdentifier(),
+                (Reference) node.getReference().accept(this),
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()
@@ -273,7 +277,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
         return new IndirectAssignmentValue(
                 node.getNodeId(),
                 (Value) node.getIndirectValue().accept(this),
-                node.getIdentifier(),
+                (Reference) node.getReference().accept(this),
                 (Value) node.getValue().accept(this)
         )
                 .getContext()
@@ -285,7 +289,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     public Node visit(DirectAssignmentValue node) {
         return new DirectAssignmentValue(
                 node.getNodeId(),
-                node.getIdentifier(),
+                (Reference) node.getReference().accept(this),
                 (Value) node.getValue().accept(this)
         )
                 .getContext()
@@ -376,6 +380,16 @@ public abstract class CopyVisitor implements Visitor<Node> {
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()
+        )
+                .getContext()
+                .putAll(node.getContext())
+                .getNode();
+    }
+
+    @Override
+    public Node visit(Reference node) {
+        return new Reference(
+                node.getNodeId(), node.getName()
         )
                 .getContext()
                 .putAll(node.getContext())

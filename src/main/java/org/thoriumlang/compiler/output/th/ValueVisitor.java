@@ -27,6 +27,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.helpers.Indent;
@@ -74,14 +75,14 @@ class ValueVisitor extends BaseVisitor<String> {
 
     @Override
     public String visit(IdentifierValue node) {
-        return node.getValue();
+        return node.getReference().accept(this);
     }
 
     @Override
     public String visit(NewAssignmentValue node) {
         return String.format("%s %s%s = %s",
                 node.getMode().toString().toLowerCase(),
-                node.getIdentifier(),
+                node.getReference().accept(this),
                 type(node.getType()),
                 node.getValue().accept(this)
         );
@@ -98,7 +99,7 @@ class ValueVisitor extends BaseVisitor<String> {
     public String visit(IndirectAssignmentValue node) {
         return String.format("%s.%s = %s",
                 node.getIndirectValue().accept(this),
-                node.getIdentifier(),
+                node.getReference().accept(this),
                 node.getValue().accept(this)
         );
     }
@@ -106,7 +107,7 @@ class ValueVisitor extends BaseVisitor<String> {
     @Override
     public String visit(DirectAssignmentValue node) {
         return String.format("%s = %s",
-                node.getIdentifier(),
+                node.getReference().accept(this),
                 node.getValue().accept(this)
         );
     }
@@ -151,5 +152,10 @@ class ValueVisitor extends BaseVisitor<String> {
                         .map(s -> s + ";")
                         .collect(Collectors.joining("\n"))
         );
+    }
+
+    @Override
+    public String visit(Reference node) {
+        return node.getName();
     }
 }

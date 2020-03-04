@@ -29,6 +29,7 @@ import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
+import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
@@ -42,6 +43,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -95,7 +97,15 @@ class RelativesInjectionVisitorTest {
     private void assertParent(Node child, Node parent) {
         Assertions.assertThat(child.getContext().get(Relatives.class))
                 .get()
-                .matches(f -> f.parent().isPresent() && f.parent().get().node().getNodeId().equals(parent.getNodeId()));
+                .matches(
+                        f -> f.parent().isPresent() && f.parent().get().node().getNodeId().equals(parent.getNodeId()),
+                        String.format("%s(%s) does not have %s(%s) as parent",
+                                child,
+                                child.getClass().getSimpleName(),
+                                parent,
+                                parent.getClass().getSimpleName()
+                        )
+                );
     }
 
     @Test
@@ -350,9 +360,10 @@ class RelativesInjectionVisitorTest {
     void newAssignmentValue() {
         TypeSpec typeSpec = new TypeSpecSimple(nodeIdGenerator.next(), "T1", Collections.emptyList());
         Value value = new NoneValue(nodeIdGenerator.next());
+        Reference reference = new Reference(nodeIdGenerator.next(), "id");
         NewAssignmentValue newAssignmentValue = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "id",
+                reference,
                 typeSpec,
                 value,
                 Mode.VAR
@@ -362,16 +373,18 @@ class RelativesInjectionVisitorTest {
 
         assertParent(typeSpec, newAssignmentValue);
         assertParent(value, newAssignmentValue);
+        assertParent(reference, newAssignmentValue);
     }
 
     @Test
     void indirectAssignmentValue() {
         Value value1 = new NoneValue(nodeIdGenerator.next());
         Value value2 = new NoneValue(nodeIdGenerator.next());
+        Reference reference = new Reference(nodeIdGenerator.next(), "id");
         IndirectAssignmentValue indirectAssignmentValue = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 value1,
-                "id",
+                reference,
                 value2
         );
 
@@ -379,20 +392,23 @@ class RelativesInjectionVisitorTest {
 
         assertParent(value1, indirectAssignmentValue);
         assertParent(value2, indirectAssignmentValue);
+        assertParent(reference, indirectAssignmentValue);
     }
 
     @Test
     void directAssignmentValue() {
         Value value1 = new NoneValue(nodeIdGenerator.next());
+        Reference reference = new Reference(nodeIdGenerator.next(), "id");
         DirectAssignmentValue directAssignmentValue = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                "id",
+                reference,
                 value1
         );
 
         relativesInjectionVisitor.visit(directAssignmentValue);
 
         assertParent(value1, directAssignmentValue);
+        assertParent(reference, directAssignmentValue);
     }
 
     @Test
@@ -452,6 +468,16 @@ class RelativesInjectionVisitorTest {
         assertParent(parameter, functionValue);
         assertParent(returnType, functionValue);
         assertParent(statement, functionValue);
+    }
+
+    @Test
+    void identifierValue() {
+        Reference reference = new Reference(nodeIdGenerator.next(), "ref");
+        IdentifierValue value = new IdentifierValue(nodeIdGenerator.next(), reference);
+
+        relativesInjectionVisitor.visit(value);
+
+        assertParent(reference, value);
     }
 
     @Test

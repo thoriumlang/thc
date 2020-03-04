@@ -33,6 +33,7 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.Value;
@@ -140,7 +141,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                     new IndirectAssignmentValue(
                             nodeIdGenerator.next(),
                             ctx.indirectValue().accept(this),
-                            ctx.IDENTIFIER().getSymbol().getText(),
+                            sourcePositionProvider.provide(
+                                    new Reference(
+                                            nodeIdGenerator.next(),
+                                            ctx.IDENTIFIER().getSymbol().getText()
+                                    ),
+                                    ctx.start
+                            ),
                             ctx.value().accept(this)
                     ),
                     ctx.start
@@ -150,7 +157,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
             return sourcePositionProvider.provide(
                     new NewAssignmentValue(
                             nodeIdGenerator.next(),
-                            ctx.IDENTIFIER().getSymbol().getText(),
+                            sourcePositionProvider.provide(
+                                    new Reference(
+                                            nodeIdGenerator.next(),
+                                            ctx.IDENTIFIER().getSymbol().getText()
+                                    ),
+                                    ctx.start
+                            ),
                             ctx.typeSpec() == null ?
                                     sourcePositionProvider.provide(
                                             new TypeSpecInferred(nodeIdGenerator.next()),
@@ -172,7 +185,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
             return sourcePositionProvider.provide(
                     new NewAssignmentValue(
                             nodeIdGenerator.next(),
-                            ctx.IDENTIFIER().getSymbol().getText(),
+                            sourcePositionProvider.provide(
+                                    new Reference(
+                                            nodeIdGenerator.next(),
+                                            ctx.IDENTIFIER().getSymbol().getText()
+                                    ),
+                                    ctx.start
+                            ),
                             ctx.typeSpec() == null ?
                                     sourcePositionProvider.provide(
                                             new TypeSpecInferred(nodeIdGenerator.next()),
@@ -188,7 +207,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         return sourcePositionProvider.provide(
                 new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        ctx.IDENTIFIER().getSymbol().getText(),
+                        sourcePositionProvider.provide(
+                                new Reference(
+                                        nodeIdGenerator.next(),
+                                        ctx.IDENTIFIER().getSymbol().getText()
+                                ),
+                                ctx.start
+                        ),
                         ctx.value().accept(this)
                 ),
                 ctx.start
@@ -246,7 +271,16 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
     public Value visitIndirectValue(ThoriumParser.IndirectValueContext ctx) {
         if (ctx.THIS() != null) {
             return sourcePositionProvider.provide(
-                    new IdentifierValue(nodeIdGenerator.next(), "this"),
+                    new IdentifierValue(
+                            nodeIdGenerator.next(),
+                            sourcePositionProvider.provide(
+                                    new Reference(
+                                            nodeIdGenerator.next(),
+                                            "this"
+                                    ),
+                                    ctx.start
+                            )
+                    ),
                     ctx.start
             );
         }
@@ -336,7 +370,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
         return sourcePositionProvider.provide(
                 new IdentifierValue(
                         nodeIdGenerator.next(),
-                        ctx.IDENTIFIER().getSymbol().getText()
+                        sourcePositionProvider.provide(
+                                new Reference(
+                                        nodeIdGenerator.next(),
+                                        ctx.IDENTIFIER().getSymbol().getText()
+                                ),
+                                ctx.start
+                        )
                 ),
                 ctx.start
         );

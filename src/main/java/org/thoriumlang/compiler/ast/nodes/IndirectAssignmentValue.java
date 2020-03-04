@@ -22,8 +22,8 @@ import java.util.Objects;
 public class IndirectAssignmentValue extends AssignmentValue {
     private final Value indirectValue;
 
-    public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, String identifier, Value value) {
-        super(nodeId, identifier, value);
+    public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, Reference reference, Value value) {
+        super(nodeId, reference, value);
         if (indirectValue == null) {
             throw new NullPointerException("indirectValue cannot be null");
         }
@@ -40,7 +40,7 @@ public class IndirectAssignmentValue extends AssignmentValue {
         return String.format(
                 "INDIRECT %s.%s = %s",
                 indirectValue.toString(),
-                getIdentifier(),
+                getReference().toString(),
                 getValue().toString()
         );
     }
@@ -60,7 +60,7 @@ public class IndirectAssignmentValue extends AssignmentValue {
         IndirectAssignmentValue that = (IndirectAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
                 indirectValue.equals(that.indirectValue) &&
-                getIdentifier().equals(that.getIdentifier()) &&
+                getReference().equals(that.getReference()) &&
                 getValue().equals(that.getValue());
     }
 

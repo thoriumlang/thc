@@ -38,6 +38,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -326,7 +327,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitIdentifierValue() {
-        Value value = new IdentifierValue(nodeIdGenerator.next(), "id");
+        Value value = new IdentifierValue(nodeIdGenerator.next(), new Reference(nodeIdGenerator.next(), "id"));
         Assertions.assertThat(value.accept(visitor()))
                 .isSameAs(value);
     }
@@ -335,7 +336,7 @@ class IdentityVisitorTest {
     void visitNewAssignmentValue_val() {
         Value value = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
@@ -348,7 +349,7 @@ class IdentityVisitorTest {
     void visitNewAssignmentValue_var() {
         Value value = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAR
@@ -362,7 +363,7 @@ class IdentityVisitorTest {
         Value value = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -373,7 +374,7 @@ class IdentityVisitorTest {
     void visitDirectAssignmentValue() {
         Value value = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -482,6 +483,16 @@ class IdentityVisitorTest {
                 ),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
+        );
+        Assertions.assertThat(attribute.accept(visitor()))
+                .isSameAs(attribute);
+    }
+
+    @Test
+    void visitTargetReference() {
+        Reference attribute = new Reference(
+                nodeIdGenerator.next(),
+                "identifier"
         );
         Assertions.assertThat(attribute.accept(visitor()))
                 .isSameAs(attribute);

@@ -23,8 +23,8 @@ public class NewAssignmentValue extends AssignmentValue {
     private final TypeSpec type;
     private final Mode mode;
 
-    public NewAssignmentValue(NodeId nodeId, String identifier, TypeSpec type, Value value, Mode mode) {
-        super(nodeId, identifier, value);
+    public NewAssignmentValue(NodeId nodeId, Reference reference, TypeSpec type, Value value, Mode mode) {
+        super(nodeId, reference, value);
         if (type == null) {
             throw new NullPointerException("type cannot be null");
         }
@@ -46,7 +46,7 @@ public class NewAssignmentValue extends AssignmentValue {
                 "%s %s:%s = %s",
                 mode.toString(),
                 type.toString(),
-                getIdentifier(),
+                getReference().toString(),
                 getValue().toString()
         );
     }
@@ -69,13 +69,13 @@ public class NewAssignmentValue extends AssignmentValue {
         }
         NewAssignmentValue that = (NewAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                getIdentifier().equals(that.getIdentifier()) &&
+                getReference().equals(that.getReference()) &&
                 type.equals(that.type) &&
                 getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), getIdentifier(), getValue(), type, mode);
+        return Objects.hash(getNodeId(), getReference(), getValue(), type, mode);
     }
 }

@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -249,6 +250,14 @@ class BaseVisitorTest {
     void visitAttribute() {
         Assertions.assertThat(
                 visitor().visit((Attribute) null)
+        )
+                .isEqualTo(null);
+    }
+
+    @Test
+    void visitIdentifier() {
+        Assertions.assertThat(
+                visitor().visit((Reference) null)
         )
                 .isEqualTo(null);
     }

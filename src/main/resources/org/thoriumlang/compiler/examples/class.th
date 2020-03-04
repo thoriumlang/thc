@@ -41,14 +41,17 @@ class MyClass[T] {
         var p: Integer;
         var q = p.add(1).add(z);
         var i = i.add(1).add(i);
-        [U](v: U, p: U) => {
+        p.sub = a;
+        var a = [U](v: U, p: U) => {
             v;
             var pOrig = p;
             p = true;
             var p: Object;
             p = 1;
+            this.callCount = callCount.add(callCount);
             return p.eq(false);
         };
+        a(a, p);
     }
 
     fibonacci(n: Number): Number {

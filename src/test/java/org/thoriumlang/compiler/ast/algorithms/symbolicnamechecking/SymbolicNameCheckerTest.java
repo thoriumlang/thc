@@ -62,8 +62,8 @@ class SymbolicNameCheckerTest {
                 "symbol not found: add (27)",
                 "symbol not found: y (32)",
                 "symbol already defined: method2 (37)",
-                "symbol not found: null (38)",
                 "symbol not found: p0 (38)",
+                "symbol not found: null (38)",
                 "symbol already defined: someValue (41)"
         );
 

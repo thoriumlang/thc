@@ -12,5 +12,9 @@ class TestClass {
         () => {
             () => none;
         };
+        direct = 1;
+        indirect.target = 1;
+        val new = 1;
+        identifier;
     }
 }

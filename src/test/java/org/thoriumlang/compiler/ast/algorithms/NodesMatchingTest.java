@@ -38,6 +38,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -220,7 +221,7 @@ class NodesMatchingTest {
                                                         new IndirectAssignmentValue(
                                                                 nodeIdGenerator.next(),
                                                                 new NoneValue(nodeIdGenerator.next()),
-                                                                s.get(),
+                                                                new Reference(nodeIdGenerator.next(), s.get()),
                                                                 new NoneValue(nodeIdGenerator.next())
                                                         ),
                                                         false
@@ -246,7 +247,7 @@ class NodesMatchingTest {
                                                         nodeIdGenerator.next(),
                                                         new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                s.get(),
+                                                                new Reference(nodeIdGenerator.next(), s.get()),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),
@@ -260,7 +261,7 @@ class NodesMatchingTest {
                                                         nodeIdGenerator.next(),
                                                         new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                s.get(),
+                                                                new Reference(nodeIdGenerator.next(), s.get()),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),
@@ -274,7 +275,7 @@ class NodesMatchingTest {
                                                         nodeIdGenerator.next(),
                                                         new DirectAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                s.get(),
+                                                                new Reference(nodeIdGenerator.next(), s.get()),
                                                                 new NoneValue(nodeIdGenerator.next())
                                                         ),
                                                         false
@@ -283,7 +284,7 @@ class NodesMatchingTest {
                                                         nodeIdGenerator.next(),
                                                         new IdentifierValue(
                                                                 nodeIdGenerator.next(),
-                                                                s.get()
+                                                                new Reference(nodeIdGenerator.next(), s.get())
                                                         ),
                                                         true
                                                 )

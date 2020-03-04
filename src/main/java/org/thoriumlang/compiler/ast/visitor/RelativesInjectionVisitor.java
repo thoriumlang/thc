@@ -20,6 +20,7 @@ import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
+import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
@@ -129,6 +130,7 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(NewAssignmentValue node) {
         Relatives relatives = family(node);
+        setFamilyRecursively(node.getReference(), relatives);
         setFamilyRecursively(node.getType(), relatives);
         setFamilyRecursively(node.getValue(), relatives);
         return node;
@@ -137,6 +139,7 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(IndirectAssignmentValue node) {
         Relatives relatives = family(node);
+        setFamilyRecursively(node.getReference(), relatives);
         setFamilyRecursively(node.getIndirectValue(), relatives);
         setFamilyRecursively(node.getValue(), relatives);
         return node;
@@ -145,6 +148,7 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(DirectAssignmentValue node) {
         Relatives relatives = family(node);
+        setFamilyRecursively(node.getReference(), relatives);
         setFamilyRecursively(node.getValue(), relatives);
         return node;
     }
@@ -162,6 +166,13 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
         Relatives relatives = family(node);
         setFamilyRecursively(node.getInner(), relatives);
         setFamilyRecursively(node.getOuter(), relatives);
+        return node;
+    }
+
+    @Override
+    public Node visit(IdentifierValue node) {
+        Relatives relatives = family(node);
+        setFamilyRecursively(node.getReference(), relatives);
         return node;
     }
 

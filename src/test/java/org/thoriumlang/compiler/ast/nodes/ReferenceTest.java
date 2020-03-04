@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
-class IdentifierValueTest {
+class ReferenceTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -31,7 +31,7 @@ class IdentifierValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IdentifierValue(null, new Reference(nodeIdGenerator.next(), "id"));
+            new Reference(null, "name");
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -42,13 +42,13 @@ class IdentifierValueTest {
     }
 
     @Test
-    void constructor_value() {
+    void constructor_name() {
         try {
-            new IdentifierValue(nodeIdGenerator.next(), null);
+            new Reference(nodeIdGenerator.next(), null);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
-                    .isEqualTo("reference cannot be null");
+                    .isEqualTo("name cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -57,39 +57,30 @@ class IdentifierValueTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new IdentifierValue(
-                        nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
-                )
+                new Reference(nodeIdGenerator.next(), "name")
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visit(IdentifierValue node) {
+                            public String visit(Reference node) {
                                 return String.format("%s:%s",
-                                        node.getNodeId().toString(),
-                                        node.getReference().toString()
+                                        node.getNodeId(),
+                                        node.getName()
                                 );
                             }
                         })
-        ).isEqualTo("#1:id");
+        ).isEqualTo("#1:name");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new IdentifierValue(
-                        nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
-                ).toString()
-        ).isEqualTo("id");
+                new Reference(nodeIdGenerator.next(), "name").toString()
+        ).isEqualTo("name");
     }
 
     @Test
     void getContext() {
         Assertions.assertThat(
-                new IdentifierValue(
-                        nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
-                ).getContext()
+                new Reference(nodeIdGenerator.next(), "name").getContext()
         ).isNotNull();
     }
 }

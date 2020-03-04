@@ -34,6 +34,7 @@ import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -310,5 +311,10 @@ public class FlatMapVisitor<T> implements Visitor<List<T>> {
                 node.getType().accept(this),
                 node.getValue().accept(this)
         );
+    }
+
+    @Override
+    public List<T> visit(Reference node) {
+        return mapper.apply(node);
     }
 }

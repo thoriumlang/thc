@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,12 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class DirectAssignmentValue extends AssignmentValue {
-    public DirectAssignmentValue(NodeId nodeId, Reference reference, Value value) {
-        super(nodeId, reference, value);
+public class Reference extends Node {
+    private final String name;
+
+    public Reference(NodeId nodeId, String name) {
+        super(nodeId);
+        this.name = Objects.requireNonNull(name, "name cannot be null");
     }
 
     @Override
@@ -31,11 +34,11 @@ public class DirectAssignmentValue extends AssignmentValue {
 
     @Override
     public String toString() {
-        return String.format(
-                "DIRECT %s = %s",
-                getReference().toString(),
-                getValue().toString()
-        );
+        return name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -46,14 +49,13 @@ public class DirectAssignmentValue extends AssignmentValue {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DirectAssignmentValue that = (DirectAssignmentValue) o;
+        Reference that = (Reference) o;
         return getNodeId().equals(that.getNodeId()) &&
-                getReference().equals(that.getReference()) &&
-                getValue().equals(that.getValue());
+                name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), getReference(), getValue());
+        return Objects.hash(name);
     }
 }

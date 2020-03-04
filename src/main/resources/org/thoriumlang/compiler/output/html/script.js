@@ -13,6 +13,13 @@ $(document).ready(function () {
         }
     }
 
+    function highlightReferencedNode(element) {
+        $('.highlightDeclaration').removeClass('highlightDeclaration');
+        if (element) {
+            $(element).addClass('highlightDeclaration');
+        }
+    }
+
     function setHash(hash) {
         const el = document.getElementById(hash);
         el.removeAttribute('id');
@@ -147,6 +154,15 @@ $(document).ready(function () {
             $('#symbolTable table').hide();
             $('#symbolTable_' + nodeId).show();
             $('#symbolTable').show();
+        });
+    })();
+
+    /**
+     * Reference
+     */
+    (function () {
+        HashChangeHook.register(function (nodeId) {
+            highlightReferencedNode($('#' + $("#" +nodeId).attr('data-referencedNodeId')));
         });
     })();
 
