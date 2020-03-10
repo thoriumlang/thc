@@ -67,7 +67,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         // FIXME duplicate use name
         return javaRuntimeClassLoader.find(node.getFrom())
                 .map(c -> {
-                    getSymbolTable(node).put(new Name(node.getTo()), fromJavaClass(node.getTo(), node, c));
+                    getSymbolTable(node).put(new Name(node.getTo()), fromJavaClass(node, c));
                     return Collections.<CompilationError>emptyList();
                 })
                 .orElse(Collections.singletonList(
@@ -81,7 +81,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 
-    private Symbol fromJavaClass(String name, Node node, java.lang.Class clazz) {
+    private Symbol fromJavaClass(Node node, java.lang.Class<?> clazz) {
         return clazz.isInterface() ?
                 new JavaInterface(node, clazz) :
                 new JavaClass(node, clazz);
