@@ -10,9 +10,9 @@
         <th>Name</th>
     </tr>
     {% for symbol in symbols %}
-    <tr>
-        <td>{{ symbol.kind }}</td>
-        <td><span class="symbolTable__link" data-refNodeId="{{ symbol.refNodeId }}">{{ symbol.name }}</span></td>
-    </tr>
+        <tr>
+            <td>{{ symbol.kind }}</td>
+            <td><span class="symbolTable__link" data-refNodeId="{{ symbol.refNodeId }}">{{ symbol.name }}</span></td>
+        </tr>
     {% endfor %}
 </table>

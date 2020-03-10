@@ -30,6 +30,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
@@ -66,7 +67,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         // FIXME duplicate use name
         return javaRuntimeClassLoader.find(node.getFrom())
                 .map(c -> {
-                    getSymbolTable(node).put(fromJavaClass(node.getTo(), node, c));
+                    getSymbolTable(node).put(new Name(node.getTo()), fromJavaClass(node.getTo(), node, c));
                     return Collections.<CompilationError>emptyList();
                 })
                 .orElse(Collections.singletonList(
@@ -82,14 +83,15 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
     private Symbol fromJavaClass(String name, Node node, java.lang.Class clazz) {
         return clazz.isInterface() ?
-                new JavaInterface(name, node, clazz) :
-                new JavaClass(name, node, clazz);
+                new JavaInterface(node, clazz) :
+                new JavaClass(node, clazz);
     }
 
     @Override
     public List<CompilationError> visit(TypeParameter node) {
         getSymbolTable(node).put(
-                new ThoriumType(node.getName(), node)
+                new Name(node.getName()),
+                new ThoriumType(node)
         );
 
         return Collections.emptyList();
@@ -112,16 +114,17 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     private List<CompilationError> visitTopLevel(TopLevelNode node, String name, List<TypeParameter> typeParameters) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        if (symbolTable.find(name).isPresent()) {
+        if (symbolTable.find(new Name(name)).isPresent()) {
             return Collections.singletonList(
                     new CompilationError(String.format("symbol already defined: %s", name), node)
             );
         }
 
-        symbolTable       // [body]
-                .parent() // type or class
-                .parent() // root
-                .put(new ThoriumType(name, node));
+        symbolTable               // [body]
+                .enclosingScope() // type or class
+                .enclosingScope() // root
+                .put(new Name(name), new ThoriumType(node));
+        // symbolTable.put(new Name());
 
         return typeParameters.stream()
                 .map(p -> p.accept(this))

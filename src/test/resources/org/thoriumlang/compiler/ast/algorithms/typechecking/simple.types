@@ -1,27 +1,27 @@
-root:
+
   TestClass -> (th: class TestClass)
-  root.TestClass:
+  TestClass
     JavaList -> (rt.jar: interface java.util.List)
     String -> (rt.jar: class java.lang.String)
-    root.TestClass.[body]:
+    TestClass.[body]
       U -> (th: param U)
-      root.TestClass.[body].method1:
+      TestClass.[body].method1
         T -> (th: param T)
-        root.TestClass.[body].method1.[body]:
-      root.TestClass.[body].method2:
-        root.TestClass.[body].method2.[body]:
-          root.TestClass.[body].method2.[body].[anon:27]:
+        TestClass.[body].method1.[body]
+      TestClass.[body].method2
+        TestClass.[body].method2.[body]
+          TestClass.[body].method2.[body].[anon:27]
             W -> (th: param W)
-            root.TestClass.[body].method2.[body].[anon:27].[body]:
-          root.TestClass.[body].method2.[body].[anon:28]:
-            root.TestClass.[body].method2.[body].[anon:28].[body]:
-      root.TestClass.[body].someValue:
-      root.TestClass.[body].someObject:
-      root.TestClass.[body].someU:
-      root.TestClass.[body].someMethod1:
-        root.TestClass.[body].someMethod1.[anon:10]:
+            TestClass.[body].method2.[body].[anon:27].[body]
+          TestClass.[body].method2.[body].[anon:28]
+            TestClass.[body].method2.[body].[anon:28].[body]
+      TestClass.[body].someMethod1
+        TestClass.[body].someMethod1.[anon:10]
           V -> (th: param V)
-          root.TestClass.[body].someMethod1.[anon:10].[body]:
-      root.TestClass.[body].someMethod2:
-        root.TestClass.[body].someMethod2.[anon:11]:
-          root.TestClass.[body].someMethod2.[anon:11].[body]:
+          TestClass.[body].someMethod1.[anon:10].[body]
+      TestClass.[body].someMethod2
+        TestClass.[body].someMethod2.[anon:11]
+          TestClass.[body].someMethod2.[anon:11].[body]
+      TestClass.[body].someObject
+      TestClass.[body].someU
+      TestClass.[body].someValue

@@ -35,7 +35,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -183,7 +183,7 @@ class IntegrationTest {
                 sourceFile.inputStream(),
                 sourceFile.namespace(),
                 Arrays.asList(
-                        new SymbolTableInitializer(new DefaultSymbolTable()),
+                        new SymbolTableInitializer(new SymbolTable()),
                         new TypeChecker(),
                         new SymbolicNameChecker()
                 )

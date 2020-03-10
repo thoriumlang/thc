@@ -162,7 +162,7 @@ $(document).ready(function () {
      */
     (function () {
         HashChangeHook.register(function (nodeId) {
-            highlightReferencedNode($('#' + $("#" +nodeId).attr('data-referencedNodeId')));
+            highlightReferencedNode($('#' + $("#" + nodeId).attr('data-referencedNodeId')));
         });
     })();
 

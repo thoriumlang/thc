@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,8 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-import org.thoriumlang.compiler.ast.nodes.Node;
+import java.util.Map;
 
-/**
- * Represents a variable, a constant, a parameter, a method or a class attribute.
- */
-public class SymbolicName implements Symbol {
-    private final Node node;
-
-    public SymbolicName(Node node) {
-        this.node = node;
-    }
-
-    @Override
-    public Node getNode() {
-        return node;
-    }
-
-    @Override
-    public String toString() {
-        return node.getNodeId().toString();
-    }
+public interface SymbolTableVisitor<T> {
+    T visit(String name, SymbolTable symbolTable, Map<String, Symbol> symbols, Map<String, SymbolTable> scopes);
 }

@@ -34,9 +34,10 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
@@ -66,7 +67,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void fullTable() throws IOException {
-        SymbolTable rootSymbolTable = new DefaultSymbolTable();
+        SymbolTable rootSymbolTable = new SymbolTable();
         SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(
@@ -78,7 +79,9 @@ class TypeDiscoveryVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(rootSymbolTable.toString())
+        Assertions.assertThat(
+                String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
+        )
                 .isEqualTo(
                         new BufferedReader(
                                 new InputStreamReader(
@@ -343,8 +346,9 @@ class TypeDiscoveryVisitorTest {
         )));
 
         putSymbol(
+                "TypeName",
                 root.getTopLevelNode(),
-                new JavaClass("TypeName", new NoneValue(nodeIdGenerator.next()), String.class)
+                new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
@@ -424,8 +428,9 @@ class TypeDiscoveryVisitorTest {
         )));
 
         putSymbol(
+                "ClassName",
                 root.getTopLevelNode(),
-                new JavaClass("ClassName", new NoneValue(nodeIdGenerator.next()), String.class)
+                new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
@@ -508,7 +513,7 @@ class TypeDiscoveryVisitorTest {
     }
 
     private Root injectSymbolTable(Root node) {
-        new SymbolTableInitializer(new DefaultSymbolTable()).walk(node);
+        new SymbolTableInitializer(new SymbolTable()).walk(node);
         return node;
     }
 
@@ -517,14 +522,14 @@ class TypeDiscoveryVisitorTest {
                 .getContext()
                 .get(SymbolTable.class)
                 .orElseThrow(IllegalStateException::new)
-                .find(name);
+                .find(new Name(name));
     }
 
-    private void putSymbol(Node node, Symbol symbol) {
+    private void putSymbol(String name, Node node, Symbol symbol) {
         node
                 .getContext()
                 .get(SymbolTable.class)
                 .orElseThrow(IllegalStateException::new)
-                .put(symbol);
+                .put(new Name(name), symbol);
     }
 }

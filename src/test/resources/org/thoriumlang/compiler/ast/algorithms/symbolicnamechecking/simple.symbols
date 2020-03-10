@@ -1,50 +1,45 @@
-root:
-  root.TestClass:
-    root.TestClass.[body]:
-      method1
-      method2
-      someMethod2
-      someValue
-      someMethod1
-      someU
-      otherValue
-      root.TestClass.[body].method1:
-        p0
-        p1
-        p2
-        root.TestClass.[body].method1.[body]:
-          p0
-          someVar5
-          someVar3
-          someVar4
-          someVar1
-          someVar2
-      root.TestClass.[body].method2:
-        root.TestClass.[body].method2.[body]:
-          x
-          i
-          z
-          root.TestClass.[body].method2.[body].[anon:27]:
-            w
-            root.TestClass.[body].method2.[body].[anon:27].[body]:
-          root.TestClass.[body].method2.[body].[anon:28]:
-            y
-            root.TestClass.[body].method2.[body].[anon:28].[body]:
-          root.TestClass.[body].method2.[body].[anon:31]:
-            root.TestClass.[body].method2.[body].[anon:31].[body]:
-              x
-      root.TestClass.[body].method2:
-        root.TestClass.[body].method2.[body]:
-      root.TestClass.[body].someValue:
-        root.TestClass.[body].someValue.[body]:
-      root.TestClass.[body].someValue:
-      root.TestClass.[body].someU:
-      root.TestClass.[body].someU:
-      root.TestClass.[body].otherValue:
-      root.TestClass.[body].someMethod1:
-        root.TestClass.[body].someMethod1.[anon:11]:
-          root.TestClass.[body].someMethod1.[anon:11].[body]:
-      root.TestClass.[body].someMethod2:
-        root.TestClass.[body].someMethod2.[anon:12]:
-          root.TestClass.[body].someMethod2.[anon:12].[body]:
-      root.TestClass.[body].method1:
+
+  TestClass
+    TestClass.[body]
+      method1 -> #8
+      method2 -> #126
+      otherValue -> #150
+      someMethod1 -> #154
+      someMethod2 -> #160
+      someU -> #147
+      someValue -> #136
+      TestClass.[body].method1
+        p0 -> #11
+        p1 -> #13
+        p2 -> #17
+        TestClass.[body].method1.[body]
+          p0 -> #51
+          someVar1 -> #21
+          someVar2 -> #32
+          someVar3 -> #37
+          someVar4 -> #42
+          someVar5 -> #56
+      TestClass.[body].method2
+        TestClass.[body].method2.[body]
+          i -> #67
+          x -> #101
+          z -> #106
+          TestClass.[body].method2.[body].[anon:27]
+            w -> #82
+            TestClass.[body].method2.[body].[anon:27].[body]
+          TestClass.[body].method2.[body].[anon:28]
+            y -> #94
+            TestClass.[body].method2.[body].[anon:28].[body]
+          TestClass.[body].method2.[body].[anon:31]
+            TestClass.[body].method2.[body].[anon:31].[body]
+              x -> #114
+      TestClass.[body].otherValue
+      TestClass.[body].someMethod1
+        TestClass.[body].someMethod1.[anon:11]
+          TestClass.[body].someMethod1.[anon:11].[body]
+      TestClass.[body].someMethod2
+        TestClass.[body].someMethod2.[anon:12]
+          TestClass.[body].someMethod2.[anon:12].[body]
+      TestClass.[body].someU
+      TestClass.[body].someValue
+        TestClass.[body].someValue.[body]

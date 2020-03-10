@@ -22,6 +22,4 @@ public interface Symbol {
      * @return the node where the symbol is defined.
      */
     Node getNode();
-
-    String getName();
 }

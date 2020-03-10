@@ -23,18 +23,19 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
 import java.util.Objects;
 
+/**
+ * Represents a Thorium type, coming from a .th file. A thorium type is one of the following:
+ * <ul>
+ *     <li>a type</li>
+ *     <li>a class</li>
+ *     <li>a type or class parameter</li>
+ * </ul>
+ */
 public class ThoriumType implements Symbol {
-    private final String name;
     private final Node node;
 
-    public ThoriumType(String name, Node node) {
-        this.name = Objects.requireNonNull(name, "name cannot be null");
+    public ThoriumType(Node node) {
         this.node = Objects.requireNonNull(node, "node cannot be null");
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ThoriumType implements Symbol {
 
     @Override
     public String toString() {
-        return String.format("%s -> (th: %s)", name, node.accept(new BaseVisitor<String>() {
+        return String.format("(th: %s)", node.accept(new BaseVisitor<String>() {
             @Override
             public String visit(Type node) {
                 return String.format("type %s", node.getName());

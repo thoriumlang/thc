@@ -21,8 +21,8 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 class SymbolicNameCheckerTest {
     @Test
     void walk() throws IOException {
-        SymbolTable rootSymbolTable = new DefaultSymbolTable();
+        SymbolTable rootSymbolTable = new SymbolTable();
         SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(
@@ -67,7 +67,9 @@ class SymbolicNameCheckerTest {
                 "symbol already defined: someValue (41)"
         );
 
-        Assertions.assertThat(rootSymbolTable.toString())
+        Assertions.assertThat(
+                String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
+        )
                 .isEqualTo(
                         new BufferedReader(
                                 new InputStreamReader(

@@ -19,20 +19,16 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 
 import java.util.Objects;
 
+/**
+ * Represents a Java class, coming from rt.jar.
+ */
 public class JavaClass implements Symbol {
-    private final String name;
     private final Node node;
     private final Class<?> clazz;
 
-    public JavaClass(String name, Node node, Class<?> clazz) {
-        this.name = Objects.requireNonNull(name, "name cannot be null");
+    public JavaClass(Node node, Class<?> clazz) {
         this.node = Objects.requireNonNull(node, "node cannot be null");
         this.clazz = Objects.requireNonNull(clazz, "clazz cannot be null");
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -42,6 +38,6 @@ public class JavaClass implements Symbol {
 
     @Override
     public String toString() {
-        return String.format("%s -> (rt.jar: class %s)", name, clazz.getCanonicalName());
+        return String.format("(rt.jar: class %s)", clazz.getCanonicalName());
     }
 }

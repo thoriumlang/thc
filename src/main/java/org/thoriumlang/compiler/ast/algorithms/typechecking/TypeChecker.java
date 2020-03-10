@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class TypeChecker implements Algorithm {
         List<CompilationError> typeNotFoundErrors =
                 new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
                         .map(t -> (TypeSpecSimple) t)
-                        .filter(t -> !getSymbolTable(t).find(t.getType()).isPresent())
+                        .filter(t -> !getSymbolTable(t).find(new Name(t.getType())).isPresent())
                         .filter(t -> !missingTypeLoader.load(root.getNamespace(), t.getType()))
                         .map(t -> new CompilationError(String.format("symbol not found: %s", t.getType()), t))
                         .collect(Collectors.toList());

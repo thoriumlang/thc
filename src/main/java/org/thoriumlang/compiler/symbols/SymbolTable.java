@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,108 @@
  */
 package org.thoriumlang.compiler.symbols;
 
-import org.thoriumlang.compiler.ast.nodes.Node;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
-public interface SymbolTable {
-    String fqName();
+public class SymbolTable {
+    private final String name;
+    private final SymbolTable parent;
+    private final Map<String, Symbol> symbols;
+    private final Map<String, SymbolTable> scopes;
 
-    Optional<Symbol> find(String name);
+    private SymbolTable(String name, SymbolTable parent) {
+        this.name = name;
+        this.parent = parent;
+        this.symbols = new HashMap<>();
+        this.scopes = new HashMap<>();
+    }
 
-    Optional<Symbol> findInScope(String name);
+    public SymbolTable() {
+        this("", null);
+    }
 
-    Stream<Symbol> symbolsStream();
+    public void put(Name name, Symbol symbol) {
+        findTable(name).symbols.put(name.getSimpleName(), symbol);
+    }
 
-    void put(Symbol symbol);
+    private SymbolTable findTable(Name name) {
+        List<String> parts = new ArrayList<>(name.getFullName());
 
-    DefaultSymbolTable createScope(Node node, String name);
+        if (parts.size() == 1) {
+            return this;
+        }
 
-    SymbolTable parent();
+        SymbolTable table = findRoot();
 
-    Optional<Node> node();
+        while (parts.size() > 1) {
+            table.scopes.putIfAbsent(parts.get(0), table.createScope(parts.get(0)));
+            table = table.scopes.get(parts.get(0));
+            parts.remove(0);
+        }
+
+        return table;
+    }
+
+    private SymbolTable findRoot() {
+        SymbolTable table = this;
+        while (!table.isRoot()) {
+            table = table.parent;
+        }
+        return table;
+    }
+
+    private boolean isRoot() {
+        return parent == null;
+    }
+
+    public Optional<Symbol> find(Name name) {
+        return findTable(name).findLocal(new Name(name.getSimpleName()));
+    }
+
+    private Optional<Symbol> findLocal(Name name) {
+        return Optional.ofNullable(
+                symbols.getOrDefault(
+                        name.getSimpleName(),
+                        isRoot() ? null : parent.find(name).orElse(null)
+                )
+        );
+    }
+
+    public boolean inScope(Name name) {
+        if (name.isQualified()) {
+            return false;
+        }
+        return symbols.containsKey(name.getSimpleName());
+    }
+
+    public SymbolTable createScope(String name) {
+        SymbolTable symbolTable = new SymbolTable(name, this);
+        scopes.putIfAbsent(name, symbolTable);
+        return symbolTable;
+    }
+
+    public SymbolTable enclosingScope() {
+        if (isRoot()) {
+            throw new IllegalStateException("root has no enclosing scope");
+        }
+        return parent;
+    }
+
+    public <T> T accept(SymbolTableVisitor<? extends T> visitor) {
+        return visitor.visit(name, this, symbols, scopes);
+    }
+
+    @Override
+    public String toString() {
+        if (isRoot()) {
+            return "";
+        }
+        if (parent.isRoot()) {
+            return String.format("%s", name);
+        }
+        return String.format("%s.%s", parent.toString(), name);
+    }
 }

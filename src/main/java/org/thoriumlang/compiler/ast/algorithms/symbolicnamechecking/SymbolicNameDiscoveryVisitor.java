@@ -40,6 +40,7 @@ import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolicName;
@@ -76,10 +77,10 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
     @Override
     public List<CompilationError> visit(Attribute node) {
-        SymbolTable symbolTable = getSymbolTable(node).parent();
+        SymbolTable symbolTable = getSymbolTable(node).enclosingScope();
 
         List<CompilationError> errors = Lists.merge(
-                symbolTable.findInScope(node.getIdentifier()).isPresent() ?
+                symbolTable.find(new Name(node.getIdentifier())).isPresent() ?
                         Collections.singletonList(
                                 new CompilationError(String.format(
                                         "symbol already defined: %s (%d)",
@@ -94,7 +95,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new SymbolicName(node.getIdentifier(), node));
+        symbolTable.put(new Name(node.getIdentifier()), new SymbolicName(node));
 
         return errors;
     }
@@ -127,7 +128,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     @Override
     public List<CompilationError> visit(Reference node) {
         Optional<Node> referencedNode = getSymbolTable(node)
-                .find(node.getName())
+                .find(new Name(node.getName()))
                 .map(Symbol::getNode);
 
         if (!referencedNode.isPresent()) {
@@ -170,7 +171,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                         .collect(Collectors.toList())
         );
 
-        if (!getSymbolTable(node).find(node.getMethodName()).isPresent()) {
+        if (!getSymbolTable(node).find(new Name(node.getMethodName())).isPresent()) {
             errors = Lists.append(errors, undefinedError(node.getMethodName(), node));
         }
 
@@ -188,9 +189,9 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     @Override
     public List<CompilationError> visit(Method node) {
         // the first parent is the signature's symbol table; the second parent is the enclosing class
-        SymbolTable symbolTable = getSymbolTable(node).parent().parent();
+        SymbolTable symbolTable = getSymbolTable(node).enclosingScope().enclosingScope();
 
-        List<CompilationError> errors = symbolTable.findInScope(node.getSignature().getName()).isPresent() ?
+        List<CompilationError> errors = symbolTable.inScope(new Name(node.getSignature().getName())) ?
                 Collections.singletonList(
                         new CompilationError(String.format(
                                 "symbol already defined: %s (%d)",
@@ -202,7 +203,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 ) :
                 Collections.emptyList();
 
-        symbolTable.put(new SymbolicName(node.getSignature().getName(), node));
+        symbolTable.put(new Name(node.getSignature().getName()), new SymbolicName(node));
 
         return Lists.merge(
                 errors,
@@ -223,7 +224,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
         List<CompilationError> errors = alreadyDefined(node.getName(), node);
 
-        symbolTable.put(new SymbolicName(node.getName(), node));
+        symbolTable.put(new Name(node.getName()), new SymbolicName(node));
 
         return errors;
     }
@@ -242,7 +243,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new SymbolicName(node.getReference().getName(), node));
+        symbolTable.put(new Name(node.getReference().getName()), new SymbolicName(node));
 
         node.getReference().accept(this);
 
@@ -270,7 +271,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     private List<CompilationError> alreadyDefined(String identifier, Node node) {
-        if (getSymbolTable(node).findInScope(identifier).isPresent()) {
+        if (getSymbolTable(node).inScope(new Name(identifier))) {
             return Collections.singletonList(
                     new CompilationError(String.format(
                             "symbol already defined: %s (%d)",

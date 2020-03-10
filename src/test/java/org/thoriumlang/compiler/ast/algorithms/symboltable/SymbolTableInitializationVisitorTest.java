@@ -40,10 +40,10 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -55,7 +55,7 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
-import org.thoriumlang.compiler.symbols.DefaultSymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
@@ -73,7 +73,7 @@ class SymbolTableInitializationVisitorTest {
 
     @BeforeEach
     void setup() {
-        visitor = new SymbolTableInitializationVisitor(new DefaultSymbolTable());
+        visitor = new SymbolTableInitializationVisitor(new SymbolTable());
     }
 
     @Test
@@ -145,7 +145,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(root.getTopLevelNode().getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == root.getContext()
+                        st.enclosingScope() == root.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -238,7 +238,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(type.getMethods().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == type.getContext()
+                        st.enclosingScope() == type.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -266,7 +266,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(root.getTopLevelNode().getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == root.getContext()
+                        st.enclosingScope() == root.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -364,7 +364,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(clazz.getMethods().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent().parent() == clazz.getContext()
+                        st.enclosingScope().enclosingScope() == clazz.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -401,7 +401,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(clazz.getAttributes().get(0).getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent() == clazz.getContext()
+                        st.enclosingScope() == clazz.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -434,7 +434,7 @@ class SymbolTableInitializationVisitorTest {
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                                 // signature's symbol table is the parent of the method's symbol table
                                 // this is because the method's symbol table is the method's body symbol table
-                                .parent()
+                                .enclosingScope()
                 );
     }
 
@@ -828,7 +828,7 @@ class SymbolTableInitializationVisitorTest {
         Assertions.assertThat(value.getContext().get(SymbolTable.class))
                 .get()
                 .matches(st ->
-                        st.parent().parent() == parent.getContext()
+                        st.enclosingScope().enclosingScope() == parent.getContext()
                                 .get(SymbolTable.class)
                                 .orElseThrow(() -> new IllegalStateException("no symbol table found"))
                 );
@@ -943,11 +943,13 @@ class SymbolTableInitializationVisitorTest {
         ).isEmpty();
 
         Assertions.assertThat(
-                root.getContext()
-                        .get(SymbolTable.class)
-                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                        .toString()
-
+                String.join(
+                        "\n",
+                        root.getContext()
+                                .get(SymbolTable.class)
+                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                                .accept(new SymbolTableDumpingVisitor())
+                )
         ).isEqualTo(
                 new BufferedReader(
                         new InputStreamReader(
@@ -962,7 +964,7 @@ class SymbolTableInitializationVisitorTest {
     private Node parent() {
         return new Parent(nodeIdGenerator.next())
                 .getContext()
-                .put(SymbolTable.class, new DefaultSymbolTable())
+                .put(SymbolTable.class, new SymbolTable())
                 .getNode();
     }
 
