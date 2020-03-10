@@ -43,12 +43,11 @@ public class SymbolTable {
     }
 
     private SymbolTable findTable(Name name) {
-        List<String> parts = new ArrayList<>(name.getFullName());
-
-        if (parts.size() == 1) {
+        if (!name.isQualified()) {
             return this;
         }
 
+        List<String> parts = new ArrayList<>(name.getFullName());
         SymbolTable table = findRoot();
 
         while (parts.size() > 1) {
