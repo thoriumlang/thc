@@ -33,10 +33,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
@@ -80,18 +80,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         SymbolTable symbolTable = getSymbolTable(node).enclosingScope();
 
         List<CompilationError> errors = Lists.merge(
-                symbolTable.find(new Name(node.getIdentifier())).isPresent() ?
-                        Collections.singletonList(
-                                new CompilationError(String.format(
-                                        "symbol already defined: %s (%d)",
-                                        node.getIdentifier(),
-                                        node.getContext().get(SourcePosition.class)
-                                                .orElseThrow(
-                                                        () -> new IllegalStateException("no source position found"))
-                                                .getLine()
-                                ), node)
-                        ) :
-                        Collections.emptyList(),
+                alreadyDefined(symbolTable, node.getIdentifier(), node),
                 node.getValue().accept(this)
         );
 
@@ -191,17 +180,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         // the first parent is the signature's symbol table; the second parent is the enclosing class
         SymbolTable symbolTable = getSymbolTable(node).enclosingScope().enclosingScope();
 
-        List<CompilationError> errors = symbolTable.inScope(new Name(node.getSignature().getName())) ?
-                Collections.singletonList(
-                        new CompilationError(String.format(
-                                "symbol already defined: %s (%d)",
-                                node.getSignature().getName(),
-                                node.getContext().get(SourcePosition.class)
-                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
-                                        .getLine()
-                        ), node)
-                ) :
-                Collections.emptyList();
+        List<CompilationError> errors = alreadyDefined(symbolTable, node.getSignature().getName(), node);
 
         symbolTable.put(new Name(node.getSignature().getName()), new SymbolicName(node));
 
@@ -222,7 +201,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     public List<CompilationError> visit(Parameter node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        List<CompilationError> errors = alreadyDefined(node.getName(), node);
+        List<CompilationError> errors = alreadyDefined(symbolTable, node.getName(), node);
 
         symbolTable.put(new Name(node.getName()), new SymbolicName(node));
 
@@ -239,7 +218,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         SymbolTable symbolTable = getSymbolTable(node);
 
         List<CompilationError> errors = Lists.merge(
-                alreadyDefined(node.getReference().getName(), node),
+                alreadyDefined(symbolTable, node.getReference().getName(), node),
                 node.getValue().accept(this)
         );
 
@@ -270,8 +249,8 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 
-    private List<CompilationError> alreadyDefined(String identifier, Node node) {
-        if (getSymbolTable(node).inScope(new Name(identifier))) {
+    private List<CompilationError> alreadyDefined(SymbolTable symbolTable, String identifier, Node node) {
+        if (symbolTable.inScope(new Name(identifier))) {
             return Collections.singletonList(
                     new CompilationError(String.format(
                             "symbol already defined: %s (%d)",
