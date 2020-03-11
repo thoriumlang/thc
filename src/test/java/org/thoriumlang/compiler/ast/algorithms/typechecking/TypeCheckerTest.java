@@ -42,16 +42,16 @@ class TypeCheckerTest {
                         .stream()
                         .map(CompilationError::toString)
         ).containsExactly(
-                "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest",
-                "symbol not found: UnknownSupertype",
-                "symbol not found: UnknownAttributeValType",
-                "symbol not found: UnknownAttributeTypeParameterType",
-                "symbol not found: UnknownFunctionValueParameterType1",
-                "symbol not found: UnknownParameterType",
-                "symbol not found: UnknownMethodTypeParameterType",
-                "symbol not found: UnknownReturnType",
-                "symbol not found: UnknownValType",
-                "symbol not found: UnknownFunctionValueParameterType2"
+                "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest (3)",
+                "symbol not found: UnknownSupertype (6)",
+                "symbol not found: UnknownAttributeValType (7)",
+                "symbol not found: UnknownAttributeTypeParameterType (7)",
+                "symbol not found: UnknownFunctionValueParameterType1 (11)",
+                "symbol not found: UnknownParameterType (15)",
+                "symbol not found: UnknownMethodTypeParameterType (16)",
+                "symbol not found: UnknownReturnType (19)",
+                "symbol not found: UnknownValType (23)",
+                "symbol not found: UnknownFunctionValueParameterType2 (28)"
         );
     }
 }

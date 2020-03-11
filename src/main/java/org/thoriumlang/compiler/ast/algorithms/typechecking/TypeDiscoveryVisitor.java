@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -74,7 +75,12 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                     return Collections.<CompilationError>emptyList();
                 })
                 .orElse(Collections.singletonList(
-                        new CompilationError(String.format("symbol not found: %s", node.getFrom()), node)
+                        new CompilationError(String.format("symbol not found: %s (%d)",
+                                node.getFrom(),
+                                node.getContext().get(SourcePosition.class)
+                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                        .getLine()
+                        ), node)
                 ));
     }
 
@@ -119,7 +125,12 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
         if (symbolTable.find(new Name(name)).isPresent()) {
             return Collections.singletonList(
-                    new CompilationError(String.format("symbol already defined: %s", name), node)
+                    new CompilationError(String.format("symbol already defined: %s (%d)",
+                            name,
+                            node.getContext().get(SourcePosition.class)
+                                    .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                    .getLine()
+                    ), node)
             );
         }
 

@@ -20,7 +20,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
@@ -97,7 +99,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void use_class() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(
@@ -114,7 +116,7 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -125,7 +127,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void use_interface() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(
@@ -142,7 +144,7 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -153,7 +155,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void use_notFound() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(
@@ -170,19 +172,19 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root).stream()
                 .map(CompilationError::toString))
                 .isNotEmpty()
-                .containsExactly("symbol not found: notFound");
+                .containsExactly("symbol not found: notFound (1)");
         Assertions.assertThat(getSymbol(root, "notFound"))
                 .isEmpty();
     }
 
     @Test
     void use_aliased() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(
@@ -200,7 +202,7 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -220,7 +222,7 @@ class TypeDiscoveryVisitorTest {
                 new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
         );
 
-        Root root = injectSymbolTable(injectParents(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(
                 new Root(
                         nodeIdGenerator.next(),
                         "namespace",
@@ -238,7 +240,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.singletonList(methodSignature)
                         )
                 )
-        ));
+        )));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -261,7 +263,7 @@ class TypeDiscoveryVisitorTest {
                 ),
                 Collections.emptyList()
         );
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(),
@@ -278,7 +280,7 @@ class TypeDiscoveryVisitorTest {
                         Collections.singletonList(method),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -298,7 +300,7 @@ class TypeDiscoveryVisitorTest {
                 Collections.emptyList(),
                 new TypeSpecSimple(nodeIdGenerator.next(), "ReturnType", Collections.emptyList())
         );
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                         nodeIdGenerator.next(),
                         "namespace",
                         Collections.emptyList(),
@@ -311,7 +313,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.singletonList(methodSignature)
                         )
                 )
-        ));
+        )));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -331,7 +333,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void type_alreadyDefined() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(),
@@ -345,7 +347,7 @@ class TypeDiscoveryVisitorTest {
                                 Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         putSymbol(
                 "TypeName",
@@ -356,7 +358,7 @@ class TypeDiscoveryVisitorTest {
         Assertions.assertThat(visitor.visit(root).stream()
                 .map(CompilationError::toString))
                 .isNotEmpty()
-                .containsExactly("symbol already defined: TypeName");
+                .containsExactly("symbol already defined: TypeName (1)");
 
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "TypeName"))
                 .get()
@@ -377,7 +379,7 @@ class TypeDiscoveryVisitorTest {
                 ),
                 Collections.emptyList()
         );
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "ns",
                 Collections.emptyList(),
@@ -392,7 +394,7 @@ class TypeDiscoveryVisitorTest {
                         ),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -412,7 +414,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void clazz_alreadyDefined() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.emptyList(),
@@ -427,7 +429,7 @@ class TypeDiscoveryVisitorTest {
                         Collections.emptyList(),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         putSymbol(
                 "ClassName",
@@ -438,7 +440,7 @@ class TypeDiscoveryVisitorTest {
         Assertions.assertThat(visitor.visit(root).stream()
                 .map(CompilationError::toString))
                 .isNotEmpty()
-                .containsExactly("symbol already defined: ClassName");
+                .containsExactly("symbol already defined: ClassName (1)");
 
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "ClassName"))
                 .get()
@@ -447,7 +449,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void root_type() {
-        Root root = injectSymbolTable(injectParents(new Root(
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(new Use(
@@ -462,7 +464,7 @@ class TypeDiscoveryVisitorTest {
                         new TypeSpecSimple(nodeIdGenerator.next(), "SuperType", Collections.emptyList()),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(root))
                 .isEmpty();
@@ -477,7 +479,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void root_class() {
-        Root node = injectSymbolTable(injectParents(new Root(
+        Root node = injectSourcePosition(injectSymbolTable(injectParents(new Root(
                 nodeIdGenerator.next(),
                 "namespace",
                 Collections.singletonList(new Use(
@@ -493,7 +495,7 @@ class TypeDiscoveryVisitorTest {
                         Collections.emptyList(),
                         Collections.emptyList()
                 )
-        )));
+        ))));
 
         Assertions.assertThat(visitor.visit(node))
                 .isEmpty();
@@ -509,6 +511,14 @@ class TypeDiscoveryVisitorTest {
 
     // FIXME implement tests for missing type params (FunctionValue) in both attributes and stmts
 
+
+    private Root injectSourcePosition(Root node) {
+        new NodesMatching(n -> true)
+                .visit(node)
+                .forEach(n -> n.getContext().put(SourcePosition.class, new SourcePosition(1, 1)));
+
+        return node;
+    }
 
     private Root injectParents(Root node) {
         return (Root) node.accept(new RelativesInjectionVisitor());

@@ -28,7 +28,6 @@ public class SymbolicNameChecker implements Algorithm {
         symbolicNameDiscoveryVisitor = new SymbolicNameDiscoveryVisitor();
     }
 
-
     @Override
     public List<CompilationError> walk(Root root) {
         return root.accept(symbolicNameDiscoveryVisitor);

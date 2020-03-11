@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
@@ -54,7 +55,13 @@ public class TypeChecker implements Algorithm {
                         .map(t -> (TypeSpecSimple) t)
                         .filter(t -> !getSymbolTable(t).find(new Name(t.getType())).isPresent())
                         .filter(t -> !missingTypeLoader.load(root.getNamespace(), t.getType()))
-                        .map(t -> new CompilationError(String.format("symbol not found: %s", t.getType()), t))
+                        // FIXME: put in symbol table
+                        .map(t -> new CompilationError(String.format("symbol not found: %s (%d)",
+                                t.getType(),
+                                t.getContext().get(SourcePosition.class)
+                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                        .getLine()
+                        ), t))
                         .collect(Collectors.toList());
 
         return Lists.merge(
