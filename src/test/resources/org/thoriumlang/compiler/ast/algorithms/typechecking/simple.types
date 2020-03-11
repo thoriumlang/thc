@@ -1,27 +1,28 @@
-
-  TestClass -> (th: class TestClass)
-  TestClass
-    JavaList -> (rt.jar: interface java.util.List)
-    String -> (rt.jar: class java.lang.String)
-    TestClass.[body]
-      U -> (th: param U)
-      TestClass.[body].method1
-        T -> (th: param T)
-        TestClass.[body].method1.[body]
-      TestClass.[body].method2
-        TestClass.[body].method2.[body]
-          TestClass.[body].method2.[body].[anon:27]
-            W -> (th: param W)
-            TestClass.[body].method2.[body].[anon:27].[body]
-          TestClass.[body].method2.[body].[anon:28]
-            TestClass.[body].method2.[body].[anon:28].[body]
-      TestClass.[body].someMethod1
-        TestClass.[body].someMethod1.[anon:10]
-          V -> (th: param V)
-          TestClass.[body].someMethod1.[anon:10].[body]
-      TestClass.[body].someMethod2
-        TestClass.[body].someMethod2.[anon:11]
-          TestClass.[body].someMethod2.[anon:11].[body]
-      TestClass.[body].someObject
-      TestClass.[body].someU
-      TestClass.[body].someValue
+  namespace
+    TestClass -> (th: class TestClass)
+    namespace.TestClass
+      JavaList -> (rt.jar: interface java.util.List)
+      String -> (rt.jar: class java.lang.String)
+      TestClass -> (alias: namespace.TestClass)
+      namespace.TestClass.[body]
+        U -> (th: param U)
+        namespace.TestClass.[body].method1
+          T -> (th: param T)
+          namespace.TestClass.[body].method1.[body]
+        namespace.TestClass.[body].method2
+          namespace.TestClass.[body].method2.[body]
+            namespace.TestClass.[body].method2.[body].[anon:27]
+              W -> (th: param W)
+              namespace.TestClass.[body].method2.[body].[anon:27].[body]
+            namespace.TestClass.[body].method2.[body].[anon:28]
+              namespace.TestClass.[body].method2.[body].[anon:28].[body]
+        namespace.TestClass.[body].someMethod1
+          namespace.TestClass.[body].someMethod1.[anon:10]
+            V -> (th: param V)
+            namespace.TestClass.[body].someMethod1.[anon:10].[body]
+        namespace.TestClass.[body].someMethod2
+          namespace.TestClass.[body].someMethod2.[anon:11]
+            namespace.TestClass.[body].someMethod2.[anon:11].[body]
+        namespace.TestClass.[body].someObject
+        namespace.TestClass.[body].someU
+        namespace.TestClass.[body].someValue

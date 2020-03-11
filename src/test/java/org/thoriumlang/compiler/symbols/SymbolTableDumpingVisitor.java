@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SymbolTableDumpingVisitor implements SymbolTableVisitor<List<String>> {
     private final boolean includeSymbols;
@@ -42,7 +43,9 @@ public class SymbolTableDumpingVisitor implements SymbolTableVisitor<List<String
             Map<String, SymbolTable> scopes
     ) {
         return Lists.merge(
-                Collections.singletonList(symbolTable.toString()),
+                Stream.of(symbolTable.toString())
+                        .filter(e -> !e.isEmpty())
+                        .collect(Collectors.toList()),
                 includeSymbols ?
                         symbols.entrySet().stream()
                                 .sorted(Map.Entry.comparingByKey())

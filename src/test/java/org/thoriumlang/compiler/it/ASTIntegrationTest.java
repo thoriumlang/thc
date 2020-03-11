@@ -15,7 +15,6 @@
  */
 package org.thoriumlang.compiler.it;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
@@ -55,7 +54,11 @@ class ASTIntegrationTest {
                 ),
                 "org.thoriumlang",
                 Arrays.asList(
-                        new SymbolTableInitializer(new SymbolTable()),
+                        new SymbolTableInitializer(
+                                new SymbolTable()
+                                        .createScope("org")
+                                        .createScope("thoriumlang")
+                        ),
                         new TypeChecker(),
                         new SymbolicNameChecker()
                 )

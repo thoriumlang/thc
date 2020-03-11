@@ -44,6 +44,7 @@ public class TypeChecker implements Algorithm {
         List<CompilationError> discoveryErrors = root
                 .accept(
                         new TypeDiscoveryVisitor(
+                                root.getNamespace(),
                                 new RTJarJavaRuntimeClassLoader()
                         )
                 );

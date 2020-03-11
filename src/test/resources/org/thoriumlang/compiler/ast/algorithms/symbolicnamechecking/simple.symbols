@@ -1,45 +1,45 @@
-
-  TestClass
-    TestClass.[body]
-      method1 -> #8
-      method2 -> #126
-      otherValue -> #150
-      someMethod1 -> #154
-      someMethod2 -> #160
-      someU -> #147
-      someValue -> #136
-      TestClass.[body].method1
-        p0 -> #11
-        p1 -> #13
-        p2 -> #17
-        TestClass.[body].method1.[body]
-          p0 -> #51
-          someVar1 -> #21
-          someVar2 -> #32
-          someVar3 -> #37
-          someVar4 -> #42
-          someVar5 -> #56
-      TestClass.[body].method2
-        TestClass.[body].method2.[body]
-          i -> #67
-          x -> #101
-          z -> #106
-          TestClass.[body].method2.[body].[anon:27]
-            w -> #82
-            TestClass.[body].method2.[body].[anon:27].[body]
-          TestClass.[body].method2.[body].[anon:28]
-            y -> #94
-            TestClass.[body].method2.[body].[anon:28].[body]
-          TestClass.[body].method2.[body].[anon:31]
-            TestClass.[body].method2.[body].[anon:31].[body]
-              x -> #114
-      TestClass.[body].otherValue
-      TestClass.[body].someMethod1
-        TestClass.[body].someMethod1.[anon:11]
-          TestClass.[body].someMethod1.[anon:11].[body]
-      TestClass.[body].someMethod2
-        TestClass.[body].someMethod2.[anon:12]
-          TestClass.[body].someMethod2.[anon:12].[body]
-      TestClass.[body].someU
-      TestClass.[body].someValue
-        TestClass.[body].someValue.[body]
+  namespace
+    namespace.TestClass
+      namespace.TestClass.[body]
+        method1 -> #8
+        method2 -> #126
+        otherValue -> #150
+        someMethod1 -> #154
+        someMethod2 -> #160
+        someU -> #147
+        someValue -> #136
+        namespace.TestClass.[body].method1
+          p0 -> #11
+          p1 -> #13
+          p2 -> #17
+          namespace.TestClass.[body].method1.[body]
+            p0 -> #51
+            someVar1 -> #21
+            someVar2 -> #32
+            someVar3 -> #37
+            someVar4 -> #42
+            someVar5 -> #56
+        namespace.TestClass.[body].method2
+          namespace.TestClass.[body].method2.[body]
+            i -> #67
+            x -> #101
+            z -> #106
+            namespace.TestClass.[body].method2.[body].[anon:27]
+              w -> #82
+              namespace.TestClass.[body].method2.[body].[anon:27].[body]
+            namespace.TestClass.[body].method2.[body].[anon:28]
+              y -> #94
+              namespace.TestClass.[body].method2.[body].[anon:28].[body]
+            namespace.TestClass.[body].method2.[body].[anon:31]
+              namespace.TestClass.[body].method2.[body].[anon:31].[body]
+                x -> #114
+        namespace.TestClass.[body].otherValue
+        namespace.TestClass.[body].someMethod1
+          namespace.TestClass.[body].someMethod1.[anon:11]
+            namespace.TestClass.[body].someMethod1.[anon:11].[body]
+        namespace.TestClass.[body].someMethod2
+          namespace.TestClass.[body].someMethod2.[anon:12]
+            namespace.TestClass.[body].someMethod2.[anon:12].[body]
+        namespace.TestClass.[body].someU
+        namespace.TestClass.[body].someValue
+          namespace.TestClass.[body].someValue.[body]

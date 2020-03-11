@@ -28,6 +28,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Name;
@@ -45,9 +46,11 @@ import java.util.stream.Collectors;
  * the root symbol tables with all types it finds.
  */
 public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
+    private final String namespace;
     private final JavaRuntimeClassLoader javaRuntimeClassLoader;
 
-    public TypeDiscoveryVisitor(JavaRuntimeClassLoader javaRuntimeClassLoader) {
+    public TypeDiscoveryVisitor(String namespace, JavaRuntimeClassLoader javaRuntimeClassLoader) {
+        this.namespace = namespace;
         this.javaRuntimeClassLoader = javaRuntimeClassLoader;
     }
 
@@ -120,11 +123,13 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
             );
         }
 
+        String fqName = namespace + "." + name;
+
         symbolTable               // [body]
                 .enclosingScope() // type or class
-                .enclosingScope() // root
-                .put(new Name(name), new ThoriumType(node));
-        // symbolTable.put(new Name());
+                .put(new Name(name), new AliasSymbol(node, fqName));
+
+        symbolTable.put(new Name(fqName), new ThoriumType(node));
 
         return typeParameters.stream()
                 .map(p -> p.accept(this))

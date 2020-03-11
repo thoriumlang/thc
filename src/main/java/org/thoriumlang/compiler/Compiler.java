@@ -23,6 +23,7 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
@@ -46,11 +47,17 @@ public class Compiler {
         ).files().forEach(f -> {
             try {
                 System.out.println(String.format("Processing %s", f));
+
+                SymbolTable symbolTable = new SymbolTable();
+                for (String namespace : new Name(f.namespace()).getFullName()) {
+                    symbolTable = symbolTable.createScope(namespace);
+                }
+
                 AST ast = new AST(
                         f.inputStream(),
                         f.namespace(),
                         Arrays.asList(
-                                new SymbolTableInitializer(new SymbolTable()),
+                                new SymbolTableInitializer(symbolTable),
                                 new TypeChecker(),
                                 new SymbolicNameChecker()
                         )

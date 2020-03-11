@@ -34,12 +34,13 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
-import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
+import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
 import java.io.BufferedReader;
@@ -62,19 +63,20 @@ class TypeDiscoveryVisitorTest {
 
     @BeforeEach
     void setup() {
-        visitor = new TypeDiscoveryVisitor(classLoader);
+        visitor = new TypeDiscoveryVisitor("namespace", classLoader);
     }
 
     @Test
     void fullTable() throws IOException {
         SymbolTable rootSymbolTable = new SymbolTable();
-        SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
                 ),
                 "namespace",
-                Collections.singletonList(symbolTableInitializer)
+                Collections.singletonList(
+                        new SymbolTableInitializer(rootSymbolTable.createScope("namespace"))
+                )
         ).root();
 
         visitor.visit(root);
@@ -316,7 +318,7 @@ class TypeDiscoveryVisitorTest {
 
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "TypeName"))
                 .get()
-                .isInstanceOf(ThoriumType.class);
+                .isInstanceOf(AliasSymbol.class);
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "TypeParameter"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
@@ -397,7 +399,7 @@ class TypeDiscoveryVisitorTest {
 
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "ClassName"))
                 .get()
-                .isInstanceOf(ThoriumType.class);
+                .isInstanceOf(AliasSymbol.class);
         Assertions.assertThat(getSymbol(root.getTopLevelNode(), "TypeParameter"))
                 .get()
                 .isInstanceOf(ThoriumType.class);
@@ -470,7 +472,7 @@ class TypeDiscoveryVisitorTest {
                 .isInstanceOf(JavaClass.class);
         Assertions.assertThat(getSymbol(root, "TypeName"))
                 .get()
-                .isInstanceOf(ThoriumType.class);
+                .isInstanceOf(AliasSymbol.class);
     }
 
     @Test
@@ -501,7 +503,7 @@ class TypeDiscoveryVisitorTest {
                 .isInstanceOf(JavaClass.class);
         Assertions.assertThat(getSymbol(node, "ClassName"))
                 .get()
-                .isInstanceOf(ThoriumType.class);
+                .isInstanceOf(AliasSymbol.class);
     }
 
 

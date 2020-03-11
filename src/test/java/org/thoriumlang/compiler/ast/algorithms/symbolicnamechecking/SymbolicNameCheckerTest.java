@@ -34,13 +34,16 @@ class SymbolicNameCheckerTest {
     @Test
     void walk() throws IOException {
         SymbolTable rootSymbolTable = new SymbolTable();
-        SymbolTableInitializer symbolTableInitializer = new SymbolTableInitializer(rootSymbolTable);
         Root root = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
                 ),
                 "namespace",
-                Collections.singletonList(symbolTableInitializer)
+                Collections.singletonList(
+                        new SymbolTableInitializer(
+                                rootSymbolTable.createScope("namespace")
+                        )
+                )
         ).root();
 
         Assertions.assertThat(

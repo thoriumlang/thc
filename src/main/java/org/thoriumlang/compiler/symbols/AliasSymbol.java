@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,13 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
-import java.util.Objects;
-
-/**
- * Represents a Java interface, coming from rt.jar.
- */
-public class JavaInterface implements Symbol {
+public class AliasSymbol implements Symbol {
     private final Node node;
-    private final Class<?> clazz;
+    private final String target;
 
-    public JavaInterface(Node node, Class<?> clazz) {
-        this.node = Objects.requireNonNull(node, "node cannot be null");
-        this.clazz = Objects.requireNonNull(clazz, "clazz cannot be null");
+    public AliasSymbol(Node node, String target) {
+        this.node = node;
+        this.target = target;
     }
 
     @Override
@@ -38,6 +33,6 @@ public class JavaInterface implements Symbol {
 
     @Override
     public String toString() {
-        return String.format("(rt.jar: interface %s)", clazz.getCanonicalName());
+        return String.format("(alias: %s)", target);
     }
 }

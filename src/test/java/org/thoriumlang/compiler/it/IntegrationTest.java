@@ -35,6 +35,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
@@ -179,11 +180,17 @@ class IntegrationTest {
     private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
         SourceFile sourceFile = sourceFile(path, this::sourceFilename);
 
+        SymbolTable symbolTable = new SymbolTable();
+        for (String namespace : new Name(sourceFile.namespace()).getFullName()) {
+            symbolTable = symbolTable.createScope(namespace);
+        }
+
+
         Root root = new AST(
                 sourceFile.inputStream(),
                 sourceFile.namespace(),
                 Arrays.asList(
-                        new SymbolTableInitializer(new SymbolTable()),
+                        new SymbolTableInitializer(symbolTable),
                         new TypeChecker(),
                         new SymbolicNameChecker()
                 )
