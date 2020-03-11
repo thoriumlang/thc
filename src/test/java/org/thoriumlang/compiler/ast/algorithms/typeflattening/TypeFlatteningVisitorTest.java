@@ -151,8 +151,7 @@ class TypeFlatteningVisitorTest {
 
         Node flattened = spec.accept(visitor);
 
-        Assertions.assertThat(flattened.getContext().get(SourcePosition.class))
-                .get()
+        Assertions.assertThat(flattened.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
                 .isEqualTo("1:0");
     }
@@ -178,8 +177,7 @@ class TypeFlatteningVisitorTest {
 
         Node flattened = spec.accept(visitor);
 
-        Assertions.assertThat(flattened.getContext().get(SourcePosition.class))
-                .get()
+        Assertions.assertThat(flattened.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
                 .isEqualTo("1:0");
     }

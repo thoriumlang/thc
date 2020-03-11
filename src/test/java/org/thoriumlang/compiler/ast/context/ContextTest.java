@@ -435,6 +435,38 @@ class ContextTest {
                 .isSameAs(node);
     }
 
+    @Test
+    void require_type_present() {
+        NodeStub node = new NodeStub();
+        node.getContext().put(String.class, "someString");
+        Assertions.assertThat(node.getContext().require(String.class))
+                .isEqualTo("someString");
+    }
+
+    @Test
+    void require_type_absent() {
+        NodeStub node = new NodeStub();
+        Assertions.assertThatThrownBy(() -> node.getContext().require(String.class))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("no java.lang.String found");
+    }
+
+    @Test
+    void require_key_type_present() {
+        NodeStub node = new NodeStub();
+        node.getContext().put("key", String.class, "someString");
+        Assertions.assertThat(node.getContext().require("key", String.class))
+                .isEqualTo("someString");
+    }
+
+    @Test
+    void require_key_type_absent() {
+        NodeStub node = new NodeStub();
+        Assertions.assertThatThrownBy(() -> node.getContext().require("key", String.class))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("no key(java.lang.String) found");
+    }
+
     private static class NodeStub extends Node {
         NodeStub() {
             super(new NodeId(1L));

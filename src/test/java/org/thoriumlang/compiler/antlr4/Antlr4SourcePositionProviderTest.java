@@ -34,9 +34,7 @@ class Antlr4SourcePositionProviderTest {
 
         provider.provide(node, token);
 
-        Assertions.assertThat(node.getContext().get(SourcePosition.class))
-                .isPresent()
-                .get()
+        Assertions.assertThat(node.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
                 .isEqualTo("1:3");
 

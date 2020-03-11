@@ -95,8 +95,7 @@ class RelativesInjectionVisitorTest {
     }
 
     private void assertParent(Node child, Node parent) {
-        Assertions.assertThat(child.getContext().get(Relatives.class))
-                .get()
+        Assertions.assertThat(child.getContext().require(Relatives.class))
                 .matches(
                         f -> f.parent().isPresent() && f.parent().get().node().getNodeId().equals(parent.getNodeId()),
                         String.format("%s(%s) does not have %s(%s) as parent",

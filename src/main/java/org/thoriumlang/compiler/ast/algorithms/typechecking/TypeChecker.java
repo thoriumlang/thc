@@ -58,9 +58,7 @@ public class TypeChecker implements Algorithm {
                         // FIXME: put in symbol table
                         .map(t -> new CompilationError(String.format("symbol not found: %s (%d)",
                                 t.getType(),
-                                t.getContext().get(SourcePosition.class)
-                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
-                                        .getLine()
+                                t.getContext().require(SourcePosition.class).getLine()
                         ), t))
                         .collect(Collectors.toList());
 

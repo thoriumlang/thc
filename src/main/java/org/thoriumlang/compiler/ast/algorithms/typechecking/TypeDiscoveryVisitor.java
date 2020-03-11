@@ -77,9 +77,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .orElse(Collections.singletonList(
                         new CompilationError(String.format("symbol not found: %s (%d)",
                                 node.getFrom(),
-                                node.getContext().get(SourcePosition.class)
-                                        .orElseThrow(() -> new IllegalStateException("no source position found"))
-                                        .getLine()
+                                node.getContext().require(SourcePosition.class).getLine()
                         ), node)
                 ));
     }
@@ -127,9 +125,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
             return Collections.singletonList(
                     new CompilationError(String.format("symbol already defined: %s (%d)",
                             name,
-                            node.getContext().get(SourcePosition.class)
-                                    .orElseThrow(() -> new IllegalStateException("no source position found"))
-                                    .getLine()
+                            node.getContext().require(SourcePosition.class).getLine()
                     ), node)
             );
         }

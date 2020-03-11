@@ -89,6 +89,18 @@ public class Context {
         return map.get(key);
     }
 
+
+    public <T> T require(java.lang.Class<T> type) {
+        return get(type)
+                .orElseThrow(() -> new IllegalStateException(String.format("no %s found", type.getName())));
+    }
+
+    public <T> T require(String key, java.lang.Class<T> type) {
+        return get(key, type)
+                .orElseThrow(() -> new IllegalStateException(String.format("no %s(%s) found", key, type.getName())));
+    }
+
+
     @SuppressWarnings("unchecked") // we're sure the type will be the expected one thanks to put(Class<T>, T)
     public <T> T putIfAbsentAndGet(String key, java.lang.Class<T> type, T value) {
         if (key == null) {
@@ -154,9 +166,9 @@ public class Context {
 
     private static class Key {
         private final String name;
-        private final java.lang.Class type;
+        private final java.lang.Class<?> type;
 
-        private Key(String name, java.lang.Class type) {
+        private Key(String name, java.lang.Class<?> type) {
             this.name = name;
             this.type = type;
         }

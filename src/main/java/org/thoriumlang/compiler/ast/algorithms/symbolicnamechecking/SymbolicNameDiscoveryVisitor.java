@@ -255,9 +255,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                     new CompilationError(String.format(
                             "symbol already defined: %s (%d)",
                             identifier,
-                            node.getContext().get(SourcePosition.class)
-                                    .orElseThrow(() -> new IllegalStateException("no source position found"))
-                                    .getLine()
+                            node.getContext().require(SourcePosition.class).getLine()
                     ), node)
             );
         }
@@ -269,9 +267,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         return new CompilationError(String.format(
                 "symbol not found: %s (%d)",
                 name,
-                node.getContext().get(SourcePosition.class)
-                        .orElseThrow(() -> new IllegalStateException("no source position found"))
-                        .getLine()
+                node.getContext().require(SourcePosition.class).getLine()
         ), node);
     }
 }

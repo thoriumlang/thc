@@ -55,8 +55,8 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
-import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -116,12 +116,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(root.getUses().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .isSameAs(root.getContext()
-                        .get(SymbolTable.class)
-                        .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(root.getUses().get(0).getContext().require(SymbolTable.class))
+                .isSameAs(root.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -142,13 +138,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(root.getTopLevelNode().getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope() == root.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(root.getTopLevelNode().getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope() == root.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -170,13 +161,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(type.getTypeParameters().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == type.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(type.getTypeParameters().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st == type.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -198,13 +184,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(type.getSuperType().getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == type.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(type.getSuperType().getContext().require(SymbolTable.class))
+                .matches(st -> st == type.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -235,13 +216,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(type.getMethods().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope() == type.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(type.getMethods().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope() == type.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -263,13 +239,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(root.getTopLevelNode().getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope() == root.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(root.getTopLevelNode().getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope() == root.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -292,13 +263,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(clazz.getTypeParameters().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == clazz.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(clazz.getTypeParameters().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st == clazz.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -321,13 +287,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(clazz.getSuperType().getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == clazz.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(clazz.getSuperType().getContext().require(SymbolTable.class))
+                .matches(st -> st == clazz.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -361,13 +322,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(clazz.getMethods().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope().enclosingScope() == clazz.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(clazz.getMethods().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope().enclosingScope() == clazz.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -398,13 +354,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(clazz.getAttributes().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope() == clazz.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(clazz.getAttributes().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope() == clazz.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -426,12 +377,10 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(method);
 
-        Assertions.assertThat(method.getSignature().getContext().get(SymbolTable.class))
-                .get()
+        Assertions.assertThat(method.getSignature().getContext().require(SymbolTable.class))
                 .matches(st ->
                         st == method.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
+                                .require(SymbolTable.class)
                                 // signature's symbol table is the parent of the method's symbol table
                                 // this is because the method's symbol table is the method's body symbol table
                                 .enclosingScope()
@@ -459,13 +408,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(method);
 
-        Assertions.assertThat(method.getStatements().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == method.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(method.getStatements().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st == method.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -482,13 +426,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(parameter);
 
-        Assertions.assertThat(parameter.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(parameter.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -503,13 +442,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(typeSpec);
 
-        Assertions.assertThat(typeSpec.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(typeSpec.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -524,13 +458,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(typeSpec);
 
-        Assertions.assertThat(typeSpec.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(typeSpec.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -546,13 +475,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(typeSpec);
 
-        Assertions.assertThat(typeSpec.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(typeSpec.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -568,13 +492,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(typeSpec);
 
-        Assertions.assertThat(typeSpec.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(typeSpec.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -586,13 +505,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(typeSpec);
 
-        Assertions.assertThat(typeSpec.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(typeSpec.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -607,13 +521,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -628,13 +537,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -649,13 +553,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -667,13 +566,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -688,13 +582,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -712,13 +601,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -734,13 +618,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -757,13 +636,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -780,13 +654,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -802,13 +671,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -825,13 +689,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st.enclosingScope().enclosingScope() == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st.enclosingScope().enclosingScope() == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -843,13 +702,8 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(value);
 
-        Assertions.assertThat(value.getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == parent.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(value.getContext().require(SymbolTable.class))
+                .matches(st -> st == parent.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -876,20 +730,10 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(method);
 
-        Assertions.assertThat(method.getStatements().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == method.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
-        Assertions.assertThat(method.getStatements().get(1).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == method.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(method.getStatements().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st == method.getContext().require(SymbolTable.class));
+        Assertions.assertThat(method.getStatements().get(1).getContext().require(SymbolTable.class))
+                .matches(st -> st == method.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -911,20 +755,10 @@ class SymbolTableInitializationVisitorTest {
 
         visitor.visit(functionValue);
 
-        Assertions.assertThat(functionValue.getStatements().get(0).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == functionValue.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
-        Assertions.assertThat(functionValue.getStatements().get(1).getContext().get(SymbolTable.class))
-                .get()
-                .matches(st ->
-                        st == functionValue.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                );
+        Assertions.assertThat(functionValue.getStatements().get(0).getContext().require(SymbolTable.class))
+                .matches(st -> st == functionValue.getContext().require(SymbolTable.class));
+        Assertions.assertThat(functionValue.getStatements().get(1).getContext().require(SymbolTable.class))
+                .matches(st -> st == functionValue.getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -944,11 +778,8 @@ class SymbolTableInitializationVisitorTest {
 
         Assertions.assertThat(
                 String.join(
-                        "\n",
-                        root.getContext()
-                                .get(SymbolTable.class)
-                                .orElseThrow(() -> new IllegalStateException("no symbol table found"))
-                                .accept(new SymbolTableDumpingVisitor())
+                        "\n", 
+                        root.getContext().require(SymbolTable.class).accept(new SymbolTableDumpingVisitor())
                 )
         ).isEqualTo(
                 new BufferedReader(
