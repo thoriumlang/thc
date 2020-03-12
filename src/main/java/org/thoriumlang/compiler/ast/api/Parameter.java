@@ -13,32 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.symbols;
-
-import org.thoriumlang.compiler.ast.nodes.Node;
+package org.thoriumlang.compiler.ast.api;
 
 import java.util.Objects;
 
-public class AliasSymbol implements Symbol {
-    private final Node definingNode;
-    private final String target;
+public class Parameter {
+    private final org.thoriumlang.compiler.ast.nodes.Parameter parameter;
 
-    public AliasSymbol(Node definingNode, String target) {
-        this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
-        this.target = Objects.requireNonNull(target, "target cannot be null");
+    Parameter(org.thoriumlang.compiler.ast.nodes.Parameter node) {
+        this.parameter = Objects.requireNonNull(node, "node cannot be null");
     }
 
-    @Override
-    public Node getDefiningNode() {
-        return definingNode;
+    public String getName() {
+        return parameter.getName();
     }
 
-    public String getTarget() {
-        return target;
+    public Type getType() {
+        return new TypeSpecToTypeConverter().apply(parameter.getType());
     }
 
     @Override
     public String toString() {
-        return String.format("(alias: %s)", target);
+        return String.format("%s: %s", getName(), getType());
     }
 }
