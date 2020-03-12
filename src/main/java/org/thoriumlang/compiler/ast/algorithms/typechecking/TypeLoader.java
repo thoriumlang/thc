@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Christophe Pollet
+ * Copyright 2020 Christophe Pollet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.symbols.Symbol;
+
 import java.util.Optional;
 
-public interface JavaRuntimeClassLoader {
-    Optional<Class> find(String name);
+public interface TypeLoader {
+    Optional<Symbol> load(String name, Node node);
 }

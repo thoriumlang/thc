@@ -1,0 +1,5 @@
+use Person; // FIXME should not be mandatory
+
+class LegalPerson: Person {
+
+}

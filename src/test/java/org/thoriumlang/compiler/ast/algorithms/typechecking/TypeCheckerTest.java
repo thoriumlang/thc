@@ -17,19 +17,30 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.Source;
+import org.thoriumlang.compiler.SourceFile;
+import org.thoriumlang.compiler.SourceFiles;
+import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 class TypeCheckerTest {
     @Test
     void walk() throws IOException {
         Assertions.assertThat(
-                new TypeChecker()
+                new TypeChecker(
+                        Collections.singletonList(
+                                new RTJarJavaRuntimeClassLoader()
+                        )
+                )
                         .walk(
                                 new AST(
                                         TypeCheckerTest.class.getResourceAsStream(
@@ -53,5 +64,28 @@ class TypeCheckerTest {
                 "symbol not found: UnknownValType (23)",
                 "symbol not found: UnknownFunctionValueParameterType2 (28)"
         );
+    }
+
+    @Test
+    void loadsLibTypes() throws URISyntaxException, IOException {
+        Source source = new SourceFiles(
+                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                p -> p.endsWith("typechecking/Main.th")
+        ).sources().get(0);
+
+        AST ast = new SourceToAST().apply(source);
+
+        ast.root();
+
+        Assertions.assertThat(ast.errors())
+                .isEmpty();
+
+        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+
+        Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
+                .isPresent();
+
+        Assertions.assertThat(symbolTable.find(new Name("org.thoriumlang.Object")))
+                .isPresent();
     }
 }

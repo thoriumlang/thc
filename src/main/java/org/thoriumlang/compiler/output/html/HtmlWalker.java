@@ -340,6 +340,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
                         .with("sourceNodeId", "")
                         .with("name", symbolTable)
                         .with("hash", Integer.toHexString(symbolTable.hashCode()))
+// FIXME rewrite
 //                        .with("symbols", symbolTable.symbolsStream()
 //                                .map(s -> ImmutableMap.of(
 //                                        "name", s.getName(),

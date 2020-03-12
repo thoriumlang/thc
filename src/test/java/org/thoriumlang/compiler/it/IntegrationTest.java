@@ -24,26 +24,24 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.Source;
 import org.thoriumlang.compiler.SourceFiles;
+import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
-import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -181,23 +179,23 @@ class IntegrationTest {
     private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
         Source source = source(path, this::sourceFilename);
 
-        SymbolTable symbolTable = new SymbolTable();
+        Root root = new SourceToAST().apply(source).root();
 
-        Root root = source.ast(
-                Arrays.asList(
-                        new SymbolTableInitializer(symbolTable),
-                        new TypeChecker(),
-                        new SymbolicNameChecker()
-                )
-        ).root();
-
-        root.getContext().put("compilationErrors", Map.class, new TypeChecker().walk(root)
-                .stream()
-                .collect(Collectors.toMap(
-                        CompilationError::getNode,
-                        Collections::singletonList,
-                        Lists::merge
-                )));
+        root.getContext()
+                .put(
+                        "compilationErrors",
+                        Map.class,
+                        new TypeChecker(
+                                Collections.singletonList(
+                                        (name, node) -> Optional.empty()
+                                )
+                        ).walk(root).stream()
+                                .collect(Collectors.toMap(
+                                        CompilationError::getNode,
+                                        Collections::singletonList,
+                                        Lists::merge
+                                ))
+                );
 
         return new HtmlWalker(
                 root

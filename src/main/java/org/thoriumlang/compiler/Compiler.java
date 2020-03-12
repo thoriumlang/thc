@@ -19,6 +19,8 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.RTJarJavaRuntimeClassLoader;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumRTClassLoader;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
@@ -47,20 +49,11 @@ public class Compiler {
             try {
                 System.out.println(String.format("Processing %s", source));
 
-                SymbolTable symbolTable = new SymbolTable();
+                AST ast = new SourceToAST().apply(source);
 
-                AST ast = source.ast(
-                        Arrays.asList(
-                                new SymbolTableInitializer(symbolTable),
-                                new TypeChecker(),
-                                new SymbolicNameChecker()
-                        )
-                );
                 Root root = ast.root();
 
                 ast.errors().forEach(System.out::println);
-
-                root.getContext().get(SymbolTable.class).ifPresent(System.out::println);
 
                 root.getContext().put("compilationErrors", Map.class, ast.errors()
                         .stream()

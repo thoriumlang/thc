@@ -59,7 +59,11 @@ class ASTIntegrationTest {
                                         .createScope("org")
                                         .createScope("thoriumlang")
                         ),
-                        new TypeChecker(),
+                        new TypeChecker(
+                                Collections.singletonList(
+                                        (name, node) -> Optional.empty()
+                                )
+                        ),
                         new SymbolicNameChecker()
                 )
         );

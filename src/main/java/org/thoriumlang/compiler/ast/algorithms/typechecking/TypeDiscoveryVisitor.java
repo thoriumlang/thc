@@ -30,8 +30,6 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
-import org.thoriumlang.compiler.symbols.JavaClass;
-import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
@@ -40,6 +38,7 @@ import org.thoriumlang.compiler.symbols.ThoriumType;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,11 +47,11 @@ import java.util.stream.Collectors;
  */
 public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     private final String namespace;
-    private final JavaRuntimeClassLoader javaRuntimeClassLoader;
+    private final TypeLoader typeLoader;
 
-    public TypeDiscoveryVisitor(String namespace, JavaRuntimeClassLoader javaRuntimeClassLoader) {
+    public TypeDiscoveryVisitor(String namespace, TypeLoader typeLoader) {
         this.namespace = namespace;
-        this.javaRuntimeClassLoader = javaRuntimeClassLoader;
+        this.typeLoader = typeLoader;
     }
 
     @Override
@@ -68,30 +67,33 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
 
     @Override
     public List<CompilationError> visit(Use node) {
-        // FIXME duplicate use name
-        return javaRuntimeClassLoader.find(node.getFrom())
-                .map(c -> {
-                    getSymbolTable(node).put(new Name(node.getTo()), fromJavaClass(node, c));
-                    return Collections.<CompilationError>emptyList();
-                })
-                .orElse(Collections.singletonList(
-                        new CompilationError(String.format("symbol not found: %s (%d)",
-                                node.getFrom(),
-                                node.getContext().require(SourcePosition.class).getLine()
-                        ), node)
-                ));
+        // FIXME duplicate use name: return error
+
+        String fqName = node.getFrom().contains(".")
+                ? node.getFrom()
+                : namespace + "." + node.getFrom();
+
+        Optional<Symbol> symbol = typeLoader.load(fqName, node);
+
+        if (symbol.isPresent()) {
+            getSymbolTable(node).put(new Name(node.getTo()), symbol.get());
+            return Collections.emptyList();
+        }
+
+        return Collections.singletonList(
+                new CompilationError(String.format("symbol not found: %s (%d)",
+                        node.getFrom(),
+                        node.getContext().get(SourcePosition.class)
+                                .orElseThrow(() -> new IllegalStateException("no source position found"))
+                                .getLine()
+                ), node)
+        );
     }
 
     private SymbolTable getSymbolTable(Node node) {
         return node.getContext()
                 .get(SymbolTable.class)
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
-    }
-
-    private Symbol fromJavaClass(Node node, java.lang.Class<?> clazz) {
-        return clazz.isInterface() ?
-                new JavaInterface(node, clazz) :
-                new JavaClass(node, clazz);
     }
 
     @Override

@@ -1,0 +1,10 @@
+use Person; // FIXME should not be mandatory
+
+class NaturalPerson: Person {
+    method(parameter: NaturalPerson): NaturalPerson {}
+    //methodWithIntersectionType(parameter: Type | Class): Type | Class {}
+    //methodWithUnionType(parameter: Type & Class): Type & Class {}
+
+    //methodWithUnionOfIntersectionType(): OtherType & (Type | Class) {}
+    //methodWithIntersectionOfUnionType(): OtherType | (Type & Class) {}
+}

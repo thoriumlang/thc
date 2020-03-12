@@ -15,13 +15,18 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.symbols.JavaClass;
+import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Symbol;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class RTJarJavaRuntimeClassLoader implements JavaRuntimeClassLoader {
+public class RTJarJavaRuntimeClassLoader implements TypeLoader {
     private final URLClassLoader classLoader;
 
     @SuppressWarnings("squid:S00112") // we want to throw Error here
@@ -43,9 +48,15 @@ public class RTJarJavaRuntimeClassLoader implements JavaRuntimeClassLoader {
     }
 
     @Override
-    public Optional<Class> find(String name) {
+    public Optional<Symbol> load(String name, Node node) {
         try {
-            return Optional.of(classLoader.loadClass(name));
+            Class<?> clazz = classLoader.loadClass(name);
+
+            return Optional.of(
+                    clazz.isInterface() ?
+                            new JavaInterface(node, clazz) :
+                            new JavaClass(node, clazz)
+            );
         }
         catch (ClassNotFoundException e) {
             return Optional.empty();

@@ -24,20 +24,19 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TypeChecker implements Algorithm {
-    private final MissingTypeLoader missingTypeLoader;
+public class TypeChecker implements Algorithm, TypeLoader {
+    private final List<TypeLoader> typeLoaders;
 
-    public TypeChecker(MissingTypeLoader missingTypeLoader) {
-        this.missingTypeLoader = missingTypeLoader;
-    }
-
-    public TypeChecker() {
-        this((namespace, type) -> false);
+    public TypeChecker(List<TypeLoader> typeLoaders) {
+        this.typeLoaders = typeLoaders;
     }
 
     @Override
@@ -46,26 +45,55 @@ public class TypeChecker implements Algorithm {
                 .accept(
                         new TypeDiscoveryVisitor(
                                 root.getNamespace(),
-                                new RTJarJavaRuntimeClassLoader()
+                                this
                         )
                 );
 
-        List<CompilationError> typeNotFoundErrors =
-                new NodesMatching(n -> n instanceof TypeSpecSimple).visit(root).stream()
-                        .map(t -> (TypeSpecSimple) t)
-                        .filter(t -> !getSymbolTable(t).find(new Name(t.getType())).isPresent())
-                        .filter(t -> !missingTypeLoader.load(root.getNamespace(), t.getType()))
-                        // FIXME: put in symbol table
-                        .map(t -> new CompilationError(String.format("symbol not found: %s (%d)",
-                                t.getType(),
-                                t.getContext().require(SourcePosition.class).getLine()
-                        ), t))
-                        .collect(Collectors.toList());
+        List<CompilationError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
+                .visit(root).stream()
+                .map(t -> (TypeSpecSimple) t)
+                .filter(t -> !getSymbolTable(t).find(new Name(t.getType())).isPresent())
+                .map(t -> {
+                    String fqName = t.getType().contains(".")
+                            ? t.getType()
+                            : root.getNamespace() + "." + t.getType();
+
+                    if (load(fqName, t, root.getContext().require(SymbolTable.class))) {
+                        return null;
+                    }
+
+                    return new CompilationError(String.format("symbol not found: %s (%d)",
+                            t.getType(),
+                            t.getContext().require(SourcePosition.class).getLine()
+                    ), t);
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         return Lists.merge(
                 discoveryErrors,
                 typeNotFoundErrors
         );
+    }
+
+    private boolean load(String fqName, Node node, SymbolTable symbolTable) {
+        Optional<Symbol> symbol = load(fqName, node);
+
+        if (symbol.isPresent()) {
+            symbolTable.put(new Name(fqName), symbol.get());
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public Optional<Symbol> load(String fqName, Node node) {
+        return typeLoaders.stream()
+                .map(loader -> loader.load(fqName, node))
+                .filter(Optional::isPresent)
+                .findFirst()
+                .orElse(Optional.empty());
     }
 
     private SymbolTable getSymbolTable(Node node) {

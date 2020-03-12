@@ -17,22 +17,44 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.visitor.Visitor;
+import org.thoriumlang.compiler.symbols.JavaClass;
+import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.util.Optional;
 
 class RTJarJavaRuntimeClassLoaderTest {
+    private final Node node = new Node(new NodeIdGenerator().next()) {
+        @Override
+        public <T> T accept(Visitor<? extends T> visitor) {
+            return null;
+        }
+    };
+
     @Test
-    void find_success() {
-        Optional<Class> clazz = new RTJarJavaRuntimeClassLoader().find("java.lang.String");
+    void find_success_class() {
+        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("java.lang.String", node);
         Assertions.assertThat(clazz)
-                .isNotEmpty()
                 .get()
-                .isEqualTo(String.class);
+                .isInstanceOf(JavaClass.class)
+                .hasToString("(rt.jar: class java.lang.String)");
+    }
+
+    @Test
+    void find_success_interface() {
+        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("java.util.List", node);
+        Assertions.assertThat(clazz)
+                .get()
+                .isInstanceOf(JavaInterface.class)
+                .hasToString("(rt.jar: interface java.util.List)");
     }
 
     @Test
     void find_failure() {
-        Optional<Class> clazz = new RTJarJavaRuntimeClassLoader().find("NonexistentClass");
+        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("NonexistentClass", node);
         Assertions.assertThat(clazz)
                 .isEmpty();
     }

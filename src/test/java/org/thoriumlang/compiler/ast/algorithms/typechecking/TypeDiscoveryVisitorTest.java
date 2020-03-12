@@ -54,18 +54,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class TypeDiscoveryVisitorTest {
-    private static JavaRuntimeClassLoader classLoader = name -> name.equals(String.class.getName()) ?
-            Optional.of(String.class) :
-            name.equals("java.util.List") ?
-                    Optional.of(List.class)
-                    : Optional.empty();
+    private static TypeLoader typeLoader = (name, node) -> {
+        if (name.equals(String.class.getName())) {
+            return Optional.of(new JavaClass(node, String.class));
+        }
+        if (name.equals(List.class.getName())) {
+            return Optional.of(new JavaInterface(node, List.class));
+        }
+        return Optional.empty();
+    };
+
     private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
     private TypeDiscoveryVisitor visitor;
 
     @BeforeEach
     void setup() {
-        visitor = new TypeDiscoveryVisitor("namespace", classLoader);
+        visitor = new TypeDiscoveryVisitor("namespace", typeLoader);
     }
 
     @Test

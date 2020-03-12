@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AST {
@@ -43,9 +44,9 @@ public class AST {
     private List<CompilationError> errors;
 
     public AST(InputStream inputStream, String namespace, List<Algorithm> algorithms) {
-        this.inputStream = inputStream;
-        this.namespace = namespace;
-        this.algorithms = algorithms;
+        this.inputStream = Objects.requireNonNull(inputStream, "inputStream cannot be null");
+        this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
+        this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = new NodeIdGenerator();
     }
 
