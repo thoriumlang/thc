@@ -30,22 +30,10 @@ public class FunctionValue extends Value {
     public FunctionValue(NodeId nodeId, List<TypeParameter> typeParameters, List<Parameter> parameters,
             TypeSpec returnType, List<Statement> statements) {
         super(nodeId);
-        if (typeParameters == null) {
-            throw new NullPointerException("typeParameters cannot be null");
-        }
-        if (parameters == null) {
-            throw new NullPointerException("parameters cannot be null");
-        }
-        if (returnType == null) {
-            throw new NullPointerException("returnType cannot be null");
-        }
-        if (statements == null) {
-            throw new NullPointerException("statements cannot be null");
-        }
-        this.typeParameters = typeParameters;
-        this.parameters = parameters;
-        this.returnType = returnType;
-        this.statements = statements;
+        this.typeParameters = Objects.requireNonNull(typeParameters, "typeParameters cannot be null");
+        this.parameters = Objects.requireNonNull(parameters, "parameters cannot be null");
+        this.returnType = Objects.requireNonNull(returnType, "returnType cannot be null");
+        this.statements = Objects.requireNonNull(statements, "statements cannot be null");
     }
 
     @Override

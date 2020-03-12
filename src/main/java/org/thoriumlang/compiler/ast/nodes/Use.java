@@ -25,22 +25,13 @@ public class Use extends Node {
 
     public Use(NodeId nodeId, String from, String to) {
         super(nodeId);
-        if (from == null) {
-            throw new NullPointerException("from cannot be null");
-        }
-        if (to == null) {
-            throw new NullPointerException("to cannot be null");
-        }
-        this.from = from;
-        this.to = to;
+        this.from = Objects.requireNonNull(from, "from cannot be null");
+        this.to = Objects.requireNonNull(to, "to cannot be null");
     }
 
     public Use(NodeId nodeId, String from) {
         super(nodeId);
-        if (from == null) {
-            throw new NullPointerException("from cannot be null");
-        }
-        this.from = from;
+        this.from = Objects.requireNonNull(from, "from cannot be null");
         this.to = from.substring(from.lastIndexOf('.') + 1);
     }
 

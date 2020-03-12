@@ -25,10 +25,7 @@ public class Statement extends Node {
 
     public Statement(NodeId nodeId, Value value, boolean last) {
         super(nodeId);
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.value = value;
+        this.value = Objects.requireNonNull(value, "value cannot be null");
         this.last = last;
     }
 

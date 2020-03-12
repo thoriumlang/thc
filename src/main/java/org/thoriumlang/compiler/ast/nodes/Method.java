@@ -27,14 +27,8 @@ public class Method extends Node {
 
     public Method(NodeId nodeId, MethodSignature signature, List<Statement> statements) {
         super(nodeId);
-        if (signature == null) {
-            throw new NullPointerException("signature cannot be null");
-        }
-        if (statements == null) {
-            throw new NullPointerException("statements cannot be null");
-        }
-        this.signature = signature;
-        this.statements = statements;
+        this.signature = Objects.requireNonNull(signature, "signature cannot be null");
+        this.statements = Objects.requireNonNull(statements, "statements cannot be null");
     }
 
     @Override

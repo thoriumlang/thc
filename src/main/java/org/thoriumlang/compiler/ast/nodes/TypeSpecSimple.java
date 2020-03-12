@@ -27,14 +27,8 @@ public class TypeSpecSimple extends TypeSpec {
 
     public TypeSpecSimple(NodeId nodeId, String type, List<TypeSpec> arguments) {
         super(nodeId);
-        if (type == null) {
-            throw new NullPointerException("type cannot be null");
-        }
-        if (arguments == null) {
-            throw new NullPointerException("arguments cannot be null");
-        }
-        this.type = type;
-        this.arguments = arguments;
+        this.type = Objects.requireNonNull(type, "type cannot be null");
+        this.arguments = Objects.requireNonNull(arguments, "arguments cannot be null");
     }
 
     @Override

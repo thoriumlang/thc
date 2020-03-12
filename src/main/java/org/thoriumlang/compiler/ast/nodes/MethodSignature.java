@@ -31,26 +31,11 @@ public class MethodSignature extends Node {
     public MethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             List<Parameter> parameters, TypeSpec returnType) {
         super(nodeId);
-        if (visibility == null) {
-            throw new NullPointerException("visibility cannot be null");
-        }
-        if (name == null) {
-            throw new NullPointerException("name cannot be null");
-        }
-        if (typeParameters == null) {
-            throw new NullPointerException("typeParameters cannot be null");
-        }
-        if (parameters == null) {
-            throw new NullPointerException("parameters cannot be null");
-        }
-        if (returnType == null) {
-            throw new NullPointerException("returnType cannot be null");
-        }
-        this.visibility = visibility;
-        this.name = name;
-        this.typeParameters = typeParameters;
-        this.parameters = parameters;
-        this.returnType = returnType;
+        this.visibility = Objects.requireNonNull(visibility, "visibility cannot be null");
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.typeParameters = Objects.requireNonNull(typeParameters, "typeParameters cannot be null");
+        this.parameters = Objects.requireNonNull(parameters, "parameters cannot be null");
+        this.returnType = Objects.requireNonNull(returnType, "returnType cannot be null");
     }
 
     @Override

@@ -27,14 +27,8 @@ public class TypeSpecFunction extends TypeSpec {
 
     public TypeSpecFunction(NodeId nodeId, List<TypeSpec> arguments, TypeSpec returnType) {
         super(nodeId);
-        if (arguments == null) {
-            throw new NullPointerException("arguments cannot be null");
-        }
-        if (returnType == null) {
-            throw new NullPointerException("returnType cannot be null");
-        }
-        this.arguments = arguments;
-        this.returnType = returnType;
+        this.arguments = Objects.requireNonNull(arguments, "arguments cannot be null");
+        this.returnType = Objects.requireNonNull(returnType, "returnType cannot be null");
     }
 
     @Override

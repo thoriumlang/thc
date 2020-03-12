@@ -15,20 +15,16 @@
  */
 package org.thoriumlang.compiler.ast.nodes;
 
+import java.util.Objects;
+
 abstract class AssignmentValue extends Value {
     private final Reference reference;
     private final Value value;
 
     AssignmentValue(NodeId nodeId, Reference reference, Value value) {
         super(nodeId);
-        if (reference == null) {
-            throw new NullPointerException("reference cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.reference = reference;
-        this.value = value;
+        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
+        this.value = Objects.requireNonNull(value, "value cannot be null");
     }
 
     public Reference getReference() {

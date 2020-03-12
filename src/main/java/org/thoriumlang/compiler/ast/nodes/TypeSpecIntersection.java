@@ -25,10 +25,7 @@ public class TypeSpecIntersection extends TypeSpec {
 
     public TypeSpecIntersection(NodeId nodeId, List<TypeSpec> types) {
         super(nodeId);
-        if (types == null) {
-            throw new NullPointerException("types cannot be null");
-        }
-        this.types = types;
+        this.types = Objects.requireNonNull(types, "types cannot be null");
     }
 
     @Override

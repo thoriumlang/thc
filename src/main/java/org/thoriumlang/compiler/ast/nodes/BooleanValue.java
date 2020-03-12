@@ -24,9 +24,6 @@ public class BooleanValue extends Value {
 
     public BooleanValue(NodeId nodeId, boolean value) {
         super(nodeId);
-        if (nodeId == null) {
-            throw new NullPointerException("nodeId cannot be null");
-        }
         this.value = value;
     }
 

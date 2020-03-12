@@ -25,14 +25,8 @@ public class NewAssignmentValue extends AssignmentValue {
 
     public NewAssignmentValue(NodeId nodeId, Reference reference, TypeSpec type, Value value, Mode mode) {
         super(nodeId, reference, value);
-        if (type == null) {
-            throw new NullPointerException("type cannot be null");
-        }
-        if (mode == null) {
-            throw new NullPointerException("mode cannot be null");
-        }
-        this.type = type;
-        this.mode = mode;
+        this.type = Objects.requireNonNull(type, "type cannot be null");
+        this.mode = Objects.requireNonNull(mode, "mode cannot be null");
     }
 
     @Override

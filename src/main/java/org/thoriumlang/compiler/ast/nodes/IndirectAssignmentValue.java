@@ -24,10 +24,7 @@ public class IndirectAssignmentValue extends AssignmentValue {
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, Reference reference, Value value) {
         super(nodeId, reference, value);
-        if (indirectValue == null) {
-            throw new NullPointerException("indirectValue cannot be null");
-        }
-        this.indirectValue = indirectValue;
+        this.indirectValue = Objects.requireNonNull(indirectValue, "indirectValue cannot be null");
     }
 
     @Override

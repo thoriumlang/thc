@@ -24,10 +24,7 @@ public class StringValue extends Value {
 
     public StringValue(NodeId nodeId, String value) {
         super(nodeId);
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        this.value = value;
+        this.value = Objects.requireNonNull(value, "value cannot be null");
     }
 
     @Override

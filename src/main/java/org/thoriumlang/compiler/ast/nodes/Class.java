@@ -32,30 +32,12 @@ public class Class extends TopLevelNode {
     public Class(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
             TypeSpec superType, List<Method> methods, List<Attribute> attributes) {
         super(nodeId);
-        if (visibility == null) {
-            throw new NullPointerException("visibility cannot be null");
-        }
-        if (name == null) {
-            throw new NullPointerException("name cannot be null");
-        }
-        if (typeParameters == null) {
-            throw new NullPointerException("typeParameters cannot be null");
-        }
-        if (superType == null) {
-            throw new NullPointerException("superType cannot be null");
-        }
-        if (methods == null) {
-            throw new NullPointerException("methods cannot be null");
-        }
-        if (attributes == null) {
-            throw new NullPointerException("attributes cannot be null");
-        }
-        this.visibility = visibility;
-        this.name = name;
-        this.typeParameters = typeParameters;
-        this.superType = superType;
-        this.methods = methods;
-        this.attributes = attributes;
+        this.visibility = Objects.requireNonNull(visibility, "visibility cannot be null");
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.typeParameters = Objects.requireNonNull(typeParameters, "typeParameters cannot be null");
+        this.superType = Objects.requireNonNull(superType, "superType cannot be null");
+        this.methods = Objects.requireNonNull(methods, "methods cannot be null");
+        this.attributes = Objects.requireNonNull(attributes, "attributes cannot be null");
     }
 
     @Override

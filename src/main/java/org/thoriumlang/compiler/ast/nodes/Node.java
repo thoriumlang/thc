@@ -25,8 +25,8 @@ public abstract class Node {
     private final NodeId nodeId;
 
     protected Node(NodeId nodeId) {
-        this.context = new Context(this);
         this.nodeId = Objects.requireNonNull(nodeId, "nodeId cannot be null");
+        this.context = new Context(this);
     }
 
     public abstract <T> T accept(Visitor<? extends T> visitor);

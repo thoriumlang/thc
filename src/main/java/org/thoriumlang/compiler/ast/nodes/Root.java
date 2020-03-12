@@ -28,18 +28,9 @@ public class Root extends Node {
 
     public Root(NodeId nodeId, String namespace, List<Use> uses, TopLevelNode topLevel) {
         super(nodeId);
-        if (namespace == null) {
-            throw new NullPointerException("namespace cannot be null");
-        }
-        if (uses == null) {
-            throw new NullPointerException("uses cannot be null");
-        }
-        if (topLevel == null) {
-            throw new NullPointerException("topLevel cannot be null");
-        }
-        this.namespace = namespace;
-        this.uses = uses;
-        this.topLevelNode = topLevel;
+        this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
+        this.uses = Objects.requireNonNull(uses, "uses cannot be null");
+        this.topLevelNode = Objects.requireNonNull(topLevel, "topLevel cannot be null");
     }
 
     @Override

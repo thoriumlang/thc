@@ -25,14 +25,8 @@ public class NestedValue extends Value {
 
     public NestedValue(NodeId nodeId, Value outer, Value inner) {
         super(nodeId);
-        if (outer == null) {
-            throw new NullPointerException("outer cannot be null");
-        }
-        if (inner == null) {
-            throw new NullPointerException("inner cannot be null");
-        }
-        this.outer = outer;
-        this.inner = inner;
+        this.outer = Objects.requireNonNull(outer, "outer cannot be null");
+        this.inner = Objects.requireNonNull(inner, "inner cannot be null");
     }
 
     @Override

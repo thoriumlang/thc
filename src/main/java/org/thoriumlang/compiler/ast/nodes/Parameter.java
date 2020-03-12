@@ -25,14 +25,8 @@ public class Parameter extends Node {
 
     public Parameter(NodeId nodeId, String name, TypeSpec type) {
         super(nodeId);
-        if (name == null) {
-            throw new NullPointerException("name cannot be null");
-        }
-        if (type == null) {
-            throw new NullPointerException("type cannot be null");
-        }
-        this.name = name;
-        this.type = type;
+        this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.type = Objects.requireNonNull(type, "type cannot be null");
     }
 
     @Override

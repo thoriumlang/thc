@@ -27,22 +27,10 @@ public class Attribute extends Node {
 
     public Attribute(NodeId nodeId, String identifier, TypeSpec type, Value value, Mode mode) {
         super(nodeId);
-        if (identifier == null) {
-            throw new NullPointerException("identifier cannot be null");
-        }
-        if (type == null) {
-            throw new NullPointerException("type cannot be null");
-        }
-        if (value == null) {
-            throw new NullPointerException("value cannot be null");
-        }
-        if (mode == null) {
-            throw new NullPointerException("mode cannot be null");
-        }
-        this.identifier = identifier;
-        this.type = type;
-        this.value = value;
-        this.mode = mode;
+        this.identifier = Objects.requireNonNull(identifier, "identifier cannot be null");
+        this.type = Objects.requireNonNull(type, "type cannot be null");
+        this.value = Objects.requireNonNull(value, "value cannot be null");
+        this.mode = Objects.requireNonNull(mode, "mode cannot be null");
     }
 
     @Override

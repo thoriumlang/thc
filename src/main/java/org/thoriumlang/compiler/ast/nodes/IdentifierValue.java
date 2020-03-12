@@ -24,10 +24,7 @@ public class IdentifierValue extends Value {
 
     public IdentifierValue(NodeId nodeId, Reference reference) {
         super(nodeId);
-        if (reference == null) {
-            throw new NullPointerException("reference cannot be null");
-        }
-        this.reference = reference;
+        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
     }
 
     @Override

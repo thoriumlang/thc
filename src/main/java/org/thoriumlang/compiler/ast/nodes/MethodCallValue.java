@@ -29,18 +29,9 @@ public class MethodCallValue extends Value {
     public MethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
         super(nodeId);
-        if (methodName == null) {
-            throw new NullPointerException("methodName cannot be null");
-        }
-        if (typeArguments == null) {
-            throw new NullPointerException("typeArguments cannot be null");
-        }
-        if (methodArguments == null) {
-            throw new NullPointerException("methodArguments cannot be null");
-        }
-        this.methodName = methodName;
-        this.typeArguments = typeArguments;
-        this.methodArguments = methodArguments;
+        this.methodName = Objects.requireNonNull(methodName, "methodName cannot be null");
+        this.typeArguments = Objects.requireNonNull(typeArguments, "typeArguments cannot be null");
+        this.methodArguments = Objects.requireNonNull(methodArguments, "methodArguments cannot be null");
     }
 
     @Override
