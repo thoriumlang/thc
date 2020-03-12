@@ -37,10 +37,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
@@ -71,7 +71,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     private static final String TEMPLATE_PATH = HtmlWalker.class.getPackage().getName()
             .replace(".", File.separator) + File.separator;
 
-    private static final Map<java.lang.Class, JtwigTemplate> templates = ImmutableMap.<java.lang.Class, JtwigTemplate>builder()
+    private static final Map<java.lang.Class<?>, JtwigTemplate> templates = ImmutableMap.<java.lang.Class<?>, JtwigTemplate>builder()
             .put(Root.class, classpathTemplate(TEMPLATE_PATH + "root.twig"))
             .put(Use.class, classpathTemplate(TEMPLATE_PATH + "use.twig"))
             .put(Class.class, classpathTemplate(TEMPLATE_PATH + "class.twig"))
@@ -105,9 +105,9 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     private final Map<Node, List<CompilationError>> compilationErrors;
     private final List<String> symbolTables;
 
+    @SuppressWarnings("unchecked")
     public HtmlWalker(Root root) {
         this.root = root;
-        //noinspection unchecked
         this.compilationErrors = root.getContext()
                 .get("compilationErrors", Map.class)
                 .orElse(Collections.emptyMap());
