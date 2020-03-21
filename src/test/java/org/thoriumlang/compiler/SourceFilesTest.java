@@ -27,7 +27,7 @@ class SourceFilesTest {
     void all() throws URISyntaxException, IOException {
         SourceFile sourceFile = new SourceFiles(
                 Paths.get(SourceFilesTest.class.getResource("/").toURI()),
-                (p, a) -> p.endsWith("org/thoriumlang/compiler/tests/class.th")
+                p -> p.endsWith("org/thoriumlang/compiler/tests/class.th")
         ).files().get(0);
 
         Assertions.assertThat(sourceFile.namespace())

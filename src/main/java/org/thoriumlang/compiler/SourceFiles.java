@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,13 +38,13 @@ public class SourceFiles {
     private final Path root;
     private final BiPredicate<Path, BasicFileAttributes> filter;
 
-    public SourceFiles(Path root, BiPredicate<Path, BasicFileAttributes> filter) {
+    public SourceFiles(Path root, Predicate<Path> filter) {
         this.root = root;
-        this.filter = filter;
+        this.filter = (path, basicFileAttributes) -> filter.test(path);
     }
 
     public SourceFiles(Path root) {
-        this(root, (x, y) -> true);
+        this(root, x -> true);
     }
 
     public List<SourceFile> files() throws IOException {
