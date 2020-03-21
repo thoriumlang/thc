@@ -53,7 +53,7 @@ public class AST {
         this(inputStream, namespace, Collections.emptyList());
     }
 
-    public Root root() throws IOException {
+    public Root root() throws IOException { // TODO wrap IOException in an UncheckedIOException
         if (root != null) {
             return root;
         }

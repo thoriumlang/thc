@@ -17,10 +17,11 @@ package org.thoriumlang.compiler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class SourceFile {
+public class SourceFile implements Source {
     private final String namespace;
     private final Path path;
 
@@ -34,10 +35,17 @@ public class SourceFile {
         return namespace + " :: " + path.toString();
     }
 
-    public InputStream inputStream() throws IOException {
-        return Files.newInputStream(path);
+    @Override
+    public InputStream inputStream() {
+        try {
+            return Files.newInputStream(path);
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
+    @Override
     public String namespace() {
         return namespace;
     }
