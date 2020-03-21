@@ -54,23 +54,22 @@ public class SourceFiles {
             throw new NoThRootFound(root);
         }
 
-        try (Stream<Path> sources = Files.find(
+        try (Stream<Path> sourcePaths = Files.find(
                 root,
                 999,
                 (p, bfa) -> thSourcesMatcher.test(p, bfa) && filter.test(p, bfa)
         )) {
-            return sources
-                    .map(p -> new SourceFile(
+            return sourcePaths
+                    .map(path -> new SourceFile(
                             namespace(
-                                    p.getParent().normalize(),
-                                    p.normalize().toString(),
+                                    path.getParent().normalize(),
+                                    path.normalize().toString(),
                                     thRoots
                             ),
-                            p
+                            path
                     ))
                     .collect(Collectors.toList());
         }
-
     }
 
     private String namespace(Path path, String fullPath, List<String> thRoots) {
