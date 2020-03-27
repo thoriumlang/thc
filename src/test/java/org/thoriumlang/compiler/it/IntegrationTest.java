@@ -22,9 +22,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.compiler.SourceFile;
+import org.thoriumlang.compiler.Source;
 import org.thoriumlang.compiler.SourceFiles;
-import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
@@ -35,7 +34,6 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
-import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
@@ -62,10 +60,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void ast(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+        Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
-                        new AST(sourceFile.inputStream(), sourceFile.namespace())
+                        source
+                                .ast()
                                 .root()
                                 .toString())
                 .isEqualTo(
@@ -79,12 +78,14 @@ class IntegrationTest {
                 );
     }
 
-    private SourceFile sourceFile(String path, Function<String, String> filenameGenerator)
-            throws URISyntaxException, IOException {
+    private Source source(String path, Function<String, String> filenameGenerator) throws URISyntaxException {
+        String folder = path.substring(0, path.lastIndexOf("/"));
+        String filename = path.substring(path.lastIndexOf("/") + 1);
+
         return new SourceFiles(
-                Paths.get(IntegrationTest.class.getResource("/").toURI()),
-                p -> p.getFileName().toString().equals(filenameGenerator.apply(path))
-        ).files().get(0);
+                Paths.get(IntegrationTest.class.getResource(folder).toURI()),
+                p -> p.getFileName().toString().equals(filenameGenerator.apply(filename))
+        ).sources().get(0);
     }
 
     private String sourceFilename(String path) {
@@ -102,11 +103,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void thorium(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+        Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
                         new ThWalker(
-                                new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
+                                source.ast().root()
                         ).walk()
                 )
                 .isEqualTo(
@@ -131,11 +132,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void generatedThorium(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);
+        Source sourceFile = source(path, this::generatedSourceFilename);
         Assertions
                 .assertThat(
                         new ThWalker(
-                                new AST(sourceFile.inputStream(), sourceFile.namespace()).root()
+                                sourceFile.ast().root()
                         ).walk()
                 )
                 .isEqualTo(
@@ -178,17 +179,11 @@ class IntegrationTest {
     }
 
     private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+        Source source = source(path, this::sourceFilename);
 
         SymbolTable symbolTable = new SymbolTable();
-        for (String namespace : new Name(sourceFile.namespace()).getFullName()) {
-            symbolTable = symbolTable.createScope(namespace);
-        }
 
-
-        Root root = new AST(
-                sourceFile.inputStream(),
-                sourceFile.namespace(),
+        Root root = source.ast(
                 Arrays.asList(
                         new SymbolTableInitializer(symbolTable),
                         new TypeChecker(),
@@ -220,11 +215,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void sourceLocation_normalizedSource(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::generatedSourceFilename);
+        Source source = source(path, this::generatedSourceFilename);
         Assertions
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
-                                .visit(new AST(sourceFile.inputStream(), sourceFile.namespace()).root())
+                                .visit(source.ast().root())
                 )
                 .isEmpty();
     }
@@ -240,11 +235,11 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
     void sourceLocation_rawSource(String path) throws IOException, URISyntaxException {
-        SourceFile sourceFile = sourceFile(path, this::sourceFilename);
+        Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
-                                .visit(new AST(sourceFile.inputStream(), sourceFile.namespace()).root())
+                                .visit(source.ast().root())
                 )
                 .isEmpty();
     }

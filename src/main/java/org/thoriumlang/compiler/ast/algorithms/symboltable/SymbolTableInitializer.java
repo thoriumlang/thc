@@ -20,6 +20,8 @@ import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +34,25 @@ public class SymbolTableInitializer implements Algorithm {
 
     @Override
     public List<CompilationError> walk(Root root) {
-        root.accept(new SymbolTableInitializationVisitor(rootSymbolTable));
+        root.accept(
+                new SymbolTableInitializationVisitor(
+                        findLocalTable(
+                                rootSymbolTable,
+                                Arrays.asList(root.getNamespace().split("\\."))
+                        )
+                )
+        );
         return Collections.emptyList();
+    }
+
+    private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
+        if (namespaces.size() == 0) {
+            return symbolTable;
+        }
+        ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
+        return findLocalTable(
+                symbolTable.createScope(newNamespaces.remove(0)),
+                newNamespaces
+        );
     }
 }

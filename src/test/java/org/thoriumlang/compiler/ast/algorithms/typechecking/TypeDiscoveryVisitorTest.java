@@ -77,7 +77,7 @@ class TypeDiscoveryVisitorTest {
                 ),
                 "namespace",
                 Collections.singletonList(
-                        new SymbolTableInitializer(rootSymbolTable.createScope("namespace"))
+                        new SymbolTableInitializer(rootSymbolTable)
                 )
         ).root();
 

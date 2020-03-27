@@ -18,21 +18,27 @@ package org.thoriumlang.compiler;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.regex.Pattern;
 
 class SourceFilesTest {
     @Test
-    void all() throws URISyntaxException, IOException {
-        SourceFile sourceFile = new SourceFiles(
-                Paths.get(SourceFilesTest.class.getResource("/").toURI()),
-                p -> p.endsWith("org/thoriumlang/compiler/tests/class.th")
-        ).files().get(0);
+    void test() throws URISyntaxException {
+        SourceFiles sourceFiles = new SourceFiles(
+                Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/").toURI()),
+                p -> p.getFileName().toString().equals("class.th")
+        );
 
-        Assertions.assertThat(sourceFile.namespace())
-                .isEqualTo("org.thoriumlang.compiler.tests");
-        Assertions.assertThat(sourceFile.filename())
-                .isEqualTo("class.th");
+        List<Source> sources = sourceFiles.sources();
+
+        Assertions.assertThat(sources)
+                .hasSize(1);
+
+        Assertions.assertThat(sources.get(0).toString())
+                .matches(
+                        Pattern.compile("org\\.thoriumlang\\.compiler\\.tests :: .*?/org/thoriumlang/compiler/tests/class\\.th")
+                );
     }
 }

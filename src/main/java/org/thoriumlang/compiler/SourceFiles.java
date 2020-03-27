@@ -16,30 +16,32 @@
 package org.thoriumlang.compiler;
 
 
-import org.thoriumlang.compiler.exceptions.NoThRootFound;
-
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SourceFiles {
+public class SourceFiles implements Sources {
     private static final BiPredicate<Path, BasicFileAttributes> thSourcesMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th");
     private static final BiPredicate<Path, BasicFileAttributes> thRootMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches("\\.throot");
 
     private final Path root;
+    private final Path searchPath;
     private final BiPredicate<Path, BasicFileAttributes> filter;
 
-    public SourceFiles(Path root, Predicate<Path> filter) {
-        this.root = root;
+    public SourceFiles(Path searchPath, Predicate<Path> filter) {
+        this.root = findRoot(searchPath).orElseThrow(() -> new IllegalArgumentException("No .throot file found"));
+        this.searchPath = searchPath;
         this.filter = (path, basicFileAttributes) -> filter.test(path);
     }
 
@@ -47,16 +49,35 @@ public class SourceFiles {
         this(root, x -> true);
     }
 
-    public List<SourceFile> files() throws IOException {
-        List<String> thRoots = findThRoots();
+    private Optional<Path> findRoot(Path path) {
+        Optional<Path> thRootPath = find(path, thRootMatcher);
 
-        if (thRoots.isEmpty()) {
-            throw new NoThRootFound(root);
+        if (thRootPath.isPresent()) {
+            return thRootPath;
         }
 
-        try (Stream<Path> sourcePaths = Files.find(
-                root,
-                999,
+        Path parent = path.getParent();
+        if (parent != null) {
+            return findRoot(parent);
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<Path> find(Path path, BiPredicate<Path, BasicFileAttributes> matcher) {
+        try {
+            return Files.find(path, 1, matcher).findFirst();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @Override
+    public List<Source> sources() {
+        List<String> thRoots = findThRoots();
+
+        try (Stream<Path> sourcePaths = findRecursive(
+                searchPath,
                 (p, bfa) -> thSourcesMatcher.test(p, bfa) && filter.test(p, bfa)
         )) {
             return sourcePaths
@@ -72,6 +93,22 @@ public class SourceFiles {
         }
     }
 
+    private List<String> findThRoots() {
+        try (Stream<Path> paths = findRecursive(root, thRootMatcher)) {
+            return paths
+                    .map(p -> p.getParent().toString())
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private Stream<Path> findRecursive(Path start, BiPredicate<Path, BasicFileAttributes> matcher) {
+        try {
+            return Files.find(start, 999, matcher);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
     private String namespace(Path path, String fullPath, List<String> thRoots) {
         if (!thRoots.contains(path.toString())) {
             return namespace(path.getParent(), fullPath, thRoots);
@@ -83,11 +120,5 @@ public class SourceFiles {
                 .replaceFirst("^\\.", "");
     }
 
-    private List<String> findThRoots() throws IOException {
-        try (Stream<Path> paths = Files.find(root, 999, thRootMatcher)) {
-            return paths
-                    .map(p -> p.getParent().toString())
-                    .collect(Collectors.toList());
-        }
-    }
+
 }

@@ -15,11 +15,16 @@
  */
 package org.thoriumlang.compiler;
 
+import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.Algorithm;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
 
 public class SourceFile implements Source {
     private final String namespace;
@@ -31,26 +36,34 @@ public class SourceFile implements Source {
     }
 
     @Override
-    public String toString() {
-        return namespace + " :: " + path.toString();
+    public AST ast(List<Algorithm> algorithms) {
+        return new AST(
+                inputStream(),
+                namespace(),
+                algorithms
+        );
     }
 
     @Override
-    public InputStream inputStream() {
+    public AST ast() {
+        return ast(Collections.emptyList());
+    }
+
+    private InputStream inputStream() {
         try {
             return Files.newInputStream(path);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    @Override
-    public String namespace() {
+    private String namespace() {
         return namespace;
     }
 
-    public String filename() {
-        return path.getFileName().toString();
+
+    @Override
+    public String toString() {
+        return namespace + " :: " + path.toString();
     }
 }

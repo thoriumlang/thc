@@ -23,7 +23,6 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
-import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
@@ -37,25 +36,20 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Compiler {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws URISyntaxException {
         new Compiler().compile();
     }
 
-    private void compile() throws IOException, URISyntaxException {
+    private void compile() throws URISyntaxException {
         new SourceFiles(
                 Paths.get(Compiler.class.getResource("/").toURI())
-        ).files().forEach(f -> {
+        ).sources().forEach(source -> {
             try {
-                System.out.println(String.format("Processing %s", f));
+                System.out.println(String.format("Processing %s", source));
 
                 SymbolTable symbolTable = new SymbolTable();
-                for (String namespace : new Name(f.namespace()).getFullName()) {
-                    symbolTable = symbolTable.createScope(namespace);
-                }
 
-                AST ast = new AST(
-                        f.inputStream(),
-                        f.namespace(),
+                AST ast = source.ast(
                         Arrays.asList(
                                 new SymbolTableInitializer(symbolTable),
                                 new TypeChecker(),
@@ -76,11 +70,10 @@ public class Compiler {
                                 Lists::merge
                         )));
 
-                new FileOutputStream("/tmp/" + f.filename() + ".html").write(
+                new FileOutputStream("/tmp/" + ast.root().getTopLevelNode().getName() + ".html").write(
                         new HtmlWalker(root).walk().getBytes()
                 );
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });

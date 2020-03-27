@@ -41,7 +41,7 @@ class SymbolicNameCheckerTest {
                 "namespace",
                 Collections.singletonList(
                         new SymbolTableInitializer(
-                                rootSymbolTable.createScope("namespace")
+                                rootSymbolTable//.createScope("namespace")
                         )
                 )
         ).root();

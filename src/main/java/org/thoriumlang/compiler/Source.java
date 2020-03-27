@@ -15,10 +15,13 @@
  */
 package org.thoriumlang.compiler;
 
-import java.io.InputStream;
+import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.Algorithm;
+
+import java.util.List;
 
 public interface Source {
-    InputStream inputStream();
+    AST ast(List<Algorithm> algorithms);
 
-    String namespace();
+    AST ast();
 }
