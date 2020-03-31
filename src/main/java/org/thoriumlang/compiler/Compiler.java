@@ -17,21 +17,14 @@ package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
-import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.RTJarJavaRuntimeClassLoader;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumRTClassLoader;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
