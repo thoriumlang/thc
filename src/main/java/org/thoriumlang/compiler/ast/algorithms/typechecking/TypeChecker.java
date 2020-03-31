@@ -52,7 +52,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
         List<CompilationError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
                 .visit(root).stream()
                 .map(t -> (TypeSpecSimple) t)
-                .filter(t -> !getSymbolTable(t).find(new Name(t.getType())).isPresent())
+                .filter(t -> !t.getContext().require(SymbolTable.class).find(new Name(t.getType())).isPresent())
                 .map(t -> {
                     String fqName = t.getType().contains(".")
                             ? t.getType()
@@ -94,11 +94,5 @@ public class TypeChecker implements Algorithm, TypeLoader {
                 .filter(Optional::isPresent)
                 .findFirst()
                 .orElse(Optional.empty());
-    }
-
-    private SymbolTable getSymbolTable(Node node) {
-        return node.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 }
