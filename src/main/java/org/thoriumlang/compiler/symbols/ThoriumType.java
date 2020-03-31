@@ -34,6 +34,7 @@ import java.util.Objects;
 public class ThoriumType implements Symbol {
     private final Node node;
 
+    // TODO create one ctor for each type of accepted type node
     public ThoriumType(Node node) {
         this.node = Objects.requireNonNull(node, "node cannot be null");
     }

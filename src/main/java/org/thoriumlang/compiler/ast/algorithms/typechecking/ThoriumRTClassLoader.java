@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+// TODO this is a mock, we need an actual implementation
 public class ThoriumRTClassLoader implements TypeLoader {
     private final List<String> knownTypes = Arrays.asList(
             "org.thoriumlang.Object",

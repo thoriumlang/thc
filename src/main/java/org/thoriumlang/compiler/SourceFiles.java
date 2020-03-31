@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO review Path vs File vs String
 public class SourceFiles implements Sources {
     private static final BiPredicate<Path, BasicFileAttributes> thSourcesMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th");
