@@ -104,6 +104,13 @@ public class SymbolTable {
         return parent;
     }
 
+    public SymbolTable root() {
+        if (isRoot()) {
+            return this;
+        }
+        return enclosingScope().root();
+    }
+
     public <T> T accept(SymbolTableVisitor<? extends T> visitor) {
         return visitor.visit(name, this, symbols, scopes);
     }

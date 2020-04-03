@@ -30,8 +30,8 @@ public class ThoriumSrcClassLoader implements TypeLoader {
 
         try {
             AST ast = new SourceToAST(
-                    sources/*, TODO pass root table
-                    node.getContext().require(SymbolTable.class).root()*/
+                    sources,
+                    node.getContext().require(SymbolTable.class).root()
             ).apply(loadedSource.get());
 
             // TODO do something about errors

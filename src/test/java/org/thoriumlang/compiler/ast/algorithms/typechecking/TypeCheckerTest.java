@@ -21,17 +21,40 @@ import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.symbols.SymbolTableVisitor;
+import org.thoriumlang.compiler.symbols.ThoriumType;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class TypeCheckerTest {
+    private static final SymbolTableVisitor<List<Symbol>> symbolsExtractor = new SymbolTableVisitor<List<Symbol>>() {
+        @Override
+        public List<Symbol> visit(String name, SymbolTable symbolTable, Map<String, Symbol> symbols, Map<String, SymbolTable> scopes) {
+            return Lists.merge(
+                    new ArrayList<>(symbols.values()),
+                    scopes.values().stream()
+                            .map(s -> s.accept(this))
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList())
+            );
+        }
+    };
+
     @Test
     void walk() throws IOException {
         Assertions.assertThat(
@@ -121,7 +144,8 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(sources).apply(source);
+        SymbolTable rootSymbolTable = new SymbolTable();
+        AST ast = new SourceToAST(sources, rootSymbolTable).apply(source);
 
         ast.root();
 
@@ -135,5 +159,16 @@ class TypeCheckerTest {
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.CustomType")))
                 .isPresent();
+
+        Set<SymbolTable> rootSymbolTablesFromLoadedSymbols = rootSymbolTable
+                .accept(symbolsExtractor)
+                .stream()
+                .filter(s -> s instanceof ThoriumType)
+                .map(Symbol::getNode)
+                .map(n -> n.getContext().require(SymbolTable.class).root())
+                .collect(Collectors.toSet());
+
+        Assertions.assertThat(rootSymbolTablesFromLoadedSymbols)
+                .containsExactly(rootSymbolTable);
     }
 }

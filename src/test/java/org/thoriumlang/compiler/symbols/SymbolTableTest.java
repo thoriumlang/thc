@@ -131,6 +131,21 @@ class SymbolTableTest {
     }
 
     @Test
+    void root_onRoot() {
+        SymbolTable root = new SymbolTable();
+        Assertions.assertThat(root.root())
+                .isSameAs(root);
+    }
+
+    @Test
+    void root_onNonRoot() {
+        SymbolTable root = new SymbolTable();
+        SymbolTable child = root.createScope("child");
+        Assertions.assertThat(child.root())
+                .isSameAs(root);
+    }
+
+    @Test
     void accept() {
         SymbolTable root = new SymbolTable();
         SymbolTable child = root.createScope("child");

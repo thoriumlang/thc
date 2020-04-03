@@ -32,15 +32,19 @@ import java.util.function.Function;
 // TODO should it really be a Function?
 public class SourceToAST implements Function<Source, AST> {
     private final Sources sources;
+    private final SymbolTable symbolTable;
+
+    public SourceToAST(Sources sources, SymbolTable symbolTable) {
+        this.sources = sources;
+        this.symbolTable = symbolTable;
+    }
 
     public SourceToAST(Sources sources) {
-        this.sources = sources;
+        this(sources, new SymbolTable());
     }
 
     @Override
     public AST apply(Source source) {
-        SymbolTable symbolTable = new SymbolTable();
-
         return source.ast(
                 Arrays.asList(
                         new SymbolTableInitializer(symbolTable),
