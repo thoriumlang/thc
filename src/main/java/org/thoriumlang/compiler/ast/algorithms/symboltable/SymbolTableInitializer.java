@@ -38,7 +38,7 @@ public class SymbolTableInitializer implements Algorithm {
                 new SymbolTableInitializationVisitor(
                         findLocalTable(
                                 rootSymbolTable,
-                                Arrays.asList(root.getNamespace().split("\\."))
+                                Arrays.asList(root.getNamespace().split("\\.")) // TODO encapsulate in an object (Name?)
                         )
                 )
         );

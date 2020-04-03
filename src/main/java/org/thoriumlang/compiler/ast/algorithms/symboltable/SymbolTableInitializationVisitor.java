@@ -49,6 +49,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+// TODO should maybe not extend Algorithm... same idea as RelativeInjectionVisitor
 class SymbolTableInitializationVisitor extends IdentityVisitor {
     private final SymbolTable rootSymbolTable;
 
