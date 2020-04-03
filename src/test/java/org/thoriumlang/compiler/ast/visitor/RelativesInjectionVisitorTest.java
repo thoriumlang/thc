@@ -487,7 +487,7 @@ class RelativesInjectionVisitorTest {
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
                                                 RelativesInjectionVisitor.class.getResourceAsStream(
-                                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                                                 )
                                         )
                                 )
@@ -512,7 +512,7 @@ class RelativesInjectionVisitorTest {
                                 new ThoriumLexer(
                                         CharStreams.fromStream(
                                                 RelativesInjectionVisitor.class.getResourceAsStream(
-                                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                                                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                                                 )
                                         )
                                 )

@@ -26,11 +26,11 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class RTJarJavaRuntimeClassLoader implements TypeLoader {
+public class JavaRTClassLoader implements TypeLoader {
     private final URLClassLoader classLoader;
 
     @SuppressWarnings("squid:S00112") // we want to throw Error here
-    public RTJarJavaRuntimeClassLoader() {
+    public JavaRTClassLoader() {
         try {
             classLoader = new URLClassLoader(
                     new URL[]{

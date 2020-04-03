@@ -78,7 +78,7 @@ class TypeDiscoveryVisitorTest {
         SymbolTable rootSymbolTable = new SymbolTable();
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(
-                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                 ),
                 "namespace",
                 Collections.singletonList(
@@ -95,7 +95,7 @@ class TypeDiscoveryVisitorTest {
                         new BufferedReader(
                                 new InputStreamReader(
                                         TypeDiscoveryVisitorTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.types"
+                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.types"
                                         )
                                 )
                         ).lines().collect(Collectors.joining("\n"))

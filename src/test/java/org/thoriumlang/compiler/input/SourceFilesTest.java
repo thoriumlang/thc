@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler;
+package org.thoriumlang.compiler.input;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 class SourceFilesTest {
     @Test
-    void test() throws URISyntaxException {
+    void sources() throws URISyntaxException {
         SourceFiles sourceFiles = new SourceFiles(
                 Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/").toURI()),
                 p -> p.getFileName().toString().equals("class.th")
@@ -40,5 +40,18 @@ class SourceFilesTest {
                 .matches(
                         Pattern.compile("org\\.thoriumlang\\.compiler\\.tests :: .*?/org/thoriumlang/compiler/tests/class\\.th")
                 );
+    }
+
+    @Test
+    void load() throws URISyntaxException {
+        SourceFiles sourceFiles = new SourceFiles(
+                Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/").toURI()),
+                p -> false
+        );
+
+        Assertions.assertThat(sourceFiles.sources())
+                .isEmpty();
+
+        sourceFiles.load("org.thoriumlang.compiler.tests.class");
     }
 }

@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler;
+package org.thoriumlang.compiler.input;
 
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -32,9 +35,9 @@ import java.util.stream.Stream;
 // TODO review Path vs File vs String
 public class SourceFiles implements Sources {
     private static final BiPredicate<Path, BasicFileAttributes> thSourcesMatcher = (path, basicFileAttributes) ->
-            basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th");
+            basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th$");
     private static final BiPredicate<Path, BasicFileAttributes> thRootMatcher = (path, basicFileAttributes) ->
-            basicFileAttributes.isRegularFile() && path.getFileName().toString().matches("\\.throot");
+            basicFileAttributes.isRegularFile() && path.getFileName().toString().matches("^\\.throot$");
 
     private final Path root;
     private final Path searchPath;
@@ -66,8 +69,8 @@ public class SourceFiles implements Sources {
     }
 
     private Optional<Path> find(Path path, BiPredicate<Path, BasicFileAttributes> matcher) {
-        try {
-            return Files.find(path, 1, matcher).findFirst();
+        try (Stream<Path> files = Files.find(path, 1, matcher)) {
+            return files.findFirst();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -121,5 +124,30 @@ public class SourceFiles implements Sources {
                 .replaceFirst("^\\.", "");
     }
 
-
+    @Override
+    public Optional<Source> load(String name) {
+        for (String root : findThRoots()) {
+            File file = new File(
+                    String.format("%s%s%s.th",
+                            root,
+                            File.separator,
+                            name.replace(".", File.separator)
+                    )
+            );
+            if (file.exists()) {
+                Path path = Paths.get(URI.create("file://" + file.getAbsolutePath()));
+                return Optional.of(
+                        new SourceFile(
+                                namespace(
+                                        path.getParent(),
+                                        file.getAbsolutePath(),
+                                        Collections.singletonList(root)
+                                ),
+                                path
+                        )
+                );
+            }
+        }
+        return Optional.empty();
+    }
 }

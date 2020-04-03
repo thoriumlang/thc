@@ -19,6 +19,8 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.input.SourceFiles;
+import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 
 import java.io.FileOutputStream;
@@ -36,13 +38,15 @@ public class Compiler {
     }
 
     private void compile() throws URISyntaxException {
-        new SourceFiles(
+        Sources sources = new SourceFiles(
                 Paths.get(Compiler.class.getResource("/").toURI())
-        ).sources().forEach(source -> {
+        );
+
+        sources.sources().forEach(source -> {
             try {
                 System.out.println(String.format("Processing %s", source));
 
-                AST ast = new SourceToAST().apply(source);
+                AST ast = new SourceToAST(sources).apply(source);
 
                 Root root = ast.root();
 

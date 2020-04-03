@@ -26,7 +26,7 @@ import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.util.Optional;
 
-class RTJarJavaRuntimeClassLoaderTest {
+class JavaRTClassLoaderTest {
     private final Node node = new Node(new NodeIdGenerator().next()) {
         @Override
         public <T> T accept(Visitor<? extends T> visitor) {
@@ -36,7 +36,7 @@ class RTJarJavaRuntimeClassLoaderTest {
 
     @Test
     void find_success_class() {
-        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("java.lang.String", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load("java.lang.String", node);
         Assertions.assertThat(clazz)
                 .get()
                 .isInstanceOf(JavaClass.class)
@@ -45,7 +45,7 @@ class RTJarJavaRuntimeClassLoaderTest {
 
     @Test
     void find_success_interface() {
-        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("java.util.List", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load("java.util.List", node);
         Assertions.assertThat(clazz)
                 .get()
                 .isInstanceOf(JavaInterface.class)
@@ -54,7 +54,7 @@ class RTJarJavaRuntimeClassLoaderTest {
 
     @Test
     void find_failure() {
-        Optional<Symbol> clazz = new RTJarJavaRuntimeClassLoader().load("NonexistentClass", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load("NonexistentClass", node);
         Assertions.assertThat(clazz)
                 .isEmpty();
     }

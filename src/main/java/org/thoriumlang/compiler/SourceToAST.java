@@ -18,16 +18,25 @@ package org.thoriumlang.compiler;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.RTJarJavaRuntimeClassLoader;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.JavaRTClassLoader;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumRTClassLoader;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumSrcClassLoader;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
-import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.input.Source;
+import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
+// TODO should it really be a Function?
 public class SourceToAST implements Function<Source, AST> {
+    private final Sources sources;
+
+    public SourceToAST(Sources sources) {
+        this.sources = sources;
+    }
+
     @Override
     public AST apply(Source source) {
         SymbolTable symbolTable = new SymbolTable();
@@ -35,10 +44,13 @@ public class SourceToAST implements Function<Source, AST> {
         return source.ast(
                 Arrays.asList(
                         new SymbolTableInitializer(symbolTable),
-                        new TypeChecker(Arrays.asList(
-                                new ThoriumRTClassLoader(),
-                                new RTJarJavaRuntimeClassLoader()
-                        )),
+                        new TypeChecker(
+                                Arrays.asList(
+                                        new ThoriumSrcClassLoader(sources),
+                                        new ThoriumRTClassLoader(),
+                                        new JavaRTClassLoader()
+                                )
+                        ),
                         new SymbolicNameChecker()
                 )
         );

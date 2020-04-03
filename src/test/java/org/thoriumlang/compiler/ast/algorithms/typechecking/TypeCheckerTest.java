@@ -17,13 +17,12 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.Source;
-import org.thoriumlang.compiler.SourceFile;
-import org.thoriumlang.compiler.SourceFiles;
 import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.input.Source;
+import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
@@ -38,13 +37,13 @@ class TypeCheckerTest {
         Assertions.assertThat(
                 new TypeChecker(
                         Collections.singletonList(
-                                new RTJarJavaRuntimeClassLoader()
+                                new JavaRTClassLoader()
                         )
                 )
                         .walk(
                                 new AST(
                                         TypeCheckerTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                                         ),
                                         "namespace",
                                         Collections.singletonList(new SymbolTableInitializer(new SymbolTable()))
@@ -67,13 +66,14 @@ class TypeCheckerTest {
     }
 
     @Test
-    void loadsLibTypes() throws URISyntaxException, IOException {
-        Source source = new SourceFiles(
+    void loadsThlibTypes() throws URISyntaxException, IOException {
+        SourceFiles sources = new SourceFiles(
                 Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
-                p -> p.endsWith("typechecking/Main.th")
-        ).sources().get(0);
+                p -> p.endsWith("typechecking/Main_thlibTypes.th")
+        );
+        Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST().apply(source);
+        AST ast = new SourceToAST(sources).apply(source);
 
         ast.root();
 
@@ -86,6 +86,54 @@ class TypeCheckerTest {
                 .isPresent();
 
         Assertions.assertThat(symbolTable.find(new Name("org.thoriumlang.Object")))
+                .isPresent();
+    }
+
+    @Test
+    void loadsJavalibTypes() throws URISyntaxException, IOException {
+        SourceFiles sources = new SourceFiles(
+                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                p -> p.endsWith("typechecking/Main_javalibTypes.th")
+        );
+        Source source = sources.sources().get(0);
+
+        AST ast = new SourceToAST(sources).apply(source);
+
+        ast.root();
+
+        Assertions.assertThat(ast.errors())
+                .isEmpty();
+
+        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+
+        Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
+                .isPresent();
+
+        Assertions.assertThat(symbolTable.find(new Name("java.lang.Object")))
+                .isPresent();
+    }
+
+    @Test
+    void loadsPackageTypes() throws URISyntaxException, IOException {
+        SourceFiles sources = new SourceFiles(
+                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                p -> p.endsWith("typechecking/Main_packageType.th")
+        );
+        Source source = sources.sources().get(0);
+
+        AST ast = new SourceToAST(sources).apply(source);
+
+        ast.root();
+
+        Assertions.assertThat(ast.errors())
+                .isEmpty();
+
+        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+
+        Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
+                .isPresent();
+
+        Assertions.assertThat(symbolTable.find(new Name("typechecking.CustomType")))
                 .isPresent();
     }
 }

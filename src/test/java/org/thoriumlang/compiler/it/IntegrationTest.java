@@ -22,8 +22,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.compiler.Source;
-import org.thoriumlang.compiler.SourceFiles;
 import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
@@ -31,6 +29,9 @@ import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.input.Source;
+import org.thoriumlang.compiler.input.SourceFiles;
+import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
 
@@ -40,6 +41,7 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -161,7 +163,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassMethods",
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues",
-            "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple"
+            "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_packageType"
     })
     @DisabledIfSystemProperty(named = "skipHtml", matches = "true")
     void html(String path) throws Exception {
@@ -179,7 +181,17 @@ class IntegrationTest {
     private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
         Source source = source(path, this::sourceFilename);
 
-        Root root = new SourceToAST().apply(source).root();
+        Root root = new SourceToAST(new Sources() {
+            @Override
+            public List<Source> sources() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public Optional<Source> load(String name) {
+                return Optional.empty();
+            }
+        }).apply(source).root();
 
         root.getContext()
                 .put(

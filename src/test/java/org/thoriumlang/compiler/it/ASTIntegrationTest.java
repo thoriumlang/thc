@@ -45,12 +45,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// TODO remove or make useful
 class ASTIntegrationTest {
     @Test
     void symbols() throws IOException {
         AST ast = new AST(
                 ASTIntegrationTest.class.getResourceAsStream(
-                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/simple.th"
+                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                 ),
                 "org.thoriumlang",
                 Arrays.asList(
