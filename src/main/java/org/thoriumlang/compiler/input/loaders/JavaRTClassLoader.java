@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms.typechecking;
+package org.thoriumlang.compiler.input.loaders;
 
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeLoader;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
@@ -41,8 +42,7 @@ public class JavaRTClassLoader implements TypeLoader {
                     },
                     null
             );
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new Error(e);
         }
     }
@@ -57,8 +57,7 @@ public class JavaRTClassLoader implements TypeLoader {
                             new JavaInterface(node, clazz) :
                             new JavaClass(node, clazz)
             );
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return Optional.empty();
         }
     }

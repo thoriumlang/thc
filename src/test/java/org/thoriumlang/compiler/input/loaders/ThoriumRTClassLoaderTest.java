@@ -1,4 +1,4 @@
-package org.thoriumlang.compiler.ast.algorithms.typechecking;
+package org.thoriumlang.compiler.input.loaders;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

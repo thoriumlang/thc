@@ -18,12 +18,12 @@ package org.thoriumlang.compiler;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.JavaRTClassLoader;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumRTClassLoader;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.ThoriumSrcClassLoader;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
+import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
+import org.thoriumlang.compiler.input.loaders.ThoriumRTClassLoader;
+import org.thoriumlang.compiler.input.loaders.ThoriumSrcClassLoader;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Arrays;

@@ -21,24 +21,19 @@ import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
-import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
+import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.symbols.SymbolTableVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
