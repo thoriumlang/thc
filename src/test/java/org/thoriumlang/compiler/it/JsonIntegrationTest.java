@@ -41,6 +41,30 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class JsonIntegrationTest {
+    private static void assertJsonEqual(File file, String expectedJson, String actualJson) throws Throwable {
+        try {
+            JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
+        } catch (AssertionError e) {
+            // store the actual value
+            if (!Strings.isNullOrEmpty(System.getProperty("dumpdir"))) {
+                try (
+                        OutputStream out = new FileOutputStream(
+                                System.getProperty("dumpdir")
+                                        + File.separator
+                                        + file.getName().replaceFirst("\\.th$", ".json"),
+                                false
+                        )
+                ) {
+                    out.write(actualJson.getBytes());
+                    out.flush();
+                }
+            }
+
+            // so we can see the diff
+            Assertions.assertThat(actualJson).isEqualTo(expectedJson);
+        }
+    }
+
     @TestFactory
     Stream<DynamicTest> examples() throws URISyntaxException {
         File directory = new File(JsonIntegrationTest.class.getResource("/org/thoriumlang/compiler/it/").toURI());
@@ -59,32 +83,7 @@ class JsonIntegrationTest {
 
                     return DynamicTest.dynamicTest(
                             file.getName().replaceFirst("\\.th$", ""),
-                            () -> {
-                                String expectedJson = expectedJson(file);
-                                String json = json(sources, sourceFile);
-
-                                try {
-                                    JSONAssert.assertEquals(expectedJson, json, JSONCompareMode.NON_EXTENSIBLE);
-                                } catch (AssertionError e) {
-                                    // store the actual value
-                                    if (!Strings.isNullOrEmpty(System.getProperty("dumpdir"))) {
-                                        try (
-                                                OutputStream out = new FileOutputStream(
-                                                        System.getProperty("dumpdir")
-                                                                + File.separator
-                                                                + file.getName().replaceFirst("\\.th$", ".json"),
-                                                        false
-                                                )
-                                        ) {
-                                            out.write(json.getBytes());
-                                            out.flush();
-                                        }
-                                    }
-
-                                    // so we can see the diff
-                                    Assertions.assertThat(json).isEqualTo(expectedJson);
-                                }
-                            }
+                            () -> assertJsonEqual(file, expectedJson(file), json(sources, sourceFile))
                     );
                 });
     }
