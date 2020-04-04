@@ -42,7 +42,7 @@ import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
+import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
 import java.io.BufferedReader;

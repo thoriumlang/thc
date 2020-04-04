@@ -56,7 +56,7 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
+import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

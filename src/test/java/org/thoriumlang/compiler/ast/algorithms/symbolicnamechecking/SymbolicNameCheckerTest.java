@@ -22,7 +22,7 @@ import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.symbols.SymbolTableDumpingVisitor;
+import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

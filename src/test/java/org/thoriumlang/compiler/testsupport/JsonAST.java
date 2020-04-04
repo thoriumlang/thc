@@ -121,7 +121,7 @@ public class JsonAST {
                         root.getContext()
                                 .require(SymbolTable.class)
                                 .root()
-                                .accept(new SymbolTableExtractor())
+                                .accept(new ScopesExtractionVisitor())
                                 .stream()
                                 .distinct()
                                 .map(JsonSymbolTable::new)
@@ -195,26 +195,5 @@ public class JsonAST {
                             .collect(Collectors.toList())
             );
         }
-    }
-
-    /**
-     * Extract all scope symbol tables from a SymbolTale
-     */
-    private static class SymbolTableExtractor implements SymbolTableVisitor<List<SymbolTable>> {
-        @Override
-        public List<SymbolTable> visit(
-                String name,
-                SymbolTable symbolTable, Map<String, Symbol> symbols, Map<String, SymbolTable> scopes
-        ) {
-            return Lists.merge(
-                    Collections.singletonList(symbolTable),
-                    scopes.values().stream()
-                            .map(s -> s.accept(this))
-                            .flatMap(List::stream)
-                            .sorted(Comparator.comparing(SymbolTable::toString))
-                            .collect(Collectors.toList())
-            );
-        }
-
     }
 }

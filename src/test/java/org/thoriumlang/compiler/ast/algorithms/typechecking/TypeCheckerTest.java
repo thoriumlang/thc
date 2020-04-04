@@ -29,6 +29,7 @@ import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolTableVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumType;
+import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,19 +43,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 class TypeCheckerTest {
-    private static final SymbolTableVisitor<List<Symbol>> symbolsExtractor = new SymbolTableVisitor<List<Symbol>>() {
-        @Override
-        public List<Symbol> visit(String name, SymbolTable symbolTable, Map<String, Symbol> symbols, Map<String, SymbolTable> scopes) {
-            return Lists.merge(
-                    new ArrayList<>(symbols.values()),
-                    scopes.values().stream()
-                            .map(s -> s.accept(this))
-                            .flatMap(Collection::stream)
-                            .collect(Collectors.toList())
-            );
-        }
-    };
-
     @Test
     void walk() throws IOException {
         Assertions.assertThat(
@@ -161,7 +149,7 @@ class TypeCheckerTest {
                 .isPresent();
 
         Set<SymbolTable> rootSymbolTablesFromLoadedSymbols = rootSymbolTable
-                .accept(symbolsExtractor)
+                .accept(new SymbolsExtractionVisitor())
                 .stream()
                 .filter(s -> s instanceof ThoriumType)
                 .map(Symbol::getNode)
