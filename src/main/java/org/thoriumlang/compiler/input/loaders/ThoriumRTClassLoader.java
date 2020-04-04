@@ -15,7 +15,6 @@
  */
 package org.thoriumlang.compiler.input.loaders;
 
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeLoader;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.ThoriumLibType;

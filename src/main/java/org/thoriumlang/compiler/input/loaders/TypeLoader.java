@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms.typechecking;
+package org.thoriumlang.compiler.input.loaders;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.symbols.Symbol;

@@ -2,7 +2,6 @@ package org.thoriumlang.compiler.input.loaders;
 
 import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeLoader;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
