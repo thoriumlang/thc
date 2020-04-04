@@ -29,12 +29,10 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Value;
-import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.symbols.SymbolTableVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumLibType;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
@@ -116,7 +114,6 @@ public class JsonAST {
     public String json() {
         return gson.setPrettyPrinting().create().toJson(
                 new JsonContent(
-                        root,
                         errors,
                         root.getContext()
                                 .require(SymbolTable.class)
@@ -131,12 +128,10 @@ public class JsonAST {
     }
 
     private static class JsonContent {
-        public final Root root;
         public final List<JsonSymbolTable> symbolTables;
         public final List<CompilationError> errors;
 
-        private JsonContent(Root root, List<CompilationError> errors, List<JsonSymbolTable> symbolTables) {
-            this.root = null;//root;
+        private JsonContent(List<CompilationError> errors, List<JsonSymbolTable> symbolTables) {
             this.symbolTables = symbolTables;
             this.errors = errors;
         }
