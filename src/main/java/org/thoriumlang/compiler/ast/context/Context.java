@@ -131,10 +131,9 @@ public class Context {
         return (T) putIfAbsentAndGet(new Key(null, type), value);
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent") // we're sure because we put it in if absent
     private Object putIfAbsentAndGet(Key key, Object value) {
         map.putIfAbsent(key, value);
-        return get(key).get();
+        return get(key).orElseThrow(() -> new IllegalStateException("key " + key + " not found"));
     }
 
     public <T> boolean contains(String key, java.lang.Class<T> type) {
