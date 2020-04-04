@@ -128,7 +128,7 @@ class TypeDiscoveryVisitorTest {
                 .isEmpty();
         Assertions.assertThat(getSymbol(root, "String"))
                 .get()
-                .isInstanceOf(JavaClass.class);
+                .isInstanceOf(AliasSymbol.class);
     }
 
     @Test
@@ -156,7 +156,7 @@ class TypeDiscoveryVisitorTest {
                 .isEmpty();
         Assertions.assertThat(getSymbol(root, "List"))
                 .get()
-                .isInstanceOf(JavaInterface.class);
+                .isInstanceOf(AliasSymbol.class);
     }
 
     @Test
@@ -214,7 +214,7 @@ class TypeDiscoveryVisitorTest {
                 .isEmpty();
         Assertions.assertThat(getSymbol(root, "JavaString"))
                 .get()
-                .isInstanceOf(JavaClass.class);
+                .isInstanceOf(AliasSymbol.class);
     }
 
     @Test
@@ -477,7 +477,7 @@ class TypeDiscoveryVisitorTest {
 
         Assertions.assertThat(getSymbol(root, "String"))
                 .get()
-                .isInstanceOf(JavaClass.class);
+                .isInstanceOf(AliasSymbol.class);
         Assertions.assertThat(getSymbol(root, "TypeName"))
                 .get()
                 .isInstanceOf(AliasSymbol.class);
@@ -508,7 +508,7 @@ class TypeDiscoveryVisitorTest {
 
         Assertions.assertThat(getSymbol(node, "String"))
                 .get()
-                .isInstanceOf(JavaClass.class);
+                .isInstanceOf(AliasSymbol.class);
         Assertions.assertThat(getSymbol(node, "ClassName"))
                 .get()
                 .isInstanceOf(AliasSymbol.class);

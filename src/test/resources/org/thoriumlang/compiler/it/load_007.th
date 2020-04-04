@@ -1,0 +1,2 @@
+use org.thoriumlang.compiler.it.package._load_007;
+type Type {}

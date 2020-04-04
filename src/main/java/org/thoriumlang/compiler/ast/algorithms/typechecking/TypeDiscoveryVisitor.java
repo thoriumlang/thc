@@ -77,7 +77,11 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         Optional<Symbol> symbol = typeLoader.load(fqName, node);
 
         if (symbol.isPresent()) {
-            getSymbolTable(node).put(new Name(node.getTo()), symbol.get());
+            SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
+
+            symbolTable.put(new Name(node.getTo()), new AliasSymbol(node, fqName));
+            symbolTable.put(new Name(fqName), symbol.get());
+
             return Collections.emptyList();
         }
 

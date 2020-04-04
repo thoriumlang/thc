@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class Compiler {
             try {
                 System.out.println(String.format("Processing %s", source));
 
-                AST ast = new SourceToAST(sources).apply(source);
+                AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
 
                 Root root = ast.root();
 

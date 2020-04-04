@@ -173,6 +173,11 @@
           "name": "Class",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it.Class)",
           "nodeRef": 2
+        },
+        {
+          "name": "Object",
+          "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.Object)",
+          "nodeRef": 4
         }
       ]
     },

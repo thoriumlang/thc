@@ -1,0 +1,3 @@
+use _load_001;
+
+type Type {}

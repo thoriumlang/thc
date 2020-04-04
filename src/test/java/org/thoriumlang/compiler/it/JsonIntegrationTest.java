@@ -90,8 +90,9 @@ class JsonIntegrationTest {
 
     private String json(Sources sources, Source source) {
         try {
+            SymbolTable symbolTable = new SymbolTable();
             return new JsonAST(
-                    new SourceToAST(sources, new SymbolTable()).apply(source)
+                    new SourceToAST(sources, symbolTable).apply(source)
             ).json();
         } catch (IOException e) {
             throw new RuntimeException(e);

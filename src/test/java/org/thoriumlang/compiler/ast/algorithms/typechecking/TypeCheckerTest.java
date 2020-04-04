@@ -79,7 +79,7 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(sources).apply(source);
+        AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
 
         ast.root();
 
@@ -103,7 +103,7 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(sources).apply(source);
+        AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
 
         ast.root();
 

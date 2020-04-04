@@ -1,8 +1,13 @@
+  java
+    java.lang
+      String -> (rt.jar: class java.lang.String)
+    java.util
+      List -> (rt.jar: interface java.util.List)
   namespace
     TestClass -> (th: class TestClass)
     namespace.TestClass
-      JavaList -> (rt.jar: interface java.util.List)
-      String -> (rt.jar: class java.lang.String)
+      JavaList -> (alias: java.util.List)
+      String -> (alias: java.lang.String)
       TestClass -> (alias: namespace.TestClass)
       namespace.TestClass.[body]
         U -> (th: param U)

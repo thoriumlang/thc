@@ -39,10 +39,6 @@ public class SourceToAST implements Function<Source, AST> {
         this.symbolTable = symbolTable;
     }
 
-    public SourceToAST(Sources sources) {
-        this(sources, new SymbolTable());
-    }
-
     @Override
     public AST apply(Source source) {
         return source.ast(

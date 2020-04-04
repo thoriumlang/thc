@@ -24,6 +24,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
+import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
@@ -59,7 +60,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
                             ? t.getType()
                             : root.getNamespace() + "." + t.getType();
 
-                    if (load(fqName, t, root.getContext().require(SymbolTable.class))) {
+                    if (load(fqName, t, t.getContext().require(SymbolTable.class))) {
                         return null;
                     }
 
@@ -77,11 +78,17 @@ public class TypeChecker implements Algorithm, TypeLoader {
         );
     }
 
+    // TODO should take a Name instead of fqName?
     private boolean load(String fqName, Node node, SymbolTable symbolTable) {
         Optional<Symbol> symbol = load(fqName, node);
 
         if (symbol.isPresent()) {
             symbolTable.put(new Name(fqName), symbol.get());
+
+            symbolTable               // [body]
+                    .enclosingScope() // type or class
+                    // TODO improve!
+                    .put(new Name(fqName.substring(fqName.lastIndexOf(".") + 1)), new AliasSymbol(node, fqName));
             return true;
         }
 

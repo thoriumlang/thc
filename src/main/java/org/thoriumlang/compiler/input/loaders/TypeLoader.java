@@ -21,5 +21,5 @@ import org.thoriumlang.compiler.symbols.Symbol;
 import java.util.Optional;
 
 public interface TypeLoader {
-    Optional<Symbol> load(String name, Node node);
+    Optional<Symbol> load(String name, Node node); // TODO use name
 }

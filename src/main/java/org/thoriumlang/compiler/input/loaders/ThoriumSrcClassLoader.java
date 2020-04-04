@@ -34,11 +34,8 @@ public class ThoriumSrcClassLoader implements TypeLoader {
                     node.getContext().require(SymbolTable.class).root()
             ).apply(loadedSource.get());
 
+            ThoriumType symbol = new ThoriumType(ast.root().getTopLevelNode());
             // TODO do something about errors
-
-            ThoriumType symbol = new ThoriumType(
-                    ast.root().getTopLevelNode()
-            );
 
             return Optional.of(symbol);
         } catch (IOException e) {

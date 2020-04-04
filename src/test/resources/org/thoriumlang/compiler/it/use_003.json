@@ -5,6 +5,21 @@
       "symbols": []
     },
     {
+      "name": "java",
+      "parentTableName": "",
+      "symbols": []
+    },
+    {
+      "name": "java.lang",
+      "parentTableName": "java",
+      "symbols": [
+        {
+          "name": "String",
+          "definition": "(rt.jar: class java.lang.String)"
+        }
+      ]
+    },
+    {
       "name": "org",
       "parentTableName": "",
       "symbols": []
@@ -60,7 +75,13 @@
       "symbols": [
         {
           "name": "JavaString",
-          "definition": "(rt.jar: class java.lang.String)"
+          "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: java.lang.String)",
+          "nodeRef": 2
+        },
+        {
+          "name": "Object",
+          "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.Object)",
+          "nodeRef": 4
         },
         {
           "name": "Type",

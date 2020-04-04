@@ -68,6 +68,11 @@
       "parentTableName": "org.thoriumlang.compiler.it",
       "symbols": [
         {
+          "name": "Object",
+          "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.Object)",
+          "nodeRef": 4
+        },
+        {
           "name": "Type",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it.Type)",
           "nodeRef": 2

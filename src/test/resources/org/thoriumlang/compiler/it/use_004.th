@@ -1,0 +1,3 @@
+use java.util.{List, Set};
+type Type {
+}

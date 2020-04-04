@@ -56,6 +56,7 @@ public class JsonAST {
         this.root = ast.root();
         this.errors = ast.errors();
         this.gson = new GsonBuilder();
+
         gson
                 .registerTypeAdapter(NodeId.class,
                         (JsonSerializer<NodeId>) (src, typeOfSrc, context) ->
@@ -64,7 +65,7 @@ public class JsonAST {
                         (JsonSerializer<CompilationError>) (src, typeOfSrc, context) -> {
                             JsonObject jsonObject = new JsonObject();
                             jsonObject.add("message", context.serialize(src.toString()));
-                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
+                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId())); // TODO really nodeRef?
                             return jsonObject;
                         })
                 .registerTypeAdapter(NoneValue.class,

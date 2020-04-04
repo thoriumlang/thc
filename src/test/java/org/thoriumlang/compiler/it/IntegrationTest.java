@@ -34,6 +34,7 @@ import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -191,7 +192,7 @@ class IntegrationTest {
             public Optional<Source> load(String name) {
                 return Optional.empty();
             }
-        }).apply(source).root();
+        }, new SymbolTable()).apply(source).root();
 
         root.getContext()
                 .put(
