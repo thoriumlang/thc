@@ -94,7 +94,7 @@ public class SymbolTable {
     public SymbolTable createScope(String name) {
         SymbolTable symbolTable = new SymbolTable(name, this);
         scopes.putIfAbsent(name, symbolTable);
-        return symbolTable;
+        return scopes.get(name);
     }
 
     public SymbolTable enclosingScope() {

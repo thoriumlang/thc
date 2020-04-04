@@ -85,12 +85,22 @@ class SymbolTableTest {
     }
 
     @Test
-    void createScope() {
+    void createScope_new() {
         SymbolTable parentSymbolTable = new SymbolTable();
         SymbolTable childSymbolTable = parentSymbolTable.createScope("namespace");
 
         Assertions.assertThat(parentSymbolTable)
                 .isNotSameAs(childSymbolTable);
+    }
+
+    @Test
+    void createScope_exist() {
+        SymbolTable parentSymbolTable = new SymbolTable();
+        SymbolTable childSymbolTable1 = parentSymbolTable.createScope("namespace");
+        SymbolTable childSymbolTable2 = parentSymbolTable.createScope("namespace");
+
+        Assertions.assertThat(childSymbolTable2)
+                .isSameAs(childSymbolTable1);
     }
 
     @Test
