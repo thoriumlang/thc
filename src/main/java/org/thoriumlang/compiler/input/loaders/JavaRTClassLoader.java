@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.input.loaders;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.net.MalformedURLException;
@@ -47,14 +48,14 @@ public class JavaRTClassLoader implements TypeLoader {
     }
 
     @Override
-    public Optional<Symbol> load(String name, Node node) {
+    public Optional<Symbol> load(Name name, Node triggerNode) {
         try {
-            Class<?> clazz = classLoader.loadClass(name);
+            Class<?> clazz = classLoader.loadClass(name.getFullName());
 
             return Optional.of(
                     clazz.isInterface() ?
-                            new JavaInterface(node, clazz) :
-                            new JavaClass(node, clazz)
+                            new JavaInterface(triggerNode, clazz) :
+                            new JavaClass(triggerNode, clazz)
             );
         } catch (ClassNotFoundException e) {
             return Optional.empty();

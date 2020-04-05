@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.input.loaders;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.ThoriumLibType;
 
@@ -31,9 +32,9 @@ public class ThoriumRTClassLoader implements TypeLoader {
     );
 
     @Override
-    public Optional<Symbol> load(String name, Node node) {
-        if (knownTypes.contains(name)) {
-            return Optional.of(new ThoriumLibType(node, name));
+    public Optional<Symbol> load(Name name, Node triggerNode) {
+        if (knownTypes.contains(name.getFullName())) {
+            return Optional.of(new ThoriumLibType(triggerNode, name.getFullName()));
         }
 
         return Optional.empty();

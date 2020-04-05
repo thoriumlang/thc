@@ -23,17 +23,17 @@ import java.util.Objects;
  * Represents a Java interface, coming from rt.jar.
  */
 public class JavaInterface implements Symbol {
-    private final Node node;
+    private final Node definingNode;
     private final Class<?> clazz;
 
-    public JavaInterface(Node node, Class<?> clazz) {
-        this.node = Objects.requireNonNull(node, "node cannot be null");
+    public JavaInterface(Node definingNode, Class<?> clazz) {
+        this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
         this.clazz = Objects.requireNonNull(clazz, "clazz cannot be null");
     }
 
     @Override
-    public Node getNode() {
-        return node;
+    public Node getDefiningNode() {
+        return definingNode;
     }
 
     @Override

@@ -118,7 +118,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     public List<CompilationError> visit(Reference node) {
         Optional<Node> referencedNode = getSymbolTable(node)
                 .find(new Name(node.getName()))
-                .map(Symbol::getNode);
+                .map(Symbol::getDefiningNode);
 
         if (!referencedNode.isPresent()) {
             return Collections.singletonList(undefinedError(node.getName(), node));

@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.JavaClass;
 import org.thoriumlang.compiler.symbols.JavaInterface;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.util.Optional;
@@ -36,7 +37,7 @@ class JavaRTClassLoaderTest {
 
     @Test
     void find_success_class() {
-        Optional<Symbol> clazz = new JavaRTClassLoader().load("java.lang.String", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load(new Name("java.lang.String"), node);
         Assertions.assertThat(clazz)
                 .get()
                 .isInstanceOf(JavaClass.class)
@@ -45,7 +46,7 @@ class JavaRTClassLoaderTest {
 
     @Test
     void find_success_interface() {
-        Optional<Symbol> clazz = new JavaRTClassLoader().load("java.util.List", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load(new Name("java.util.List"), node);
         Assertions.assertThat(clazz)
                 .get()
                 .isInstanceOf(JavaInterface.class)
@@ -54,7 +55,7 @@ class JavaRTClassLoaderTest {
 
     @Test
     void find_failure() {
-        Optional<Symbol> clazz = new JavaRTClassLoader().load("NonexistentClass", node);
+        Optional<Symbol> clazz = new JavaRTClassLoader().load(new Name("NonexistentClass"), node);
         Assertions.assertThat(clazz)
                 .isEmpty();
     }

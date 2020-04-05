@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class AST {
     private final InputStream inputStream;
-    private final String namespace; // TODO create a Namespace class
+    private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
     private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
 

@@ -147,7 +147,7 @@ class TypeCheckerTest {
                 .accept(new SymbolsExtractionVisitor())
                 .stream()
                 .filter(s -> s instanceof ThoriumType)
-                .map(Symbol::getNode)
+                .map(Symbol::getDefiningNode)
                 .map(n -> n.getContext().require(SymbolTable.class).root())
                 .collect(Collectors.toSet());
 

@@ -38,8 +38,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
     private final List<TypeLoader> typeLoaders;
 
     public TypeChecker(List<TypeLoader> typeLoaders) {
-        // TODO check for null
-        this.typeLoaders = typeLoaders;
+        this.typeLoaders = Objects.requireNonNull(typeLoaders, "typeLoaders cannot be null");
     }
 
     @Override
@@ -57,11 +56,9 @@ public class TypeChecker implements Algorithm, TypeLoader {
                 .map(t -> (TypeSpecSimple) t)
                 .filter(t -> !t.getContext().require(SymbolTable.class).find(new Name(t.getType())).isPresent())
                 .map(t -> {
-                    String fqName = t.getType().contains(".")
-                            ? t.getType()
-                            : root.getNamespace() + "." + t.getType();
+                    Name name = new Name(t.getType(), root.getNamespace());
 
-                    if (load(fqName, t, t.getContext().require(SymbolTable.class))) {
+                    if (load(name, t, t.getContext().require(SymbolTable.class))) {
                         return null;
                     }
 
@@ -79,17 +76,15 @@ public class TypeChecker implements Algorithm, TypeLoader {
         );
     }
 
-    // TODO should take a Name instead of fqName?
-    private boolean load(String fqName, Node node, SymbolTable symbolTable) {
-        Optional<Symbol> symbol = load(fqName, node);
+    private boolean load(Name name, Node node, SymbolTable symbolTable) {
+        Optional<Symbol> symbol = load(name, node);
 
         if (symbol.isPresent()) {
-            symbolTable.put(new Name(fqName), symbol.get());
+            symbolTable.put(name, symbol.get());
 
             symbolTable               // [body]
                     .enclosingScope() // type or class
-                    // TODO improve!
-                    .put(new Name(fqName.substring(fqName.lastIndexOf(".") + 1)), new AliasSymbol(node, fqName));
+                    .put(new Name(name.getSimpleName()), new AliasSymbol(node, name.getFullName()));
             return true;
         }
 
@@ -97,9 +92,9 @@ public class TypeChecker implements Algorithm, TypeLoader {
     }
 
     @Override
-    public Optional<Symbol> load(String fqName, Node node) {
+    public Optional<Symbol> load(Name name, Node triggerNode) {
         return typeLoaders.stream()
-                .map(loader -> loader.load(fqName, node))
+                .map(loader -> loader.load(name, triggerNode))
                 .filter(Optional::isPresent)
                 .findFirst()
                 .orElse(Optional.empty());

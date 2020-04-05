@@ -56,10 +56,10 @@ import java.util.stream.Collectors;
 
 class TypeDiscoveryVisitorTest {
     private static TypeLoader typeLoader = (name, node) -> {
-        if (name.equals(String.class.getName())) {
+        if (name.getFullName().equals(String.class.getName())) {
             return Optional.of(new JavaClass(node, String.class));
         }
-        if (name.equals(List.class.getName())) {
+        if (name.getFullName().equals(List.class.getName())) {
             return Optional.of(new JavaInterface(node, List.class));
         }
         return Optional.empty();

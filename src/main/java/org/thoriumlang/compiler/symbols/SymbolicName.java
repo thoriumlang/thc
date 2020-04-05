@@ -17,23 +17,25 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+import java.util.Objects;
+
 /**
  * Represents a variable, a constant, a parameter, a method or a class attribute.
  */
 public class SymbolicName implements Symbol {
-    private final Node node;
+    private final Node definingNode;
 
-    public SymbolicName(Node node) {
-        this.node = node;
+    public SymbolicName(Node definingNode) {
+        this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
     }
 
     @Override
-    public Node getNode() {
-        return node;
+    public Node getDefiningNode() {
+        return definingNode;
     }
 
     @Override
     public String toString() {
-        return node.getNodeId().toString();
+        return definingNode.getNodeId().toString();
     }
 }

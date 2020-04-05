@@ -47,7 +47,7 @@ public class SymbolTable {
             return this;
         }
 
-        List<String> parts = new ArrayList<>(name.getFullName());
+        List<String> parts = new ArrayList<>(name.getParts());
         SymbolTable table = findRoot();
 
         while (parts.size() > 1) {

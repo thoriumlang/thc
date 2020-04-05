@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.input;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.symbols.Name;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -52,6 +53,6 @@ class SourceFilesTest {
         Assertions.assertThat(sourceFiles.sources())
                 .isEmpty();
 
-        sourceFiles.load("org.thoriumlang.compiler.tests.class");
+        sourceFiles.load(new Name("org.thoriumlang.compiler.tests.class"));
     }
 }

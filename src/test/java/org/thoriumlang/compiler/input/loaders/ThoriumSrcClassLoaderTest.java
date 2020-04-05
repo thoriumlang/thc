@@ -17,6 +17,7 @@ import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
@@ -51,11 +52,11 @@ class ThoriumSrcClassLoaderTest {
         new SymbolTableInitializer(rootSymbolTable).walk(root);
 
         Optional<Symbol> symbol = new ThoriumSrcClassLoader(new SourcesStub(root.getTopLevelNode()))
-                .load("package.TypeName", root.getTopLevelNode());
+                .load(new Name("package.TypeName"), root.getTopLevelNode());
 
         Assertions.assertThat(symbol)
                 .get()
-                .extracting(Symbol::getNode)
+                .extracting(Symbol::getDefiningNode)
                 .isSameAs(root.getTopLevelNode());
 
         Set<SymbolTable> rootSymbolTablesFromRoot = new NodesMatching(n -> true).visit(root).stream()
@@ -76,7 +77,7 @@ class ThoriumSrcClassLoaderTest {
         };
 
         Optional<Symbol> symbol = new ThoriumSrcClassLoader(new SourcesStub())
-                .load("package.TypeName", node);
+                .load(new Name("package.TypeName"), node);
 
         Assertions.assertThat(symbol)
                 .isEmpty();
@@ -99,7 +100,7 @@ class ThoriumSrcClassLoaderTest {
         }
 
         @Override
-        public Optional<Source> load(String name) {
+        public Optional<Source> load(Name name) {
             if (topLevel == null) {
                 return Optional.empty();
             }

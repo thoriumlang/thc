@@ -23,20 +23,38 @@ public class Name {
     private final String fqName;
 
     public Name(String fqName) {
-        this.fqName = Objects.requireNonNull(fqName);
+        this.fqName = Objects.requireNonNull(fqName, "fqName cannot be null");
+    }
+
+    /**
+     * Creates a new Name instance, prefixing name with packageName in case it's not fully qualified
+     *
+     * @param name        the name
+     * @param packageName the package name
+     */
+    public Name(String name, String packageName) {
+        this(
+                Objects.requireNonNull(name, "name cannot be null").contains(".")
+                        ? name
+                        : Objects.requireNonNull(packageName, "packageName cannot be null") + "." + name
+        );
     }
 
     public String getSimpleName() {
-        List<String> parts = getFullName();
+        List<String> parts = getParts();
         return parts.get(parts.size() - 1);
     }
 
-    public List<String> getFullName() {
+    public String getFullName() {
+        return fqName;
+    }
+
+    public List<String> getParts() {
         return Arrays.asList(fqName.split("\\."));
     }
 
     public boolean isQualified() {
-        return getFullName().size() > 1;
+        return getParts().size() > 1;
     }
 
     @Override

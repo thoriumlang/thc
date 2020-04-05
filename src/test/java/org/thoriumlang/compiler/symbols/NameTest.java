@@ -20,6 +20,27 @@ import org.junit.jupiter.api.Test;
 
 class NameTest {
     @Test
+    void constructor_name1() {
+        Assertions.assertThatThrownBy(() -> new Name(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("fqName cannot be null");
+    }
+
+    @Test
+    void constructor_name2() {
+        Assertions.assertThatThrownBy(() -> new Name(null, "packageName"))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("name cannot be null");
+    }
+
+    @Test
+    void constructor_package() {
+        Assertions.assertThatThrownBy(() -> new Name("name", null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("packageName cannot be null");
+    }
+
+    @Test
     void getSimpleName_simple() {
         Assertions.assertThat(new Name("name").getSimpleName())
                 .isEqualTo("name");
@@ -33,13 +54,13 @@ class NameTest {
 
     @Test
     void getFullName_simple() {
-        Assertions.assertThat(new Name("name").getFullName())
+        Assertions.assertThat(new Name("name").getParts())
                 .containsExactly("name");
     }
 
     @Test
     void getFullName_qualified() {
-        Assertions.assertThat(new Name("qualified.name").getFullName())
+        Assertions.assertThat(new Name("qualified.name").getParts())
                 .containsExactly("qualified", "name");
     }
 

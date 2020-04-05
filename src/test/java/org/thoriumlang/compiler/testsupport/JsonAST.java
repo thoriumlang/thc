@@ -65,7 +65,7 @@ public class JsonAST {
                         (JsonSerializer<CompilationError>) (src, typeOfSrc, context) -> {
                             JsonObject jsonObject = new JsonObject();
                             jsonObject.add("message", context.serialize(src.toString()));
-                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId())); // TODO really nodeRef?
+                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
                             return jsonObject;
                         })
                 .registerTypeAdapter(NoneValue.class,
@@ -145,7 +145,7 @@ public class JsonAST {
                         (name, symbol) -> ImmutableMap.of(
                                 "name", name,
                                 "kind", symbol.toString(),
-                                "definition", symbol.getNode()
+                                "definition", ((ThoriumType) symbol).getNode()
                         ),
                         ThoriumLibType.class,
                         (name, symbol) -> ImmutableMap.of(
@@ -183,7 +183,7 @@ public class JsonAST {
                                             (n, s) -> ImmutableMap.of(
                                                     "name", n,
                                                     "kind", s.getClass().getName() + ": " + s.toString(),
-                                                    "nodeRef", s.getNode().getNodeId()
+                                                    "nodeRef", s.getDefiningNode().getNodeId()
                                             )
                                     ).apply(e.getKey(), e.getValue())
                             )

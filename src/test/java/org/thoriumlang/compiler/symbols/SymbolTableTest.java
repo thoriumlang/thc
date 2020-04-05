@@ -196,7 +196,7 @@ class SymbolTableTest {
     private Symbol symbol() {
         return new Symbol() {
             @Override
-            public Node getNode() {
+            public Node getDefiningNode() {
                 return null;
             }
         };

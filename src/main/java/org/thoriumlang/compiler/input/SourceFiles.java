@@ -16,6 +16,8 @@
 package org.thoriumlang.compiler.input;
 
 
+import org.thoriumlang.compiler.symbols.Name;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -125,13 +127,13 @@ public class SourceFiles implements Sources {
     }
 
     @Override
-    public Optional<Source> load(String name) {
+    public Optional<Source> load(Name name) {
         for (String root : findThRoots()) {
             File file = new File(
                     String.format("%s%s%s.th",
                             root,
                             File.separator,
-                            name.replace(".", File.separator)
+                            name.getFullName().replace(".", File.separator)
                     )
             );
             if (file.exists()) {

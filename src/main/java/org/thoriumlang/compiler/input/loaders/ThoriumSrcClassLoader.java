@@ -5,6 +5,7 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
@@ -21,7 +22,7 @@ public class ThoriumSrcClassLoader implements TypeLoader {
     }
 
     @Override
-    public Optional<Symbol> load(String name, Node node) {
+    public Optional<Symbol> load(Name name, Node triggerNode) {
         Optional<Source> loadedSource = sources.load(name);
 
         if (!loadedSource.isPresent()) {
@@ -31,10 +32,10 @@ public class ThoriumSrcClassLoader implements TypeLoader {
         try {
             AST ast = new SourceToAST(
                     sources,
-                    node.getContext().require(SymbolTable.class).root()
+                    triggerNode.getContext().require(SymbolTable.class).root()
             ).apply(loadedSource.get());
 
-            ThoriumType symbol = new ThoriumType(ast.root().getTopLevelNode());
+            ThoriumType symbol = new ThoriumType(triggerNode, ast.root().getTopLevelNode());
             // TODO do something about errors
 
             return Optional.of(symbol);

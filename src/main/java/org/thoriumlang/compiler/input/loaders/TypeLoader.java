@@ -16,10 +16,17 @@
 package org.thoriumlang.compiler.input.loaders;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.util.Optional;
 
 public interface TypeLoader {
-    Optional<Symbol> load(String name, Node node); // TODO use name
+    /**
+     * Loads a class or type from a {@link org.thoriumlang.compiler.input.Sources} instance..
+     * @param name the name of the symbol to load.
+     * @param triggerNode the {@link Node} from where the loading is triggered.
+     * @return Optionally, the {@link Symbol} containing the loaded class or type.
+     */
+    Optional<Symbol> load(Name name, Node triggerNode);
 }

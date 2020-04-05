@@ -32,16 +32,22 @@ import java.util.Objects;
  * </ul>
  */
 public class ThoriumType implements Symbol {
+    private final Node definingNode;
     private final Node node;
 
     // TODO create one ctor for each type of accepted type node
-    public ThoriumType(Node node) {
+    public ThoriumType(Node definingNode, Node node) {
+        this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
         this.node = Objects.requireNonNull(node, "node cannot be null");
     }
 
-    @Override
     public Node getNode() {
         return node;
+    }
+
+    @Override
+    public Node getDefiningNode() {
+        return definingNode;
     }
 
     @Override

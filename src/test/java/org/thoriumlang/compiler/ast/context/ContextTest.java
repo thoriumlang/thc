@@ -17,9 +17,7 @@ package org.thoriumlang.compiler.ast.context;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.ast.nodes.Node;
-import org.thoriumlang.compiler.ast.nodes.NodeId;
-import org.thoriumlang.compiler.ast.visitor.Visitor;
+import org.thoriumlang.compiler.testsupport.NodeStub;
 
 class ContextTest {
     @Test
@@ -474,14 +472,4 @@ class ContextTest {
                 .hasSize(1);
     }
 
-    private static class NodeStub extends Node { // TODO extract it in a test helpers package
-        NodeStub() {
-            super(new NodeId(1L));
-        }
-
-        @Override
-        public <T> T accept(Visitor<? extends T> visitor) {
-            return null;
-        }
-    }
 }

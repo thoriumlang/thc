@@ -70,17 +70,15 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     public List<CompilationError> visit(Use node) {
         // FIXME duplicate use name: return error
 
-        String fqName = node.getFrom().contains(".")
-                ? node.getFrom()
-                : namespace + "." + node.getFrom();
+        Name name = new Name(node.getFrom(), namespace);
 
-        Optional<Symbol> symbol = typeLoader.load(fqName, node);
+        Optional<Symbol> symbol = typeLoader.load(name, node);
 
         if (symbol.isPresent()) {
             SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
 
-            symbolTable.put(new Name(node.getTo()), new AliasSymbol(node, fqName));
-            symbolTable.put(new Name(fqName), symbol.get());
+            symbolTable.put(new Name(node.getTo()), new AliasSymbol(node, name.getFullName()));
+            symbolTable.put(name, symbol.get());
 
             return Collections.emptyList();
         }
@@ -105,7 +103,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     public List<CompilationError> visit(TypeParameter node) {
         getSymbolTable(node).put(
                 new Name(node.getName()),
-                new ThoriumType(node)
+                new ThoriumType(node, node)
         );
 
         return Collections.emptyList();
@@ -143,7 +141,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .enclosingScope() // type or class
                 .put(new Name(name), new AliasSymbol(node, fqName));
 
-        symbolTable.put(new Name(fqName), new ThoriumType(node));
+        symbolTable.put(new Name(fqName), new ThoriumType(node, node));
 
         return typeParameters.stream()
                 .map(p -> p.accept(this))

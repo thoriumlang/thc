@@ -18,10 +18,10 @@ package org.thoriumlang.compiler.ast.algorithms.symboltable;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class SymbolTableInitializer implements Algorithm {
                 new SymbolTableInitializationVisitor(
                         findLocalTable(
                                 rootSymbolTable,
-                                Arrays.asList(root.getNamespace().split("\\.")) // TODO encapsulate in an object (Name?)
+                                new Name(root.getNamespace()).getParts()
                         )
                 )
         );

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
+import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 
 import java.util.Optional;
@@ -20,7 +21,7 @@ class ThoriumRTClassLoaderTest {
     @Test
     void load_success() {
         Optional<Symbol> symbol = new ThoriumRTClassLoader()
-                .load("org.thoriumlang.Object", node);
+                .load(new Name("org.thoriumlang.Object"), node);
 
         Assertions.assertThat(symbol)
                 .get()
@@ -31,7 +32,7 @@ class ThoriumRTClassLoaderTest {
     @Test
     void load_failure() {
         Optional<Symbol> symbol = new ThoriumRTClassLoader()
-                .load("org.thoriumlang.Unknown", node);
+                .load(new Name("org.thoriumlang.Unknown"), node);
 
         Assertions.assertThat(symbol)
                 .isEmpty();

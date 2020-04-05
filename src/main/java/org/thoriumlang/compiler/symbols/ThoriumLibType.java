@@ -12,7 +12,7 @@ public class ThoriumLibType implements Symbol {
     }
 
     @Override
-    public Node getNode() {
+    public Node getDefiningNode() {
         return node;
     }
 

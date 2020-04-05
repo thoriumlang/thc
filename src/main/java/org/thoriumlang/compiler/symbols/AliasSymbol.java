@@ -17,18 +17,20 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+import java.util.Objects;
+
 public class AliasSymbol implements Symbol {
-    private final Node node;
+    private final Node definingNode;
     private final String target;
 
-    public AliasSymbol(Node node, String target) {
-        this.node = node;
-        this.target = target;
+    public AliasSymbol(Node definingNode, String target) {
+        this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
+        this.target = Objects.requireNonNull(target, "target cannot be null");
     }
 
     @Override
-    public Node getNode() {
-        return node;
+    public Node getDefiningNode() {
+        return definingNode;
     }
 
     @Override
