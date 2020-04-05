@@ -31,16 +31,20 @@ import org.thoriumlang.compiler.testsupport.JsonAST;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class JsonIntegrationTest {
-    private static void assertJsonEqual(File file, String expectedJson, String actualJson) throws Throwable {
+    private static void assertJsonEqual(Path file, String expectedJson, String actualJson) throws Throwable {
         try {
             JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
         }
@@ -51,7 +55,7 @@ class JsonIntegrationTest {
                         OutputStream out = new FileOutputStream(
                                 System.getProperty("dumpdir")
                                         + File.separator
-                                        + file.getName().replaceFirst("\\.th$", ".json"),
+                                        + file.toString().replaceFirst("\\.th$", ".json"),
                                 false
                         )
                 ) {
@@ -66,23 +70,25 @@ class JsonIntegrationTest {
     }
 
     @TestFactory
-    Stream<DynamicTest> examples() throws URISyntaxException {
-        File directory = new File(JsonIntegrationTest.class.getResource("/org/thoriumlang/compiler/it/").toURI());
+    Stream<DynamicTest> examples() throws URISyntaxException, IOException {
+        Path directory = Paths.get(JsonIntegrationTest.class.getResource("/org/thoriumlang/compiler/it/").toURI());
 
-        File[] files = Optional
-                .ofNullable(directory.listFiles((dir, name) -> !name.startsWith("_") && name.endsWith(".th")))
-                .orElseThrow(() -> new IllegalStateException("no .th files found"));
+        Stream<Path> files = Files.find(
+                directory,
+                999,
+                (p, bfa) -> !p.getFileName().toString().startsWith("_") && p.getFileName().toString().endsWith(".th")
+        );
 
-        return Arrays.stream(files)
+        return files
                 .map(file -> {
                     SourceFiles sources = new SourceFiles(
-                            file.toPath(),
-                            p -> p.equals(file.toPath())
+                            file,
+                            p -> p.equals(file)
                     );
                     Source sourceFile = sources.sources().get(0);
 
                     return DynamicTest.dynamicTest(
-                            file.getName().replaceFirst("\\.th$", ""),
+                            file.getFileName().toString().replaceFirst("\\.th$", ""),
                             () -> assertJsonEqual(file, expectedJson(file), json(sources, sourceFile))
                     );
                 });
@@ -95,10 +101,10 @@ class JsonIntegrationTest {
         ).json();
     }
 
-    private String expectedJson(File sourceFile) {
+    private String expectedJson(Path sourceFile) {
         return Optional
                 .ofNullable(JsonIntegrationTest.class.getResourceAsStream(
-                        "/org/thoriumlang/compiler/it/" + sourceFile.getName().replaceFirst("\\.th$", ".json")
+                        "/org/thoriumlang/compiler/it/" + sourceFile.getFileName().toString().replaceFirst("\\.th$", ".json")
                 ))
                 .map(InputStreamReader::new)
                 .map(BufferedReader::new)

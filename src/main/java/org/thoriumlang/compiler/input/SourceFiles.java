@@ -21,10 +21,8 @@ import org.thoriumlang.compiler.symbols.Name;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +32,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO review Path vs File vs String
 public class SourceFiles implements Sources {
     private static final BiPredicate<Path, BasicFileAttributes> thSourcesMatcher = (path, basicFileAttributes) ->
             basicFileAttributes.isRegularFile() && path.getFileName().toString().matches(".*\\.th$");
@@ -70,17 +67,19 @@ public class SourceFiles implements Sources {
         return Optional.empty();
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Optional<Path> find(Path path, BiPredicate<Path, BasicFileAttributes> matcher) {
         try (Stream<Path> files = Files.find(path, 1, matcher)) {
             return files.findFirst();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     @Override
     public List<Source> sources() {
-        List<String> thRoots = findThRoots();
+        List<Path> thRoots = findThRoots();
 
         try (Stream<Path> sourcePaths = findRecursive(
                 searchPath,
@@ -90,7 +89,7 @@ public class SourceFiles implements Sources {
                     .map(path -> new SourceFile(
                             namespace(
                                     path.getParent().normalize(),
-                                    path.normalize().toString(),
+                                    path.normalize(),
                                     thRoots
                             ),
                             path
@@ -99,10 +98,10 @@ public class SourceFiles implements Sources {
         }
     }
 
-    private List<String> findThRoots() {
+    private List<Path> findThRoots() {
         try (Stream<Path> paths = findRecursive(root, thRootMatcher)) {
             return paths
-                    .map(p -> p.getParent().toString())
+                    .map(Path::getParent)
                     .collect(Collectors.toList());
         }
     }
@@ -110,17 +109,19 @@ public class SourceFiles implements Sources {
     private Stream<Path> findRecursive(Path start, BiPredicate<Path, BasicFileAttributes> matcher) {
         try {
             return Files.find(start, 999, matcher);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private String namespace(Path path, String fullPath, List<String> thRoots) {
-        if (!thRoots.contains(path.toString())) {
+    private String namespace(Path path, Path fullPath, List<Path> thRoots) {
+        if (!thRoots.contains(path)) {
             return namespace(path.getParent(), fullPath, thRoots);
         }
         return fullPath
-                .substring(0, fullPath.lastIndexOf('/'))
+                .getParent()
+                .toString()
                 .substring(path.toString().length())
                 .replace(File.separator, ".")
                 .replaceFirst("^\\.", "");
@@ -128,21 +129,15 @@ public class SourceFiles implements Sources {
 
     @Override
     public Optional<Source> load(Name name) {
-        for (String rootPath : findThRoots()) {
-            File file = new File(
-                    String.format("%s%s%s.th",
-                            rootPath,
-                            File.separator,
-                            name.getFullName().replace(".", File.separator)
-                    )
-            );
-            if (file.exists()) {
-                Path path = Paths.get(URI.create("file://" + file.getAbsolutePath()));
+        for (Path rootPath : findThRoots()) {
+            Path path = rootPath.resolve(name.getFullName().replace(".", File.separator) + ".th");
+
+            if (Files.exists(path)) {
                 return Optional.of(
                         new SourceFile(
                                 namespace(
                                         path.getParent(),
-                                        file.getAbsolutePath(),
+                                        path,
                                         Collections.singletonList(rootPath)
                                 ),
                                 path
