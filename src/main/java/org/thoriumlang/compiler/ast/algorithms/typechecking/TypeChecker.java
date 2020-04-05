@@ -38,6 +38,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
     private final List<TypeLoader> typeLoaders;
 
     public TypeChecker(List<TypeLoader> typeLoaders) {
+        // TODO check for null
         this.typeLoaders = typeLoaders;
     }
 
