@@ -22,6 +22,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.Sources;
@@ -55,7 +56,7 @@ class JsonIntegrationTest {
                         OutputStream out = new FileOutputStream(
                                 System.getProperty("dumpdir")
                                         + File.separator
-                                        + file.toString().replaceFirst("\\.th$", ".json"),
+                                        + file.getFileName().toString().replaceFirst("\\.th$", ".json"),
                                 false
                         )
                 ) {
@@ -97,7 +98,11 @@ class JsonIntegrationTest {
     private String json(Sources sources, Source source) {
         SymbolTable symbolTable = new SymbolTable();
         return new JsonAST(
-                new SourceToAST(sources, symbolTable).apply(source)
+                new SourceToAST(
+                        new NodeIdGenerator(),
+                        sources,
+                        symbolTable
+                ).convert(source)
         ).json();
     }
 

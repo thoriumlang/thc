@@ -19,6 +19,7 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
@@ -27,26 +28,26 @@ import org.thoriumlang.compiler.input.loaders.ThoriumSrcClassLoader;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
-// TODO should it really be a Function?
-public class SourceToAST implements Function<Source, AST> {
+public class SourceToAST {
+    private final NodeIdGenerator nodeIdGenerator;
     private final Sources sources;
     private final SymbolTable symbolTable;
 
-    public SourceToAST(Sources sources, SymbolTable symbolTable) {
+    public SourceToAST(NodeIdGenerator nodeIdGenerator, Sources sources, SymbolTable symbolTable) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.sources = sources;
         this.symbolTable = symbolTable;
     }
 
-    @Override
-    public AST apply(Source source) {
+    public AST convert(Source source) {
         return source.ast(
+                nodeIdGenerator,
                 Arrays.asList(
                         new SymbolTableInitializer(symbolTable),
                         new TypeChecker(
                                 Arrays.asList(
-                                        new ThoriumSrcClassLoader(sources),
+                                        new ThoriumSrcClassLoader(nodeIdGenerator, sources),
                                         new ThoriumRTClassLoader(),
                                         new JavaRTClassLoader()
                                 )

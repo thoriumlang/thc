@@ -87,14 +87,14 @@
                 "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_005.[body]"
               },
-              "nodeId": 3
+              "nodeId": 8
             },
             "methods": [],
             "context": {
               "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
               "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_005.[body]"
             },
-            "nodeId": 2
+            "nodeId": 7
           }
         }
       ]
@@ -138,7 +138,7 @@
         {
           "name": "_load_005",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it._load_005)",
-          "nodeRef": 2
+          "nodeRef": 7
         }
       ]
     },

@@ -17,6 +17,7 @@ package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -47,7 +48,11 @@ public class Compiler {
             try {
                 System.out.println(String.format("Processing %s", source));
 
-                AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
+                AST ast = new SourceToAST(
+                        new NodeIdGenerator(),
+                        sources,
+                        new SymbolTable()
+                ).convert(source);
 
                 Root root = ast.root();
 

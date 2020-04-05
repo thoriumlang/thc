@@ -26,6 +26,8 @@ import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeId;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -53,6 +55,7 @@ class ASTIntegrationTest {
                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                 ),
                 "org.thoriumlang",
+                new NodeIdGenerator(),
                 Arrays.asList(
                         new SymbolTableInitializer(
                                 new SymbolTable()

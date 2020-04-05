@@ -3,7 +3,6 @@ package org.thoriumlang.compiler.input.loaders;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.Node;
@@ -51,7 +50,7 @@ class ThoriumSrcClassLoaderTest {
         new RelativesInjectionVisitor().visit(root);
         new SymbolTableInitializer(rootSymbolTable).walk(root);
 
-        Optional<Symbol> symbol = new ThoriumSrcClassLoader(new SourcesStub(root.getTopLevelNode()))
+        Optional<Symbol> symbol = new ThoriumSrcClassLoader(nodeIdGenerator, new SourcesStub(root.getTopLevelNode()))
                 .load(new Name("package.TypeName"), root.getTopLevelNode());
 
         Assertions.assertThat(symbol)
@@ -76,7 +75,7 @@ class ThoriumSrcClassLoaderTest {
             }
         };
 
-        Optional<Symbol> symbol = new ThoriumSrcClassLoader(new SourcesStub())
+        Optional<Symbol> symbol = new ThoriumSrcClassLoader(nodeIdGenerator, new SourcesStub())
                 .load(new Name("package.TypeName"), node);
 
         Assertions.assertThat(symbol)
@@ -104,31 +103,21 @@ class ThoriumSrcClassLoaderTest {
             if (topLevel == null) {
                 return Optional.empty();
             }
-            return Optional.of(
-                    new Source() {
+            return Optional.of((nodeIdGenerator, algorithms) ->
+                    new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms) {
                         @Override
-                        public AST ast(List<Algorithm> algorithms) {
-                            return new AST(new InputStreamStub(), "namespace", algorithms) {
-                                @Override
-                                public Root root() {
-                                    Root root = new Root(
-                                            nodeIdGenerator.next(),
-                                            "namespace",
-                                            Collections.emptyList(),
-                                            topLevel
-                                    );
+                        public Root root() {
+                            Root root = new Root(
+                                    nodeIdGenerator.next(),
+                                    "namespace",
+                                    Collections.emptyList(),
+                                    topLevel
+                            );
 
-                                    new SymbolTableInitializer(topLevel.getContext().require(SymbolTable.class))
-                                            .walk(root);
+                            new SymbolTableInitializer(topLevel.getContext().require(SymbolTable.class))
+                                    .walk(root);
 
-                                    return root;
-                                }
-                            };
-                        }
-
-                        @Override
-                        public AST ast() {
-                            return ast(Collections.emptyList());
+                            return root;
                         }
                     }
             );

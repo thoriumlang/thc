@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.net.URI;
@@ -17,7 +18,10 @@ class SourceFileTest {
         AST ast = new SourceFile(
                 "namespace",
                 Paths.get(new URI(SourceFileTest.class.getResource("/org/thoriumlang/compiler/tests/class.th").toString()))
-        ).ast(Collections.singletonList(new SymbolTableInitializer(new SymbolTable())));
+        ).ast(
+                new NodeIdGenerator(),
+                Collections.singletonList(new SymbolTableInitializer(new SymbolTable()))
+        );
 
         Assertions.assertThat(ast.root())
                 .isNotNull();
@@ -31,7 +35,7 @@ class SourceFileTest {
         AST ast = new SourceFile(
                 "namespace",
                 Paths.get(new URI(SourceFileTest.class.getResource("/org/thoriumlang/compiler/tests/class.th").toString()))
-        ).ast();
+        ).ast(new NodeIdGenerator(), Collections.emptyList());
 
         Assertions.assertThat(ast.root())
                 .isNotNull();

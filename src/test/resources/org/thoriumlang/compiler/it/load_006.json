@@ -66,7 +66,7 @@
                 "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:1",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006.[body]"
               },
-              "nodeId": 4
+              "nodeId": 8
             },
             "methods": [
               {
@@ -81,20 +81,20 @@
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:15",
                     "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006.[body].method"
                   },
-                  "nodeId": 6
+                  "nodeId": 10
                 },
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:5",
                   "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006.[body].method"
                 },
-                "nodeId": 5
+                "nodeId": 9
               }
             ],
             "context": {
               "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:1",
               "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006.[body]"
             },
-            "nodeId": 3
+            "nodeId": 7
           }
         },
         {
@@ -111,14 +111,14 @@
                 "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006_1.[body]"
               },
-              "nodeId": 3
+              "nodeId": 13
             },
             "methods": [],
             "context": {
               "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:1",
               "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it._load_006_1.[body]"
             },
-            "nodeId": 2
+            "nodeId": 12
           }
         }
       ]
@@ -151,12 +151,12 @@
         {
           "name": "_load_006",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it._load_006)",
-          "nodeRef": 3
+          "nodeRef": 7
         },
         {
           "name": "_load_006_1",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it._load_006_1)",
-          "nodeRef": 2
+          "nodeRef": 6
         }
       ]
     },
@@ -177,12 +177,12 @@
         {
           "name": "Object",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.Object)",
-          "nodeRef": 3
+          "nodeRef": 13
         },
         {
           "name": "_load_006_1",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it._load_006_1)",
-          "nodeRef": 2
+          "nodeRef": 12
         }
       ]
     },

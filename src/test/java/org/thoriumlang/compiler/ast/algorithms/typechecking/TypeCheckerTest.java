@@ -21,6 +21,7 @@ import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
@@ -51,6 +52,7 @@ class TypeCheckerTest {
                                                 "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                                         ),
                                         "namespace",
+                                        new NodeIdGenerator(),
                                         Collections.singletonList(new SymbolTableInitializer(new SymbolTable()))
                                 ).root()
                         )
@@ -78,7 +80,7 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable()).convert(source);
 
         ast.root();
 
@@ -102,7 +104,7 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(sources, new SymbolTable()).apply(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable()).convert(source);
 
         ast.root();
 
@@ -127,7 +129,7 @@ class TypeCheckerTest {
         Source source = sources.sources().get(0);
 
         SymbolTable rootSymbolTable = new SymbolTable();
-        AST ast = new SourceToAST(sources, rootSymbolTable).apply(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, rootSymbolTable).convert(source);
 
         ast.root();
 

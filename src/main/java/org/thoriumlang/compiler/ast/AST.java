@@ -44,15 +44,11 @@ public class AST {
     private Root root;
     private List<CompilationError> errors;
 
-    public AST(InputStream inputStream, String namespace, List<Algorithm> algorithms) {
+    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms) {
         this.inputStream = Objects.requireNonNull(inputStream, "inputStream cannot be null");
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
-        this.nodeIdGenerator = new NodeIdGenerator();
-    }
-
-    public AST(InputStream inputStream, String namespace) {
-        this(inputStream, namespace, Collections.emptyList());
+        this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
     }
 
     public Root root() {

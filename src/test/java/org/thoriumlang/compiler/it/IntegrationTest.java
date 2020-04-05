@@ -27,6 +27,7 @@ import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.Source;
@@ -65,7 +66,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         source
-                                .ast()
+                                .ast(new NodeIdGenerator(), Collections.emptyList())
                                 .root()
                                 .toString())
                 .isEqualTo(
@@ -108,7 +109,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new ThWalker(
-                                source.ast().root()
+                                source.ast(new NodeIdGenerator(), Collections.emptyList()).root()
                         ).walk()
                 )
                 .isEqualTo(
@@ -137,7 +138,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new ThWalker(
-                                sourceFile.ast().root()
+                                sourceFile.ast(new NodeIdGenerator(), Collections.emptyList()).root()
                         ).walk()
                 )
                 .isEqualTo(
@@ -182,17 +183,21 @@ class IntegrationTest {
     private String generateHtmlDocument(String path) throws URISyntaxException {
         Source source = source(path, this::sourceFilename);
 
-        Root root = new SourceToAST(new Sources() {
-            @Override
-            public List<Source> sources() {
-                return Collections.emptyList();
-            }
+        Root root = new SourceToAST(
+                new NodeIdGenerator(),
+                new Sources() {
+                    @Override
+                    public List<Source> sources() {
+                        return Collections.emptyList();
+                    }
 
-            @Override
-            public Optional<Source> load(Name name) {
-                return Optional.empty();
-            }
-        }, new SymbolTable()).apply(source).root();
+                    @Override
+                    public Optional<Source> load(Name name) {
+                        return Optional.empty();
+                    }
+                },
+                new SymbolTable()
+        ).convert(source).root();
 
         root.getContext()
                 .put(
@@ -230,7 +235,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
-                                .visit(source.ast().root())
+                                .visit(source.ast(new NodeIdGenerator(), Collections.emptyList()).root())
                 )
                 .isEmpty();
     }
@@ -250,7 +255,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
-                                .visit(source.ast().root())
+                                .visit(source.ast(new NodeIdGenerator(), Collections.emptyList()).root())
                 )
                 .isEmpty();
     }

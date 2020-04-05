@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
@@ -38,6 +39,7 @@ class SymbolicNameCheckerTest {
                         "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
                 ),
                 "namespace",
+                new NodeIdGenerator(),
                 Collections.singletonList(
                         new SymbolTableInitializer(
                                 rootSymbolTable//.createScope("namespace")

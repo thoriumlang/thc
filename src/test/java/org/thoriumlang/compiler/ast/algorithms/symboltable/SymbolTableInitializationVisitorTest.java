@@ -766,7 +766,9 @@ class SymbolTableInitializationVisitorTest {
                 SymbolTableInitializationVisitorTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.th"
                 ),
-                "namespace"
+                "namespace",
+                new NodeIdGenerator(),
+                Collections.emptyList()
         ).root();
 
         visitor.visit(root);

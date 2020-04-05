@@ -81,6 +81,7 @@ class TypeDiscoveryVisitorTest {
                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                 ),
                 "namespace",
+                new NodeIdGenerator(),
                 Collections.singletonList(
                         new SymbolTableInitializer(rootSymbolTable)
                 )
