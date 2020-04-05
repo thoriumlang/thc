@@ -128,10 +128,10 @@ public class SourceFiles implements Sources {
 
     @Override
     public Optional<Source> load(Name name) {
-        for (String root : findThRoots()) {
+        for (String rootPath : findThRoots()) {
             File file = new File(
                     String.format("%s%s%s.th",
-                            root,
+                            rootPath,
                             File.separator,
                             name.getFullName().replace(".", File.separator)
                     )
@@ -143,7 +143,7 @@ public class SourceFiles implements Sources {
                                 namespace(
                                         path.getParent(),
                                         file.getAbsolutePath(),
-                                        Collections.singletonList(root)
+                                        Collections.singletonList(rootPath)
                                 ),
                                 path
                         )

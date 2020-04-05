@@ -19,7 +19,6 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface Source {
     AST ast(List<Algorithm> algorithms);

@@ -46,7 +46,7 @@ public class SymbolTableInitializer implements Algorithm {
     }
 
     private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
-        if (namespaces.size() == 0) {
+        if (namespaces.isEmpty()) {
             return symbolTable;
         }
         ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
