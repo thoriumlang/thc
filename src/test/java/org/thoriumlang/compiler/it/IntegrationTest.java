@@ -38,7 +38,6 @@ import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -61,7 +60,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
-    void ast(String path) throws IOException, URISyntaxException {
+    void ast(String path) throws URISyntaxException {
         Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
@@ -104,7 +103,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
-    void thorium(String path) throws IOException, URISyntaxException {
+    void thorium(String path) throws URISyntaxException {
         Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
@@ -133,7 +132,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
-    void generatedThorium(String path) throws IOException, URISyntaxException {
+    void generatedThorium(String path) throws URISyntaxException {
         Source sourceFile = source(path, this::generatedSourceFilename);
         Assertions
                 .assertThat(
@@ -180,7 +179,7 @@ class IntegrationTest {
                 .isEmpty();
     }
 
-    private String generateHtmlDocument(String path) throws IOException, URISyntaxException {
+    private String generateHtmlDocument(String path) throws URISyntaxException {
         Source source = source(path, this::sourceFilename);
 
         Root root = new SourceToAST(new Sources() {
@@ -226,7 +225,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
-    void sourceLocation_normalizedSource(String path) throws IOException, URISyntaxException {
+    void sourceLocation_normalizedSource(String path) throws URISyntaxException {
         Source source = source(path, this::generatedSourceFilename);
         Assertions
                 .assertThat(
@@ -246,7 +245,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/tests/ClassAttributes",
             "/org/thoriumlang/compiler/tests/FunctionsAsValues"
     })
-    void sourceLocation_rawSource(String path) throws IOException, URISyntaxException {
+    void sourceLocation_rawSource(String path) throws URISyntaxException {
         Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(

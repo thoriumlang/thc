@@ -35,7 +35,6 @@ import org.thoriumlang.compiler.ast.visitor.FlatMapVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
 // TODO remove or make useful
 class ASTIntegrationTest {
     @Test
-    void symbols() throws IOException {
+    void symbols() {
         AST ast = new AST(
                 ASTIntegrationTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"

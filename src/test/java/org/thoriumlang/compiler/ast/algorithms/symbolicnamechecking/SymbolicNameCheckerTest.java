@@ -25,14 +25,13 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
 class SymbolicNameCheckerTest {
     @Test
-    void walk() throws IOException {
+    void walk() {
         SymbolTable rootSymbolTable = new SymbolTable();
         Root root = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(

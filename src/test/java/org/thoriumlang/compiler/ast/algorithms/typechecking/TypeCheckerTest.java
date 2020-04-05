@@ -30,7 +30,6 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -39,7 +38,7 @@ import java.util.stream.Collectors;
 
 class TypeCheckerTest {
     @Test
-    void walk() throws IOException {
+    void walk() {
         Assertions.assertThat(
                 new TypeChecker(
                         Collections.singletonList(
@@ -72,7 +71,7 @@ class TypeCheckerTest {
     }
 
     @Test
-    void loadsThlibTypes() throws URISyntaxException, IOException {
+    void loadsThlibTypes() throws URISyntaxException {
         SourceFiles sources = new SourceFiles(
                 Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
                 p -> p.endsWith("typechecking/Main_thlibTypes.th")
@@ -96,7 +95,7 @@ class TypeCheckerTest {
     }
 
     @Test
-    void loadsJavalibTypes() throws URISyntaxException, IOException {
+    void loadsJavalibTypes() throws URISyntaxException {
         SourceFiles sources = new SourceFiles(
                 Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
                 p -> p.endsWith("typechecking/Main_javalibTypes.th")
@@ -120,7 +119,7 @@ class TypeCheckerTest {
     }
 
     @Test
-    void loadsPackageTypes() throws URISyntaxException, IOException {
+    void loadsPackageTypes() throws URISyntaxException {
         SourceFiles sources = new SourceFiles(
                 Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
                 p -> p.endsWith("typechecking/Main_packageType.th")

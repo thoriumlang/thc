@@ -36,7 +36,6 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumLibType;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -52,7 +51,7 @@ public class JsonAST {
     private final List<CompilationError> errors;
     private final GsonBuilder gson;
 
-    public JsonAST(AST ast) throws IOException {
+    public JsonAST(AST ast) {
         this.root = ast.root();
         this.errors = ast.errors();
         this.gson = new GsonBuilder();

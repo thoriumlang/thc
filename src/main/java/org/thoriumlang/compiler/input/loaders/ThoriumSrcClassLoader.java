@@ -10,8 +10,6 @@ import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Optional;
 
 public class ThoriumSrcClassLoader implements TypeLoader {
@@ -29,18 +27,14 @@ public class ThoriumSrcClassLoader implements TypeLoader {
             return Optional.empty();
         }
 
-        try {
-            AST ast = new SourceToAST(
-                    sources,
-                    triggerNode.getContext().require(SymbolTable.class).root()
-            ).apply(loadedSource.get());
+        AST ast = new SourceToAST(
+                sources,
+                triggerNode.getContext().require(SymbolTable.class).root()
+        ).apply(loadedSource.get());
 
-            ThoriumType symbol = new ThoriumType(triggerNode, ast.root().getTopLevelNode());
-            // TODO do something about errors
+        ThoriumType symbol = new ThoriumType(triggerNode, ast.root().getTopLevelNode());
+        // TODO do something about errors
 
-            return Optional.of(symbol);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        return Optional.of(symbol);
     }
 }

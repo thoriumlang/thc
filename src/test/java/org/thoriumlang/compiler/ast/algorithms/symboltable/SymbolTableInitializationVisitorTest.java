@@ -59,7 +59,6 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
@@ -762,7 +761,7 @@ class SymbolTableInitializationVisitorTest {
     }
 
     @Test
-    void full() throws IOException {
+    void full() {
         Root root = new AST(
                 SymbolTableInitializationVisitorTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.th"
@@ -778,7 +777,7 @@ class SymbolTableInitializationVisitorTest {
 
         Assertions.assertThat(
                 String.join(
-                        "\n", 
+                        "\n",
                         root.getContext().require(SymbolTable.class).accept(new SymbolTableDumpingVisitor())
                 )
         ).isEqualTo(

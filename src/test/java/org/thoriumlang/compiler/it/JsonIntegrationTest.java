@@ -31,7 +31,6 @@ import org.thoriumlang.compiler.testsupport.JsonAST;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
@@ -44,7 +43,8 @@ class JsonIntegrationTest {
     private static void assertJsonEqual(File file, String expectedJson, String actualJson) throws Throwable {
         try {
             JSONAssert.assertEquals(expectedJson, actualJson, JSONCompareMode.NON_EXTENSIBLE);
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             // store the actual value
             if (!Strings.isNullOrEmpty(System.getProperty("dumpdir"))) {
                 try (
@@ -89,14 +89,10 @@ class JsonIntegrationTest {
     }
 
     private String json(Sources sources, Source source) {
-        try {
-            SymbolTable symbolTable = new SymbolTable();
-            return new JsonAST(
-                    new SourceToAST(sources, symbolTable).apply(source)
-            ).json();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        SymbolTable symbolTable = new SymbolTable();
+        return new JsonAST(
+                new SourceToAST(sources, symbolTable).apply(source)
+        ).json();
     }
 
     private String expectedJson(File sourceFile) {

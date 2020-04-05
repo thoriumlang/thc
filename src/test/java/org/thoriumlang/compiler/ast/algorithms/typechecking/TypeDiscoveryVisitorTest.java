@@ -43,11 +43,10 @@ import org.thoriumlang.compiler.symbols.JavaInterface;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 import org.thoriumlang.compiler.symbols.ThoriumType;
+import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
@@ -75,7 +74,7 @@ class TypeDiscoveryVisitorTest {
     }
 
     @Test
-    void fullTable() throws IOException {
+    void fullTable() {
         SymbolTable rootSymbolTable = new SymbolTable();
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(

@@ -6,7 +6,6 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -14,7 +13,7 @@ import java.util.Collections;
 
 class SourceFileTest {
     @Test
-    void ast_withAlgorithms() throws URISyntaxException, IOException {
+    void ast_withAlgorithms() throws URISyntaxException {
         AST ast = new SourceFile(
                 "namespace",
                 Paths.get(new URI(SourceFileTest.class.getResource("/org/thoriumlang/compiler/tests/class.th").toString()))
@@ -28,7 +27,7 @@ class SourceFileTest {
     }
 
     @Test
-    void ast_withoutAlgorithms() throws URISyntaxException, IOException {
+    void ast_withoutAlgorithms() throws URISyntaxException {
         AST ast = new SourceFile(
                 "namespace",
                 Paths.get(new URI(SourceFileTest.class.getResource("/org/thoriumlang/compiler/tests/class.th").toString()))

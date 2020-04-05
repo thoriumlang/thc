@@ -29,6 +29,7 @@ import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class AST {
         this(inputStream, namespace, Collections.emptyList());
     }
 
-    public Root root() throws IOException { // TODO wrap IOException in an UncheckedIOException
+    public Root root() {
         if (root != null) {
             return root;
         }
@@ -87,15 +88,20 @@ public class AST {
         return errors;
     }
 
-    private ThoriumParser parser() throws IOException {
-        return new ThoriumParser(
-                new CommonTokenStream(
-                        new ThoriumLexer(
-                                CharStreams.fromStream(
-                                        inputStream
-                                )
-                        )
-                )
-        );
+    private ThoriumParser parser() {
+        try {
+            return new ThoriumParser(
+                    new CommonTokenStream(
+                            new ThoriumLexer(
+                                    CharStreams.fromStream(
+                                            inputStream
+                                    )
+                            )
+                    )
+            );
+        }
+        catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
