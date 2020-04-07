@@ -41,7 +41,7 @@ public class SourceToAST {
     }
 
     public AST convert(Source source) {
-        return source.ast(
+        AST ast = source.ast(
                 nodeIdGenerator,
                 Arrays.asList(
                         new SymbolTableInitializer(symbolTable),
@@ -55,5 +55,13 @@ public class SourceToAST {
                         new SymbolicNameChecker()
                 )
         );
+        ast.root();
+
+        if (!ast.errors().isEmpty()) {
+            // TODO have Souce expose some errorPrefix() to show it below:
+            ast.errors().forEach(err -> System.err.println(String.format("--: %s", err)));
+        }
+
+        return ast;
     }
 }
