@@ -1,6 +1,9 @@
-use LegalPerson : Legal; // not needed, used to trigger compilation
-use NaturalPerson;       // not needed, used to trigger compilation
+use java.lang.Long;
+use example.LegalPerson: Legal;
+use example.NaturalPerson: Natural;
 
 class Main {
+    getPerson(personId: Long): Legal | Natural {}
 
+    getIdentifiedCountry(): Identified & Country {}
 }

@@ -1,3 +1,5 @@
 class NaturalPerson: Person {
-    method(parameter: NaturalPerson): NaturalPerson {}
+    getId(): Number {}
+
+    getFirstName(): String {}
 }

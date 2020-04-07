@@ -1,4 +1,4 @@
-type Person {
+type Person: Named {
     getLegalAddress(): Address;
     getMailingAddress(): Address?;
 }

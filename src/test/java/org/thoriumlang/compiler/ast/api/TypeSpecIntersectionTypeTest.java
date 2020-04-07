@@ -1,0 +1,35 @@
+package org.thoriumlang.compiler.ast.api;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.ast.api.testsupport.Helper;
+import org.thoriumlang.compiler.ast.api.testsupport.MethodNameCondition;
+
+class TypeSpecIntersectionTypeTest {
+    @Test
+    void constructor() {
+        Assertions.assertThatThrownBy(() -> new TypeSpecIntersectionType(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("node cannot be null");
+    }
+
+    @Test
+    void getName() {
+        Assertions.assertThat(type().getName())
+                .isEqualTo("(Legal | Natural)");
+    }
+
+    @Test
+    void getMethods() {
+        Assertions.assertThat(type().getMethods())
+                .hasSize(4)
+                .haveAtLeastOne(new MethodNameCondition("getId"))
+                .haveAtLeastOne(new MethodNameCondition("getLegalAddress"))
+                .haveAtLeastOne(new MethodNameCondition("getName"))
+                .haveAtLeastOne(new MethodNameCondition("getMailingAddress"));
+    }
+
+    private TypeSpecIntersectionType type() {
+        return (TypeSpecIntersectionType) Helper.getClassMethod("example.Main#getPerson").getReturnType();
+    }
+}

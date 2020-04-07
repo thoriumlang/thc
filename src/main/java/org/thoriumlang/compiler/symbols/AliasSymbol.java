@@ -44,6 +44,10 @@ public class AliasSymbol implements Symbol {
         return definingNode;
     }
 
+    public String getTarget() {
+        return target;
+    }
+
     @Override
     public String toString() {
         return String.format("(alias: %s)", target);
