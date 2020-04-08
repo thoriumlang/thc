@@ -27,6 +27,12 @@ class TypeSpecSimpleTypeTest {
                 .haveAtLeastOne(new MethodNameCondition("length"));
     }
 
+    @Test
+    void _toString() {
+        Assertions.assertThat(type().toString())
+                .isEqualTo("String");
+    }
+
     private TypeSpecSimpleType type() {
         return (TypeSpecSimpleType) Helper.getTypeMethod("example.Named#getName").getReturnType();
     }

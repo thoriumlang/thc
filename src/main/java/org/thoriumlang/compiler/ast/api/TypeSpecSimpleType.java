@@ -26,4 +26,9 @@ public class TypeSpecSimpleType implements Type {
                 .map(Type::getMethods)
                 .orElseThrow(() -> new IllegalStateException("type " + node.getType() + " not found"));
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

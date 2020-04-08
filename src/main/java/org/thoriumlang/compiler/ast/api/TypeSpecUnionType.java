@@ -29,4 +29,9 @@ public class TypeSpecUnionType implements Type {
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

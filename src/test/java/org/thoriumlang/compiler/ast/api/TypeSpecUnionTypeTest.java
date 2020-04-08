@@ -27,6 +27,12 @@ class TypeSpecUnionTypeTest {
                 .haveAtLeastOne(new MethodNameCondition("getName"));
     }
 
+    @Test
+    void _toString() {
+        Assertions.assertThat(type().toString())
+                .isEqualTo("(Country & Identified)");
+    }
+
     private Type type() {
         return Helper.getClassMethod("example.Main#getIdentifiedCountry").getReturnType();
     }

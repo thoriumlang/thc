@@ -1,9 +1,8 @@
-use java.lang.Long;
 use example.LegalPerson: Legal;
 use example.NaturalPerson: Natural;
 
 class Main {
-    getPerson(personId: Long): Legal | Natural {}
+    getPerson(personId: Number, office: String): Legal | Natural {}
 
     getIdentifiedCountry(): Identified & Country {}
 }

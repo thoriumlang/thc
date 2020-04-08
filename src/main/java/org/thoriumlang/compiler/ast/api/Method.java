@@ -3,7 +3,9 @@ package org.thoriumlang.compiler.ast.api;
 import org.thoriumlang.compiler.ast.api.unsafe.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Method {
     private final MethodSignature node;
@@ -22,6 +24,12 @@ public class Method {
 
     public Type getReturnType() {
         return new TypeSpec(node.getReturnType()).getType();
+    }
+
+    public List<Parameter> getParameters() {
+        return node.getParameters().stream()
+                .map(Parameter::new)
+                .collect(Collectors.toList());
     }
 
     @Override

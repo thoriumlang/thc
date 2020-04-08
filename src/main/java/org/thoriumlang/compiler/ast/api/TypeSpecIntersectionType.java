@@ -33,4 +33,9 @@ public class TypeSpecIntersectionType implements Type {
         return methodsList.stream()
                 .reduce(methodsList.get(0), Sets::intersection);
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

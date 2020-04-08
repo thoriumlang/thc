@@ -3,6 +3,7 @@ package org.thoriumlang.compiler.ast.api;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.api.testsupport.Helper;
+import org.thoriumlang.compiler.ast.api.testsupport.ParameterCondition;
 
 class MethodTest {
     @Test
@@ -35,6 +36,14 @@ class MethodTest {
     void getReturnType() {
         Assertions.assertThat(method().getReturnType().getName())
                 .isEqualTo("(Legal | Natural)");
+    }
+
+    @Test
+    void getParameters() {
+        Assertions.assertThat(method().getParameters())
+                .hasSize(2)
+                .haveAtLeastOne(new ParameterCondition("personId", "Number"))
+                .haveAtLeastOne(new ParameterCondition("office", "String"));
     }
 
     private Method method() {

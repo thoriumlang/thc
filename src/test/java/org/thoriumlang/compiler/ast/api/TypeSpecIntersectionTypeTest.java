@@ -29,6 +29,12 @@ class TypeSpecIntersectionTypeTest {
                 .haveAtLeastOne(new MethodNameCondition("getMailingAddress"));
     }
 
+    @Test
+    void _toString() {
+        Assertions.assertThat(type().toString())
+                .isEqualTo("(Legal | Natural)");
+    }
+
     private TypeSpecIntersectionType type() {
         return (TypeSpecIntersectionType) Helper.getClassMethod("example.Main#getPerson").getReturnType();
     }
