@@ -34,14 +34,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @SuppressWarnings({"squid:S106", "squid:S00112"})
-public class Compiler {
+public class Main {
     public static void main(String[] args) throws URISyntaxException {
-        new Compiler().compile();
+        new Main().compile();
     }
 
     private void compile() throws URISyntaxException {
         Sources sources = new SourceFiles(
-                Paths.get(Compiler.class.getResource("/").toURI())
+                Paths.get(Main.class.getResource("/").toURI())
         );
 
         sources.sources().forEach(source -> {
