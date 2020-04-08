@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+// TODO move outside of algorithms
 public class CompilationError {
     private final String message;
     private final Node node;

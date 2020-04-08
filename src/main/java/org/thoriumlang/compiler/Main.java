@@ -17,16 +17,14 @@ package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
-import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
-import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
-import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -40,38 +38,64 @@ public class Main {
     }
 
     private void compile() throws URISyntaxException {
-        Sources sources = new SourceFiles(
-                Paths.get(Main.class.getResource("/").toURI())
+        new Compiler(
+                new CompilationListener() {
+                    @Override
+                    public void compilationStarted(int sourcesCount) {
+                        System.out.println(String.format("About to compile %d sources", sourcesCount));
+                    }
+
+                    @Override
+                    public void compilationFinished() {
+
+                    }
+
+                    @Override
+                    public void compilationProgress(float progress) {
+                        System.out.println(String.format("progress: %f", progress));
+                    }
+
+                    @Override
+                    public void sourceStarted(Source source) {
+                        System.out.println(String.format("Processing %s", source));
+                    }
+
+                    @Override
+                    public void sourceFinished(Source source, AST ast) {
+                        try {
+                            System.out.println(String.format(
+                                    "Processed %d nodes",
+                                    ast.root().getContext().require(NodesCountPlugin.class.getName(), Integer.class)
+                            ));
+
+                            // TODO put that block as a "plugin"
+                            ast.root().getContext().put("compilationErrors", Map.class, ast.errors()
+                                    .stream()
+                                    .collect(Collectors.toMap(
+                                            CompilationError::getNode,
+                                            Collections::singletonList,
+                                            Lists::merge
+                                    )));
+
+                            new FileOutputStream("/tmp/" + ast.root().getTopLevelNode().getName() + ".html").write(
+                                    new HtmlWalker(ast.root()).walk().getBytes()
+                            );
+                        }
+                        catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    }
+
+                    @Override
+                    public void emitError(Source source, CompilationError error) {
+                        System.out.println(error);
+                    }
+                },
+                Collections.singletonList(new NodesCountPlugin())
+        ).compile(
+                new SourceFiles(
+                        Paths.get(Main.class.getResource("/").toURI())
+                )
         );
-
-        sources.sources().forEach(source -> {
-            try {
-                System.out.println(String.format("Processing %s", source));
-
-                AST ast = new SourceToAST(
-                        new NodeIdGenerator(),
-                        sources,
-                        new SymbolTable()
-                ).convert(source);
-
-                Root root = ast.root();
-
-                ast.errors().forEach(System.out::println);
-
-                root.getContext().put("compilationErrors", Map.class, ast.errors()
-                        .stream()
-                        .collect(Collectors.toMap(
-                                CompilationError::getNode,
-                                Collections::singletonList,
-                                Lists::merge
-                        )));
-
-                new FileOutputStream("/tmp/" + ast.root().getTopLevelNode().getName() + ".html").write(
-                        new HtmlWalker(root).walk().getBytes()
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 }
