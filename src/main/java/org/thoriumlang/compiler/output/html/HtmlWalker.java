@@ -57,7 +57,6 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -105,12 +104,9 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     private final Map<Node, List<CompilationError>> compilationErrors;
     private final List<String> symbolTables;
 
-    @SuppressWarnings("unchecked")
-    public HtmlWalker(Root root) {
+    public HtmlWalker(Root root, Map<Node, List<CompilationError>> compilationErrors) {
         this.root = root;
-        this.compilationErrors = root.getContext()
-                .get("compilationErrors", Map.class)
-                .orElse(Collections.emptyMap());
+        this.compilationErrors = compilationErrors;
         this.symbolTables = new LinkedList<>();
     }
 

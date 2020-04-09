@@ -216,7 +216,7 @@ class IntegrationTest {
                 );
 
         return new HtmlWalker(
-                root
+                root, Collections.emptyMap()
         ).walk();
     }
 

@@ -1,5 +1,6 @@
-package org.thoriumlang.compiler;
+package org.thoriumlang.compiler.api;
 
+import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
@@ -31,10 +32,10 @@ public class Compiler {
         List<Source> sourcesToCompile = sources.sources();
         AtomicInteger sourcesProcessed = new AtomicInteger(0);
 
-        listener.compilationStarted(sourcesToCompile.size());
+        listener.onCompilationStarted(sourcesToCompile.size());
 
         sourcesToCompile.forEach(source -> {
-            listener.sourceStarted(source);
+            listener.onSourceStarted(source);
 
             AST ast = new SourceToAST(
                     new NodeIdGenerator(),
@@ -42,18 +43,20 @@ public class Compiler {
                     new SymbolTable()
             ).convert(source);
 
-            ast.errors().forEach(e -> listener.emitError(source, e));
+            ast.errors().forEach(e -> listener.onError(source, e)); // TODO refactor error handling?
+
+            CompilationContext context = new CompilationContext(ast, listener);
 
             plugins.stream()
-                    .map(p -> p.execute(ast.root()))
+                    .map(p -> p.execute(context))
                     .flatMap(List::stream)
                     .collect(Collectors.toList())
-                    .forEach(e -> listener.emitError(source, e));
+                    .forEach(e -> listener.onError(source, e));
 
-            listener.sourceFinished(source, ast);
-            listener.compilationProgress((float) sourcesProcessed.incrementAndGet() / sourcesToCompile.size());
+            listener.onSourceFinished(source, context);
+            listener.onCompilationProgress((float) sourcesProcessed.incrementAndGet() / sourcesToCompile.size());
         });
 
-        listener.compilationFinished();
+        listener.onCompilationFinished();
     }
 }

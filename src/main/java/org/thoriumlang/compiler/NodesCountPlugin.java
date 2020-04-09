@@ -1,21 +1,33 @@
 package org.thoriumlang.compiler;
 
+import org.thoriumlang.compiler.api.CompilationContext;
+import org.thoriumlang.compiler.api.Plugin;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
-import org.thoriumlang.compiler.ast.nodes.Root;
 
 import java.util.Collections;
 import java.util.List;
 
 public class NodesCountPlugin implements Plugin {
     @Override
-    public List<CompilationError> execute(Root root) {
-        // TODO find a better way (CompliationConext?)
-        root.getContext().put(
-                NodesCountPlugin.class.getName(),
-                Integer.class,
-                new NodesMatching(n -> true).visit(root).size()
+    public List<CompilationError> execute(CompilationContext context) {
+        context.put(
+                Count.class,
+                new Count(new NodesMatching(n -> true).visit(context.root()).size())
         );
+
         return Collections.emptyList();
+    }
+
+    public static class Count {
+        private final int count;
+
+        public Count(int count) {
+            this.count = count;
+        }
+
+        public int getCount() {
+            return count;
+        }
     }
 }

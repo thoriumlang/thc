@@ -15,21 +15,17 @@
  */
 package org.thoriumlang.compiler;
 
-import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.api.CompilationContext;
+import org.thoriumlang.compiler.api.CompilationListener;
+import org.thoriumlang.compiler.api.Compiler;
+import org.thoriumlang.compiler.api.Event;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
-import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
-import org.thoriumlang.compiler.output.html.HtmlWalker;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 @SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Main {
@@ -41,57 +37,49 @@ public class Main {
         new Compiler(
                 new CompilationListener() {
                     @Override
-                    public void compilationStarted(int sourcesCount) {
+                    public void onCompilationStarted(int sourcesCount) {
                         System.out.println(String.format("About to compile %d sources", sourcesCount));
                     }
 
                     @Override
-                    public void compilationFinished() {
-
+                    public void onCompilationFinished() {
+                        System.out.println("Compilation finished");
                     }
 
                     @Override
-                    public void compilationProgress(float progress) {
+                    public void onCompilationProgress(float progress) {
                         System.out.println(String.format("progress: %f", progress));
                     }
 
                     @Override
-                    public void sourceStarted(Source source) {
+                    public void onSourceStarted(Source source) {
                         System.out.println(String.format("Processing %s", source));
                     }
 
                     @Override
-                    public void sourceFinished(Source source, AST ast) {
-                        try {
-                            System.out.println(String.format(
-                                    "Processed %d nodes",
-                                    ast.root().getContext().require(NodesCountPlugin.class.getName(), Integer.class)
-                            ));
-
-                            // TODO put that block as a "plugin"
-                            ast.root().getContext().put("compilationErrors", Map.class, ast.errors()
-                                    .stream()
-                                    .collect(Collectors.toMap(
-                                            CompilationError::getNode,
-                                            Collections::singletonList,
-                                            Lists::merge
-                                    )));
-
-                            new FileOutputStream("/tmp/" + ast.root().getTopLevelNode().getName() + ".html").write(
-                                    new HtmlWalker(ast.root()).walk().getBytes()
-                            );
-                        }
-                        catch (IOException e) {
-                            throw new UncheckedIOException(e);
-                        }
+                    public void onSourceFinished(Source source, CompilationContext context) {
+                        System.out.println(String.format(
+                                "Processed %d nodes",
+                                context.get(NodesCountPlugin.Count.class).getCount()
+                        ));
                     }
 
                     @Override
-                    public void emitError(Source source, CompilationError error) {
+                    public void onError(Source source, CompilationError error) {
                         System.out.println(error);
                     }
+
+                    @Override
+                    public void onEvent(Event event) {
+                        event.payload(CustomEventPlugin.Payload.class).ifPresent(p -> System.out.println(p.value()));
+                    }
+
                 },
-                Collections.singletonList(new NodesCountPlugin())
+                Arrays.asList(
+                        new CustomEventPlugin(),
+                        new NodesCountPlugin(),
+                        new HtmlOutputPlugin()
+                )
         ).compile(
                 new SourceFiles(
                         Paths.get(Main.class.getResource("/").toURI())
