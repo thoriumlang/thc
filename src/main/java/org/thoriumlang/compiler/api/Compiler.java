@@ -9,6 +9,7 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -17,12 +18,8 @@ public class Compiler {
     private final CompilationListener listener;
 
     public Compiler(CompilationListener listener, List<Plugin> plugins) {
-        this.listener = listener;
-        this.plugins = plugins;
-    }
-
-    public Compiler(CompilationListener listener) {
-        this(listener, Collections.emptyList());
+        this.listener = Objects.requireNonNull(listener, "listener cannot be null");
+        this.plugins = Objects.requireNonNull(plugins, "plugins cannot be null");
     }
 
     public void compile(Sources sources) {
