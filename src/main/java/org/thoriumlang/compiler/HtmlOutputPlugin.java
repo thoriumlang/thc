@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 public class HtmlOutputPlugin implements Plugin {
     @Override
     public List<CompilationError> execute(CompilationContext context) {
-        try {
-            Root root = context.root();
-            new FileOutputStream("/tmp/" + root.getTopLevelNode().getName() + ".html").write(
+        Root root = context.root();
+        try (FileOutputStream fos = new FileOutputStream("/tmp/" + root.getTopLevelNode().getName() + ".html")) {
+            fos.write(
                     new HtmlWalker(
                             root,
                             context.errors()

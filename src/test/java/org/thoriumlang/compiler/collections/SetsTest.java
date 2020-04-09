@@ -9,7 +9,7 @@ class SetsTest {
     @Test
     void merge() {
         Assertions.assertThat(
-                Lists.merge(Collections.singletonList("A"), Collections.singletonList("B"))
+                Sets.merge(Collections.singletonList("A"), Collections.singletonList("B"))
         ).containsExactly("A", "B");
     }
 }
