@@ -157,7 +157,6 @@
                         <exclude>org/thoriumlang/compiler/antlr/*</exclude>
                         <exclude>org/thoriumlang/compiler/*Plugin.java</exclude><!-- this is temporary -->
                         <exclude>org/thoriumlang/compiler/Main.java</exclude>
-                        <exclude>org/thoriumlang/compiler/api/Compiler.java</exclude><!-- TODO add tests -->
                     </excludes>
                 </configuration>
                 <executions>
