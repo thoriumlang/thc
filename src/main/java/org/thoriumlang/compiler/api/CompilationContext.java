@@ -4,21 +4,20 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class CompilationContext {
     private final AST ast;
-    private final List<CompilationError> errors;
     private final CompilationListener listener;
     private Map<Class<?>, Object> map;
 
     public CompilationContext(AST ast, CompilationListener listener) {
-        this.ast = ast;
-        this.errors = new ArrayList<>(ast.errors());
-        this.listener = listener;
+        this.ast = Objects.requireNonNull(ast, "ast cannot be null");
+        this.listener = Objects.requireNonNull(listener, "listener cannot be null");
         this.map = new HashMap<>();
     }
 
@@ -35,8 +34,8 @@ public class CompilationContext {
     }
 
     @SuppressWarnings("unchecked") // we know it's the correct type thanks to put
-    public <T> T get(Class<T> key) {
-        return (T) map.get(key);
+    public <T> Optional<T> get(Class<T> key) {
+        return Optional.ofNullable((T) map.get(key));
     }
 
     public <T> void put(Class<T> key, T value) {

@@ -27,63 +27,56 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-@SuppressWarnings({"squid:S106", "squid:S00112"})
 public class Main {
     public static void main(String[] args) throws URISyntaxException {
         new Main().compile();
     }
 
     private void compile() throws URISyntaxException {
-        new Compiler(
-                new CompilationListener() {
-                    @Override
-                    public void onCompilationStarted(int sourcesCount) {
-                        System.out.println(String.format("About to compile %d sources", sourcesCount));
-                    }
+        CompilationListener listener = new CompilationListener() {
+            @Override
+            public void onCompilationStarted(int sourcesCount) {
+                System.out.println(String.format("About to compile %d sources", sourcesCount));
+            }
 
-                    @Override
-                    public void onCompilationFinished() {
-                        System.out.println("Compilation finished");
-                    }
+            @Override
+            public void onCompilationFinished() {
+                System.out.println("Compilation finished");
+            }
 
-                    @Override
-                    public void onCompilationProgress(float progress) {
-                        System.out.println(String.format("progress: %f", progress));
-                    }
+            @Override
+            public void onCompilationProgress(float progress) {
+                System.out.println(String.format("progress: %f", progress));
+            }
 
-                    @Override
-                    public void onSourceStarted(Source source) {
-                        System.out.println(String.format("Processing %s", source));
-                    }
+            @Override
+            public void onSourceStarted(Source source) {
+                System.out.println(String.format("Processing %s", source));
+            }
 
-                    @Override
-                    public void onSourceFinished(Source source, CompilationContext context) {
-                        System.out.println(String.format(
-                                "Processed %d nodes",
-                                context.get(NodesCountPlugin.Count.class).getCount()
-                        ));
-                    }
+            @Override
+            public void onSourceFinished(Source source, CompilationContext context) {
+                context.get(NodesCountPlugin.Count.class).ifPresent(
+                        c -> System.out.println(String.format("Processed %d nodes", c.getCount()))
+                );
+            }
 
-                    @Override
-                    public void onError(Source source, CompilationError error) {
-                        System.out.println(error);
-                    }
+            @Override
+            public void onError(Source source, CompilationError error) {
+                System.out.println(error);
+            }
 
-                    @Override
-                    public void onEvent(Event event) {
-                        event.payload(CustomEventPlugin.Payload.class).ifPresent(p -> System.out.println(p.value()));
-                    }
+            @Override
+            public void onEvent(Event event) {
+                event.payload(CustomEventPlugin.Payload.class).ifPresent(p -> System.out.println(p.value()));
+            }
 
-                },
-                Arrays.asList(
-                        new CustomEventPlugin(),
-                        new NodesCountPlugin(),
-                        new HtmlOutputPlugin()
-                )
-        ).compile(
-                new SourceFiles(
-                        Paths.get(Main.class.getResource("/").toURI())
-                )
-        );
+        };
+
+        new Compiler(listener, Arrays.asList(
+                new CustomEventPlugin(),
+                new NodesCountPlugin(),
+                new HtmlOutputPlugin()
+        )).compile(new SourceFiles(Paths.get(Main.class.getResource("/").toURI())));
     }
 }

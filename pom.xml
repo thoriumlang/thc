@@ -155,7 +155,9 @@
                 <configuration>
                     <excludes>
                         <exclude>org/thoriumlang/compiler/antlr/*</exclude>
-                        <exclude>org/thoriumlang/compiler/Compiler*.class</exclude>
+                        <exclude>org/thoriumlang/compiler/*Plugin.class</exclude><!-- this is temporary -->
+                        <exclude>org/thoriumlang/compiler/Main.class</exclude>
+                        <exclude>org/thoriumlang/compiler/api/Compiler.class</exclude><!-- TODO add tests -->
                     </excludes>
                 </configuration>
                 <executions>
