@@ -17,7 +17,6 @@ package org.thoriumlang.compiler.input;
 
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.nodes.NodeId;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 
 public class SourceFile implements Source {
@@ -50,7 +48,8 @@ public class SourceFile implements Source {
     private InputStream inputStream() {
         try {
             return Files.newInputStream(path);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }

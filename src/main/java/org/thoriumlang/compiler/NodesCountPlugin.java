@@ -19,6 +19,7 @@ public class NodesCountPlugin implements Plugin {
         return Collections.emptyList();
     }
 
+    @SuppressWarnings("squid:S1700")
     public static class Count {
         private final int count;
 
