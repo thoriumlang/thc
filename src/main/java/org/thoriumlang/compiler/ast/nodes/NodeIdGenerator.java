@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast.nodes;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class NodeIdGenerator { // TODO make sure we have only one...
+public class NodeIdGenerator {
     private final AtomicLong longGenerator;
 
     public NodeIdGenerator() {
