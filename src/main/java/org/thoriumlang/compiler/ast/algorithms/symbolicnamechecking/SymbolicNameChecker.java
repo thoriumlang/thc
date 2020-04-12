@@ -15,8 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
 import java.util.List;

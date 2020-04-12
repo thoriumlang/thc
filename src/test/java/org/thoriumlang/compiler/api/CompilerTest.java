@@ -2,8 +2,9 @@ package org.thoriumlang.compiler.api;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -23,7 +24,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class CompilerTest {
-
     @Test
     void constructor_listener() {
         Assertions.assertThatThrownBy(() -> new Compiler(null, Collections.singletonList(new Plugin())))
@@ -60,9 +60,9 @@ class CompilerTest {
                 .containsExactly(
                         "onCompilationStarted:1",
                         "onSourceStarted",
-                        "onError:ast",
+                        "onError:ast (-1)",
                         "onEvent:plugin",
-                        "onError:plugin",
+                        "onError:plugin (-1)",
                         "onSourceFinished",
                         "onCompilationProgress:1.0",
                         "onCompilationFinished"
@@ -76,7 +76,7 @@ class CompilerTest {
                         .stream()
                         .map(CompilationError::toString)
                         .collect(Collectors.toList())
-        ).containsExactly("ast");
+        ).containsExactly("ast (-1)");
 
         Assertions.assertThat(listener.context.root())
                 .isSameAs(ast.root());
@@ -106,7 +106,13 @@ class CompilerTest {
 
             @Override
             public List<CompilationError> errors() {
-                return Collections.singletonList(new CompilationError("ast", new NodeStub()));
+                return Collections.singletonList(new CompilationError(
+                        "ast",
+                        new NodeStub()
+                                .getContext()
+                                .put(SourcePosition.class, new SourcePosition(-1, -1))
+                                .getNode()
+                ));
             }
         };
     }
@@ -115,7 +121,13 @@ class CompilerTest {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
-            return Collections.singletonList(new CompilationError("plugin", new NodeStub()));
+            return Collections.singletonList(new CompilationError(
+                    "plugin",
+                    new NodeStub()
+                            .getContext()
+                            .put(SourcePosition.class, new SourcePosition(-1, -1))
+                            .getNode()
+            ));
         }
     }
 

@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.api.errors;
 
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Node;
 
-// TODO move outside of algorithms
-public class CompilationError {
-    private final String message;
+public class CompilationError { // TODO have one for each type of error? symbol not found, symbol already defined, etc.?
     private final Node node;
+    private final String message;
 
     public CompilationError(String message, Node node) {
-        this.message = message;
         this.node = node;
+        this.message = String.format("%s (%d)", message, node.getContext().require(SourcePosition.class).getLine());
     }
 
     public Node getNode() {

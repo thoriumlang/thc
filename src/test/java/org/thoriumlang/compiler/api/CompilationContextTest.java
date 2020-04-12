@@ -2,8 +2,9 @@ package org.thoriumlang.compiler.api;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -58,7 +59,13 @@ class CompilationContextTest {
 
         @Override
         public List<CompilationError> errors() {
-            return Collections.singletonList(new CompilationError("message", new NodeStub()));
+            return Collections.singletonList(new CompilationError(
+                    "message",
+                    new NodeStub()
+                            .getContext()
+                            .put(SourcePosition.class, new SourcePosition(-1, -1))
+                            .getNode()
+            ));
         }
     };
 

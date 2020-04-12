@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.output.html;
 import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;

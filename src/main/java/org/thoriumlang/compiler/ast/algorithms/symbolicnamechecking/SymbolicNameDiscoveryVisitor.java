@@ -15,9 +15,8 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -252,11 +251,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     private List<CompilationError> alreadyDefined(SymbolTable symbolTable, String identifier, Node node) {
         if (symbolTable.inScope(new Name(identifier))) {
             return Collections.singletonList(
-                    new CompilationError(String.format(
-                            "symbol already defined: %s (%d)",
-                            identifier,
-                            node.getContext().require(SourcePosition.class).getLine()
-                    ), node)
+                    new CompilationError(String.format("symbol already defined: %s", identifier), node)
             );
         }
 
@@ -264,10 +259,6 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     private CompilationError undefinedError(String name, Node node) {
-        return new CompilationError(String.format(
-                "symbol not found: %s (%d)",
-                name,
-                node.getContext().require(SourcePosition.class).getLine()
-        ), node);
+        return new CompilationError(String.format("symbol not found: %s", name), node);
     }
 }

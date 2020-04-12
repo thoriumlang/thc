@@ -1,6 +1,6 @@
 package org.thoriumlang.compiler.api;
 
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.input.Source;
 
 public interface CompilationListener {

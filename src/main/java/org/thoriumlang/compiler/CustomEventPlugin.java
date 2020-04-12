@@ -1,9 +1,9 @@
 package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.api.CompilationContext;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.Event;
 import org.thoriumlang.compiler.api.Plugin;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 
 import java.util.Collections;
 import java.util.List;

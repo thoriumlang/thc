@@ -1,7 +1,7 @@
 package org.thoriumlang.compiler.api;
 
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
 import java.util.HashMap;
@@ -25,7 +25,7 @@ public class CompilationContext {
         return ast.root();
     }
 
-    public List<CompilationError> errors() {
+    public List<CompilationError> errors() { // TODO shouldn't errors be sent to CompilationListener.onError?
         return ast.errors();
     }
 

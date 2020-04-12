@@ -59,7 +59,7 @@ public class SourceToAST {
 
         if (!ast.errors().isEmpty()) {
             // TODO have Source expose some errorPrefix() to show it below:
-            ast.errors().forEach(err -> System.err.println(String.format("--: %s", err)));
+            ast.errors().forEach(err -> System.err.println(String.format("--: %s", err))); // TODO remove!
         }
 
         return ast;

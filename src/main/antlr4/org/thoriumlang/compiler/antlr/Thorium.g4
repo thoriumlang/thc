@@ -166,6 +166,6 @@ methodArguments
     : value ( ',' value )*
     ;
 
-ERRCHAR
-    : . -> channel(HIDDEN)
-    ;
+//ERRCHAR
+//    : . -> channel(HIDDEN)
+//    ;

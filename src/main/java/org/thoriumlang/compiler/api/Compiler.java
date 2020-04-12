@@ -7,7 +7,6 @@ import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,8 +22,7 @@ public class Compiler {
     }
 
     public void compile(Sources sources) {
-        // TODO optimize: if a top level is already known because already visited, don't recreate the ast from scratch,
-        //  reuse it
+        // TODO optimize: if a top level is already known reuse it
 
         List<Source> sourcesToCompile = sources.sources();
         AtomicInteger sourcesProcessed = new AtomicInteger(0);

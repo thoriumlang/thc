@@ -16,10 +16,10 @@
 package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.api.CompilationContext;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.CompilationListener;
 import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.Event;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 

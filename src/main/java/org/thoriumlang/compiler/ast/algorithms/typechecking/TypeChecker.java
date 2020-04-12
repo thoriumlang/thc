@@ -15,10 +15,9 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.algorithms.CompilationError;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
@@ -62,10 +61,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
                         return null;
                     }
 
-                    return new CompilationError(String.format("symbol not found: %s (%d)",
-                            t.getType(),
-                            t.getContext().require(SourcePosition.class).getLine()
-                    ), t);
+                    return new CompilationError(String.format("symbol not found: %s", t.getType()), t);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
