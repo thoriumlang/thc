@@ -64,7 +64,7 @@ public class Main {
 
             @Override
             public void onError(Source source, CompilationError error) {
-                System.out.println(error);
+                System.err.println(error);
             }
 
             @Override
