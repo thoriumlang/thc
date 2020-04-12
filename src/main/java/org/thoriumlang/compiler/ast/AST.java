@@ -19,9 +19,11 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
+import org.thoriumlang.compiler.antlr4.ErrorListener;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
-import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SyntaxError;
+import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -30,16 +32,20 @@ import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class AST {
+public class AST implements SyntaxErrorListener {
     private final InputStream inputStream;
     private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
     private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
+    private final ErrorListener syntaxErrorListener;
 
+    private boolean parsed = false;
     private Root root;
     private List<CompilationError> errors;
 
@@ -48,55 +54,86 @@ public class AST {
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
+        this.syntaxErrorListener = new ErrorListener(this);
     }
 
-    public Root root() {
-        if (root != null) {
-            return root;
+    public Optional<Root> root() {
+        if (parsed) {
+            return Optional.ofNullable(root);
         }
 
         synchronized (inputStream) {
-            if (root == null) {
-                root = (Root) new RelativesInjectionVisitor().visit(
-                        new TypeFlattenedRoot(
-                                nodeIdGenerator,
-                                new RootVisitor(nodeIdGenerator, namespace).visit(
-                                        parser().root()
-                                )
-                        ).root()
-                );
+            if (parsed) {
+                return Optional.ofNullable(root);
             }
 
-            errors = algorithms.stream()
-                    .map(a -> a.walk(root))
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList());
+            parsed = true;
+            errors = new ArrayList<>();
+
+            ThoriumParser.RootContext rootContext = parser().root();
+
+            if (!errors.isEmpty()) {
+                // parsing failed, we cannot proceed...
+                return Optional.empty();
+            }
+
+            root = (Root) new RelativesInjectionVisitor().visit(
+                    new TypeFlattenedRoot(
+                            nodeIdGenerator,
+                            new RootVisitor(nodeIdGenerator, namespace).visit(
+                                    rootContext
+                            )
+                    ).root()
+            );
+
+            errors.addAll(
+                    algorithms.stream()
+                            .map(a -> a.walk(root))
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList())
+            );
         }
 
-        return root;
+        return Optional.ofNullable(root);
     }
 
     public List<CompilationError> errors() {
-        if (root == null) {
+        if (!parsed) {
             throw new IllegalStateException("error() called before root()");
         }
         return errors;
     }
 
     private ThoriumParser parser() {
-        try {
-            return new ThoriumParser(
+            ThoriumParser parser = new ThoriumParser(
                     new CommonTokenStream(
-                            new ThoriumLexer(
-                                    CharStreams.fromStream(
-                                            inputStream
-                                    )
-                            )
+                            lexer()
                     )
             );
+            parser.removeErrorListeners();
+            parser.addErrorListener(syntaxErrorListener);
+
+            return parser;
+    }
+
+    private ThoriumLexer lexer() {
+        try {
+            ThoriumLexer lexer = new ThoriumLexer(
+                    CharStreams.fromStream(
+                            inputStream
+                    )
+            );
+            lexer.removeErrorListeners();
+            lexer.addErrorListener(syntaxErrorListener);
+            return lexer;
         }
         catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public void onError(SyntaxError syntaxError) {
+        errors.add(syntaxError);
     }
 }

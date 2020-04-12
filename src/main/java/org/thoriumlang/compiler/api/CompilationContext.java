@@ -21,11 +21,11 @@ public class CompilationContext {
         this.map = new HashMap<>();
     }
 
-    public Root root() {
+    public Optional<Root> root() {
         return ast.root();
     }
 
-    public List<CompilationError> errors() { // TODO shouldn't errors be sent to CompilationListener.onError?
+    public List<CompilationError> errors() { // TODO shouldn't errors only be sent to CompilationListener.onError?
         return ast.errors();
     }
 

@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.symboltable;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.symbols.Name;
@@ -33,7 +33,7 @@ public class SymbolTableInitializer implements Algorithm {
     }
 
     @Override
-    public List<CompilationError> walk(Root root) {
+    public List<SemanticError> walk(Root root) {
         root.accept(
                 new SymbolTableInitializationVisitor(
                         findLocalTable(

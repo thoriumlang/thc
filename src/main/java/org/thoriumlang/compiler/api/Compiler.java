@@ -35,10 +35,9 @@ public class Compiler {
             AST ast = new SourceToAST(
                     new NodeIdGenerator(),
                     sources,
-                    new SymbolTable()
+                    new SymbolTable(),
+                    listener
             ).convert(source);
-
-            ast.errors().forEach(e -> listener.onError(source, e)); // TODO refactor error handling?
 
             CompilationContext context = new CompilationContext(ast, listener);
 

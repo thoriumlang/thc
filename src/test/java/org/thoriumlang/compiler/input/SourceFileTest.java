@@ -26,8 +26,12 @@ class SourceFileTest {
         Assertions.assertThat(ast.root())
                 .isNotNull();
 
-        Assertions.assertThat(ast.root().getContext().get(SymbolTable.class))
-                .isPresent();
+        Assertions.assertThat(ast
+                .root()
+                .orElseThrow(() -> new IllegalStateException("no root found"))
+                .getContext()
+                .get(SymbolTable.class)
+        ).isPresent();
     }
 
     @Test

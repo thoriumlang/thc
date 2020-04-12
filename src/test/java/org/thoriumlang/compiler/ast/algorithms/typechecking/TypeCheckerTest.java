@@ -18,7 +18,8 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.SourceToAST;
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.NoopCompilationListener;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -54,10 +55,10 @@ class TypeCheckerTest {
                                         "namespace",
                                         new NodeIdGenerator(),
                                         Collections.singletonList(new SymbolTableInitializer(new SymbolTable()))
-                                ).root()
+                                ).root().orElseThrow(() -> new IllegalStateException("no root found"))
                         )
                         .stream()
-                        .map(CompilationError::toString)
+                        .map(SemanticError::toString)
         ).containsExactly(
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest (3)",
                 "symbol not found: UnknownSupertype (6)",
@@ -80,14 +81,19 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable()).convert(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable(), new NoopCompilationListener())
+                .convert(source);
 
         ast.root();
 
         Assertions.assertThat(ast.errors())
                 .isEmpty();
 
-        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+        SymbolTable symbolTable = ast
+                .root()
+                .orElseThrow(() -> new IllegalStateException("no root found"))
+                .getContext()
+                .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
                 .isPresent();
@@ -104,14 +110,19 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable()).convert(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable(), new NoopCompilationListener())
+                .convert(source);
 
         ast.root();
 
         Assertions.assertThat(ast.errors())
                 .isEmpty();
 
-        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+        SymbolTable symbolTable = ast
+                .root()
+                .orElseThrow(() -> new IllegalStateException("no root found"))
+                .getContext()
+                .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
                 .isPresent();
@@ -129,14 +140,19 @@ class TypeCheckerTest {
         Source source = sources.sources().get(0);
 
         SymbolTable rootSymbolTable = new SymbolTable();
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, rootSymbolTable).convert(source);
+        AST ast = new SourceToAST(new NodeIdGenerator(), sources, rootSymbolTable, new NoopCompilationListener())
+                .convert(source);
 
         ast.root();
 
         Assertions.assertThat(ast.errors())
                 .isEmpty();
 
-        SymbolTable symbolTable = ast.root().getContext().require(SymbolTable.class);
+        SymbolTable symbolTable = ast
+                .root()
+                .orElseThrow(() -> new IllegalStateException("no root found"))
+                .getContext()
+                .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
                 .isPresent();

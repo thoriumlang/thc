@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -49,19 +49,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
+class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     @Override
-    public List<CompilationError> visit(Root node) {
+    public List<SemanticError> visit(Root node) {
         return node.getTopLevelNode().accept(this);
     }
 
     @Override
-    public List<CompilationError> visit(Type node) {
+    public List<SemanticError> visit(Type node) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<CompilationError> visit(Class node) {
+    public List<SemanticError> visit(Class node) {
         return Lists.merge(
                 node.getAttributes().stream()
                         .map(m -> m.accept(this))
@@ -75,10 +75,10 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Attribute node) {
+    public List<SemanticError> visit(Attribute node) {
         SymbolTable symbolTable = getSymbolTable(node).enclosingScope();
 
-        List<CompilationError> errors = Lists.merge(
+        List<SemanticError> errors = Lists.merge(
                 alreadyDefined(symbolTable, node.getIdentifier(), node),
                 node.getValue().accept(this)
         );
@@ -89,32 +89,32 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(StringValue node) {
+    public List<SemanticError> visit(StringValue node) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<CompilationError> visit(NumberValue node) {
+    public List<SemanticError> visit(NumberValue node) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<CompilationError> visit(BooleanValue node) {
+    public List<SemanticError> visit(BooleanValue node) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<CompilationError> visit(NoneValue node) {
+    public List<SemanticError> visit(NoneValue node) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<CompilationError> visit(IdentifierValue node) {
+    public List<SemanticError> visit(IdentifierValue node) {
         return node.getReference().accept(this);
     }
 
     @Override
-    public List<CompilationError> visit(Reference node) {
+    public List<SemanticError> visit(Reference node) {
         Optional<Node> referencedNode = getSymbolTable(node)
                 .find(new Name(node.getName()))
                 .map(Symbol::getDefiningNode);
@@ -129,7 +129,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(DirectAssignmentValue node) {
+    public List<SemanticError> visit(DirectAssignmentValue node) {
         return Lists.merge(
                 node.getReference().accept(this),
                 node.getValue().accept(this)
@@ -137,7 +137,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(IndirectAssignmentValue node) {
+    public List<SemanticError> visit(IndirectAssignmentValue node) {
         // TODO cover with tests
         return Lists.merge(
                 node.getReference().accept(this),
@@ -147,8 +147,8 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(MethodCallValue node) {
-        List<CompilationError> errors = Lists.merge(
+    public List<SemanticError> visit(MethodCallValue node) {
+        List<SemanticError> errors = Lists.merge(
                 node.getMethodArguments().stream()
                         .map(n -> n.accept(this))
                         .flatMap(List::stream)
@@ -167,7 +167,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(NestedValue node) {
+    public List<SemanticError> visit(NestedValue node) {
         return Lists.merge(
                 node.getInner().accept(this),
                 node.getOuter().accept(this)
@@ -175,11 +175,11 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Method node) {
+    public List<SemanticError> visit(Method node) {
         // the first parent is the signature's symbol table; the second parent is the enclosing class
         SymbolTable symbolTable = getSymbolTable(node).enclosingScope().enclosingScope();
 
-        List<CompilationError> errors = alreadyDefined(symbolTable, node.getSignature().getName(), node);
+        List<SemanticError> errors = alreadyDefined(symbolTable, node.getSignature().getName(), node);
 
         symbolTable.put(new Name(node.getSignature().getName()), new SymbolicName(node));
 
@@ -197,10 +197,10 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Parameter node) {
+    public List<SemanticError> visit(Parameter node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        List<CompilationError> errors = alreadyDefined(symbolTable, node.getName(), node);
+        List<SemanticError> errors = alreadyDefined(symbolTable, node.getName(), node);
 
         symbolTable.put(new Name(node.getName()), new SymbolicName(node));
 
@@ -208,15 +208,15 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Statement node) {
+    public List<SemanticError> visit(Statement node) {
         return node.getValue().accept(this);
     }
 
     @Override
-    public List<CompilationError> visit(NewAssignmentValue node) {
+    public List<SemanticError> visit(NewAssignmentValue node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        List<CompilationError> errors = Lists.merge(
+        List<SemanticError> errors = Lists.merge(
                 alreadyDefined(symbolTable, node.getReference().getName(), node),
                 node.getValue().accept(this)
         );
@@ -229,7 +229,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(FunctionValue node) {
+    public List<SemanticError> visit(FunctionValue node) {
         return Lists.merge(
                 node.getParameters().stream()
                         .map(p -> p.accept(this))
@@ -248,17 +248,17 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 
-    private List<CompilationError> alreadyDefined(SymbolTable symbolTable, String identifier, Node node) {
+    private List<SemanticError> alreadyDefined(SymbolTable symbolTable, String identifier, Node node) {
         if (symbolTable.inScope(new Name(identifier))) {
             return Collections.singletonList(
-                    new CompilationError(String.format("symbol already defined: %s", identifier), node)
+                    new SemanticError(String.format("symbol already defined: %s", identifier), node)
             );
         }
 
         return Collections.emptyList();
     }
 
-    private CompilationError undefinedError(String name, Node node) {
-        return new CompilationError(String.format("symbol not found: %s", name), node);
+    private SemanticError undefinedError(String name, Node node) {
+        return new SemanticError(String.format("symbol not found: %s", name), node);
     }
 }

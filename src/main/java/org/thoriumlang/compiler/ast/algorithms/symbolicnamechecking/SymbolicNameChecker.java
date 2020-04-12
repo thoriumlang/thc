@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
@@ -29,7 +29,7 @@ public class SymbolicNameChecker implements Algorithm {
     }
 
     @Override
-    public List<CompilationError> walk(Root root) {
+    public List<SemanticError> walk(Root root) {
         return root.accept(symbolicNameDiscoveryVisitor);
     }
 }

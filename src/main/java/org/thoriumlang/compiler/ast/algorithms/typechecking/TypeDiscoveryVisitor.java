@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
  * This visitor is in charge of discovering all the types / classes available in the current compilation unit. It fills
  * the root symbol tables with all types it finds.
  */
-public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
+public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     private final String namespace;
     private final TypeLoader typeLoader;
 
@@ -55,7 +55,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Root node) {
+    public List<SemanticError> visit(Root node) {
         return Lists.merge(
                 node.getUses().stream()
                         .map(u -> u.accept(this))
@@ -66,7 +66,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Use node) {
+    public List<SemanticError> visit(Use node) {
         // FIXME duplicate use name: return error
 
         Name name = new Name(node.getFrom(), namespace);
@@ -83,7 +83,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
         }
 
         return Collections.singletonList(
-                new CompilationError(String.format("symbol not found: %s", node.getFrom()), node)
+                new SemanticError(String.format("symbol not found: %s", node.getFrom()), node)
         );
     }
 
@@ -94,7 +94,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(TypeParameter node) {
+    public List<SemanticError> visit(TypeParameter node) {
         getSymbolTable(node).put(
                 new Name(node.getName()),
                 new ThoriumType(node, node)
@@ -104,8 +104,8 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Type node) {
-        List<CompilationError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
+    public List<SemanticError> visit(Type node) {
+        List<SemanticError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
 
         if (!errors.isEmpty()) {
             return errors;
@@ -117,12 +117,12 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
                 .collect(Collectors.toList());
     }
 
-    private List<CompilationError> visitTopLevel(TopLevelNode node, String name, List<TypeParameter> typeParameters) {
+    private List<SemanticError> visitTopLevel(TopLevelNode node, String name, List<TypeParameter> typeParameters) {
         SymbolTable symbolTable = getSymbolTable(node);
 
         if (symbolTable.find(new Name(name)).isPresent()) {
             return Collections.singletonList(
-                    new CompilationError(String.format("symbol already defined: %s", name), node)
+                    new SemanticError(String.format("symbol already defined: %s", name), node)
             );
         }
 
@@ -141,8 +141,8 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Class node) {
-        List<CompilationError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
+    public List<SemanticError> visit(Class node) {
+        List<SemanticError> errors = visitTopLevel(node, node.getName(), node.getTypeParameters());
 
         if (!errors.isEmpty()) {
             return errors;
@@ -162,7 +162,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(Method node) {
+    public List<SemanticError> visit(Method node) {
         return Lists.merge(
                 node.getSignature().accept(this),
                 node.getStatements().stream()
@@ -174,7 +174,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(MethodSignature node) {
+    public List<SemanticError> visit(MethodSignature node) {
         return node.getTypeParameters().stream()
                 .map(p -> p.accept(this))
                 .flatMap(List::stream)
@@ -182,7 +182,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<CompilationError>> {
     }
 
     @Override
-    public List<CompilationError> visit(FunctionValue node) {
+    public List<SemanticError> visit(FunctionValue node) {
         return node.getTypeParameters().stream()
                 .map(p -> p.accept(this))
                 .flatMap(List::stream)

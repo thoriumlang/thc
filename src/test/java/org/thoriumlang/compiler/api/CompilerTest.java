@@ -3,6 +3,7 @@ package org.thoriumlang.compiler.api;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -15,7 +16,6 @@ import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.testsupport.NodeStub;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,12 +74,12 @@ class CompilerTest {
         Assertions.assertThat(
                 listener.context.errors()
                         .stream()
-                        .map(CompilationError::toString)
+                        .map(Object::toString)
                         .collect(Collectors.toList())
         ).containsExactly("ast (-1)");
 
-        Assertions.assertThat(listener.context.root())
-                .isSameAs(ast.root());
+        Assertions.assertThat(listener.context.root().orElseThrow(() -> new IllegalStateException("no root found")))
+                .isSameAs(ast.root().orElseThrow(() -> new IllegalStateException("no root found")));
     }
 
     private AST ast() {
@@ -100,13 +100,13 @@ class CompilerTest {
             );
 
             @Override
-            public Root root() {
-                return root;
+            public Optional< Root> root() {
+                return Optional.of(root);
             }
 
             @Override
             public List<CompilationError> errors() {
-                return Collections.singletonList(new CompilationError(
+                return Collections.singletonList(new SemanticError(
                         "ast",
                         new NodeStub()
                                 .getContext()
@@ -121,7 +121,7 @@ class CompilerTest {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
-            return Collections.singletonList(new CompilationError(
+            return Collections.singletonList(new SemanticError(
                     "plugin",
                     new NodeStub()
                             .getContext()
@@ -179,7 +179,7 @@ class CompilerTest {
 
     private static class InputStreamStub extends InputStream {
         @Override
-        public int read() throws IOException {
+        public int read() {
             return 0;
         }
     }

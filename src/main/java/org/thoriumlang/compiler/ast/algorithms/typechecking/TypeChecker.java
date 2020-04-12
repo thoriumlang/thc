@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.nodes.Node;
@@ -41,8 +41,8 @@ public class TypeChecker implements Algorithm, TypeLoader {
     }
 
     @Override
-    public List<CompilationError> walk(Root root) {
-        List<CompilationError> discoveryErrors = root
+    public List<SemanticError> walk(Root root) {
+        List<SemanticError> discoveryErrors = root
                 .accept(
                         new TypeDiscoveryVisitor(
                                 root.getNamespace(),
@@ -50,7 +50,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
                         )
                 );
 
-        List<CompilationError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
+        List<SemanticError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
                 .visit(root).stream()
                 .map(t -> (TypeSpecSimple) t)
                 .filter(t -> !t.getContext().require(SymbolTable.class).find(new Name(t.getType())).isPresent())
@@ -61,7 +61,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
                         return null;
                     }
 
-                    return new CompilationError(String.format("symbol not found: %s", t.getType()), t);
+                    return new SemanticError(String.format("symbol not found: %s", t.getType()), t);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

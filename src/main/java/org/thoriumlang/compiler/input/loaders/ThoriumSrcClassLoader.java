@@ -1,6 +1,7 @@
 package org.thoriumlang.compiler.input.loaders;
 
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.CompilationListener;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -16,10 +17,12 @@ import java.util.Optional;
 public class ThoriumSrcClassLoader implements TypeLoader {
     private final NodeIdGenerator nodeIdGenerator;
     private final Sources sources;
+    private final CompilationListener listener;
 
-    public ThoriumSrcClassLoader(NodeIdGenerator nodeIdGenerator, Sources sources) {
+    public ThoriumSrcClassLoader(NodeIdGenerator nodeIdGenerator, Sources sources, CompilationListener listener) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.sources = sources;
+        this.listener = listener;
     }
 
     @Override
@@ -33,12 +36,10 @@ public class ThoriumSrcClassLoader implements TypeLoader {
         AST ast = new SourceToAST(
                 nodeIdGenerator,
                 sources,
-                triggerNode.getContext().require(SymbolTable.class).root()
+                triggerNode.getContext().require(SymbolTable.class).root(),
+                listener
         ).convert(loadedSource.get());
 
-        ThoriumType symbol = new ThoriumType(triggerNode, ast.root().getTopLevelNode());
-        // TODO do something about errors
-
-        return Optional.of(symbol);
+        return ast.root().map(root -> new ThoriumType(triggerNode, root.getTopLevelNode()));
     }
 }

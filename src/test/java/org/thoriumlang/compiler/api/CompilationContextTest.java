@@ -3,6 +3,7 @@ package org.thoriumlang.compiler.api;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -10,56 +11,28 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
-import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.testsupport.NodeStub;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 class CompilationContextTest {
-    private static final CompilationListener listener = new CompilationListener() {
-        @Override
-        public void onCompilationStarted(int sourcesCount) {
-        }
-
-        @Override
-        public void onCompilationFinished() {
-        }
-
-        @Override
-        public void onCompilationProgress(float progress) {
-        }
-
-        @Override
-        public void onSourceStarted(Source source) {
-        }
-
-        @Override
-        public void onSourceFinished(Source source, CompilationContext context) {
-        }
-
-        @Override
-        public void onError(Source source, CompilationError error) {
-        }
-
-        @Override
-        public void onEvent(Event event) {
-        }
-    };
+    private static final CompilationListener listener = new NoopCompilationListener();
     private static final Root root = new RootStub();
     private static AST ast = new AST(
             new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList()
     ) {
         @Override
-        public Root root() {
-            return root;
+        public Optional<Root> root() {
+            return Optional.of(root);
         }
 
         @Override
         public List<CompilationError> errors() {
-            return Collections.singletonList(new CompilationError(
+            return Collections.singletonList(new SemanticError(
                     "message",
                     new NodeStub()
                             .getContext()
@@ -85,8 +58,11 @@ class CompilationContextTest {
 
     @Test
     void root() {
-        Assertions.assertThat(new CompilationContext(ast, listener).root())
-                .isSameAs(root);
+        Assertions.assertThat(
+                new CompilationContext(ast, listener)
+                        .root()
+                        .orElseThrow(() -> new IllegalStateException("no root found"))
+        ).isSameAs(root);
     }
 
     @Test

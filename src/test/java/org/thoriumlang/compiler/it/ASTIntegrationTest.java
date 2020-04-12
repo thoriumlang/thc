@@ -70,7 +70,7 @@ class ASTIntegrationTest {
                 )
         );
 
-        Root root = ast.root();
+        Root root = ast.root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         List<CompilationError> errors = ast.errors();
 

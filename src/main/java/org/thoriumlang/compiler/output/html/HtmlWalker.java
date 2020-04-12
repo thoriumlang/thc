@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.output.html;
 import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
@@ -97,14 +97,14 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
             .put(Statement.class, classpathTemplate(TEMPLATE_PATH + "statement.twig"))
-            .put(CompilationError.class, classpathTemplate(TEMPLATE_PATH + "compilationError.twig"))
+            .put(SemanticError.class, classpathTemplate(TEMPLATE_PATH + "compilationError.twig"))
             .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig"))
             .build();
     private final Root root;
-    private final Map<Node, List<CompilationError>> compilationErrors;
+    private final Map<Node, List<SemanticError>> compilationErrors;
     private final List<String> symbolTables;
 
-    public HtmlWalker(Root root, Map<Node, List<CompilationError>> compilationErrors) {
+    public HtmlWalker(Root root, Map<Node, List<SemanticError>> compilationErrors) {
         this.root = root;
         this.compilationErrors = compilationErrors;
         this.symbolTables = new LinkedList<>();

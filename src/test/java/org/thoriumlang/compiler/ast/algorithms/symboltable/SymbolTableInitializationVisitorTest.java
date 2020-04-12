@@ -769,7 +769,7 @@ class SymbolTableInitializationVisitorTest {
                 "namespace",
                 new NodeIdGenerator(),
                 Collections.emptyList()
-        ).root();
+        ).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         visitor.visit(root);
 

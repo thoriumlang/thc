@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler;
 
+import org.thoriumlang.compiler.api.CompilationListener;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
@@ -33,11 +34,13 @@ public class SourceToAST {
     private final NodeIdGenerator nodeIdGenerator;
     private final Sources sources;
     private final SymbolTable symbolTable;
+    private final CompilationListener listener;
 
-    public SourceToAST(NodeIdGenerator nodeIdGenerator, Sources sources, SymbolTable symbolTable) {
+    public SourceToAST(NodeIdGenerator nodeIdGenerator, Sources sources, SymbolTable symbolTable, CompilationListener listener) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.sources = sources;
         this.symbolTable = symbolTable;
+        this.listener = listener;
     }
 
     public AST convert(Source source) {
@@ -47,7 +50,7 @@ public class SourceToAST {
                         new SymbolTableInitializer(symbolTable),
                         new TypeChecker(
                                 Arrays.asList(
-                                        new ThoriumSrcClassLoader(nodeIdGenerator, sources),
+                                        new ThoriumSrcClassLoader(nodeIdGenerator, sources, listener),
                                         new ThoriumRTClassLoader(),
                                         new JavaRTClassLoader()
                                 )
@@ -57,10 +60,7 @@ public class SourceToAST {
         );
         ast.root();
 
-        if (!ast.errors().isEmpty()) {
-            // TODO have Source expose some errorPrefix() to show it below:
-            ast.errors().forEach(err -> System.err.println(String.format("--: %s", err))); // TODO remove!
-        }
+        ast.errors().forEach(e -> listener.onError(source, e));
 
         return ast;
     }

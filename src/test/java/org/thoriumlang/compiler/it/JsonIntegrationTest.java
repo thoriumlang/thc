@@ -22,6 +22,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -77,7 +78,7 @@ class JsonIntegrationTest {
         Stream<Path> files = Files.find(
                 directory,
                 999,
-                (p, bfa) -> !p.getFileName().toString().startsWith("_") && p.getFileName().toString().endsWith(".th")
+                (p, bfa) -> p.getFileName().toString().matches("^[a-z]+_[0-9]{3}\\.th$")
         );
 
         return files
@@ -101,7 +102,8 @@ class JsonIntegrationTest {
                 new SourceToAST(
                         new NodeIdGenerator(),
                         sources,
-                        symbolTable
+                        symbolTable,
+                        new NoopCompilationListener() // TODO Fix if broken tests..
                 ).convert(source)
         ).json();
     }

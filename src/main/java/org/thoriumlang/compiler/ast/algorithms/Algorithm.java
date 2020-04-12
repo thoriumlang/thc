@@ -15,11 +15,11 @@
  */
 package org.thoriumlang.compiler.ast.algorithms;
 
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
 import java.util.List;
 
 public interface Algorithm {
-    List<CompilationError> walk(Root root);
+    List<SemanticError> walk(Root root);
 }

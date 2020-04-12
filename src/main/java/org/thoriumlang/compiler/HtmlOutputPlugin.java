@@ -1,9 +1,9 @@
 package org.thoriumlang.compiler;
 
 import org.thoriumlang.compiler.api.CompilationContext;
-import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.Plugin;
-import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.output.html.HtmlWalker;
 
@@ -17,24 +17,27 @@ import java.util.stream.Collectors;
 public class HtmlOutputPlugin implements Plugin {
     @Override
     public List<CompilationError> execute(CompilationContext context) {
-        Root root = context.root();
-        try (FileOutputStream fos = new FileOutputStream("/tmp/" + root.getTopLevelNode().getName() + ".html")) {
-            fos.write(
-                    new HtmlWalker(
-                            root,
-                            context.errors()
-                                    .stream()
-                                    .collect(Collectors.toMap(
-                                            CompilationError::getNode,
-                                            Collections::singletonList,
-                                            Lists::merge
-                                    ))
-                    ).walk().getBytes()
-            );
-        }
-        catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        context.root().ifPresent(root -> {
+            try (FileOutputStream fos = new FileOutputStream("/tmp/" + root.getTopLevelNode().getName() + ".html")) {
+                fos.write(
+                        new HtmlWalker(
+                                root,
+                                context.errors()
+                                        .stream()
+                                        .filter(e -> e instanceof SemanticError) // TODO use a visitor instead?
+                                        .map(e -> (SemanticError) e)
+                                        .collect(Collectors.toMap(
+                                                SemanticError::getNode,
+                                                Collections::singletonList,
+                                                Lists::merge
+                                        ))
+                        ).walk().getBytes()
+                );
+            }
+            catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
         return Collections.emptyList();
     }
 }

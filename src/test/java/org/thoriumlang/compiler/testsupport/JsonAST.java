@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
 import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.Context;
 import org.thoriumlang.compiler.ast.nodes.NodeId;
@@ -52,7 +53,7 @@ public class JsonAST {
     private final GsonBuilder gson;
 
     public JsonAST(AST ast) {
-        this.root = ast.root();
+        this.root = ast.root().orElseThrow(() -> new IllegalStateException("no root found"));
         this.errors = ast.errors();
         this.gson = new GsonBuilder();
 
@@ -60,8 +61,8 @@ public class JsonAST {
                 .registerTypeAdapter(NodeId.class,
                         (JsonSerializer<NodeId>) (src, typeOfSrc, context) ->
                                 context.serialize(Integer.valueOf(src.format("%d"))))
-                .registerTypeAdapter(CompilationError.class,
-                        (JsonSerializer<CompilationError>) (src, typeOfSrc, context) -> {
+                .registerTypeAdapter(SemanticError.class,
+                        (JsonSerializer<SemanticError>) (src, typeOfSrc, context) -> {
                             JsonObject jsonObject = new JsonObject();
                             jsonObject.add("message", context.serialize(src.toString()));
                             jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));

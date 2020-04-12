@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -45,13 +45,13 @@ class SymbolicNameCheckerTest {
                                 rootSymbolTable
                         )
                 )
-        ).root();
+        ).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         Assertions.assertThat(
                 new SymbolicNameChecker()
                         .walk(root)
                         .stream()
-                        .map(CompilationError::toString)
+                        .map(SemanticError::toString)
         ).containsExactly(
                 "symbol already defined: someU (9)",
                 "symbol not found: otherValue (10)",

@@ -18,7 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
@@ -85,7 +85,7 @@ class TypeDiscoveryVisitorTest {
                 Collections.singletonList(
                         new SymbolTableInitializer(rootSymbolTable)
                 )
-        ).root();
+        ).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         visitor.visit(root);
 
@@ -181,7 +181,7 @@ class TypeDiscoveryVisitorTest {
         ))));
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(CompilationError::toString))
+                .map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound (1)");
         Assertions.assertThat(getSymbol(root, "notFound"))
@@ -362,7 +362,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(CompilationError::toString))
+                .map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName (1)");
 
@@ -444,7 +444,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(CompilationError::toString))
+                .map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: ClassName (1)");
 

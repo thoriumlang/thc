@@ -2,6 +2,7 @@ package org.thoriumlang.compiler.input.loaders;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
@@ -51,8 +52,11 @@ class ThoriumSrcClassLoaderTest {
         new RelativesInjectionVisitor().visit(root);
         new SymbolTableInitializer(rootSymbolTable).walk(root);
 
-        Optional<Symbol> symbol = new ThoriumSrcClassLoader(nodeIdGenerator, new SourcesStub(root.getTopLevelNode()))
-                .load(new Name("package.TypeName"), root.getTopLevelNode());
+        Optional<Symbol> symbol = new ThoriumSrcClassLoader(
+                nodeIdGenerator,
+                new SourcesStub(root.getTopLevelNode()),
+                new NoopCompilationListener()
+        ).load(new Name("package.TypeName"), root.getTopLevelNode());
 
         Assertions.assertThat(symbol)
                 .get()
@@ -76,8 +80,11 @@ class ThoriumSrcClassLoaderTest {
             }
         };
 
-        Optional<Symbol> symbol = new ThoriumSrcClassLoader(nodeIdGenerator, new SourcesStub())
-                .load(new Name("package.TypeName"), node);
+        Optional<Symbol> symbol = new ThoriumSrcClassLoader(
+                nodeIdGenerator,
+                new SourcesStub(),
+                new NoopCompilationListener()
+        ).load(new Name("package.TypeName"), node);
 
         Assertions.assertThat(symbol)
                 .isEmpty();
@@ -107,7 +114,7 @@ class ThoriumSrcClassLoaderTest {
             return Optional.of((nodeIdGenerator, algorithms) ->
                     new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms) {
                         @Override
-                        public Root root() {
+                        public Optional<Root> root() {
                             Root root = new Root(
                                     nodeIdGenerator.next(),
                                     "namespace",
@@ -118,7 +125,7 @@ class ThoriumSrcClassLoaderTest {
                             new SymbolTableInitializer(topLevel.getContext().require(SymbolTable.class))
                                     .walk(root);
 
-                            return root;
+                            return Optional.of(root);
                         }
 
                         @Override
