@@ -22,7 +22,6 @@ import org.thoriumlang.compiler.symbols.Name;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.regex.Pattern;
 
 class SourceFilesTest {
     @Test
@@ -37,10 +36,7 @@ class SourceFilesTest {
         Assertions.assertThat(sources)
                 .hasSize(1);
 
-        Assertions.assertThat(sources.get(0).toString())
-                .matches(
-                        Pattern.compile("org\\.thoriumlang\\.compiler\\.tests :: .*?/org/thoriumlang/compiler/tests/class\\.th")
-                );
+        Assertions.assertThat(sources.get(0).toString()).endsWith("/org/thoriumlang/compiler/tests/class.th");
     }
 
     @Test

@@ -61,6 +61,6 @@ public class SourceFile implements Source {
 
     @Override
     public String toString() {
-        return namespace + " :: " + path.toString();
+        return path.toString();
     }
 }
