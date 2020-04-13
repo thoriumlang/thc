@@ -18,9 +18,10 @@ package org.thoriumlang.compiler.input;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.List;
 
 public interface Source {
-    AST ast(NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms);
+    AST ast(NodeIdGenerator nodeIdGenerator, SymbolTable symbolTable, List<Algorithm> algorithms);
 }

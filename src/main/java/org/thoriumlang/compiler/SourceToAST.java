@@ -18,7 +18,6 @@ package org.thoriumlang.compiler;
 import org.thoriumlang.compiler.api.CompilationListener;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
@@ -46,8 +45,8 @@ public class SourceToAST {
     public AST convert(Source source) {
         AST ast = source.ast(
                 nodeIdGenerator,
+                symbolTable,
                 Arrays.asList(
-                        new SymbolTableInitializer(symbolTable),
                         new TypeChecker(
                                 Arrays.asList(
                                         new ThoriumSrcClassLoader(nodeIdGenerator, sources, listener),

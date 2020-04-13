@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.input;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,12 +37,13 @@ public class SourceFile implements Source {
     }
 
     @Override
-    public AST ast(NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms) {
+    public AST ast(NodeIdGenerator nodeIdGenerator, SymbolTable symbolTable, List<Algorithm> algorithms) {
         return new AST(
                 inputStream(),
                 namespace(),
                 nodeIdGenerator,
-                algorithms
+                algorithms,
+                symbolTable
         );
     }
 

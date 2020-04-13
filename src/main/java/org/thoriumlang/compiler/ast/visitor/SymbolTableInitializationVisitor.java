@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms.symboltable;
+package org.thoriumlang.compiler.ast.visitor;
 
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
@@ -49,11 +49,10 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
-// TODO should maybe not extend Algorithm... same idea as RelativeInjectionVisitor
-class SymbolTableInitializationVisitor extends IdentityVisitor {
+public class SymbolTableInitializationVisitor extends IdentityVisitor {
     private final SymbolTable rootSymbolTable;
 
-    SymbolTableInitializationVisitor(SymbolTable rootSymbolTable) {
+    public SymbolTableInitializationVisitor(SymbolTable rootSymbolTable) {
         this.rootSymbolTable = rootSymbolTable;
     }
 
@@ -172,7 +171,8 @@ class SymbolTableInitializationVisitor extends IdentityVisitor {
                  * Some nasty trick here... MethodSignature can be the child of either a Method or a Type.
                  *  - If the parent is a type, we have to define a new symbol table specific for that signature
                  *    (otherwise, we pollute the upper table)
-                 *  - If the parent is a method, we have to use the same symbol table as signature is part of the method.
+                 *  - If the parent is a method, we have to use the same symbol table as signature is part of the
+                 *    method.
                  */
                 node.getContext()
                         .get(Relatives.class)

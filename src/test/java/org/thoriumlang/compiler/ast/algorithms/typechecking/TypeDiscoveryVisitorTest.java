@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -54,7 +54,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class TypeDiscoveryVisitorTest {
-    private static TypeLoader typeLoader = (name, node) -> {
+    private static final TypeLoader typeLoader = (name, node) -> {
         if (name.getFullName().equals(String.class.getName())) {
             return Optional.of(new JavaClass(node, String.class));
         }
@@ -64,7 +64,7 @@ class TypeDiscoveryVisitorTest {
         return Optional.empty();
     };
 
-    private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
+    private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
     private TypeDiscoveryVisitor visitor;
 
@@ -82,9 +82,8 @@ class TypeDiscoveryVisitorTest {
                 ),
                 "namespace",
                 new NodeIdGenerator(),
-                Collections.singletonList(
-                        new SymbolTableInitializer(rootSymbolTable)
-                )
+                Collections.emptyList(),
+                rootSymbolTable
         ).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         visitor.visit(root);
@@ -531,8 +530,7 @@ class TypeDiscoveryVisitorTest {
     }
 
     private Root injectSymbolTable(Root node) {
-        new SymbolTableInitializer(new SymbolTable()).walk(node);
-        return node;
+        return (Root) new SymbolTableInitializationVisitor(new SymbolTable()).visit(node);
     }
 
     private Optional<Symbol> getSymbol(Node node, String name) {

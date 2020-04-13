@@ -6,7 +6,7 @@ import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -50,7 +50,7 @@ class ThoriumSrcClassLoaderTest {
 
         SymbolTable rootSymbolTable = new SymbolTable();
         new RelativesInjectionVisitor().visit(root);
-        new SymbolTableInitializer(rootSymbolTable).walk(root);
+        new SymbolTableInitializationVisitor(rootSymbolTable).visit(root);
 
         Optional<Symbol> symbol = new ThoriumSrcClassLoader(
                 nodeIdGenerator,
@@ -111,8 +111,8 @@ class ThoriumSrcClassLoaderTest {
             if (topLevel == null) {
                 return Optional.empty();
             }
-            return Optional.of((nodeIdGenerator, algorithms) ->
-                    new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms) {
+            return Optional.of((nodeIdGenerator, symbolTable, algorithms) ->
+                    new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms,symbolTable) {
                         @Override
                         public Optional<Root> root() {
                             Root root = new Root(
@@ -121,9 +121,6 @@ class ThoriumSrcClassLoaderTest {
                                     Collections.emptyList(),
                                     topLevel
                             );
-
-                            new SymbolTableInitializer(topLevel.getContext().require(SymbolTable.class))
-                                    .walk(root);
 
                             return Optional.of(root);
                         }

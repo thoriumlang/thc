@@ -24,10 +24,13 @@ import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.algorithms.typeflattening.TypeFlattenedRoot;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
+import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
+import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,17 +47,19 @@ public class AST implements SyntaxErrorListener {
     private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
     private final ErrorListener syntaxErrorListener;
+    private final SymbolTable symbolTable;
 
     private boolean parsed = false;
     private Root root;
     private List<CompilationError> errors;
 
-    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms) {
+    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms, SymbolTable symbolTable) {
         this.inputStream = Objects.requireNonNull(inputStream, "inputStream cannot be null");
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
         this.syntaxErrorListener = new ErrorListener(this);
+        this.symbolTable = symbolTable;
     }
 
     public Optional<Root> root() {
@@ -77,14 +82,22 @@ public class AST implements SyntaxErrorListener {
                 return Optional.empty();
             }
 
-            root = (Root) new RelativesInjectionVisitor().visit(
-                    new TypeFlattenedRoot(
-                            nodeIdGenerator,
-                            new RootVisitor(nodeIdGenerator, namespace).visit(
-                                    rootContext
-                            )
-                    ).root()
-            );
+            root = (Root) new RootVisitor(nodeIdGenerator, namespace).visit(rootContext)
+                    .accept(new TypeFlatteningVisitor(nodeIdGenerator))
+                    .accept(new RelativesInjectionVisitor())
+                    .accept(new SymbolTableInitializationVisitor(
+                            findLocalTable(symbolTable, new Name(namespace).getParts()))
+                    );
+
+
+//            root = (Root) new RelativesInjectionVisitor().visit(
+//                    new TypeFlattenedRoot(
+//                            nodeIdGenerator,
+//                            new RootVisitor(nodeIdGenerator, namespace).visit(
+//                                    rootContext
+//                            )
+//                    ).root()
+//            );
 
             errors.addAll(
                     algorithms.stream()
@@ -96,6 +109,16 @@ public class AST implements SyntaxErrorListener {
 
         return Optional.ofNullable(root);
     }
+    private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
+        if (namespaces.isEmpty()) {
+            return symbolTable;
+        }
+        ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
+        return findLocalTable(
+                symbolTable.createScope(newNamespaces.remove(0)),
+                newNamespaces
+        );
+    }
 
     public List<CompilationError> errors() {
         if (!parsed) {
@@ -105,15 +128,15 @@ public class AST implements SyntaxErrorListener {
     }
 
     private ThoriumParser parser() {
-            ThoriumParser parser = new ThoriumParser(
-                    new CommonTokenStream(
-                            lexer()
-                    )
-            );
-            parser.removeErrorListeners();
-            parser.addErrorListener(syntaxErrorListener);
+        ThoriumParser parser = new ThoriumParser(
+                new CommonTokenStream(
+                        lexer()
+                )
+        );
+        parser.removeErrorListeners();
+        parser.addErrorListener(syntaxErrorListener);
 
-            return parser;
+        return parser;
     }
 
     private ThoriumLexer lexer() {

@@ -21,7 +21,6 @@ import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.symboltable.SymbolTableInitializer;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -54,7 +53,8 @@ class TypeCheckerTest {
                                         ),
                                         "namespace",
                                         new NodeIdGenerator(),
-                                        Collections.singletonList(new SymbolTableInitializer(new SymbolTable()))
+                                        Collections.emptyList(),
+                                        new SymbolTable()
                                 ).root().orElseThrow(() -> new IllegalStateException("no root found"))
                         )
                         .stream()

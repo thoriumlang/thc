@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms.symboltable;
+package org.thoriumlang.compiler.ast.visitor;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,8 +53,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
-import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
-import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
@@ -768,7 +766,8 @@ class SymbolTableInitializationVisitorTest {
                 ),
                 "namespace",
                 new NodeIdGenerator(),
-                Collections.emptyList()
+                Collections.emptyList(),
+                new SymbolTable()
         ).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         visitor.visit(root);

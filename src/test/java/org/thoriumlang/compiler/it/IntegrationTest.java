@@ -67,7 +67,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         source
-                                .ast(new NodeIdGenerator(), Collections.emptyList())
+                                .ast(new NodeIdGenerator(),new SymbolTable(), Collections.emptyList())
                                 .root()
                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 .toString())
@@ -111,7 +111,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new ThWalker(
-                                source.ast(new NodeIdGenerator(), Collections.emptyList())
+                                source.ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                         .root()
                                         .orElseThrow(() -> new IllegalStateException("no root found"))
                         ).walk()
@@ -142,7 +142,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         new ThWalker(
-                                sourceFile.ast(new NodeIdGenerator(), Collections.emptyList())
+                                sourceFile.ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                         .root()
                                         .orElseThrow(() -> new IllegalStateException("no root found"))
                         ).walk()
@@ -243,7 +243,7 @@ class IntegrationTest {
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
                                 .visit(
-                                        source.ast(new NodeIdGenerator(), Collections.emptyList())
+                                        source.ast(new NodeIdGenerator(),new SymbolTable(), Collections.emptyList())
                                                 .root()
                                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 )
@@ -267,7 +267,7 @@ class IntegrationTest {
                 .assertThat(
                         new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
                                 .visit(
-                                        source.ast(new NodeIdGenerator(), Collections.emptyList())
+                                        source.ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                                 .root()
                                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 )

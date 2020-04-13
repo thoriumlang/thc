@@ -23,6 +23,8 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
+import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -78,7 +80,7 @@ class JsonIntegrationTest {
         Stream<Path> files = Files.find(
                 directory,
                 999,
-                (p, bfa) -> p.getFileName().toString().matches("^[a-z]+_[0-9]{3}\\.th$")
+                (p, bfa) -> p.getFileName().toString().matches("^[a-zA-Z]+_[0-9]{3}\\.th$")
         );
 
         return files
@@ -103,7 +105,18 @@ class JsonIntegrationTest {
                         new NodeIdGenerator(),
                         sources,
                         symbolTable,
-                        new NoopCompilationListener() // TODO Fix if broken tests..
+                        new NoopCompilationListener() {
+                            @Override
+                            public void onError(Source source, CompilationError error) {
+                                if (error instanceof SyntaxError) {
+                                    Assertions.fail(String.format("Could not parse %s: %s",
+                                            source.toString(),
+                                            error.toString()
+                                    ));
+                                }
+                                super.onError(source, error);
+                            }
+                        }
                 ).convert(source)
         ).json();
     }

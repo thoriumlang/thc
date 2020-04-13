@@ -11,6 +11,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.NodeStub;
 
 import java.io.IOException;
@@ -22,8 +23,8 @@ import java.util.Optional;
 class CompilationContextTest {
     private static final CompilationListener listener = new NoopCompilationListener();
     private static final Root root = new RootStub();
-    private static AST ast = new AST(
-            new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList()
+    private static final AST ast = new AST(
+            new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList(), new SymbolTable()
     ) {
         @Override
         public Optional<Root> root() {
@@ -91,7 +92,7 @@ class CompilationContextTest {
     }
 
     private static class RootStub extends Root {
-        private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
+        private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
         public RootStub() {
             super(
@@ -112,7 +113,7 @@ class CompilationContextTest {
 
     private static class InputStreamStub extends InputStream {
         @Override
-        public int read() throws IOException {
+        public int read() {
             return 0;
         }
     }

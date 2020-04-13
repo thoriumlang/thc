@@ -14,6 +14,7 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
 import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.NodeStub;
 
 import java.io.InputStream;
@@ -47,7 +48,7 @@ class CompilerTest {
         compiler.compile(new Sources() {
             @Override
             public List<Source> sources() {
-                return Collections.singletonList((nodeIdGenerator, algorithms) -> ast);
+                return Collections.singletonList((nodeIdGenerator, symbolTable, algorithms) -> ast);
             }
 
             @Override
@@ -83,7 +84,13 @@ class CompilerTest {
     }
 
     private AST ast() {
-        return new AST(new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList()) {
+        return new AST(
+                new InputStreamStub(),
+                "",
+                new NodeIdGenerator(),
+                Collections.emptyList(),
+                new SymbolTable()
+        ) {
             NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
             Root root = new Root(
                     nodeIdGenerator.next(),
