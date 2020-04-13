@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
-import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -497,7 +496,7 @@ class RelativesInjectionVisitorTest {
 
         relativesInjectionVisitor.visit(root);
 
-        List<Node> missingParents = new NodesMatching(
+        List<Node> missingParents = new NodesMatchingVisitor(
                 n -> !n.getContext().get(Relatives.class).isPresent() && n != root
         ).visit(root);
 

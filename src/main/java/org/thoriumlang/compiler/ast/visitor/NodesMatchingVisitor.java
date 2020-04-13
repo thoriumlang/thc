@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.visitor;
 
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -51,10 +51,10 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class NodesMatching implements Visitor<List<Node>> {
+public class NodesMatchingVisitor implements Visitor<List<Node>> {
     private final Predicate<Node> predicate;
 
-    public NodesMatching(Predicate<Node> predicate) {
+    public NodesMatchingVisitor(Predicate<Node> predicate) {
         this.predicate = predicate;
     }
 

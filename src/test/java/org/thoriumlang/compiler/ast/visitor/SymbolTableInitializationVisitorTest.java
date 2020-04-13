@@ -19,7 +19,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -773,7 +772,7 @@ class SymbolTableInitializationVisitorTest {
         visitor.visit(root);
 
         Assertions.assertThat(
-                new NodesMatching(n -> !n.getContext().get(SymbolTable.class).isPresent()).visit(root)
+                new NodesMatchingVisitor(n -> !n.getContext().get(SymbolTable.class).isPresent()).visit(root)
         ).isEmpty();
 
         Assertions.assertThat(

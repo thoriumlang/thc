@@ -17,7 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
@@ -50,7 +50,7 @@ public class TypeChecker implements Algorithm, TypeLoader {
                         )
                 );
 
-        List<SemanticError> typeNotFoundErrors = new NodesMatching(n -> n instanceof TypeSpecSimple)
+        List<SemanticError> typeNotFoundErrors = new NodesMatchingVisitor(n -> n instanceof TypeSpecSimple)
                 .visit(root).stream()
                 .map(t -> (TypeSpecSimple) t)
                 .filter(t -> !t.getContext().require(SymbolTable.class).find(new Name(t.getType())).isPresent())

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.thoriumlang.compiler.ast.algorithms;
+package org.thoriumlang.compiler.ast.visitor;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,12 +48,13 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-class NodesMatchingTest {
+class NodesMatchingVisitorTest {
     private NodeIdGenerator nodeIdGenerator;
     private Supplier<String> s;
 
@@ -313,7 +314,7 @@ class NodesMatchingTest {
         long nextNodeId = Long.parseLong(nodeIdGenerator.next().toString().substring(1));
 
         Assertions.assertThat(
-                new NodesMatching(n -> true).visit(root)
+                new NodesMatchingVisitor(n -> true).visit(root)
         ).hasSize((int) nextNodeId - 1);
     }
 
@@ -401,7 +402,7 @@ class NodesMatchingTest {
         long nextNodeId = Long.parseLong(nodeIdGenerator.next().toString().substring(1));
 
         Assertions.assertThat(
-                new NodesMatching(n -> true).visit(root)
+                new NodesMatchingVisitor(n -> true).visit(root)
         ).hasSize((int) nextNodeId - 1);
     }
 }

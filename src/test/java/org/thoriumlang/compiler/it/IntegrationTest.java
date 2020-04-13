@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.SemanticError;
-import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -241,7 +241,7 @@ class IntegrationTest {
         Source source = source(path, this::generatedSourceFilename);
         Assertions
                 .assertThat(
-                        new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
+                        new NodesMatchingVisitor(n -> !n.getContext().get(SourcePosition.class).isPresent())
                                 .visit(
                                         source.ast(new NodeIdGenerator(),new SymbolTable(), Collections.emptyList())
                                                 .root()
@@ -265,7 +265,7 @@ class IntegrationTest {
         Source source = source(path, this::sourceFilename);
         Assertions
                 .assertThat(
-                        new NodesMatching(n -> !n.getContext().get(SourcePosition.class).isPresent())
+                        new NodesMatchingVisitor(n -> !n.getContext().get(SourcePosition.class).isPresent())
                                 .visit(
                                         source.ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                                 .root()

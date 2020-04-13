@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.NodesMatching;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -518,7 +518,7 @@ class TypeDiscoveryVisitorTest {
 
 
     private Root injectSourcePosition(Root node) {
-        new NodesMatching(n -> true)
+        new NodesMatchingVisitor(n -> true)
                 .visit(node)
                 .forEach(n -> n.getContext().put(SourcePosition.class, new SourcePosition(1, 1)));
 
