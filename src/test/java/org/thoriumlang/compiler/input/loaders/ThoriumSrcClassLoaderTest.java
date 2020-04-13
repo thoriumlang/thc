@@ -2,11 +2,10 @@ package org.thoriumlang.compiler.input.loaders;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
-import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -14,7 +13,9 @@ import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
@@ -53,9 +54,8 @@ class ThoriumSrcClassLoaderTest {
         new SymbolTableInitializationVisitor(rootSymbolTable).visit(root);
 
         Optional<Symbol> symbol = new ThoriumSrcClassLoader(
-                nodeIdGenerator,
                 new SourcesStub(root.getTopLevelNode()),
-                new NoopCompilationListener()
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
         ).load(new Name("package.TypeName"), root.getTopLevelNode());
 
         Assertions.assertThat(symbol)
@@ -81,9 +81,8 @@ class ThoriumSrcClassLoaderTest {
         };
 
         Optional<Symbol> symbol = new ThoriumSrcClassLoader(
-                nodeIdGenerator,
                 new SourcesStub(),
-                new NoopCompilationListener()
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
         ).load(new Name("package.TypeName"), node);
 
         Assertions.assertThat(symbol)
@@ -112,7 +111,7 @@ class ThoriumSrcClassLoaderTest {
                 return Optional.empty();
             }
             return Optional.of((nodeIdGenerator, symbolTable, algorithms) ->
-                    new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms,symbolTable) {
+                    new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms, symbolTable) {
                         @Override
                         public Optional<Root> root() {
                             Root root = new Root(

@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler;
 
-import org.thoriumlang.compiler.api.CompilationListener;
+import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
@@ -29,17 +29,18 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.Arrays;
 
+// TODO does it make sense to keep it?
 public class SourceToAST {
     private final NodeIdGenerator nodeIdGenerator;
     private final Sources sources;
     private final SymbolTable symbolTable;
-    private final CompilationListener listener;
+    private final Compiler compiler;
 
-    public SourceToAST(NodeIdGenerator nodeIdGenerator, Sources sources, SymbolTable symbolTable, CompilationListener listener) {
+    public SourceToAST(NodeIdGenerator nodeIdGenerator, Sources sources, SymbolTable symbolTable, Compiler compiler) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.sources = sources;
         this.symbolTable = symbolTable;
-        this.listener = listener;
+        this.compiler = compiler;
     }
 
     public AST convert(Source source) {
@@ -49,7 +50,7 @@ public class SourceToAST {
                 Arrays.asList(
                         new TypeChecker(
                                 Arrays.asList(
-                                        new ThoriumSrcClassLoader(nodeIdGenerator, sources, listener),
+                                        new ThoriumSrcClassLoader(sources, compiler),
                                         new ThoriumRTClassLoader(),
                                         new JavaRTClassLoader()
                                 )
@@ -59,7 +60,7 @@ public class SourceToAST {
         );
         ast.root();
 
-        ast.errors().forEach(e -> listener.onError(source, e));
+        ast.errors().forEach(e -> compiler.onError(source, e));
 
         return ast;
     }

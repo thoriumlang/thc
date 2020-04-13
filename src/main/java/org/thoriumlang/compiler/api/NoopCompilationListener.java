@@ -5,17 +5,12 @@ import org.thoriumlang.compiler.input.Source;
 
 public class NoopCompilationListener implements CompilationListener {
     @Override
-    public void onCompilationStarted(int sourcesCount) {
+    public void onCompilationStarted() {
         // noop
     }
 
     @Override
     public void onCompilationFinished() {
-        // noop
-    }
-
-    @Override
-    public void onCompilationProgress(float progress) {
         // noop
     }
 

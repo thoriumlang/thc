@@ -27,22 +27,22 @@ import java.util.stream.Collectors;
 class CompilerTest {
     @Test
     void constructor_listener() {
-        Assertions.assertThatThrownBy(() -> new Compiler(null, Collections.singletonList(new Plugin())))
+        Assertions.assertThatThrownBy(() -> new Compiler(null, Collections.singletonList(new PluginStub())))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("listener cannot be null");
     }
 
     @Test
     void constructor_plugins() {
-        Assertions.assertThatThrownBy(() -> new Compiler(new Listener(), null))
+        Assertions.assertThatThrownBy(() -> new Compiler(new ListenerStub(), null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("plugins cannot be null");
     }
 
     @Test
     void compile() {
-        Listener listener = new Listener();
-        Compiler compiler = new Compiler(listener, Collections.singletonList(new Plugin()));
+        ListenerStub listener = new ListenerStub();
+        Compiler compiler = new Compiler(listener, Collections.singletonList(new PluginStub()));
         AST ast = ast();
 
         compiler.compile(new Sources() {
@@ -59,13 +59,12 @@ class CompilerTest {
 
         Assertions.assertThat(listener.events)
                 .containsExactly(
-                        "onCompilationStarted:1",
+                        "onCompilationStarted",
                         "onSourceStarted",
                         "onError:ast (-1)",
                         "onEvent:plugin",
                         "onError:plugin (-1)",
                         "onSourceFinished",
-                        "onCompilationProgress:1.0",
                         "onCompilationFinished"
                 );
 
@@ -91,8 +90,8 @@ class CompilerTest {
                 Collections.emptyList(),
                 new SymbolTable()
         ) {
-            NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
-            Root root = new Root(
+            private final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
+            private final Root root = new Root(
                     nodeIdGenerator.next(),
                     "",
                     Collections.emptyList(),
@@ -107,7 +106,7 @@ class CompilerTest {
             );
 
             @Override
-            public Optional< Root> root() {
+            public Optional<Root> root() {
                 return Optional.of(root);
             }
 
@@ -124,7 +123,7 @@ class CompilerTest {
         };
     }
 
-    private static class Plugin implements org.thoriumlang.compiler.api.Plugin {
+    private static class PluginStub implements Plugin {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
@@ -138,24 +137,18 @@ class CompilerTest {
         }
     }
 
-    private static class Listener implements CompilationListener {
-        private List<String> events = new ArrayList<>();
-        private List<CompilationError> errors = new ArrayList<>();
+    private static class ListenerStub implements CompilationListener {
+        private final List<String> events = new ArrayList<>();
         private CompilationContext context;
 
         @Override
-        public void onCompilationStarted(int sourcesCount) {
-            events.add("onCompilationStarted:" + sourcesCount);
+        public void onCompilationStarted() {
+            events.add("onCompilationStarted");
         }
 
         @Override
         public void onCompilationFinished() {
             events.add("onCompilationFinished");
-        }
-
-        @Override
-        public void onCompilationProgress(float progress) {
-            events.add("onCompilationProgress:" + progress);
         }
 
         @Override
@@ -172,7 +165,6 @@ class CompilerTest {
         @Override
         public void onError(Source source, CompilationError error) {
             events.add("onError:" + error.toString());
-            errors.add(error);
         }
 
         @Override

@@ -4,11 +4,9 @@ import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.input.Source;
 
 public interface CompilationListener {
-    void onCompilationStarted(int sourcesCount);
+    void onCompilationStarted();
 
     void onCompilationFinished();
-
-    void onCompilationProgress(float progress);
 
     void onSourceStarted(Source source);
 

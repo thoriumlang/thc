@@ -22,6 +22,11 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.List;
 
+/**
+ * Represents a source to compile.
+ * <p>
+ * Must override {@link Object#equals(Object)} and {@link Object#hashCode()}.
+ */
 public interface Source {
     AST ast(NodeIdGenerator nodeIdGenerator, SymbolTable symbolTable, List<Algorithm> algorithms);
 }

@@ -18,6 +18,7 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
@@ -81,8 +82,12 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable(), new NoopCompilationListener())
-                .convert(source);
+        AST ast = new SourceToAST(
+                new NodeIdGenerator(),
+                sources,
+                new SymbolTable(),
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
+        ).convert(source);
 
         ast.root();
 
@@ -110,8 +115,12 @@ class TypeCheckerTest {
         );
         Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, new SymbolTable(), new NoopCompilationListener())
-                .convert(source);
+        AST ast = new SourceToAST(
+                new NodeIdGenerator(),
+                sources,
+                new SymbolTable(),
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
+        ).convert(source);
 
         ast.root();
 
@@ -140,8 +149,12 @@ class TypeCheckerTest {
         Source source = sources.sources().get(0);
 
         SymbolTable rootSymbolTable = new SymbolTable();
-        AST ast = new SourceToAST(new NodeIdGenerator(), sources, rootSymbolTable, new NoopCompilationListener())
-                .convert(source);
+        AST ast = new SourceToAST(
+                new NodeIdGenerator(),
+                sources,
+                rootSymbolTable,
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
+        ).convert(source);
 
         ast.root();
 

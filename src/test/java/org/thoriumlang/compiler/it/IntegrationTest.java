@@ -23,13 +23,14 @@ import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.SemanticError;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -67,7 +68,7 @@ class IntegrationTest {
         Assertions
                 .assertThat(
                         source
-                                .ast(new NodeIdGenerator(),new SymbolTable(), Collections.emptyList())
+                                .ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                 .root()
                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 .toString())
@@ -203,7 +204,7 @@ class IntegrationTest {
                     }
                 },
                 new SymbolTable(),
-                new NoopCompilationListener()
+                new Compiler(new NoopCompilationListener(), Collections.emptyList())
         ).convert(source).root().orElseThrow(() -> new IllegalStateException("no root found"));
 
         root.getContext()
@@ -243,7 +244,7 @@ class IntegrationTest {
                 .assertThat(
                         new NodesMatchingVisitor(n -> !n.getContext().get(SourcePosition.class).isPresent())
                                 .visit(
-                                        source.ast(new NodeIdGenerator(),new SymbolTable(), Collections.emptyList())
+                                        source.ast(new NodeIdGenerator(), new SymbolTable(), Collections.emptyList())
                                                 .root()
                                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 )

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.TestFactory;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
@@ -43,6 +44,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -99,12 +101,8 @@ class JsonIntegrationTest {
     }
 
     private String json(Sources sources, Source source) {
-        SymbolTable symbolTable = new SymbolTable();
         return new JsonAST(
-                new SourceToAST(
-                        new NodeIdGenerator(),
-                        sources,
-                        symbolTable,
+                new Compiler(
                         new NoopCompilationListener() {
                             @Override
                             public void onError(Source source, CompilationError error) {
@@ -116,8 +114,9 @@ class JsonIntegrationTest {
                                 }
                                 super.onError(source, error);
                             }
-                        }
-                ).convert(source)
+                        },
+                        Collections.emptyList()
+                ).compile(sources, source)
         ).json();
     }
 

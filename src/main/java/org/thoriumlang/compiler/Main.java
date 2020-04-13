@@ -36,18 +36,13 @@ public class Main {
     private void compile() throws URISyntaxException {
         CompilationListener listener = new CompilationListener() {
             @Override
-            public void onCompilationStarted(int sourcesCount) {
-                System.out.println(String.format("About to compile %d sources", sourcesCount));
+            public void onCompilationStarted() {
+                System.out.println(String.format("Compilation started"));
             }
 
             @Override
             public void onCompilationFinished() {
                 System.out.println("Compilation finished");
-            }
-
-            @Override
-            public void onCompilationProgress(float progress) {
-                System.out.println(String.format("progress: %f", progress));
             }
 
             @Override
