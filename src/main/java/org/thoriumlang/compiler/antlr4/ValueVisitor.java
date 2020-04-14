@@ -144,7 +144,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             sourcePositionProvider.provide(
                                     new Reference(
                                             nodeIdGenerator.next(),
-                                            ctx.IDENTIFIER().getSymbol().getText()
+                                            ctx.identifier.getText()
                                     ),
                                     ctx.start
                             ),
@@ -158,9 +158,9 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                     new NewAssignmentValue(
                             nodeIdGenerator.next(),
                             sourcePositionProvider.provide(
-                                    new Reference(
+                                    new Reference( // TODO this is not a Reference
                                             nodeIdGenerator.next(),
-                                            ctx.IDENTIFIER().getSymbol().getText()
+                                            ctx.varName.getText()
                                     ),
                                     ctx.start
                             ),
@@ -186,9 +186,9 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                     new NewAssignmentValue(
                             nodeIdGenerator.next(),
                             sourcePositionProvider.provide(
-                                    new Reference(
+                                    new Reference( // TODO this is not a Reference
                                             nodeIdGenerator.next(),
-                                            ctx.IDENTIFIER().getSymbol().getText()
+                                            ctx.valName.getText()
                                     ),
                                     ctx.start
                             ),
@@ -210,7 +210,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         sourcePositionProvider.provide(
                                 new Reference(
                                         nodeIdGenerator.next(),
-                                        ctx.IDENTIFIER().getSymbol().getText()
+                                        ctx.identifier.getText()
                                 ),
                                 ctx.start
                         ),

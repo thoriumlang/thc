@@ -135,7 +135,7 @@ value
     | functionValue
     ;
 assignmentValue
-    : indirectValue '.' IDENTIFIER '=' value
+    : indirectValue '.' identifier=IDENTIFIER '=' value
     | identifier=IDENTIFIER '=' value
     | VAL valName=IDENTIFIER ( ':' typeSpec )? '=' value
     | VAR varName=IDENTIFIER ( ':' typeSpec )? ( '=' value )?
