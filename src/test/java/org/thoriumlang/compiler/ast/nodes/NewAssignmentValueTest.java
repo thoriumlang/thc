@@ -50,7 +50,7 @@ class NewAssignmentValueTest {
     }
 
     @Test
-    void constructor_identifier() {
+    void constructor_reference() { // TODO rename
         try {
             new NewAssignmentValue(
                     nodeIdGenerator.next(),

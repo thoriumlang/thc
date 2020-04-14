@@ -20,8 +20,11 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class DirectAssignmentValue extends AssignmentValue {
+    private final Reference reference;
+
     public DirectAssignmentValue(NodeId nodeId, Reference reference, Value value) {
-        super(nodeId, reference, value);
+        super(nodeId, value);
+        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
     }
 
     @Override
@@ -36,6 +39,10 @@ public class DirectAssignmentValue extends AssignmentValue {
                 getReference().toString(),
                 getValue().toString()
         );
+    }
+
+    public Reference getReference() {
+        return reference;
     }
 
     @Override

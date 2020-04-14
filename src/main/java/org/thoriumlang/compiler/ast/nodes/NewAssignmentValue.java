@@ -20,11 +20,13 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class NewAssignmentValue extends AssignmentValue {
+    private final Reference reference; // TODO rename and change type
     private final TypeSpec type;
     private final Mode mode;
 
     public NewAssignmentValue(NodeId nodeId, Reference reference, TypeSpec type, Value value, Mode mode) {
-        super(nodeId, reference, value);
+        super(nodeId,  value);
+        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
         this.type = Objects.requireNonNull(type, "type cannot be null");
         this.mode = Objects.requireNonNull(mode, "mode cannot be null");
     }
@@ -43,6 +45,10 @@ public class NewAssignmentValue extends AssignmentValue {
                 getReference().toString(),
                 getValue().toString()
         );
+    }
+
+    public Reference getReference() {
+        return reference;
     }
 
     public TypeSpec getType() {

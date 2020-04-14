@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 
-class IndirectAssignmentValueTest {
+class DirectAssignmentValueTest {
     private NodeIdGenerator nodeIdGenerator;
 
     @BeforeEach
@@ -31,9 +31,8 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IndirectAssignmentValue(
+            new DirectAssignmentValue(
                     null,
-                    new NoneValue(nodeIdGenerator.next()),
                     new Reference(nodeIdGenerator.next(), "identifier"),
                     new NoneValue(nodeIdGenerator.next())
             );
@@ -41,24 +40,6 @@ class IndirectAssignmentValueTest {
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
                     .isEqualTo("nodeId cannot be null");
-            return;
-        }
-        Assertions.fail("NPE not thrown");
-    }
-
-    @Test
-    void constructor_indirectValue() {
-        try {
-            new IndirectAssignmentValue(
-                    nodeIdGenerator.next(),
-                    null,
-                    new Reference(nodeIdGenerator.next(), "identifier"),
-                    new NoneValue(nodeIdGenerator.next())
-            );
-        }
-        catch (NullPointerException e) {
-            Assertions.assertThat(e.getMessage())
-                    .isEqualTo("indirectValue cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -85,9 +66,8 @@ class IndirectAssignmentValueTest {
     @Test
     void constructor_value() {
         try {
-            new IndirectAssignmentValue(
+            new DirectAssignmentValue(
                     nodeIdGenerator.next(),
-                    new NoneValue(nodeIdGenerator.next()),
                     new Reference(nodeIdGenerator.next(), "identifier"),
                     null
             );
@@ -103,45 +83,41 @@ class IndirectAssignmentValueTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new IndirectAssignmentValue(
+                new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new NumberValue(nodeIdGenerator.next(), "1"),
                         new Reference(nodeIdGenerator.next(), "identifier"),
                         new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
-                            public String visit(IndirectAssignmentValue node) {
+                            public String visit(DirectAssignmentValue node) {
                                 return String.format(
-                                        "%s:%s:%s:%s",
+                                        "%s:%s:%s",
                                         node.getNodeId().toString(),
-                                        node.getIndirectValue().toString(),
                                         node.getReference().toString(),
                                         node.getValue().toString()
                                 );
                             }
                         })
-        ).isEqualTo("#1:1:identifier:none");
+        ).isEqualTo("#1:identifier:none");
     }
 
     @Test
     void _toString() {
         Assertions.assertThat(
-                new IndirectAssignmentValue(
+                new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new NoneValue(nodeIdGenerator.next()),
                         new Reference(nodeIdGenerator.next(), "identifier"),
                         new NoneValue(nodeIdGenerator.next())
                 ).toString()
-        ).isEqualTo("INDIRECT none.identifier = none");
+        ).isEqualTo("DIRECT identifier = none");
     }
 
     @Test
     void getContext() {
         Assertions.assertThat(
-                new IndirectAssignmentValue(
+                new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new NoneValue(nodeIdGenerator.next()),
                         new Reference(nodeIdGenerator.next(), "identifier"),
                         new NoneValue(nodeIdGenerator.next())
                 ).getContext()

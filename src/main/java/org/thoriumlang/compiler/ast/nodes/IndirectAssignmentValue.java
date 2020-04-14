@@ -20,10 +20,12 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class IndirectAssignmentValue extends AssignmentValue {
+    private final Reference reference;
     private final Value indirectValue;
 
     public IndirectAssignmentValue(NodeId nodeId, Value indirectValue, Reference reference, Value value) {
-        super(nodeId, reference, value);
+        super(nodeId, value);
+        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
         this.indirectValue = Objects.requireNonNull(indirectValue, "indirectValue cannot be null");
     }
 
@@ -40,6 +42,10 @@ public class IndirectAssignmentValue extends AssignmentValue {
                 getReference().toString(),
                 getValue().toString()
         );
+    }
+
+    public Reference getReference() {
+        return reference;
     }
 
     public Value getIndirectValue() {
