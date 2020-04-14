@@ -24,11 +24,11 @@ import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
-import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
+import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
@@ -62,14 +62,14 @@ public class AST implements SyntaxErrorListener {
         this.symbolTable = symbolTable;
     }
 
-    public Optional<Root> root() {
+    public AST parse() {
         if (parsed) {
-            return Optional.ofNullable(root);
+            return this;
         }
 
         synchronized (inputStream) {
             if (parsed) {
-                return Optional.ofNullable(root);
+                return this;
             }
 
             parsed = true;
@@ -79,7 +79,7 @@ public class AST implements SyntaxErrorListener {
 
             if (!errors.isEmpty()) {
                 // parsing failed, we cannot proceed...
-                return Optional.empty();
+                return this;
             }
 
             root = (Root) new RootVisitor(nodeIdGenerator, namespace).visit(rootContext)
@@ -89,16 +89,6 @@ public class AST implements SyntaxErrorListener {
                             findLocalTable(symbolTable, new Name(namespace).getParts()))
                     );
 
-
-//            root = (Root) new RelativesInjectionVisitor().visit(
-//                    new TypeFlattenedRoot(
-//                            nodeIdGenerator,
-//                            new RootVisitor(nodeIdGenerator, namespace).visit(
-//                                    rootContext
-//                            )
-//                    ).root()
-//            );
-
             errors.addAll(
                     algorithms.stream()
                             .map(a -> a.walk(root))
@@ -107,8 +97,9 @@ public class AST implements SyntaxErrorListener {
             );
         }
 
-        return Optional.ofNullable(root);
+        return this;
     }
+
     private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
         if (namespaces.isEmpty()) {
             return symbolTable;
@@ -120,10 +111,17 @@ public class AST implements SyntaxErrorListener {
         );
     }
 
+    public Optional<Root> root() {
+//        if (!parsed) {
+        parse();
+//        }
+        return Optional.ofNullable(root);
+    }
+
     public List<CompilationError> errors() {
-        if (!parsed) {
-            throw new IllegalStateException("error() called before root()");
-        }
+//        if (!parsed) {
+        parse();
+//        }
         return errors;
     }
 

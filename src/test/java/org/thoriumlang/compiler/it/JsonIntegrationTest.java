@@ -21,16 +21,13 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.thoriumlang.compiler.SourceToAST;
 import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
-import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.Sources;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.JsonAST;
 
 import java.io.BufferedReader;

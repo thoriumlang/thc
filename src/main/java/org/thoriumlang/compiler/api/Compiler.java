@@ -1,20 +1,24 @@
 package org.thoriumlang.compiler.api;
 
-import org.thoriumlang.compiler.SourceToAST;
-import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
+import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
+import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
+import org.thoriumlang.compiler.input.loaders.ThoriumRTClassLoader;
+import org.thoriumlang.compiler.input.loaders.ThoriumSrcClassLoader;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Compiler implements CompilationListener {
+public class Compiler {
     private final List<Plugin> plugins;
     private final CompilationListener listener;
     private final Map<Source, AST> compiledSources;
@@ -45,12 +49,22 @@ public class Compiler implements CompilationListener {
         }
         listener.onSourceStarted(source);
 
-        AST ast = new SourceToAST(
+        AST ast = source.ast(
                 nodeIdGenerator,
-                sources,
                 symbolTable,
-                this
-        ).convert(source);
+                Arrays.asList(
+                        new TypeChecker(
+                                Arrays.asList(
+                                        new ThoriumSrcClassLoader(sources, this),
+                                        new ThoriumRTClassLoader(),
+                                        new JavaRTClassLoader()
+                                )
+                        ),
+                        new SymbolicNameChecker()
+                )
+        ).parse();
+
+        ast.errors().forEach(e -> listener.onError(source, e));
 
         CompilationContext context = new CompilationContext(ast, listener);
 
@@ -64,35 +78,5 @@ public class Compiler implements CompilationListener {
         listener.onSourceFinished(source, context);
 
         return ast;
-    }
-
-    @Override
-    public void onCompilationStarted() {
-        listener.onCompilationStarted();
-    }
-
-    @Override
-    public void onCompilationFinished() {
-        listener.onCompilationFinished();
-    }
-
-    @Override
-    public void onSourceStarted(Source source) {
-        listener.onSourceStarted(source);
-    }
-
-    @Override
-    public void onSourceFinished(Source source, CompilationContext context) {
-        listener.onSourceFinished(source, context);
-    }
-
-    @Override
-    public void onError(Source source, CompilationError error) {
-        listener.onError(source, error);
-    }
-
-    @Override
-    public void onEvent(Event event) {
-        listener.onEvent(event);
     }
 }

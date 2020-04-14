@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.CompilationContext;
 import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.SemanticError;
@@ -44,6 +44,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -188,24 +189,31 @@ class IntegrationTest {
     }
 
     private String generateHtmlDocument(String path) throws URISyntaxException {
+        List<Optional<Root>> roots = new ArrayList<>();
         Source source = source(path, this::sourceFilename);
-
-        Root root = new SourceToAST(
-                new NodeIdGenerator(),
+        new Compiler(
+                new NoopCompilationListener() {
+                    @Override
+                    public void onSourceFinished(Source source, CompilationContext context) {
+                        roots.add(context.root());
+                    }
+                },
+                Collections.emptyList()
+        ).compile(
                 new Sources() {
                     @Override
                     public List<Source> sources() {
-                        return Collections.emptyList();
+                        return Collections.singletonList(source);
                     }
 
                     @Override
                     public Optional<Source> load(Name name) {
                         return Optional.empty();
                     }
-                },
-                new SymbolTable(),
-                new Compiler(new NoopCompilationListener(), Collections.emptyList())
-        ).convert(source).root().orElseThrow(() -> new IllegalStateException("no root found"));
+                }
+        );
+
+        Root root = roots.get(0).orElseThrow(()->new IllegalStateException("no root found"));
 
         root.getContext()
                 .put(

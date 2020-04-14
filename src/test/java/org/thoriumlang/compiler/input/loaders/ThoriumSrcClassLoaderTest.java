@@ -113,6 +113,12 @@ class ThoriumSrcClassLoaderTest {
             return Optional.of((nodeIdGenerator, symbolTable, algorithms) ->
                     new AST(new InputStreamStub(), "namespace", new NodeIdGenerator(), algorithms, symbolTable) {
                         @Override
+                        public AST parse() {
+                            // nothing to parse, the AST is already built
+                            return this;
+                        }
+
+                        @Override
                         public Optional<Root> root() {
                             Root root = new Root(
                                     nodeIdGenerator.next(),

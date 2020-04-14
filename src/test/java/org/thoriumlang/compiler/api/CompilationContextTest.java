@@ -14,7 +14,6 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.NodeStub;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,12 @@ class CompilationContextTest {
     private static final AST ast = new AST(
             new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList(), new SymbolTable()
     ) {
+        @Override
+        public AST parse() {
+            // nothing to parse, the AST is already built
+            return this;
+        }
+
         @Override
         public Optional<Root> root() {
             return Optional.of(root);

@@ -106,6 +106,12 @@ class CompilerTest {
             );
 
             @Override
+            public AST parse() {
+                // nothing to parse, the AST is already built
+                return this;
+            }
+
+            @Override
             public Optional<Root> root() {
                 return Optional.of(root);
             }

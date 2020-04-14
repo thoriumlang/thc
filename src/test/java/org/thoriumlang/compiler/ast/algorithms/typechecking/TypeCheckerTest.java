@@ -17,12 +17,14 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.SourceToAST;
+import org.thoriumlang.compiler.api.CompilationContext;
 import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.loaders.JavaRTClassLoader;
@@ -34,7 +36,10 @@ import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -76,26 +81,36 @@ class TypeCheckerTest {
 
     @Test
     void loadsThlibTypes() throws URISyntaxException {
-        SourceFiles sources = new SourceFiles(
-                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
-                p -> p.endsWith("typechecking/Main_thlibTypes.th")
+        List<Optional<Root>> roots = new ArrayList<>();
+        List<CompilationError> errors = new ArrayList<>();
+
+        new Compiler(
+                new NoopCompilationListener() {
+                    @Override
+                    public void onError(Source source, CompilationError error) {
+                        errors.add(error);
+                    }
+
+                    @Override
+                    public void onSourceFinished(Source source, CompilationContext context) {
+                        roots.add(context.root());
+                    }
+                },
+                Collections.emptyList()
+        ).compile(
+                new SourceFiles(
+                        Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                        p -> p.endsWith("typechecking/Main_thlibTypes.th")
+                )
         );
-        Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(
-                new NodeIdGenerator(),
-                sources,
-                new SymbolTable(),
-                new Compiler(new NoopCompilationListener(), Collections.emptyList())
-        ).convert(source);
+        Assertions.assertThat(roots.get(0))
+                .isPresent();
 
-        ast.root();
-
-        Assertions.assertThat(ast.errors())
+        Assertions.assertThat(errors)
                 .isEmpty();
 
-        SymbolTable symbolTable = ast
-                .root()
+        SymbolTable symbolTable = roots.get(0)
                 .orElseThrow(() -> new IllegalStateException("no root found"))
                 .getContext()
                 .require(SymbolTable.class);
@@ -109,26 +124,36 @@ class TypeCheckerTest {
 
     @Test
     void loadsJavalibTypes() throws URISyntaxException {
-        SourceFiles sources = new SourceFiles(
-                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
-                p -> p.endsWith("typechecking/Main_javalibTypes.th")
+        List<Optional<Root>> roots = new ArrayList<>();
+        List<CompilationError> errors = new ArrayList<>();
+
+        new Compiler(
+                new NoopCompilationListener() {
+                    @Override
+                    public void onError(Source source, CompilationError error) {
+                        errors.add(error);
+                    }
+
+                    @Override
+                    public void onSourceFinished(Source source, CompilationContext context) {
+                        roots.add(context.root());
+                    }
+                },
+                Collections.emptyList()
+        ).compile(
+                new SourceFiles(
+                        Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                        p -> p.endsWith("typechecking/Main_javalibTypes.th")
+                )
         );
-        Source source = sources.sources().get(0);
 
-        AST ast = new SourceToAST(
-                new NodeIdGenerator(),
-                sources,
-                new SymbolTable(),
-                new Compiler(new NoopCompilationListener(), Collections.emptyList())
-        ).convert(source);
+        Assertions.assertThat(roots.get(0))
+                .isPresent();
 
-        ast.root();
-
-        Assertions.assertThat(ast.errors())
+        Assertions.assertThat(errors)
                 .isEmpty();
 
-        SymbolTable symbolTable = ast
-                .root()
+        SymbolTable symbolTable = roots.get(0)
                 .orElseThrow(() -> new IllegalStateException("no root found"))
                 .getContext()
                 .require(SymbolTable.class);
@@ -142,27 +167,36 @@ class TypeCheckerTest {
 
     @Test
     void loadsPackageTypes() throws URISyntaxException {
-        SourceFiles sources = new SourceFiles(
-                Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
-                p -> p.endsWith("typechecking/Main_packageType.th")
+        List<Optional<Root>> roots = new ArrayList<>();
+        List<CompilationError> errors = new ArrayList<>();
+
+        new Compiler(
+                new NoopCompilationListener() {
+                    @Override
+                    public void onError(Source source, CompilationError error) {
+                        errors.add(error);
+                    }
+
+                    @Override
+                    public void onSourceFinished(Source source, CompilationContext context) {
+                        roots.add(context.root());
+                    }
+                },
+                Collections.emptyList()
+        ).compile(
+                new SourceFiles(
+                        Paths.get(TypeCheckerTest.class.getResource("/org/thoriumlang/compiler/ast/algorithms").toURI()),
+                        p -> p.endsWith("typechecking/Main_packageType.th")
+                )
         );
-        Source source = sources.sources().get(0);
 
-        SymbolTable rootSymbolTable = new SymbolTable();
-        AST ast = new SourceToAST(
-                new NodeIdGenerator(),
-                sources,
-                rootSymbolTable,
-                new Compiler(new NoopCompilationListener(), Collections.emptyList())
-        ).convert(source);
+        Assertions.assertThat(roots.get(0))
+                .isPresent();
 
-        ast.root();
-
-        Assertions.assertThat(ast.errors())
+        Assertions.assertThat(errors)
                 .isEmpty();
 
-        SymbolTable symbolTable = ast
-                .root()
+        SymbolTable symbolTable = roots.get(0)
                 .orElseThrow(() -> new IllegalStateException("no root found"))
                 .getContext()
                 .require(SymbolTable.class);
@@ -173,7 +207,7 @@ class TypeCheckerTest {
         Assertions.assertThat(symbolTable.find(new Name("typechecking.CustomType")))
                 .isPresent();
 
-        Set<SymbolTable> rootSymbolTablesFromLoadedSymbols = rootSymbolTable
+        Set<SymbolTable> rootSymbolTablesFromLoadedSymbols = symbolTable.root()
                 .accept(new SymbolsExtractionVisitor())
                 .stream()
                 .filter(s -> s instanceof ThoriumType)
@@ -182,6 +216,6 @@ class TypeCheckerTest {
                 .collect(Collectors.toSet());
 
         Assertions.assertThat(rootSymbolTablesFromLoadedSymbols)
-                .containsExactly(rootSymbolTable);
+                .containsExactly(symbolTable.root());
     }
 }
