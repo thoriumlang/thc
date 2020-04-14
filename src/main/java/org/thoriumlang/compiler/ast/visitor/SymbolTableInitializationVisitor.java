@@ -45,8 +45,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.visitor.IdentityVisitor;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 public class SymbolTableInitializationVisitor extends IdentityVisitor {
