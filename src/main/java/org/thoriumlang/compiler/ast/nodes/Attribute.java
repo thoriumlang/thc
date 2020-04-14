@@ -20,14 +20,14 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class Attribute extends Node {
-    private final String identifier;
+    private final String name;
     private final TypeSpec type;
     private final Value value;
     private final Mode mode;
 
-    public Attribute(NodeId nodeId, String identifier, TypeSpec type, Value value, Mode mode) {
+    public Attribute(NodeId nodeId, String name, TypeSpec type, Value value, Mode mode) {
         super(nodeId);
-        this.identifier = Objects.requireNonNull(identifier, "identifier cannot be null");
+        this.name = Objects.requireNonNull(name, "name cannot be null");
         this.type = Objects.requireNonNull(type, "type cannot be null");
         this.value = Objects.requireNonNull(value, "value cannot be null");
         this.mode = Objects.requireNonNull(mode, "mode cannot be null");
@@ -42,14 +42,14 @@ public class Attribute extends Node {
     public String toString() {
         return String.format("%s %s: %s = %s",
                 mode.toString(),
-                identifier,
+                name,
                 type,
                 value
         );
     }
 
-    public String getIdentifier() {
-        return identifier;
+    public String getName() {
+        return name;
     }
 
     public TypeSpec getType() {
@@ -74,7 +74,7 @@ public class Attribute extends Node {
         }
         Attribute attribute = (Attribute) o;
         return getNodeId().equals(attribute.getNodeId()) &&
-                identifier.equals(attribute.identifier) &&
+                name.equals(attribute.name) &&
                 type.equals(attribute.type) &&
                 value.equals(attribute.value) &&
                 mode == attribute.mode;
@@ -82,6 +82,6 @@ public class Attribute extends Node {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), identifier, type, value, mode);
+        return Objects.hash(getNodeId(), name, type, value, mode);
     }
 }

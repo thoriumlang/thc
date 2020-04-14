@@ -49,7 +49,7 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
             return sourcePositionProvider.provide(
                     new Attribute(
                             nodeIdGenerator.next(),
-                            ctx.IDENTIFIER().getSymbol().getText(),
+                            ctx.name.getText(),
                             ctx.typeSpec().accept(typeSpecVisitor),
                             ctx.value() == null ?
                                     sourcePositionProvider.provide(

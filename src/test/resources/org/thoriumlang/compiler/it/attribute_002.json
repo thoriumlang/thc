@@ -47,7 +47,7 @@
             "methods": [],
             "attributes": [
               {
-                "identifier": "a",
+                "name": "a",
                 "type": {
                   "type": "Class",
                   "arguments": [],

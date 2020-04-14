@@ -50,7 +50,7 @@ class AttributeTest {
     }
 
     @Test
-    void constructor_identifier() {
+    void constructor_name() {
         try {
             new Attribute(
                     nodeIdGenerator.next(),
@@ -62,7 +62,7 @@ class AttributeTest {
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
-                    .isEqualTo("identifier cannot be null");
+                    .isEqualTo("name cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -141,7 +141,7 @@ class AttributeTest {
                                 return String.format("%s:%s:%s:%s:%s",
                                         node.getNodeId(),
                                         node.getMode().toString(),
-                                        node.getIdentifier(),
+                                        node.getName(),
                                         node.getType(),
                                         node.getValue()
                                 );

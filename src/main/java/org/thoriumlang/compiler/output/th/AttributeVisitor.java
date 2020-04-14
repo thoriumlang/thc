@@ -32,7 +32,7 @@ class AttributeVisitor extends BaseVisitor<String> {
     public String visit(Attribute node) {
         return String.format("%s %s%s = %s",
                 node.getMode().toString().toLowerCase(),
-                node.getIdentifier(),
+                node.getName(),
                 type(node.getType()),
                 node.getValue().accept(valueVisitor)
         );

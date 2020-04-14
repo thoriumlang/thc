@@ -376,7 +376,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     public Node visit(Attribute node) {
         return new Attribute(
                 node.getNodeId(),
-                node.getIdentifier(),
+                node.getName(),
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()
