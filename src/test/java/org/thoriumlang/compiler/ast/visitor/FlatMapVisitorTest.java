@@ -430,7 +430,7 @@ class FlatMapVisitorTest {
     void newAssignmentValue() {
         Node node = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                "identifier",
                 new TypeSpecInferred(nodeIdGenerator.next()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL

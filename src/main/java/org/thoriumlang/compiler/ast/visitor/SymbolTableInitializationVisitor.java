@@ -255,7 +255,6 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(NewAssignmentValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
 
-        node.getReference().accept(this);
         node.getType().accept(this);
         node.getValue().accept(this);
 

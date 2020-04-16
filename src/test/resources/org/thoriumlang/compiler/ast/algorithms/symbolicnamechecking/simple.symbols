@@ -2,37 +2,37 @@
     namespace.TestClass
       namespace.TestClass.[body]
         method1 -> #8
-        method2 -> #126
-        otherValue -> #150
-        someMethod1 -> #154
-        someMethod2 -> #160
-        someU -> #147
-        someValue -> #136
+        method2 -> #115
+        otherValue -> #139
+        someMethod1 -> #143
+        someMethod2 -> #149
+        someU -> #136
+        someValue -> #125
         namespace.TestClass.[body].method1
           p0 -> #11
           p1 -> #13
           p2 -> #17
           namespace.TestClass.[body].method1.[body]
-            p0 -> #51
+            p0 -> #46
             someVar1 -> #21
-            someVar2 -> #32
-            someVar3 -> #37
-            someVar4 -> #42
-            someVar5 -> #56
+            someVar2 -> #30
+            someVar3 -> #34
+            someVar4 -> #38
+            someVar5 -> #50
         namespace.TestClass.[body].method2
           namespace.TestClass.[body].method2.[body]
-            i -> #67
-            x -> #101
-            z -> #106
+            i -> #60
+            x -> #93
+            z -> #97
             namespace.TestClass.[body].method2.[body].[anon:27]
-              w -> #82
+              w -> #74
               namespace.TestClass.[body].method2.[body].[anon:27].[body]
             namespace.TestClass.[body].method2.[body].[anon:28]
-              y -> #94
+              y -> #86
               namespace.TestClass.[body].method2.[body].[anon:28].[body]
             namespace.TestClass.[body].method2.[body].[anon:31]
               namespace.TestClass.[body].method2.[body].[anon:31].[body]
-                x -> #114
+                x -> #104
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:11]

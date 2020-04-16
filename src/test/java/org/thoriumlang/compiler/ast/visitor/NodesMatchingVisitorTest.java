@@ -35,10 +35,10 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -48,7 +48,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,7 +61,7 @@ class NodesMatchingVisitorTest {
     void setup() {
         nodeIdGenerator = new NodeIdGenerator();
         s = new Supplier<String>() {
-            NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
+            final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
             @Override
             public String get() {
@@ -248,7 +247,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                new Reference(nodeIdGenerator.next(), s.get()),
+                                                                s.get(),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),
@@ -262,7 +261,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new NewAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                new Reference(nodeIdGenerator.next(), s.get()),
+                                                                s.get(),
                                                                 new TypeSpecSimple(
                                                                         nodeIdGenerator.next(),
                                                                         s.get(),

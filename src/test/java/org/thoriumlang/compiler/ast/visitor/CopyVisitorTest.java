@@ -36,10 +36,10 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -414,7 +414,7 @@ class CopyVisitorTest {
     void visitAssignmentValue() {
         Node node = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                "identifier",
                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAR

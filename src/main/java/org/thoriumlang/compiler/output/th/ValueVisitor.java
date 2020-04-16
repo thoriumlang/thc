@@ -82,7 +82,7 @@ class ValueVisitor extends BaseVisitor<String> {
     public String visit(NewAssignmentValue node) {
         return String.format("%s %s%s = %s",
                 node.getMode().toString().toLowerCase(),
-                node.getReference().accept(this),
+                node.getName(),
                 type(node.getType()),
                 node.getValue().accept(this)
         );

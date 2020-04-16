@@ -214,7 +214,6 @@ public class NodesMatchingVisitor implements Visitor<List<Node>> {
     public List<Node> visit(NewAssignmentValue node) {
         return Lists.merge(
                 matches(node),
-                recursiveMatch(node.getReference()),
                 recursiveMatch(node.getType()),
                 recursiveMatch(node.getValue())
         );

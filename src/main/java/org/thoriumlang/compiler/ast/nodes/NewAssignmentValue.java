@@ -20,13 +20,13 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 import java.util.Objects;
 
 public class NewAssignmentValue extends AssignmentValue {
-    private final Reference reference; // TODO rename and change type
+    private final String name;
     private final TypeSpec type;
     private final Mode mode;
 
-    public NewAssignmentValue(NodeId nodeId, Reference reference, TypeSpec type, Value value, Mode mode) {
-        super(nodeId,  value);
-        this.reference = Objects.requireNonNull(reference, "reference cannot be null");
+    public NewAssignmentValue(NodeId nodeId, String name, TypeSpec type, Value value, Mode mode) {
+        super(nodeId, value);
+        this.name = Objects.requireNonNull(name, "name cannot be null");
         this.type = Objects.requireNonNull(type, "type cannot be null");
         this.mode = Objects.requireNonNull(mode, "mode cannot be null");
     }
@@ -42,13 +42,13 @@ public class NewAssignmentValue extends AssignmentValue {
                 "%s %s:%s = %s",
                 mode.toString(),
                 type.toString(),
-                getReference().toString(),
+                getName(),
                 getValue().toString()
         );
     }
 
-    public Reference getReference() {
-        return reference;
+    public String getName() {
+        return name;
     }
 
     public TypeSpec getType() {
@@ -69,13 +69,13 @@ public class NewAssignmentValue extends AssignmentValue {
         }
         NewAssignmentValue that = (NewAssignmentValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                getReference().equals(that.getReference()) &&
+                name.equals(that.name) &&
                 type.equals(that.type) &&
                 getValue().equals(that.getValue());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), getReference(), getValue(), type, mode);
+        return Objects.hash(getNodeId(), name, getValue(), type, mode);
     }
 }

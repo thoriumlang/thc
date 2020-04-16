@@ -130,7 +130,6 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(NewAssignmentValue node) {
         Relatives relatives = family(node);
-        setFamilyRecursively(node.getReference(), relatives);
         setFamilyRecursively(node.getType(), relatives);
         setFamilyRecursively(node.getValue(), relatives);
         return node;

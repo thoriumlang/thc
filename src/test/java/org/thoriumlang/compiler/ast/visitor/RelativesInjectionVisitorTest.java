@@ -358,10 +358,9 @@ class RelativesInjectionVisitorTest {
     void newAssignmentValue() {
         TypeSpec typeSpec = new TypeSpecSimple(nodeIdGenerator.next(), "T1", Collections.emptyList());
         Value value = new NoneValue(nodeIdGenerator.next());
-        Reference reference = new Reference(nodeIdGenerator.next(), "id");
         NewAssignmentValue newAssignmentValue = new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                reference,
+                "id",
                 typeSpec,
                 value,
                 Mode.VAR
@@ -371,7 +370,6 @@ class RelativesInjectionVisitorTest {
 
         assertParent(typeSpec, newAssignmentValue);
         assertParent(value, newAssignmentValue);
-        assertParent(reference, newAssignmentValue);
     }
 
     @Test

@@ -35,7 +35,7 @@ class NewAssignmentValueTest {
         try {
             new NewAssignmentValue(
                     null,
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                     new NoneValue(nodeIdGenerator.next()),
                     Mode.VAR
@@ -50,7 +50,7 @@ class NewAssignmentValueTest {
     }
 
     @Test
-    void constructor_reference() { // TODO rename
+    void constructor_name() {
         try {
             new NewAssignmentValue(
                     nodeIdGenerator.next(),
@@ -62,7 +62,7 @@ class NewAssignmentValueTest {
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
-                    .isEqualTo("reference cannot be null");
+                    .isEqualTo("name cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -73,7 +73,7 @@ class NewAssignmentValueTest {
         try {
             new NewAssignmentValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    "identifier",
                     null,
                     new NoneValue(nodeIdGenerator.next()),
                     Mode.VAR
@@ -92,7 +92,7 @@ class NewAssignmentValueTest {
         try {
             new NewAssignmentValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                     null,
                     Mode.VAR
@@ -111,7 +111,7 @@ class NewAssignmentValueTest {
         try {
             new NewAssignmentValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    "identifier",
                     new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                     new NoneValue(nodeIdGenerator.next()),
                     null
@@ -130,7 +130,7 @@ class NewAssignmentValueTest {
         Assertions.assertThat(
                 new NewAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                         new NoneValue(nodeIdGenerator.next()),
                         Mode.VAR
@@ -142,7 +142,7 @@ class NewAssignmentValueTest {
                                         node.getNodeId(),
                                         node.getMode().toString(),
                                         node.getType().toString(),
-                                        node.getReference().toString(),
+                                        node.getName(),
                                         node.getValue().toString()
                                 );
                             }
@@ -155,7 +155,7 @@ class NewAssignmentValueTest {
         Assertions.assertThat(
                 new NewAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                         new NoneValue(nodeIdGenerator.next()),
                         Mode.VAL
@@ -168,7 +168,7 @@ class NewAssignmentValueTest {
         Assertions.assertThat(
                 new NewAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        "identifier",
                         new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()),
                         new NoneValue(nodeIdGenerator.next()),
                         Mode.VAR

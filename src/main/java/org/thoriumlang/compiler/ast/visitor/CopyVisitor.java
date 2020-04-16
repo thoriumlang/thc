@@ -31,10 +31,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
@@ -262,7 +262,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     public Node visit(NewAssignmentValue node) {
         return new NewAssignmentValue(
                 node.getNodeId(),
-                (Reference) node.getReference().accept(this),
+                node.getName(),
                 (TypeSpec) node.getType().accept(this),
                 (Value) node.getValue().accept(this),
                 node.getMode()

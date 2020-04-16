@@ -217,13 +217,11 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
         SymbolTable symbolTable = getSymbolTable(node);
 
         List<SemanticError> errors = Lists.merge(
-                alreadyDefined(symbolTable, node.getReference().getName(), node),
+                alreadyDefined(symbolTable, node.getName(), node),
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new Name(node.getReference().getName()), new SymbolicName(node));
-
-        node.getReference().accept(this);
+        symbolTable.put(new Name(node.getName()), new SymbolicName(node));
 
         return errors;
     }

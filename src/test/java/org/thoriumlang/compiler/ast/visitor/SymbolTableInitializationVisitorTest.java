@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 class SymbolTableInitializationVisitorTest {
-    private static NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
+    private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
     private SymbolTableInitializationVisitor visitor;
 
@@ -587,7 +587,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         NewAssignmentValue value = injectParents(new NewAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "string"),
+                "string",
                 new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList()),
                 new NoneValue(nodeIdGenerator.next()),
                 Mode.VAL
