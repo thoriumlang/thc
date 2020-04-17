@@ -40,5 +40,12 @@ class TestClass {
 
     public someValue() {}
 
-    val method1;
+    public someValue(x: String) {} // TODO should not clash with someValue()
+
+    val method1; // TODO should not clash with method1()
+
+    public method3() {
+        var s: String;
+        s.stuff = "whatever";
+    }
 }

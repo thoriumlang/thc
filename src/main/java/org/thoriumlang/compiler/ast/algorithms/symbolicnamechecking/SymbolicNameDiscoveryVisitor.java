@@ -138,7 +138,6 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(IndirectAssignmentValue node) {
-        // TODO cover with tests
         return Lists.merge(
                 node.getReference().accept(this),
                 node.getIndirectValue().accept(this),
@@ -176,8 +175,9 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Method node) {
-        // the first parent is the signature's symbol table; the second parent is the enclosing class
-        SymbolTable symbolTable = getSymbolTable(node).enclosingScope().enclosingScope();
+        SymbolTable symbolTable = getSymbolTable(node)
+                .enclosingScope() // the signature's symbol table
+                .enclosingScope(); // the enclosing class
 
         List<SemanticError> errors = alreadyDefined(symbolTable, node.getSignature().getName(), node);
 

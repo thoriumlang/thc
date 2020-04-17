@@ -3,11 +3,12 @@
       namespace.TestClass.[body]
         method1 -> #8
         method2 -> #115
-        otherValue -> #139
-        someMethod1 -> #143
-        someMethod2 -> #149
-        someU -> #136
-        someValue -> #125
+        method3 -> #137
+        otherValue -> #161
+        someMethod1 -> #165
+        someMethod2 -> #171
+        someU -> #158
+        someValue -> #130
         namespace.TestClass.[body].method1
           p0 -> #11
           p1 -> #13
@@ -33,6 +34,9 @@
             namespace.TestClass.[body].method2.[body].[anon:31]
               namespace.TestClass.[body].method2.[body].[anon:31].[body]
                 x -> #104
+        namespace.TestClass.[body].method3
+          namespace.TestClass.[body].method3.[body]
+            s -> #141
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:11]
@@ -42,4 +46,5 @@
             namespace.TestClass.[body].someMethod2.[anon:12].[body]
         namespace.TestClass.[body].someU
         namespace.TestClass.[body].someValue
+          x -> #132
           namespace.TestClass.[body].someValue.[body]

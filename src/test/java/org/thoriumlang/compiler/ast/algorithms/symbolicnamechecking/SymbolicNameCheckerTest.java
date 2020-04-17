@@ -33,7 +33,7 @@ class SymbolicNameCheckerTest {
     @Test
     void walk() {
         SymbolTable rootSymbolTable = new SymbolTable();
-        Root root = new AST(
+        AST ast = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(
                         "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.th"
                 ),
@@ -41,7 +41,8 @@ class SymbolicNameCheckerTest {
                 new NodeIdGenerator(),
                 Collections.emptyList(),
                 rootSymbolTable
-        ).root().orElseThrow(() -> new IllegalStateException("no root found"));
+        );
+        Root root = ast.root().orElseThrow(() -> new IllegalStateException("no root found: " + ast.errors().get(0)));
 
         Assertions.assertThat(
                 new SymbolicNameChecker()
@@ -64,7 +65,9 @@ class SymbolicNameCheckerTest {
                 "symbol already defined: method2 (37)",
                 "symbol not found: p0 (38)",
                 "symbol not found: null (38)",
-                "symbol already defined: someValue (41)"
+                "symbol already defined: someValue (41)",
+                "symbol already defined: someValue (43)",
+                "symbol not found: stuff (49)"
         );
 
         Assertions.assertThat(
