@@ -20,8 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
-import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -35,7 +33,9 @@ import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
+import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.JavaClass;
@@ -44,14 +44,12 @@ import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 class TypeDiscoveryVisitorTest {
     private static final TypeLoader typeLoader = (name, node) -> {
@@ -88,18 +86,13 @@ class TypeDiscoveryVisitorTest {
 
         visitor.visit(root);
 
-        Assertions.assertThat(
-                String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
-        )
-                .isEqualTo(
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        TypeDiscoveryVisitorTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.types"
-                                        )
-                                )
-                        ).lines().collect(Collectors.joining("\n"))
-                );
+        Assertions
+                .assertThat(
+                        String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
+                )
+                .isEqualTo(ExternalString.fromClasspath(
+                        "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.types"
+                ));
     }
 
     @Test

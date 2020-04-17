@@ -39,9 +39,8 @@ import org.thoriumlang.compiler.output.html.HtmlWalker;
 import org.thoriumlang.compiler.output.th.ThWalker;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -73,15 +72,7 @@ class IntegrationTest {
                                 .root()
                                 .orElseThrow(() -> new IllegalStateException("no root found"))
                                 .toString())
-                .isEqualTo(
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        IntegrationTest.class.getResourceAsStream(path + ".out.ast")
-                                )
-                        )
-                                .lines()
-                                .collect(Collectors.joining("\n"))
-                );
+                .isEqualTo(ExternalString.fromClasspath(path + ".out.ast"));
     }
 
     private Source source(String path, Function<String, String> filenameGenerator) throws URISyntaxException {
@@ -118,15 +109,7 @@ class IntegrationTest {
                                         .orElseThrow(() -> new IllegalStateException("no root found"))
                         ).walk()
                 )
-                .isEqualTo(
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        IntegrationTest.class.getResourceAsStream(path + ".out.th")
-                                )
-                        )
-                                .lines()
-                                .collect(Collectors.joining("\n"))
-                );
+                .isEqualTo(ExternalString.fromClasspath(path + ".out.th"));
     }
 
     @ParameterizedTest
@@ -149,15 +132,7 @@ class IntegrationTest {
                                         .orElseThrow(() -> new IllegalStateException("no root found"))
                         ).walk()
                 )
-                .isEqualTo(
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        IntegrationTest.class.getResourceAsStream(path + ".out.th")
-                                )
-                        )
-                                .lines()
-                                .collect(Collectors.joining("\n"))
-                );
+                .isEqualTo(ExternalString.fromClasspath(path + ".out.th"));
     }
 
     private String generatedSourceFilename(String path) {
@@ -213,7 +188,7 @@ class IntegrationTest {
                 }
         );
 
-        Root root = roots.get(0).orElseThrow(()->new IllegalStateException("no root found"));
+        Root root = roots.get(0).orElseThrow(() -> new IllegalStateException("no root found"));
 
         root.getContext()
                 .put(

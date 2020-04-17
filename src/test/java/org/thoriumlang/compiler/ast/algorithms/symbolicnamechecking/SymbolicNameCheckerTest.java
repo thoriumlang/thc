@@ -22,12 +22,10 @@ import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 class SymbolicNameCheckerTest {
     @Test
@@ -72,15 +70,8 @@ class SymbolicNameCheckerTest {
 
         Assertions.assertThat(
                 String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
-        )
-                .isEqualTo(
-                        new BufferedReader(
-                                new InputStreamReader(
-                                        SymbolicNameCheckerTest.class.getResourceAsStream(
-                                                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
-                                        )
-                                )
-                        ).lines().collect(Collectors.joining("\n"))
-                );
+        ).isEqualTo(ExternalString.fromClasspath(
+                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
+        ));
     }
 }

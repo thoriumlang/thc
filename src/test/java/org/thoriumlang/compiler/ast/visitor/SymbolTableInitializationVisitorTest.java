@@ -53,6 +53,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.symbols.SymbolTable;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.io.BufferedReader;
@@ -780,15 +781,9 @@ class SymbolTableInitializationVisitorTest {
                         "\n",
                         root.getContext().require(SymbolTable.class).accept(new SymbolTableDumpingVisitor())
                 )
-        ).isEqualTo(
-                new BufferedReader(
-                        new InputStreamReader(
-                                SymbolTableInitializationVisitorTest.class.getResourceAsStream(
-                                        "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.tables"
-                                )
-                        )
-                ).lines().collect(Collectors.joining("\n"))
-        );
+        ).isEqualTo(ExternalString.fromClasspath(
+                "/org/thoriumlang/compiler/ast/algorithms/symboltable/simple.tables"
+        ));
     }
 
     private Node parent() {
