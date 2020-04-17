@@ -1,4 +1,3 @@
-use Country; // FIXME should not be mandatory
 use java.lang.String;
 
 class Address {

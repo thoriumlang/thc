@@ -1,5 +1,3 @@
-use Address; // FIXME should not be mandatory
-
 type Person {
     getLegalAddress(): Address;
     getMailingAddress(): Address?;

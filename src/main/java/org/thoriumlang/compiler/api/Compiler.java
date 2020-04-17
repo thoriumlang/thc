@@ -34,8 +34,6 @@ public class Compiler {
     }
 
     public void compile(Sources sources) {
-        // TODO optimize: if a top level is already known reuse it
-
         listener.onCompilationStarted();
 
         sources.sources().forEach(source -> compile(sources, source));
