@@ -47,6 +47,7 @@ import org.thoriumlang.compiler.symbols.ThoriumType;
 import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,12 @@ class TypeDiscoveryVisitorTest {
         }
         if (name.getFullName().equals(List.class.getName())) {
             return Optional.of(new JavaInterface(node, List.class));
+        }
+        if (name.getFullName().equals(Long.class.getName())) {
+            return Optional.of(new JavaInterface(node, Long.class));
+        }
+        if (name.getFullName().equals(Integer.class.getName())) {
+            return Optional.of(new JavaInterface(node, Integer.class));
         }
         return Optional.empty();
     };
@@ -172,8 +179,7 @@ class TypeDiscoveryVisitorTest {
                 )
         ))));
 
-        Assertions.assertThat(visitor.visit(root).stream()
-                .map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound (1)");
         Assertions.assertThat(getSymbol(root, "notFound"))
@@ -207,6 +213,78 @@ class TypeDiscoveryVisitorTest {
         Assertions.assertThat(getSymbol(root, "JavaString"))
                 .get()
                 .isInstanceOf(AliasSymbol.class);
+    }
+
+    @Test
+    void use_duplicateAlias() {
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Arrays.asList(
+                        new Use(
+                                nodeIdGenerator.next(),
+                                "java.lang.Long",
+                                "Number"
+                        ),
+                        new Use(
+                                nodeIdGenerator.next(),
+                                "java.lang.Integer",
+                                "Number"
+                        )
+                ),
+                new Type(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "type",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
+                        Collections.emptyList()
+                )
+        ))));
+
+        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+                .isNotEmpty()
+                .containsExactly("symbol already defined: Number (1)");
+        Assertions.assertThat(getSymbol(root, "Number"))
+                .get()
+                .isInstanceOf(AliasSymbol.class);
+    }
+
+    @Test
+    void use_duplicateAliasedUse() {
+        Root root = injectSourcePosition(injectSymbolTable(injectParents(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Arrays.asList(
+                        new Use(
+                                nodeIdGenerator.next(),
+                                "java.lang.String",
+                                "JavaString1"
+                        ),
+                        new Use(
+                                nodeIdGenerator.next(),
+                                "java.lang.String",
+                                "JavaString2"
+                        )
+                ),
+                new Type(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "type",
+                        Collections.emptyList(),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
+                        Collections.emptyList()
+                )
+        ))));
+
+        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+                .isNotEmpty()
+                .containsExactly("symbol already defined: java.lang.String (1)");
+        Assertions.assertThat(getSymbol(root, "JavaString1"))
+                .get()
+                .isInstanceOf(AliasSymbol.class);
+        Assertions.assertThat(getSymbol(root, "JavaString2"))
+                .isEmpty();
     }
 
     @Test
@@ -353,8 +431,7 @@ class TypeDiscoveryVisitorTest {
                 new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
-        Assertions.assertThat(visitor.visit(root).stream()
-                .map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName (1)");
 
@@ -435,8 +512,7 @@ class TypeDiscoveryVisitorTest {
                 new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
-        Assertions.assertThat(visitor.visit(root).stream()
-                .map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
                 .isNotEmpty()
                 .containsExactly("symbol already defined: ClassName (1)");
 

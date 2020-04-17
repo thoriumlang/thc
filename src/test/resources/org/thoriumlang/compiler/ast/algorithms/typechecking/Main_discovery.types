@@ -31,3 +31,9 @@
         namespace.TestClass.[body].someObject
         namespace.TestClass.[body].someU
         namespace.TestClass.[body].someValue
+  org
+    org.thoriumlang
+      org.thoriumlang.compiler
+        org.thoriumlang.compiler.ast
+          org.thoriumlang.compiler.ast.algorithms
+            org.thoriumlang.compiler.ast.algorithms.typechecking

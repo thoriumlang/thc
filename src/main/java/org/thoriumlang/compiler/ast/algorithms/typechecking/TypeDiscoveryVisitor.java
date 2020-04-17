@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This visitor is in charge of discovering all the types / classes available in the current compilation unit. It fills
@@ -67,17 +68,28 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Use node) {
-        // FIXME duplicate use name: return error
+        SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
 
-        Name name = new Name(node.getFrom(), namespace);
+        Name aliasName = new Name(node.getTo());
+        Name targetName = new Name(node.getFrom(), namespace);
 
-        Optional<Symbol> symbol = typeLoader.load(name, node);
+        List<SemanticError> symbolAlreadyDefinedErrors = Stream.of(aliasName, targetName)
+                .map(name -> symbolTable
+                        .find(name)
+                        .map(s -> new SemanticError(String.format("symbol already defined: %s", name), node))
+                )
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+        if (!symbolAlreadyDefinedErrors.isEmpty()) {
+            return symbolAlreadyDefinedErrors;
+        }
+
+        Optional<Symbol> symbol = typeLoader.load(targetName, node);
 
         if (symbol.isPresent()) {
-            SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
-
-            symbolTable.put(new Name(node.getTo()), new AliasSymbol(node, name.getFullName()));
-            symbolTable.put(name, symbol.get());
+            symbolTable.put(aliasName, new AliasSymbol(node, targetName.getFullName()));
+            symbolTable.put(targetName, symbol.get());
 
             return Collections.emptyList();
         }
