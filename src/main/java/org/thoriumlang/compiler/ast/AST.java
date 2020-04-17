@@ -100,31 +100,6 @@ public class AST implements SyntaxErrorListener {
         return this;
     }
 
-    private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
-        if (namespaces.isEmpty()) {
-            return symbolTable;
-        }
-        ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
-        return findLocalTable(
-                symbolTable.createScope(newNamespaces.remove(0)),
-                newNamespaces
-        );
-    }
-
-    public Optional<Root> root() {
-//        if (!parsed) {
-        parse();
-//        }
-        return Optional.ofNullable(root);
-    }
-
-    public List<CompilationError> errors() {
-//        if (!parsed) {
-        parse();
-//        }
-        return errors;
-    }
-
     private ThoriumParser parser() {
         ThoriumParser parser = new ThoriumParser(
                 new CommonTokenStream(
@@ -151,6 +126,27 @@ public class AST implements SyntaxErrorListener {
         catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
+        if (namespaces.isEmpty()) {
+            return symbolTable;
+        }
+        ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
+        return findLocalTable(
+                symbolTable.createScope(newNamespaces.remove(0)),
+                newNamespaces
+        );
+    }
+
+    public Optional<Root> root() {
+        parse();
+        return Optional.ofNullable(root);
+    }
+
+    public List<CompilationError> errors() {
+        parse();
+        return errors;
     }
 
     @Override

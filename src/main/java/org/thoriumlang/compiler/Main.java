@@ -37,7 +37,7 @@ public class Main {
         CompilationListener listener = new CompilationListener() {
             @Override
             public void onCompilationStarted() {
-                System.out.println(String.format("Compilation started"));
+                System.out.println("Compilation started");
             }
 
             @Override
