@@ -48,6 +48,7 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
 public class SymbolTableInitializationVisitor extends IdentityVisitor {
+    public static final String TABLE_NAME_BODY = "[body]";
     private final SymbolTable rootSymbolTable;
 
     public SymbolTableInitializationVisitor(SymbolTable rootSymbolTable) {
@@ -92,7 +93,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Type node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope("[body]")
+                getSymbolTable(getParent(node)).createScope(TABLE_NAME_BODY)
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));
@@ -106,7 +107,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Class node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope("[body]")
+                getSymbolTable(getParent(node)).createScope(TABLE_NAME_BODY)
         );
 
         node.getTypeParameters().forEach(n -> n.accept(this));
@@ -322,7 +323,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(node).createScope("[body]")
+                getSymbolTable(node).createScope(TABLE_NAME_BODY)
         );
 
         node.getStatements().forEach(n -> n.accept(this));
@@ -350,7 +351,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(node).createScope("[body]")
+                getSymbolTable(node).createScope(TABLE_NAME_BODY)
         );
 
         node.getStatements().forEach(s -> s.accept(this));

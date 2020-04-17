@@ -21,8 +21,6 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.visitor.CopyVisitor;
 
 import java.util.Collection;
 import java.util.List;
