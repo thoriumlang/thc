@@ -1,0 +1,13 @@
+class inferValType {
+    method1(): None {
+        var j = 1;
+        j = "String";
+    }
+
+    method2(): None {
+        (): None => {
+            var s;
+            s = 1;
+        };
+    }
+}

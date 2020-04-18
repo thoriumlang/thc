@@ -1,0 +1,22 @@
+class inferMethodReturnType {
+    val attrMethod: None = () => 1;
+
+    emptyMethod() {}
+
+    integerMethod() {
+        1;
+    }
+
+    stringMethod() {
+        "String";
+    }
+
+    anonymousMethod(): None {
+        () => 1;
+    }
+
+    integerOrStringMethod() {
+        return 1;
+        return "String";
+    }
+}

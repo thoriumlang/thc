@@ -1,0 +1,18 @@
+class inferValType {
+    val i = 1;
+    val j;
+
+    method1(): None {
+        val k = 1;
+    }
+
+    method2(): None {
+        j = 1;
+    }
+
+    method3(): None {
+        (): None => {
+            val s = "String";
+        };
+    }
+}

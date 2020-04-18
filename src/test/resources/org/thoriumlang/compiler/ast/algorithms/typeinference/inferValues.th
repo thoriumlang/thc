@@ -1,0 +1,11 @@
+class inferValues {
+    val a_Boolean_1 = true;
+    val a_Boolean_2 = false;
+    val a_String = "String";
+    val a_Number = 1;
+
+    intersectionType(): None {
+        var a_NumberOrString = "String";
+        a_NumberOrString = 1;
+    }
+}
