@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TypeChecker implements Algorithm, TypeLoader {
+public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to TypeLoader
     private final List<TypeLoader> typeLoaders;
 
     public TypeChecker(List<TypeLoader> typeLoaders) {

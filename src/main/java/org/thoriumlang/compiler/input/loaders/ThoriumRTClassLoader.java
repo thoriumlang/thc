@@ -28,7 +28,10 @@ import java.util.Optional;
 public class ThoriumRTClassLoader implements TypeLoader {
     private final List<String> knownTypes = Arrays.asList(
             "org.thoriumlang.Object",
-            "org.thoriumlang.None"
+            "org.thoriumlang.None",
+            "org.thoriumlang.String",
+            "org.thoriumlang.Number",
+            "org.thoriumlang.Boolean"
     );
 
     @Override

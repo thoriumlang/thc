@@ -175,7 +175,7 @@ class TypeResolverTest {
 
     private void assertsOn(Path file) {
         Root root = loadRoot(file);
-        List<SemanticError> errors = new TypeResolver().walk(root);
+        List<SemanticError> errors = new TypeResolver(new NodeIdGenerator()).walk(root);
 
         Assertions.assertThat(errors.stream().map(SemanticError::toString).collect(Collectors.toList()))
                 .isEmpty();
