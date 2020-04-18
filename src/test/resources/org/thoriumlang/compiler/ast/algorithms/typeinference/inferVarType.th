@@ -10,4 +10,9 @@ class inferValType {
             s = 1;
         };
     }
+
+    method3(p: Number): None {
+        var i;
+        i = p;
+    }
 }

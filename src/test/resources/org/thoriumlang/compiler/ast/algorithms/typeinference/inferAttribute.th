@@ -1,0 +1,8 @@
+class inferAttribute {
+    val i = 1;
+    val j;
+
+    method(): None {
+        j = 1;
+    }
+}
