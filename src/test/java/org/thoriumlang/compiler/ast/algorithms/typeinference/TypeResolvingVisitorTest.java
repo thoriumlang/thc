@@ -4,13 +4,19 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
+import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Value;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 class TypeResolvingVisitorTest {
@@ -67,6 +73,7 @@ class TypeResolvingVisitorTest {
     @Test
     void noneValue() {
         Value value = new NoneValue(nodeIdGenerator.next());
+
         List<SemanticError> errors = value.accept(new TypeResolvingVisitor(nodeIdGenerator));
 
         Assertions.assertThat(errors).isEmpty();
@@ -74,5 +81,53 @@ class TypeResolvingVisitorTest {
                 .get()
                 .extracting(Object::toString)
                 .isEqualTo("org.thoriumlang.None[]");
+    }
+
+    @Test
+    void typeSpecSimple() {
+        Node node = new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList());
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .isEqualTo(node);
+    }
+
+    @Test
+    void typeSpecIntersection() {
+        Node node = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type1", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type2", Collections.emptyList())
+                )
+        );
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .isEqualTo(node);
+    }
+
+    @Test
+    void typeSpecUnion() {
+        Node node = new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type1", Collections.emptyList()),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type2", Collections.emptyList())
+                )
+        );
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .isEqualTo(node);
     }
 }

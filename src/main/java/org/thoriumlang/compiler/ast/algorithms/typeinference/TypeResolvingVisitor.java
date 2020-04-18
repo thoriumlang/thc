@@ -77,16 +77,19 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(TypeSpecIntersection node) {
+        node.getContext().put(TypeSpec.class, node);
         return visitRecursive(node.getTypes());
     }
 
     @Override
     public List<SemanticError> visit(TypeSpecUnion node) {
+        node.getContext().put(TypeSpec.class, node);
         return visitRecursive(node.getTypes());
     }
 
     @Override
     public List<SemanticError> visit(TypeSpecSimple node) {
+        node.getContext().put(TypeSpec.class, node);
         return Collections.emptyList();
     }
 
