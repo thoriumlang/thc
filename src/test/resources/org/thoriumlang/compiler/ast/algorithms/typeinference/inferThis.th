@@ -1,0 +1,5 @@
+class inferThis {
+    method() {
+        // val assert_inferThis = this; TODO uncomment once this is handled properly
+    }
+}
