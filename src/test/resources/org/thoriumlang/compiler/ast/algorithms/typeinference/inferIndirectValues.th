@@ -1,0 +1,15 @@
+class inferIndirectValues {
+    callee_1() {
+        "String";
+    }
+
+    caller() {
+        val assert_String_1 = callee_1();
+        val assert_Number_1 = callee_2();
+        // TODO infer indirect value
+    }
+
+    callee_2() {
+        1;
+    }
+}

@@ -1,6 +1,7 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -34,17 +35,12 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
-//import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.collections.Lists;
-import org.thoriumlang.compiler.symbols.Name;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
@@ -265,9 +261,12 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         throw new IllegalStateException("not implemented");
     }
 
-    @Override // TODO implement
+    @Override
     public List<SemanticError> visit(MethodCallValue node) {
-        throw new IllegalStateException("MethodCallValue not implemented");
+        // TODO handle overloading (https://github.com/thoriumlang/thc/issues/55)
+        List<SemanticError> errors = node.getMethodReference().accept(this);
+        copyTypeSpec(node, node.getMethodReference());
+        return errors;
     }
 
     @Override // TODO implement
@@ -354,9 +353,6 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     }
 
     private Node getTargetNode(Reference node) {
-        return node.getContext().require(SymbolTable.class)
-                .find(new Name(node.getName()))
-                .orElseThrow(() -> new IllegalStateException("target not found"))
-                .getDefiningNode();
+        return node.getContext().require(ReferencedNode.class).node();
     }
 }
