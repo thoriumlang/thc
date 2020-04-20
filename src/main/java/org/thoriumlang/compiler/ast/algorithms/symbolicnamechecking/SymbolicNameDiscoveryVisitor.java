@@ -148,6 +148,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     @Override
     public List<SemanticError> visit(MethodCallValue node) {
         List<SemanticError> errors = Lists.merge(
+                node.getMethodReference().accept(this),
                 node.getMethodArguments().stream()
                         .map(n -> n.accept(this))
                         .flatMap(List::stream)
@@ -157,10 +158,6 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                         .flatMap(List::stream)
                         .collect(Collectors.toList())
         );
-
-        if (!getSymbolTable(node).find(new Name(node.getMethodName())).isPresent()) {
-            errors = Lists.append(errors, undefinedError(node.getMethodName(), node));
-        }
 
         return errors;
     }

@@ -230,7 +230,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new MethodCallValue(
                                                                 nodeIdGenerator.next(),
-                                                                s.get(),
+                                                                new Reference(nodeIdGenerator.next(), s.get()),
                                                                 Collections.singletonList(
                                                                         new TypeSpecSimple(
                                                                                 nodeIdGenerator.next(),

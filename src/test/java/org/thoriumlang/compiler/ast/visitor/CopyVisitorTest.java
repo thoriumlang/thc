@@ -459,7 +459,7 @@ class CopyVisitorTest {
     void visitMethodCallValue() {
         Node node = new MethodCallValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 Collections.emptyList(),
                 Collections.emptyList()
         )

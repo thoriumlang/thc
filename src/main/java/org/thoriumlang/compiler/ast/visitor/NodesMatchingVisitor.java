@@ -242,6 +242,7 @@ public class NodesMatchingVisitor implements Visitor<List<Node>> {
     public List<Node> visit(MethodCallValue node) {
         return Lists.merge(
                 matches(node),
+                recursiveMatch(node.getMethodReference()),
                 recursiveMatch(node.getTypeArguments()),
                 recursiveMatch(node.getMethodArguments())
         );

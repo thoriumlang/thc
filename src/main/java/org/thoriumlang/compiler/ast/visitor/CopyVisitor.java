@@ -301,7 +301,7 @@ public abstract class CopyVisitor implements Visitor<Node> {
     public Node visit(MethodCallValue node) {
         return new MethodCallValue(
                 node.getNodeId(),
-                node.getMethodName(),
+                (Reference) node.getMethodReference().accept(this),
                 node.getTypeArguments().stream()
                         .map(a -> (TypeSpec) a.accept(this))
                         .collect(Collectors.toList()),

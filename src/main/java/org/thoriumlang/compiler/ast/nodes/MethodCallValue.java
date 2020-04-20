@@ -22,14 +22,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MethodCallValue extends Value {
-    private final String methodName;
+    private final Reference methodReference;
     private final List<TypeSpec> typeArguments;
     private final List<Value> methodArguments;
 
-    public MethodCallValue(NodeId nodeId, String methodName, List<TypeSpec> typeArguments,
+    public MethodCallValue(NodeId nodeId, Reference methodReference, List<TypeSpec> typeArguments,
             List<Value> methodArguments) {
         super(nodeId);
-        this.methodName = Objects.requireNonNull(methodName, "methodName cannot be null");
+        this.methodReference = Objects.requireNonNull(methodReference, "methodReference cannot be null");
         this.typeArguments = Objects.requireNonNull(typeArguments, "typeArguments cannot be null");
         this.methodArguments = Objects.requireNonNull(methodArguments, "methodArguments cannot be null");
     }
@@ -43,7 +43,7 @@ public class MethodCallValue extends Value {
     public String toString() {
         return String.format(
                 "%s[%s](%s)",
-                methodName,
+                methodReference,
                 typeArguments.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(",")),
@@ -53,8 +53,8 @@ public class MethodCallValue extends Value {
         );
     }
 
-    public String getMethodName() {
-        return methodName;
+    public Reference getMethodReference() {
+        return methodReference;
     }
 
     public List<TypeSpec> getTypeArguments() {
@@ -75,13 +75,13 @@ public class MethodCallValue extends Value {
         }
         MethodCallValue that = (MethodCallValue) o;
         return getNodeId().equals(that.getNodeId()) &&
-                methodName.equals(that.methodName) &&
+                methodReference.equals(that.methodReference) &&
                 typeArguments.equals(that.typeArguments) &&
                 methodArguments.equals(that.methodArguments);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNodeId(), methodName, typeArguments, methodArguments);
+        return Objects.hash(getNodeId(), methodReference, typeArguments, methodArguments);
     }
 }

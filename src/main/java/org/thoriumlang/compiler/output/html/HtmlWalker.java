@@ -404,7 +404,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
         renderSymbolTable(node);
         return templates.get(node.getClass()).render(
                 newModel(node)
-                        .with("methodName", node.getMethodName())
+                        .with("methodName", node.getMethodReference().getName())
                         .with("typeArguments", node.getTypeArguments().stream()
                                 .map(n -> n.accept(this))
                                 .collect(Collectors.toList()))

@@ -33,7 +33,12 @@ class MethodCallValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new MethodCallValue(null, "methodName", Collections.emptyList(), Collections.emptyList());
+            new MethodCallValue(
+                    null,
+                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    Collections.emptyList(),
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -50,7 +55,7 @@ class MethodCallValueTest {
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
-                    .isEqualTo("methodName cannot be null");
+                    .isEqualTo("methodReference cannot be null");
             return;
         }
         Assertions.fail("NPE not thrown");
@@ -59,7 +64,12 @@ class MethodCallValueTest {
     @Test
     void constructor_typeArguments() {
         try {
-            new MethodCallValue(nodeIdGenerator.next(), "methodName", null, Collections.emptyList());
+            new MethodCallValue(
+                    nodeIdGenerator.next(),
+                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    null,
+                    Collections.emptyList()
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -72,7 +82,12 @@ class MethodCallValueTest {
     @Test
     void constructor_methodArguments() {
         try {
-            new MethodCallValue(nodeIdGenerator.next(), "methodName", Collections.emptyList(), null);
+            new MethodCallValue(
+                    nodeIdGenerator.next(),
+                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    Collections.emptyList(),
+                    null
+            );
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -87,7 +102,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        "methodName",
+                        new Reference(nodeIdGenerator.next(), "methodName"),
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
@@ -99,7 +114,7 @@ class MethodCallValueTest {
                                 return String.format(
                                         "%s:%s:%s:%s",
                                         node.getNodeId().toString(),
-                                        node.getMethodName(),
+                                        node.getMethodReference(),
                                         node.getTypeArguments(),
                                         node.getMethodArguments()
                                 );
@@ -113,7 +128,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        "methodName",
+                        new Reference(nodeIdGenerator.next(), "methodName"),
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
@@ -127,7 +142,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        "methodName",
+                        new Reference(nodeIdGenerator.next(), "methodName"),
                         Collections.emptyList(),
                         Collections.emptyList()
                 ).getContext()

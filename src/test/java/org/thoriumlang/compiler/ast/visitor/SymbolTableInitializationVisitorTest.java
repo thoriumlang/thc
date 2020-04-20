@@ -56,12 +56,9 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class SymbolTableInitializationVisitorTest {
     private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
@@ -642,7 +639,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         MethodCallValue value = injectParents(new MethodCallValue(
                 nodeIdGenerator.next(),
-                "methodName",
+                new Reference(nodeIdGenerator.next(), "methodName"),
                 Collections.emptyList(),
                 Collections.emptyList()
         ));

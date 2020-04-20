@@ -115,7 +115,7 @@ class ValueVisitor extends BaseVisitor<String> {
     @Override
     public String visit(MethodCallValue node) {
         return String.format("%s%s(%s)",
-                node.getMethodName(),
+                node.getMethodReference().accept(this),
                 node.getTypeArguments().isEmpty() ?
                         "" :
                         node.getTypeArguments().stream()

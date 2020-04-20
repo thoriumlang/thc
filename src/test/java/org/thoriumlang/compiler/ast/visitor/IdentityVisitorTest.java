@@ -385,7 +385,7 @@ class IdentityVisitorTest {
     void visitMethodCallValue() {
         Value value = new MethodCallValue(
                 nodeIdGenerator.next(),
-                "identifier",
+                new Reference(nodeIdGenerator.next(), "identifier"),
                 Collections.emptyList(),
                 Collections.emptyList()
         );

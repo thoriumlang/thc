@@ -31,10 +31,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -244,6 +244,7 @@ public class FlatMapVisitor<T> implements Visitor<List<T>> {
     public List<T> visit(MethodCallValue node) {
         return Lists.merge(
                 mapper.apply(node),
+                node.getMethodReference().accept(this),
                 node.getTypeArguments().stream()
                         .map(n -> n.accept(this))
                         .flatMap(List::stream)

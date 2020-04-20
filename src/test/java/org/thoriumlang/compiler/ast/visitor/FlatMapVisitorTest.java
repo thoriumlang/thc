@@ -49,6 +49,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
+import java.sql.Ref;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -345,7 +346,7 @@ class FlatMapVisitorTest {
     void methodCallValue() {
         Node node = new MethodCallValue(
                 nodeIdGenerator.next(),
-                "methodName",
+                new Reference(nodeIdGenerator.next(), "methodName"),
                 Collections.singletonList(new TypeSpecInferred(nodeIdGenerator.next())),
                 Collections.singletonList(new NoneValue(nodeIdGenerator.next()))
         );
@@ -355,6 +356,7 @@ class FlatMapVisitorTest {
         Assertions.assertThat(result)
                 .containsExactly(
                         MethodCallValue.class,
+                        Reference.class,
                         TypeSpecInferred.class,
                         NoneValue.class
                 );

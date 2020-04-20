@@ -413,7 +413,7 @@ class RelativesInjectionVisitorTest {
         Value value = new NoneValue(nodeIdGenerator.next());
         MethodCallValue methodCallValue = new MethodCallValue(
                 nodeIdGenerator.next(),
-                "methodName",
+                new Reference(nodeIdGenerator.next(), "methodName"),
                 Collections.singletonList(typeArgument),
                 Collections.singletonList(value)
         );

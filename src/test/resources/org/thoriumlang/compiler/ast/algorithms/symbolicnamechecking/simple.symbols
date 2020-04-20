@@ -2,13 +2,13 @@
     namespace.TestClass
       namespace.TestClass.[body]
         method1 -> #8
-        method2 -> #115
-        method3 -> #137
-        otherValue -> #161
-        someMethod1 -> #165
-        someMethod2 -> #171
-        someU -> #158
-        someValue -> #130
+        method2 -> #118
+        method3 -> #140
+        otherValue -> #164
+        someMethod1 -> #168
+        someMethod2 -> #174
+        someU -> #161
+        someValue -> #133
         namespace.TestClass.[body].method1
           p0 -> #11
           p1 -> #13
@@ -23,20 +23,20 @@
         namespace.TestClass.[body].method2
           namespace.TestClass.[body].method2.[body]
             i -> #60
-            x -> #93
-            z -> #97
+            x -> #96
+            z -> #100
             namespace.TestClass.[body].method2.[body].[anon:27]
-              w -> #74
+              w -> #76
               namespace.TestClass.[body].method2.[body].[anon:27].[body]
             namespace.TestClass.[body].method2.[body].[anon:28]
-              y -> #86
+              y -> #89
               namespace.TestClass.[body].method2.[body].[anon:28].[body]
             namespace.TestClass.[body].method2.[body].[anon:31]
               namespace.TestClass.[body].method2.[body].[anon:31].[body]
-                x -> #104
+                x -> #107
         namespace.TestClass.[body].method3
           namespace.TestClass.[body].method3.[body]
-            s -> #141
+            s -> #144
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:11]
@@ -46,5 +46,5 @@
             namespace.TestClass.[body].someMethod2.[anon:12].[body]
         namespace.TestClass.[body].someU
         namespace.TestClass.[body].someValue
-          x -> #132
+          x -> #135
           namespace.TestClass.[body].someValue.[body]

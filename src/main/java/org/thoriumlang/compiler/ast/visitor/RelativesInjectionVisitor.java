@@ -155,6 +155,7 @@ public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(MethodCallValue node) {
         Relatives relatives = family(node);
+        setFamilyRecursively(node.getMethodReference(), relatives);
         node.getMethodArguments().forEach(n -> setFamilyRecursively(n, relatives));
         node.getTypeArguments().forEach(n -> setFamilyRecursively(n, relatives));
         return node;

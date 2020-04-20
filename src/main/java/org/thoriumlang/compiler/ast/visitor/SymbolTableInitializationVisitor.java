@@ -33,10 +33,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
-import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecFunction;
@@ -286,7 +286,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     @Override
     public Node visit(MethodCallValue node) {
         node.getContext().put(SymbolTable.class, getSymbolTable(getParent(node)));
-
+        node.getMethodReference().accept(this);
         node.getTypeArguments().forEach(n -> n.accept(this));
         node.getMethodArguments().forEach(n -> n.accept(this));
 
