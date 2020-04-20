@@ -8,8 +8,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
+import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
@@ -129,5 +131,30 @@ class TypeResolvingVisitorTest {
         Assertions.assertThat(node.getContext().get(TypeSpec.class))
                 .get()
                 .isEqualTo(node);
+    }
+
+    @Test
+    void typeSpecInferred() {
+        Node node = new TypeSpecInferred(nodeIdGenerator.next());
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .isEqualTo(node);
+    }
+
+    @Test
+    void parameter() {
+        TypeSpecSimple typeSpec = new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList());
+        Node node = new Parameter(nodeIdGenerator.next(), "p", typeSpec);
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .isSameAs(typeSpec);
     }
 }

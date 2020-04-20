@@ -1,21 +1,21 @@
 class inferMethodReturnType {
-    val attrMethod: None = () => 1;
+    val assert_Function_1: None = () => 1; // TODO more precise Function type
 
-    emptyMethod() {}
+    assert_None_2() {}
 
-    integerMethod() {
+    assert_Number_3() {
         1;
     }
 
-    stringMethod() {
+    assert_String_4() {
         "String";
     }
 
-    anonymousMethod(): None {
+    assert_Function_5() {
         () => 1;
     }
 
-    integerOrStringMethod() {
+    assert_NumberOrString_6() {
         return 1;
         return "String";
     }

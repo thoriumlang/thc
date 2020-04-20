@@ -6,8 +6,8 @@ import org.junit.jupiter.api.TestFactory;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
-import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
+import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -19,90 +19,113 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
+import org.thoriumlang.compiler.input.Source;
+import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.loaders.ThoriumRTClassLoader;
-import org.thoriumlang.compiler.input.loaders.TypeLoader;
-import org.thoriumlang.compiler.symbols.Name;
-import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolicName;
 import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class TypeResolverTest {
-    public static final String TEST_FILES_PATH = "/org/thoriumlang/compiler/ast/algorithms/typeinference/";
-
-    private Root loadRoot(Path filePath) {
-        try {
-            AST ast = new AST(
-                    Files.newInputStream(filePath),
-                    "namespace",
-                    new NodeIdGenerator(),
-                    Arrays.asList(
-                            new TypeChecker(Collections.singletonList(new TypeLoader() {
-                                @Override
-                                public Optional<Symbol> load(Name name, Node triggerNode) {
-                                    // TODO implement or remove depending on the actual need
-                                    return Optional.empty();
-                                }
-                            })),
-                            new SymbolicNameChecker()
-                    ),
-                    new SymbolTable()
-            );
-            return ast.root().orElseThrow(() -> new IllegalStateException("no root found: " + ast.errors().get(0)));
-        }
-        catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    private static final String TEST_FILES_PATH = "/org/thoriumlang/compiler/ast/algorithms/typeinference/";
+    private static final String ASSERT_MARKER = "^assert_";
+    private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
     @TestFactory
     Stream<DynamicTest> valuesCases() throws URISyntaxException {
-        extractTypeFromNodeName("a_BooleanOrInteger");
-        final String FILENAME = "inferValues.th";
-        return loadRoot(
-                Paths.get(ThoriumRTClassLoader.class.getResource(TEST_FILES_PATH + FILENAME).toURI())
+        return new SourceFiles(
+                Paths.get(ThoriumRTClassLoader.class.getResource(TEST_FILES_PATH).toURI()),
+                p -> true
         )
-                .getContext()
-                .require(SymbolTable.class)
-                .accept(new SymbolsExtractionVisitor()).stream()
-                .filter(s -> s instanceof SymbolicName)
-                .map(s -> (SymbolicName) s)
-                .map(SymbolicName::getDefiningNode)
-                .filter(n -> n.accept(new PredicateVisitor() {
-                    @Override
-                    public Boolean visit(NewAssignmentValue node) {
-                        return true;
-                    }
+                .sources()
+                .stream()
+                .flatMap(this::buildTestsStream);
+    }
 
-                    @Override
-                    public Boolean visit(Attribute node) {
-                        return true;
-                    }
-                })) // we have all NewAssignmentValue and Attribute nodes
-                .map(node -> DynamicTest.dynamicTest(
-                        FILENAME + " / " + getName(node),
-                        () -> {
-                            Assertions.assertThat(node.getContext().get(TypeSpec.class))
-                                    .get()
-                                    .extracting(this::typeSpecToString)
-                                    .isEqualTo(extractTypeFromNodeName(getName(node)));
+    private Stream<? extends DynamicTest> buildTestsStream(Source source) {
+        AST ast = source.ast(
+                nodeIdGenerator,
+                new SymbolTable(),
+                Collections.singletonList(new SymbolicNameChecker())
+        );
+
+        String fileName = source.toString().substring(source.toString().lastIndexOf('/') + 1);
+
+        if (!ast.root().isPresent() || !ast.errors().isEmpty()) {
+            return Stream.of(
+                    DynamicTest.dynamicTest(
+                            fileName + " / *",
+                            () -> Assertions.fail(ast.errors().get(0).toString())
+                    )
+            );
+        }
+
+        Root root = ast.root().get();
+
+        try {
+            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root);
+
+            return root.getContext()
+                    .require(SymbolTable.class)
+                    .accept(new SymbolsExtractionVisitor()).stream()
+                    .filter(s -> s instanceof SymbolicName)
+                    .map(s -> (SymbolicName) s)
+                    .map(SymbolicName::getDefiningNode)
+                    .filter(n -> n.accept(new PredicateVisitor() { // TODO should take methods as well!
+                        @Override
+                        public Boolean visit(NewAssignmentValue node) {
+                            return node.getName().matches(ASSERT_MARKER + ".*");
                         }
-                ));
+
+                        @Override
+                        public Boolean visit(Attribute node) {
+                            return node.getName().matches(ASSERT_MARKER + ".*");
+                        }
+
+                        @Override
+                        public Boolean visit(Method node) {
+                            return node.getSignature().getName().matches(ASSERT_MARKER + ".*");
+                        }
+                    })) // we have all NewAssignmentValue and Attribute nodes
+                    .map(node -> DynamicTest.dynamicTest(
+                            fileName + " / " + getName(node),
+                            () -> doAssert(root, errors, node)
+                    ));
+        }
+        catch (Exception e) {
+            return Stream.of(
+                    DynamicTest.dynamicTest(
+                            fileName + " / *",
+                            () -> Assertions.fail(e.getMessage(), e)
+                    )
+            );
+        }
+    }
+
+    private void doAssert(Root root, List<SemanticError> errors, Node node) {
+        Assertions.assertThat(errors.stream().map(SemanticError::toString).collect(Collectors.toList()))
+                .isEmpty();
+
+        Assertions.assertThat(root.accept(new NodesMatchingVisitor(n ->
+                // TODO this is not correct, all nodes should have a TypeSpec in the context
+                //  i.e. remove the instanceof restriction
+                n instanceof TypeSpecInferred && !n.getContext().contains(TypeSpec.class)
+        ))).isEmpty();
+
+        Assertions.assertThat(node.getContext().get(TypeSpec.class))
+                .get()
+                .extracting(this::typeSpecToString)
+                .isEqualTo(extractTypeFromNodeName(getName(node)));
     }
 
     private String getName(Node node) {
@@ -116,6 +139,11 @@ class TypeResolverTest {
             public String visit(Attribute node) {
                 return node.getName();
             }
+
+            @Override
+            public String visit(Method node) {
+                return node.getSignature().getName();
+            }
         });
     }
 
@@ -125,7 +153,8 @@ class TypeResolverTest {
             public String visit(TypeSpecIntersection node) {
                 return node.getTypes().stream()
                         .map(t -> t.accept(this))
-                        .collect(Collectors.joining(" | ", "(", ")"));
+                        .sorted()
+                        .collect(Collectors.joining(" | "));
             }
 
             @Override
@@ -137,51 +166,17 @@ class TypeResolverTest {
 
     private String extractTypeFromNodeName(String name) {
         Matcher matcher = Pattern
-                .compile("[^_]+_([^_]+)_?.*?")
+                .compile(ASSERT_MARKER + "([^_]+)_?.*?")
                 .matcher(name);
 
         return matcher.find()
-                ? expandOr(matcher.group(1))
+                ? expandTypeString(matcher.group(1))
                 : "";
     }
 
-    private String expandOr(String typeName) {
-        Matcher matcher = Pattern
-                .compile("^([a-zA-Z]+)Or([a-zA-Z]+)$")
-                .matcher(typeName);
-
-        return matcher.find()
-                ? String.format("(%s | %s)", matcher.group(1), matcher.group(2))
-                : typeName;
-    }
-
-    @TestFactory
-    Stream<DynamicTest> languageConstructCases() throws URISyntaxException, IOException {
-        Path directory = Paths.get(
-                TypeResolverTest.class.getResource(TEST_FILES_PATH).toURI()
-        );
-
-        return Files
-                .find(
-                        directory,
-                        999,
-                        (p, bfa) -> p.getFileName().toString().matches("^infer[a-zA-Z0-9]+\\.th$")
-                )
-                .map(file -> DynamicTest.dynamicTest(
-                        file.getFileName().toString().replaceFirst("\\.th$", ""),
-                        () -> assertsOn(file)
-                ));
-    }
-
-    private void assertsOn(Path file) {
-        Root root = loadRoot(file);
-        List<SemanticError> errors = new TypeResolver(new NodeIdGenerator()).walk(root);
-
-        Assertions.assertThat(errors.stream().map(SemanticError::toString).collect(Collectors.toList()))
-                .isEmpty();
-
-        Assertions.assertThat(root.accept(new NodesMatchingVisitor(n ->
-                n instanceof TypeSpecInferred && !n.getContext().contains(TypeSpec.class)
-        ))).isEmpty();
+    private String expandTypeString(String typeName) {
+        return Arrays.stream(typeName.split("Or"))
+                .map(name -> String.format("org.thoriumlang.%s[]", name))
+                .collect(Collectors.joining(" | "));
     }
 }

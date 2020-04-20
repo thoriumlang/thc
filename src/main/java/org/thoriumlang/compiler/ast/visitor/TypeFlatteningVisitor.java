@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO remove duplicates https://github.com/thoriumlang/thc/issues/67
 public class TypeFlatteningVisitor extends CopyVisitor {
     private final NodeIdGenerator nodeIdGenerator;
 

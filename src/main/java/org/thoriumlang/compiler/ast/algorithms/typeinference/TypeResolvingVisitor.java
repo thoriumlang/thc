@@ -1,6 +1,7 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -31,11 +32,19 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
+import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
+//import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.symbols.Name;
+import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
@@ -45,17 +54,17 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         this.nodeIdGenerator = nodeIdGenerator;
     }
 
-    @Override
+    @Override // TODO implement test
     public List<SemanticError> visit(Root node) {
         return node.getTopLevelNode().accept(this);
     }
 
-    @Override
+    @Override // TODO implement
     public List<SemanticError> visit(Use node) {
-        return Collections.emptyList();
+        throw new IllegalStateException("Use not implemented");
     }
 
-    @Override
+    @Override // TODO implement test
     public List<SemanticError> visit(Type node) {
         return visitRecursive(node.getMethods());
     }
@@ -93,32 +102,81 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         return Collections.emptyList();
     }
 
-    @Override
+    @Override // TODO implement
     public List<SemanticError> visit(TypeSpecFunction node) {
-        return Lists.merge(
-                visitRecursive(node.getArguments()),
-                node.getReturnType().accept(this)
-        );
+        throw new IllegalStateException("TypeSpecFunction not implemented");
     }
 
     @Override
     public List<SemanticError> visit(TypeSpecInferred node) {
-        return Collections.singletonList(new SemanticError("cannot infer type", node));
+        node.getContext().put(TypeSpec.class, node);
+        return Collections.emptyList();
     }
 
     @Override
     public List<SemanticError> visit(MethodSignature node) {
-        return node.getReturnType().accept(this);
+        List<SemanticError> errors = node.getReturnType().accept(this);
+
+        node.getContext()
+                .require(Relatives.class)
+                .parent()
+                .orElseThrow(() -> new IllegalStateException("no parent found"))
+                .node()
+                .accept(new BaseVisitor<Void>() {
+                    @Override
+                    public Void visit(Type parentNode) {
+                        // this is already done in the visit(Method) to infer statements types (and thus return type)
+                        visitRecursive(node.getTypeParameters());
+                        copyTypeSpec(node, node.getReturnType());
+                        return null;
+                    }
+
+                    @Override
+                    public Void visit(Method parentNode) {
+                        copyTypeSpec(node, parentNode);
+                        return null;
+                    }
+                });
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Parameter node) {
-        return Collections.emptyList();
+        List<SemanticError> errors = node.getType().accept(this);
+
+        copyTypeSpec(node, node.getType());
+
+        return errors;
     }
 
-    @Override
+    private void copyTypeSpec(Node to, Node from) {
+        if (!isTypeInterred(from)) {
+            throw new IllegalStateException(String.format(
+                    "no inferred type found for [ %s ] on [ %s ]", to, from
+            ));
+        }
+        to.getContext().put(
+                TypeSpec.class,
+                from.getContext().require(TypeSpec.class)
+        );
+    }
+
+    private Boolean isTypeInterred(Node node) {
+        return node.getContext()
+                .get(TypeSpec.class)
+                .map(t -> t.accept(new PredicateVisitor(true) {
+                    @Override
+                    public Boolean visit(TypeSpecInferred node) {
+                        return false;
+                    }
+                }))
+                .orElse(false);
+    }
+
+    @Override // TODO implement
     public List<SemanticError> visit(TypeParameter node) {
-        return Collections.emptyList();
+        throw new IllegalStateException("TypeParameter not implemented");
     }
 
     @Override
@@ -159,62 +217,146 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(IdentifierValue node) {
+        node.getReference().accept(this);
+
+        copyTypeSpec(node, node.getReference());
+
         return Collections.emptyList();
     }
 
     @Override
     public List<SemanticError> visit(NewAssignmentValue node) {
-        return node.getType().accept(this);
+        List<SemanticError> errors = Lists.merge(
+                node.getValue().accept(this),
+                node.getType().accept(this)
+        );
+
+        copyTypeSpec(node, node.getValue());
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(DirectAssignmentValue node) {
-        return Collections.emptyList();
+        List<SemanticError> errors = Lists.merge(
+                node.getValue().accept(this),
+                node.getReference().accept(this)
+        );
+
+        Node targetNode = getTargetNode(node.getReference());
+        TypeSpec inferredType = targetNode.getContext()
+                .get(TypeSpec.class)
+                .orElseThrow(() -> new IllegalStateException("no inferred type found"));
+
+        targetNode.getContext().put(
+                TypeSpec.class,
+                new TypeSpecIntersection(
+                        nodeIdGenerator.next(),
+                        Arrays.asList(inferredType, node.getValue().getContext().require(TypeSpec.class))
+                )
+        );
+
+        copyTypeSpec(node, targetNode);
+        return errors;
     }
 
-    @Override
+    @Override // TODO implement
     public List<SemanticError> visit(IndirectAssignmentValue node) {
-        return Collections.emptyList();
+        throw new IllegalStateException("not implemented");
     }
 
-    @Override
+    @Override // TODO implement
     public List<SemanticError> visit(MethodCallValue node) {
-        return Collections.emptyList();
+        throw new IllegalStateException("MethodCallValue not implemented");
     }
 
-    @Override
+    @Override // TODO implement
     public List<SemanticError> visit(NestedValue node) {
-        return Collections.emptyList();
+        throw new IllegalStateException("NestedValue not implemented");
     }
 
     @Override
     public List<SemanticError> visit(FunctionValue node) {
-        return Lists.merge(
+        List<SemanticError> errors = Lists.merge(
+                visitRecursive(node.getParameters()),
                 visitRecursive(node.getStatements()),
                 node.getReturnType().accept(this)
         );
+
+        node.getContext().put(
+                TypeSpec.class,
+                new TypeSpecSimple(nodeIdGenerator.next(), "org.thoriumlang.Function", Collections.emptyList())
+        );
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Statement node) {
-        return node.getValue().accept(this);
+        List<SemanticError> errors = node.getValue().accept(this);
+
+        copyTypeSpec(node, node.getValue());
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Method node) {
-        return Lists.merge(
-                node.getSignature().accept(this),
+        List<SemanticError> errors = Lists.merge(
+                // We need the inferred statement types to infer the method return type (here, Method type)
+                // We need the inferred parameters types to infer the statements types
+                // So, we cannot infer the signature at once (return type AND parameters are in the signature)...
+                visitRecursive(node.getSignature().getTypeParameters()),
                 visitRecursive(node.getStatements())
         );
+
+        node.getContext().put(
+                TypeSpec.class,
+                new TypeSpecIntersection(
+                        nodeIdGenerator.next(),
+                        node.getStatements().stream()
+                                .filter(Statement::isLast)
+                                .map(s -> s.getContext().require(TypeSpec.class))
+                                .collect(Collectors.toList())
+                )
+        );
+
+        node.getSignature().accept(this);
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Attribute node) {
-        return Collections.emptyList();
+        List<SemanticError> errors = Lists.merge(
+                node.getValue().accept(this),
+                node.getType().accept(this)
+        );
+
+        copyTypeSpec(node, node.getValue());
+
+        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Reference node) {
-        return Collections.emptyList();
+        List<SemanticError> errors = Collections.emptyList();
+
+        Node target = getTargetNode(node);
+
+        if (!isTypeInterred(target)) {
+            errors = target.accept(this);
+        }
+
+        copyTypeSpec(node, target);
+
+        return errors;
+    }
+
+    private Node getTargetNode(Reference node) {
+        return node.getContext().require(SymbolTable.class)
+                .find(new Name(node.getName()))
+                .orElseThrow(() -> new IllegalStateException("target not found"))
+                .getDefiningNode();
     }
 }

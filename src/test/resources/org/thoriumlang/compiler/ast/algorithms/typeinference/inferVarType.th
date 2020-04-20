@@ -1,18 +1,34 @@
 class inferValType {
-    method1(): None {
-        var j = 1;
-        j = "String";
-    }
+    method(p: org.thoriumlang.Number): None { // TODO remove need of FQN
+        var assert_NumberOrString_1 = 1;
+        assert_NumberOrString_1 = "String";
 
-    method2(): None {
         (): None => {
-            var s;
-            s = 1;
+            var assert_NoneOrNumber_2;
+            assert_NoneOrNumber_2 = 1;
         };
-    }
 
-    method3(p: Number): None {
-        var i;
-        i = p;
+        var assert_NoneOrNumber_3;
+        assert_NoneOrNumber_3 = p;
+
+        var assert_NoneOrNumberOrString_4: String;
+        assert_NoneOrNumberOrString_4 = 1;
+        assert_NoneOrNumberOrString_4 = "String";
+
+        var assert_String_5: String = "String";
+
+        var assert_NumberOrString_6: String = "String";
+        assert_NumberOrString_6 = 1;
+
+        var assert_NumberOrString_7 = "String";
+        assert_NumberOrString_7 = 1;
+
+        var assert_NoneOrNumberOrString_8: Boolean;
+        assert_NoneOrNumberOrString_8 = 1;
+        assert_NoneOrNumberOrString_8 = "String";
+
+        (p: org.thoriumlang.String): None => { // TODO remove need of FQN
+            var assert_String_9 = p;
+        };
     }
 }

@@ -1,15 +1,19 @@
 class inferValType {
-    method1(): None {
-        val k = 1;
-    }
+    method(p: org.thoriumlang.Number): None {
+        val assert_Number_1 = 1;
+        val assert_Number_2: String = 1;
+        val assert_Number_3 = p;
+        val assert_Number_4: String = p;
 
-    method2(): None {
         (): None => {
-            val s = "String";
+            val assert_String_5 = "String";
         };
-    }
 
-    method3(p: Number): None {
-        val q = p;
+        (q: org.thoriumlang.String): None => { // TODO remove need of FQN
+            val assert_String_6 = q;
+        };
+
+        var assert_NumberOrString_7: Number = 1;
+        assert_NumberOrString_7 = "String";
     }
 }
