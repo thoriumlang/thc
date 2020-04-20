@@ -327,7 +327,7 @@ class IdentityVisitorTest {
 
     @Test
     void visitIdentifierValue() {
-        Value value = new IdentifierValue(nodeIdGenerator.next(), new Reference(nodeIdGenerator.next(), "id"));
+        Value value = new IdentifierValue(nodeIdGenerator.next(), new Reference(nodeIdGenerator.next(), "id", false));
         Assertions.assertThat(value.accept(visitor()))
                 .isSameAs(value);
     }
@@ -363,7 +363,7 @@ class IdentityVisitorTest {
         Value value = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -374,7 +374,7 @@ class IdentityVisitorTest {
     void visitDirectAssignmentValue() {
         Value value = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         );
         Assertions.assertThat(value.accept(visitor()))
@@ -385,7 +385,7 @@ class IdentityVisitorTest {
     void visitMethodCallValue() {
         Value value = new MethodCallValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", true),
                 Collections.emptyList(),
                 Collections.emptyList()
         );
@@ -492,8 +492,8 @@ class IdentityVisitorTest {
     void visitTargetReference() {
         Reference attribute = new Reference(
                 nodeIdGenerator.next(),
-                "identifier"
-        );
+                "identifier",
+                false);
         Assertions.assertThat(attribute.accept(visitor()))
                 .isSameAs(attribute);
     }

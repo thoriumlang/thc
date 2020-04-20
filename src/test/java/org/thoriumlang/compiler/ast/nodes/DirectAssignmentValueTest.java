@@ -33,7 +33,7 @@ class DirectAssignmentValueTest {
         try {
             new DirectAssignmentValue(
                     null,
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    new Reference(nodeIdGenerator.next(), "identifier", false),
                     new NoneValue(nodeIdGenerator.next())
             );
         }
@@ -68,7 +68,7 @@ class DirectAssignmentValueTest {
         try {
             new DirectAssignmentValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    new Reference(nodeIdGenerator.next(), "identifier", false),
                     null
             );
         }
@@ -85,7 +85,7 @@ class DirectAssignmentValueTest {
         Assertions.assertThat(
                 new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
@@ -107,7 +107,7 @@ class DirectAssignmentValueTest {
         Assertions.assertThat(
                 new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("DIRECT identifier = none");
@@ -118,7 +118,7 @@ class DirectAssignmentValueTest {
         Assertions.assertThat(
                 new DirectAssignmentValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 ).getContext()
         ).isNotNull();

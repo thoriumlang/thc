@@ -569,7 +569,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         IdentifierValue value = injectParents(new IdentifierValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "string")
+                new Reference(nodeIdGenerator.next(), "string", false)
         ));
 
         value.getContext().put(Relatives.class, new Relatives(value, new Relatives(parent)));
@@ -604,7 +604,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         DirectAssignmentValue value = injectParents(new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "string"),
+                new Reference(nodeIdGenerator.next(), "string", false),
                 new NoneValue(nodeIdGenerator.next())
         ));
 
@@ -622,7 +622,7 @@ class SymbolTableInitializationVisitorTest {
         IndirectAssignmentValue value = injectParents(new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                new Reference(nodeIdGenerator.next(), "string"),
+                new Reference(nodeIdGenerator.next(), "string", false),
                 new NoneValue(nodeIdGenerator.next())
         ));
 
@@ -639,7 +639,7 @@ class SymbolTableInitializationVisitorTest {
         Node parent = parent();
         MethodCallValue value = injectParents(new MethodCallValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "methodName"),
+                new Reference(nodeIdGenerator.next(), "methodName", true),
                 Collections.emptyList(),
                 Collections.emptyList()
         ));
@@ -690,7 +690,7 @@ class SymbolTableInitializationVisitorTest {
     @Test
     void targetReference() {
         Node parent = parent();
-        Reference value = injectParents(new Reference(nodeIdGenerator.next(), "string"));
+        Reference value = injectParents(new Reference(nodeIdGenerator.next(), "string", false));
 
         value.getContext().put(Relatives.class, new Relatives(value, new Relatives(parent)));
 

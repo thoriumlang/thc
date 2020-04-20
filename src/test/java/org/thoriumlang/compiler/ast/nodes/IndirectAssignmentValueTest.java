@@ -34,7 +34,7 @@ class IndirectAssignmentValueTest {
             new IndirectAssignmentValue(
                     null,
                     new NoneValue(nodeIdGenerator.next()),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    new Reference(nodeIdGenerator.next(), "identifier", false),
                     new NoneValue(nodeIdGenerator.next())
             );
         }
@@ -52,7 +52,7 @@ class IndirectAssignmentValueTest {
             new IndirectAssignmentValue(
                     nodeIdGenerator.next(),
                     null,
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    new Reference(nodeIdGenerator.next(), "identifier", false),
                     new NoneValue(nodeIdGenerator.next())
             );
         }
@@ -88,7 +88,7 @@ class IndirectAssignmentValueTest {
             new IndirectAssignmentValue(
                     nodeIdGenerator.next(),
                     new NoneValue(nodeIdGenerator.next()),
-                    new Reference(nodeIdGenerator.next(), "identifier"),
+                    new Reference(nodeIdGenerator.next(), "identifier", false),
                     null
             );
         }
@@ -106,7 +106,7 @@ class IndirectAssignmentValueTest {
                 new IndirectAssignmentValue(
                         nodeIdGenerator.next(),
                         new NumberValue(nodeIdGenerator.next(), "1"),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 )
                         .accept(new BaseVisitor<String>() {
@@ -130,7 +130,7 @@ class IndirectAssignmentValueTest {
                 new IndirectAssignmentValue(
                         nodeIdGenerator.next(),
                         new NoneValue(nodeIdGenerator.next()),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 ).toString()
         ).isEqualTo("INDIRECT none.identifier = none");
@@ -142,7 +142,7 @@ class IndirectAssignmentValueTest {
                 new IndirectAssignmentValue(
                         nodeIdGenerator.next(),
                         new NoneValue(nodeIdGenerator.next()),
-                        new Reference(nodeIdGenerator.next(), "identifier"),
+                        new Reference(nodeIdGenerator.next(), "identifier", false),
                         new NoneValue(nodeIdGenerator.next())
                 ).getContext()
         ).isNotNull();

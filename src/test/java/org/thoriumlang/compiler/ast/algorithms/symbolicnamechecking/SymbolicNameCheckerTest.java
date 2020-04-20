@@ -54,19 +54,19 @@ class SymbolicNameCheckerTest {
                 "symbol already defined: p2 (14)",
                 "symbol already defined: someVar2 (17)",
                 "symbol not found: p3 (22)",
-                "symbol not found: add (26)",
                 "symbol not found: i (26)",
-                "symbol not found: add (26)",
                 "symbol not found: i (26)",
-                "symbol not found: add (27)",
                 "symbol not found: y (32)",
                 "symbol already defined: method2 (37)",
                 "symbol not found: p0 (38)",
                 "symbol not found: null (38)",
                 "symbol already defined: someValue (41)",
                 "symbol already defined: someValue (43)",
-                "symbol not found: stuff (49)"
-        );
+                "symbol not found: stuff (49)",
+                "symbol not found: add (26)",
+                "symbol not found: add (26)",
+                "symbol not found: add (27)"
+                );
 
         Assertions.assertThat(
                 String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))

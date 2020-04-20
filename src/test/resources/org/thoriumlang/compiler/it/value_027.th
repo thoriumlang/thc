@@ -1,0 +1,7 @@
+class Class {
+    callee(): Class {}
+
+    method(): Class {
+        callee();
+    }
+}

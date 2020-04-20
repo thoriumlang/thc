@@ -50,6 +50,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
+    private final boolean skipNodesAllowingForwardReference;
+
+    SymbolicNameDiscoveryVisitor(boolean skipNodesAllowingForwardReference) {
+        this.skipNodesAllowingForwardReference = skipNodesAllowingForwardReference;
+    }
+
     @Override
     public List<SemanticError> visit(Root node) {
         return node.getTopLevelNode().accept(this);
@@ -115,6 +121,10 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Reference node) {
+        if (skipNodesAllowingForwardReference && node.allowForwardReference()) {
+            return Collections.emptyList();
+        }
+
         Optional<Node> referencedNode = getSymbolTable(node)
                 .find(new Name(node.getName()))
                 .map(Symbol::getDefiningNode);
@@ -147,7 +157,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(MethodCallValue node) {
-        List<SemanticError> errors = Lists.merge(
+        return Lists.merge(
                 node.getMethodReference().accept(this),
                 node.getMethodArguments().stream()
                         .map(n -> n.accept(this))
@@ -158,8 +168,6 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                         .flatMap(List::stream)
                         .collect(Collectors.toList())
         );
-
-        return errors;
     }
 
     @Override

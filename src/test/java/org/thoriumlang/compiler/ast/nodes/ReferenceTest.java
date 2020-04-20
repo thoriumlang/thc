@@ -31,7 +31,7 @@ class ReferenceTest {
     @Test
     void constructor_nodeId() {
         try {
-            new Reference(null, "name");
+            new Reference(null, "name", false);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -44,7 +44,7 @@ class ReferenceTest {
     @Test
     void constructor_name() {
         try {
-            new Reference(nodeIdGenerator.next(), null);
+            new Reference(nodeIdGenerator.next(), null, false);
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -57,7 +57,7 @@ class ReferenceTest {
     @Test
     void accept() {
         Assertions.assertThat(
-                new Reference(nodeIdGenerator.next(), "name")
+                new Reference(nodeIdGenerator.next(), "name", false)
                         .accept(new BaseVisitor<String>() {
                             @Override
                             public String visit(Reference node) {
@@ -73,14 +73,14 @@ class ReferenceTest {
     @Test
     void _toString() {
         Assertions.assertThat(
-                new Reference(nodeIdGenerator.next(), "name").toString()
+                new Reference(nodeIdGenerator.next(), "name", false).toString()
         ).isEqualTo("name");
     }
 
     @Test
     void getContext() {
         Assertions.assertThat(
-                new Reference(nodeIdGenerator.next(), "name").getContext()
+                new Reference(nodeIdGenerator.next(), "name", false).getContext()
         ).isNotNull();
     }
 }

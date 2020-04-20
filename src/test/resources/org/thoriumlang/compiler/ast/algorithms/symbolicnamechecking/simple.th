@@ -47,5 +47,8 @@ class TestClass {
     public method3() {
         var s: String;
         s.stuff = "whatever";
+        method_forward();
     }
+
+    method_forward() {}
 }

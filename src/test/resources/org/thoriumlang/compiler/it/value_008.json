@@ -71,6 +71,7 @@
                     "value": {
                       "reference": {
                         "name": "identifier",
+                        "allowForwardReference": false,
                         "context": {
                           "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:9",
                           "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"

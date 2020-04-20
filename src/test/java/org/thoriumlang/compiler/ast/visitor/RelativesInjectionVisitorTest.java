@@ -376,7 +376,7 @@ class RelativesInjectionVisitorTest {
     void indirectAssignmentValue() {
         Value value1 = new NoneValue(nodeIdGenerator.next());
         Value value2 = new NoneValue(nodeIdGenerator.next());
-        Reference reference = new Reference(nodeIdGenerator.next(), "id");
+        Reference reference = new Reference(nodeIdGenerator.next(), "id", false);
         IndirectAssignmentValue indirectAssignmentValue = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 value1,
@@ -394,7 +394,7 @@ class RelativesInjectionVisitorTest {
     @Test
     void directAssignmentValue() {
         Value value1 = new NoneValue(nodeIdGenerator.next());
-        Reference reference = new Reference(nodeIdGenerator.next(), "id");
+        Reference reference = new Reference(nodeIdGenerator.next(), "id", false);
         DirectAssignmentValue directAssignmentValue = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
                 reference,
@@ -413,7 +413,7 @@ class RelativesInjectionVisitorTest {
         Value value = new NoneValue(nodeIdGenerator.next());
         MethodCallValue methodCallValue = new MethodCallValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "methodName"),
+                new Reference(nodeIdGenerator.next(), "methodName", true),
                 Collections.singletonList(typeArgument),
                 Collections.singletonList(value)
         );
@@ -468,7 +468,7 @@ class RelativesInjectionVisitorTest {
 
     @Test
     void identifierValue() {
-        Reference reference = new Reference(nodeIdGenerator.next(), "ref");
+        Reference reference = new Reference(nodeIdGenerator.next(), "ref", false);
         IdentifierValue value = new IdentifierValue(nodeIdGenerator.next(), reference);
 
         relativesInjectionVisitor.visit(value);

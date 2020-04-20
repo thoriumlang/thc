@@ -31,7 +31,7 @@ class IdentifierValueTest {
     @Test
     void constructor_nodeId() {
         try {
-            new IdentifierValue(null, new Reference(nodeIdGenerator.next(), "id"));
+            new IdentifierValue(null, new Reference(nodeIdGenerator.next(), "id", false));
         }
         catch (NullPointerException e) {
             Assertions.assertThat(e.getMessage())
@@ -59,7 +59,7 @@ class IdentifierValueTest {
         Assertions.assertThat(
                 new IdentifierValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
+                        new Reference(nodeIdGenerator.next(), "id", false)
                 )
                         .accept(new BaseVisitor<String>() {
                             @Override
@@ -78,7 +78,7 @@ class IdentifierValueTest {
         Assertions.assertThat(
                 new IdentifierValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
+                        new Reference(nodeIdGenerator.next(), "id", false)
                 ).toString()
         ).isEqualTo("id");
     }
@@ -88,7 +88,7 @@ class IdentifierValueTest {
         Assertions.assertThat(
                 new IdentifierValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "id")
+                        new Reference(nodeIdGenerator.next(), "id", false)
                 ).getContext()
         ).isNotNull();
     }

@@ -144,7 +144,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             sourcePositionProvider.provide(
                                     new Reference(
                                             nodeIdGenerator.next(),
-                                            ctx.identifier.getText()
+                                            ctx.identifier.getText(),
+                                            false
                                     ),
                                     ctx.start
                             ),
@@ -198,7 +199,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         sourcePositionProvider.provide(
                                 new Reference(
                                         nodeIdGenerator.next(),
-                                        ctx.identifier.getText()
+                                        ctx.identifier.getText(),
+                                        false
                                 ),
                                 ctx.start
                         ),
@@ -264,7 +266,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             sourcePositionProvider.provide(
                                     new Reference(
                                             nodeIdGenerator.next(),
-                                            "this"
+                                            "this",
+                                            false
                                     ),
                                     ctx.start
                             )
@@ -331,7 +334,7 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                 new MethodCallValue(
                         nodeIdGenerator.next(),
                         sourcePositionProvider.provide(
-                                new Reference(nodeIdGenerator.next(), ctx.IDENTIFIER().getSymbol().getText()),
+                                new Reference(nodeIdGenerator.next(), ctx.IDENTIFIER().getSymbol().getText(), true),
                                 ctx.start
                         ),
                         typeArguments(ctx),
@@ -364,7 +367,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         sourcePositionProvider.provide(
                                 new Reference(
                                         nodeIdGenerator.next(),
-                                        ctx.IDENTIFIER().getSymbol().getText()
+                                        ctx.IDENTIFIER().getSymbol().getText(),
+                                        false
                                 ),
                                 ctx.start
                         )

@@ -49,7 +49,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 
-import java.sql.Ref;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -136,7 +135,7 @@ class FlatMapVisitorTest {
     void identifierValue() {
         Node node = new IdentifierValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "value")
+                new Reference(nodeIdGenerator.next(), "value", false)
         );
 
         List<Class> result = node.accept(visitor());
@@ -147,7 +146,7 @@ class FlatMapVisitorTest {
 
     @Test
     void targetReference() {
-        Node node = new Reference(nodeIdGenerator.next(), "value");
+        Node node = new Reference(nodeIdGenerator.next(), "value", false);
 
         List<Class> result = node.accept(visitor());
 
@@ -346,7 +345,7 @@ class FlatMapVisitorTest {
     void methodCallValue() {
         Node node = new MethodCallValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "methodName"),
+                new Reference(nodeIdGenerator.next(), "methodName", true),
                 Collections.singletonList(new TypeSpecInferred(nodeIdGenerator.next())),
                 Collections.singletonList(new NoneValue(nodeIdGenerator.next()))
         );
@@ -452,7 +451,7 @@ class FlatMapVisitorTest {
     void directAssignmentValue() {
         Node node = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         );
 
@@ -471,9 +470,9 @@ class FlatMapVisitorTest {
                 nodeIdGenerator.next(),
                 new IdentifierValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "value")
+                        new Reference(nodeIdGenerator.next(), "value", false)
                 ),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         );
 

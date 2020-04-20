@@ -401,7 +401,7 @@ class CopyVisitorTest {
     void visitIdentifierValue() {
         Node node = new IdentifierValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "id")
+                new Reference(nodeIdGenerator.next(), "id", false)
         )
                 .getContext()
                 .put(Object.class, new Object())
@@ -431,7 +431,7 @@ class CopyVisitorTest {
         Node node = new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 new NoneValue(nodeIdGenerator.next()),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         )
                 .getContext()
@@ -445,7 +445,7 @@ class CopyVisitorTest {
     void visitDirectAssignmentValue() {
         Node node = new DirectAssignmentValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", false),
                 new NoneValue(nodeIdGenerator.next())
         )
                 .getContext()
@@ -459,7 +459,7 @@ class CopyVisitorTest {
     void visitMethodCallValue() {
         Node node = new MethodCallValue(
                 nodeIdGenerator.next(),
-                new Reference(nodeIdGenerator.next(), "identifier"),
+                new Reference(nodeIdGenerator.next(), "identifier", true),
                 Collections.emptyList(),
                 Collections.emptyList()
         )
@@ -567,7 +567,8 @@ class CopyVisitorTest {
     void visitTargetReference() {
         Node node = new Reference(
                 nodeIdGenerator.next(),
-                "identifier"
+                "identifier",
+                false
         )
                 .getContext()
                 .put(Object.class, new Object())

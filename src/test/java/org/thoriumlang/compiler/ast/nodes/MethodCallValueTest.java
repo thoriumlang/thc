@@ -35,7 +35,7 @@ class MethodCallValueTest {
         try {
             new MethodCallValue(
                     null,
-                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    new Reference(nodeIdGenerator.next(), "methodName", true),
                     Collections.emptyList(),
                     Collections.emptyList()
             );
@@ -66,7 +66,7 @@ class MethodCallValueTest {
         try {
             new MethodCallValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    new Reference(nodeIdGenerator.next(), "methodName", true),
                     null,
                     Collections.emptyList()
             );
@@ -84,7 +84,7 @@ class MethodCallValueTest {
         try {
             new MethodCallValue(
                     nodeIdGenerator.next(),
-                    new Reference(nodeIdGenerator.next(), "methodName"),
+                    new Reference(nodeIdGenerator.next(), "methodName", true),
                     Collections.emptyList(),
                     null
             );
@@ -102,7 +102,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "methodName"),
+                        new Reference(nodeIdGenerator.next(), "methodName", true),
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
@@ -128,7 +128,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "methodName"),
+                        new Reference(nodeIdGenerator.next(), "methodName", true),
                         Collections.singletonList(
                                 new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
                         ),
@@ -142,7 +142,7 @@ class MethodCallValueTest {
         Assertions.assertThat(
                 new MethodCallValue(
                         nodeIdGenerator.next(),
-                        new Reference(nodeIdGenerator.next(), "methodName"),
+                        new Reference(nodeIdGenerator.next(), "methodName", true),
                         Collections.emptyList(),
                         Collections.emptyList()
                 ).getContext()

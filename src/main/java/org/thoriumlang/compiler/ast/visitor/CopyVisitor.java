@@ -389,7 +389,8 @@ public abstract class CopyVisitor implements Visitor<Node> {
     @Override
     public Node visit(Reference node) {
         return new Reference(
-                node.getNodeId(), node.getName()
+                node.getNodeId(), node.getName(),
+                node.allowForwardReference()
         )
                 .getContext()
                 .putAll(node.getContext())

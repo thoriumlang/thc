@@ -21,10 +21,12 @@ import java.util.Objects;
 
 public class Reference extends Node {
     private final String name;
+    private final boolean allowForwardReference;
 
-    public Reference(NodeId nodeId, String name) {
+    public Reference(NodeId nodeId, String name, boolean allowForwardReference) {
         super(nodeId);
         this.name = Objects.requireNonNull(name, "name cannot be null");
+        this.allowForwardReference = allowForwardReference;
     }
 
     @Override
@@ -41,6 +43,10 @@ public class Reference extends Node {
         return name;
     }
 
+    public boolean allowForwardReference() {
+        return allowForwardReference;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,6 +57,7 @@ public class Reference extends Node {
         }
         Reference that = (Reference) o;
         return getNodeId().equals(that.getNodeId()) &&
+                allowForwardReference == that.allowForwardReference &&
                 name.equals(that.name);
     }
 

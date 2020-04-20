@@ -17,19 +17,44 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
+import org.thoriumlang.compiler.ast.nodes.Reference;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
+import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
+import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SymbolicNameChecker implements Algorithm {
-    private final SymbolicNameDiscoveryVisitor symbolicNameDiscoveryVisitor;
+    private final SymbolicNameDiscoveryVisitor visitorSkippingNodesAllowingForwardReference;
+    private final SymbolicNameDiscoveryVisitor visitor;
 
     public SymbolicNameChecker() {
-        symbolicNameDiscoveryVisitor = new SymbolicNameDiscoveryVisitor();
+        visitorSkippingNodesAllowingForwardReference = new SymbolicNameDiscoveryVisitor(true);
+        visitor = new SymbolicNameDiscoveryVisitor(false);
     }
 
     @Override
     public List<SemanticError> walk(Root root) {
-        return root.accept(symbolicNameDiscoveryVisitor);
+        List<SemanticError> firstPassErrors = root.accept(visitorSkippingNodesAllowingForwardReference);
+
+        // now we have to do a second pass on the Reference nodes that allow forward reference (we discovered the
+        // potential missing targets from the first pass)
+        List<SemanticError> secondPassErrors = root
+                .accept(
+                        new NodesMatchingVisitor(n -> n.accept(new PredicateVisitor(false) {
+                            @Override
+                            public Boolean visit(Reference node) {
+                                return node.allowForwardReference();
+                            }
+                        }))
+                )
+                .stream()
+                .map(n -> n.accept(visitor))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        return Lists.merge(firstPassErrors, secondPassErrors);
     }
 }

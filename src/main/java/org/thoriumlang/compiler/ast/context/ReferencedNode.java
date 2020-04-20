@@ -27,4 +27,9 @@ public class ReferencedNode {
     public Node node() {
         return node;
     }
+
+    @Override
+    public String toString() {
+        return String.format("nodeRef %s", node.getNodeId());
+    }
 }

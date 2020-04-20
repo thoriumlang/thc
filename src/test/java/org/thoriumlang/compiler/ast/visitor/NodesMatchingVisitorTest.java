@@ -221,7 +221,7 @@ class NodesMatchingVisitorTest {
                                                         new IndirectAssignmentValue(
                                                                 nodeIdGenerator.next(),
                                                                 new NoneValue(nodeIdGenerator.next()),
-                                                                new Reference(nodeIdGenerator.next(), s.get()),
+                                                                new Reference(nodeIdGenerator.next(), s.get(), false),
                                                                 new NoneValue(nodeIdGenerator.next())
                                                         ),
                                                         false
@@ -230,7 +230,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new MethodCallValue(
                                                                 nodeIdGenerator.next(),
-                                                                new Reference(nodeIdGenerator.next(), s.get()),
+                                                                new Reference(nodeIdGenerator.next(), s.get(), true),
                                                                 Collections.singletonList(
                                                                         new TypeSpecSimple(
                                                                                 nodeIdGenerator.next(),
@@ -275,7 +275,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new DirectAssignmentValue(
                                                                 nodeIdGenerator.next(),
-                                                                new Reference(nodeIdGenerator.next(), s.get()),
+                                                                new Reference(nodeIdGenerator.next(), s.get(), false),
                                                                 new NoneValue(nodeIdGenerator.next())
                                                         ),
                                                         false
@@ -284,7 +284,7 @@ class NodesMatchingVisitorTest {
                                                         nodeIdGenerator.next(),
                                                         new IdentifierValue(
                                                                 nodeIdGenerator.next(),
-                                                                new Reference(nodeIdGenerator.next(), s.get())
+                                                                new Reference(nodeIdGenerator.next(), s.get(), false)
                                                         ),
                                                         true
                                                 )
