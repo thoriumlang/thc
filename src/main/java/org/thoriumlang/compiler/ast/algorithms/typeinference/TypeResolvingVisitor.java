@@ -147,7 +147,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     }
 
     private void copyTypeSpec(Node to, Node from) {
-        if (!isTypeInterred(from)) {
+        if (!isTypeInferred(from)) {
             throw new IllegalStateException(String.format(
                     "no inferred type found for [ %s ] on [ %s ]", to, from
             ));
@@ -158,7 +158,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         );
     }
 
-    private Boolean isTypeInterred(Node node) {
+    private boolean isTypeInferred(Node node) {
         return node.getContext()
                 .get(TypeSpec.class)
                 .map(t -> t.accept(new PredicateVisitor(true) {
@@ -343,7 +343,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
         Node target = getTargetNode(node);
 
-        if (!isTypeInterred(target)) {
+        if (!isTypeInferred(target)) {
             errors = target.accept(this);
         }
 
