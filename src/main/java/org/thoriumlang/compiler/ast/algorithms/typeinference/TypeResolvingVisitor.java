@@ -50,19 +50,19 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         this.nodeIdGenerator = nodeIdGenerator;
     }
 
-    @Override // TODO implement test
+    @Override
     public List<SemanticError> visit(Root node) {
         return node.getTopLevelNode().accept(this);
     }
 
-    @Override // TODO implement
+    @Override
     public List<SemanticError> visit(Use node) {
-        throw new IllegalStateException("Use not implemented");
+        return Collections.emptyList();
     }
 
-    @Override // TODO implement test
+    @Override
     public List<SemanticError> visit(Type node) {
-        return visitRecursive(node.getMethods());
+        return Collections.emptyList();
     }
 
     private List<SemanticError> visitRecursive(List<? extends Node> nodes) {

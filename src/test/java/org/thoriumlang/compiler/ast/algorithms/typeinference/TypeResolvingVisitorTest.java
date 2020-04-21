@@ -10,12 +10,15 @@ import org.thoriumlang.compiler.ast.nodes.NoneValue;
 import org.thoriumlang.compiler.ast.nodes.NumberValue;
 import org.thoriumlang.compiler.ast.nodes.Parameter;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
+import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
+import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.nodes.Value;
+import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -156,5 +159,29 @@ class TypeResolvingVisitorTest {
         Assertions.assertThat(node.getContext().get(TypeSpec.class))
                 .get()
                 .isSameAs(typeSpec);
+    }
+
+    @Test
+    void use() {
+        Use node = new Use(nodeIdGenerator.next(), "from");
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
+    }
+    @Test
+    void type() {
+        Type node = new Type(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "Type",
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "Supertype", Collections.emptyList()),
+                Collections.emptyList()
+        );
+
+        List<SemanticError> errors = node.accept(new TypeResolvingVisitor(nodeIdGenerator));
+
+        Assertions.assertThat(errors).isEmpty();
     }
 }
