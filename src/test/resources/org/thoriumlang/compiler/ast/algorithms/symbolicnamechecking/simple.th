@@ -50,5 +50,7 @@ class TestClass {
         method_forward();
     }
 
-    method_forward() {}
+    method_forward() {
+        val instance = this;
+    }
 }

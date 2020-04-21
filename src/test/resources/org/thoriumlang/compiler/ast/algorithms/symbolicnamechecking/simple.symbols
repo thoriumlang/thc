@@ -5,11 +5,12 @@
         method2 -> #118
         method3 -> #140
         method_forward -> #158
-        otherValue -> #172
-        someMethod1 -> #176
-        someMethod2 -> #182
-        someU -> #169
+        otherValue -> #177
+        someMethod1 -> #181
+        someMethod2 -> #187
+        someU -> #174
         someValue -> #133
+        this -> #6
         namespace.TestClass.[body].method1
           p0 -> #11
           p1 -> #13
@@ -40,6 +41,7 @@
             s -> #144
         namespace.TestClass.[body].method_forward
           namespace.TestClass.[body].method_forward.[body]
+            instance -> #162
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:11]

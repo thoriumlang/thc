@@ -168,6 +168,11 @@
           "name": "method",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
           "nodeRef": 4
+        },
+        {
+          "name": "this",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #2",
+          "nodeRef": 2
         }
       ]
     },

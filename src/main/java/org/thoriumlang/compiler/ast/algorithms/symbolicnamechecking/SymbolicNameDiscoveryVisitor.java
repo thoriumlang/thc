@@ -68,6 +68,8 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Class node) {
+        getSymbolTable(node).put(new Name("this"), new SymbolicName(node));
+
         return Lists.merge(
                 node.getAttributes().stream()
                         .map(m -> m.accept(this))

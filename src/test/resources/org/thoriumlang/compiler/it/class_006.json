@@ -95,6 +95,11 @@
             },
             "nodeId": 3
           }
+        },
+        {
+          "name": "this",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #2",
+          "nodeRef": 2
         }
       ]
     }

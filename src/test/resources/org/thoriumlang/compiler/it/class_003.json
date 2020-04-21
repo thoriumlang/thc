@@ -82,7 +82,13 @@
     {
       "name": "org.thoriumlang.compiler.it.Class.[body]",
       "parentTableName": "org.thoriumlang.compiler.it.Class",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "this",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #2",
+          "nodeRef": 2
+        }
+      ]
     }
   ],
   "errors": [

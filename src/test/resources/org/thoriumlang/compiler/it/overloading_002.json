@@ -186,6 +186,11 @@
           "name": "method",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #11",
           "nodeRef": 11
+        },
+        {
+          "name": "this",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #2",
+          "nodeRef": 2
         }
       ]
     },

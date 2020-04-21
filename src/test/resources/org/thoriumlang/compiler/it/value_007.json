@@ -73,6 +73,7 @@
                         "name": "this",
                         "allowForwardReference": false,
                         "context": {
+                          "null(org.thoriumlang.compiler.ast.context.ReferencedNode)": "nodeRef #2",
                           "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:9",
                           "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
                         },
@@ -133,6 +134,11 @@
           "name": "method",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
           "nodeRef": 4
+        },
+        {
+          "name": "this",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #2",
+          "nodeRef": 2
         }
       ]
     },
@@ -147,10 +153,5 @@
       "symbols": []
     }
   ],
-  "errors": [
-    {
-      "message": "symbol not found: this (3)",
-      "nodeRef": 9
-    }
-  ]
+  "errors": []
 }
