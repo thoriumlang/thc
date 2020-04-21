@@ -23,7 +23,6 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
