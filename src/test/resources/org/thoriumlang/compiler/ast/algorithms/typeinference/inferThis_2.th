@@ -1,0 +1,5 @@
+class inferThis: org.thoriumlang.Number & org.thoriumlang.String {
+    method() {
+        val assert_NumberAndStringAndtypeinferenceDOTinferThis = this;
+    }
+}

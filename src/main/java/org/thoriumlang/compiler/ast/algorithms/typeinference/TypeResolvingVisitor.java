@@ -74,7 +74,33 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Class node) {
+        List<SemanticError> superTypeErrors = node.getSuperType().accept(this);
+
+        String namespace = node
+                .getContext()
+                .require(Relatives.class)
+                .parent()
+                .map(n -> (Root) n.node())
+                .map(Root::getNamespace)
+                .orElseThrow(() -> new IllegalStateException("no parent found"));
+
+        node.getContext().put(
+                TypeSpec.class,
+                new TypeSpecUnion(
+                        nodeIdGenerator.next(),
+                        Arrays.asList(
+                                node.getSuperType(),
+                                new TypeSpecSimple(
+                                        nodeIdGenerator.next(),
+                                        String.format("%s.%s", namespace, node.getName()),
+                                        Collections.emptyList()
+                                )
+                        )
+                )
+        );
+
         return Lists.merge(
+                superTypeErrors,
                 visitRecursive(node.getAttributes()),
                 visitRecursive(node.getMethods())
         );

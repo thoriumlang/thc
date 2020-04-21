@@ -1,5 +1,6 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
+import com.google.common.collect.Maps;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -16,6 +17,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
@@ -30,7 +32,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -158,6 +162,14 @@ class TypeResolverTest {
             }
 
             @Override
+            public String visit(TypeSpecUnion node) {
+                return node.getTypes().stream()
+                        .map(t -> t.accept(this))
+                        .sorted()
+                        .collect(Collectors.joining(" & "));
+            }
+
+            @Override
             public String visit(TypeSpecSimple node) {
                 return node.toString();
             }
@@ -175,8 +187,25 @@ class TypeResolverTest {
     }
 
     private String expandTypeString(String typeName) {
-        return Arrays.stream(typeName.split("Or"))
-                .map(name -> String.format("org.thoriumlang.%s[]", name))
-                .collect(Collectors.joining(" | "));
+        if (typeName.contains("Or") && typeName.contains("And")) {
+            throw new UnsupportedOperationException("combining Or and And is not supported");
+        }
+
+        Map<String, String> predefined = Maps.asMap(
+                new HashSet<>(Arrays.asList("String", "Number", "None", "Function", "Boolean", "Object")),
+                e -> String.format("org.thoriumlang.%s[]", e)
+        );
+
+        String fqNames = typeName.replaceAll("DOT", ".");
+
+        if (typeName.contains("Or")) {
+            return Arrays.stream(fqNames.split("Or"))
+                    .map(name -> predefined.getOrDefault(name, String.format("%s[]", name)))
+                    .collect(Collectors.joining(" | "));
+        }
+
+        return Arrays.stream(fqNames.split("And"))
+                .map(name -> predefined.getOrDefault(name, String.format("%s[]", name)))
+                .collect(Collectors.joining(" & "));
     }
 }
