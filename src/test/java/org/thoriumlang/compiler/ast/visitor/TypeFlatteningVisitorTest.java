@@ -24,7 +24,6 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
-import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -181,5 +180,125 @@ class TypeFlatteningVisitorTest {
         Assertions.assertThat(flattened.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
                 .isEqualTo("1:0");
+    }
+
+    @Test
+    void visitTypeSpecIntersection_removesDuplicates_1() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        TypeSpecIntersection spec = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "T",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "T",
+                                Collections.emptyList()
+                        )
+                )
+        );
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()).toString()
+                );
+    }
+
+    @Test
+    void visitTypeSpecIntersection_removesDuplicates_2() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        TypeSpecIntersection spec = new TypeSpecIntersection(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TA",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TB",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TB",
+                                Collections.emptyList()
+                        )
+                )
+        );
+
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecIntersection(
+                                nodeIdGenerator.next(),
+                                Arrays.asList(
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList())
+                                        )
+                        ).toString()
+                );
+    }
+
+    @Test
+    void visitTypeSpecUnion_removesDuplicates_1() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        TypeSpecUnion spec = new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "T",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "T",
+                                Collections.emptyList()
+                        )
+                )
+        );
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList()).toString()
+                );
+    }
+
+    @Test
+    void visitTypeSpecUnion_removesDuplicates_2() {
+        TypeFlatteningVisitor visitor = new TypeFlatteningVisitor(nodeIdGenerator);
+        TypeSpecUnion spec = new TypeSpecUnion(
+                nodeIdGenerator.next(),
+                Arrays.asList(
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TA",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TB",
+                                Collections.emptyList()
+                        ),
+                        new TypeSpecSimple(
+                                nodeIdGenerator.next(),
+                                "TB",
+                                Collections.emptyList()
+                        )
+                )
+        );
+
+        Assertions.assertThat(spec.accept(visitor).toString())
+                .isEqualTo(
+                        new TypeSpecUnion(
+                                nodeIdGenerator.next(),
+                                Arrays.asList(
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList())
+                                )
+                        ).toString()
+                );
     }
 }

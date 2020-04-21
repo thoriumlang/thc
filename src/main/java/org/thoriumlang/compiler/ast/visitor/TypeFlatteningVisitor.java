@@ -23,11 +23,15 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO remove duplicates https://github.com/thoriumlang/thc/issues/67
 public class TypeFlatteningVisitor extends CopyVisitor {
     private final NodeIdGenerator nodeIdGenerator;
 
@@ -35,57 +39,72 @@ public class TypeFlatteningVisitor extends CopyVisitor {
         this.nodeIdGenerator = nodeIdGenerator;
     }
 
+    public static Predicate<TypeSpec> distinctByKey(Function<? super TypeSpec, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
     @Override
     public Node visit(TypeSpecIntersection node) {
-        return new TypeSpecIntersection(
-                nodeIdGenerator.next(),
-                flattenTypeIntersection(node.getTypes())
-        )
-                .getContext()
+        List<TypeSpec> flattenedIntersection = flattenTypeIntersection(node.getTypes());
+
+        TypeSpec typeSpec = (flattenedIntersection.size() > 1)
+                ? new TypeSpecIntersection(nodeIdGenerator.next(), flattenedIntersection)
+                : flattenedIntersection.get(0);
+
+        return typeSpec.getContext()
                 .copyFrom(SourcePosition.class, node)
                 .getNode();
     }
 
     private List<TypeSpec> flattenTypeIntersection(List<TypeSpec> types) {
-        return Stream.concat(
-                types.stream()
-                        .filter(obj -> !(obj instanceof TypeSpecIntersection)),
-                types.stream()
-                        .filter(TypeSpecIntersection.class::isInstance)
-                        .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
-                            @Override
-                            public List<TypeSpec> visit(TypeSpecIntersection node) {
-                                return flattenTypeIntersection(node.getTypes());
-                            }
-                        }))
-                        .flatMap(Collection::stream)
-        ).collect(Collectors.toList());
+        return Stream
+                .concat(
+                        types.stream()
+                                .filter(obj -> !(obj instanceof TypeSpecIntersection)),
+                        types.stream()
+                                .filter(TypeSpecIntersection.class::isInstance)
+                                .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
+                                    @Override
+                                    public List<TypeSpec> visit(TypeSpecIntersection node) {
+                                        return flattenTypeIntersection(node.getTypes());
+                                    }
+                                }))
+                                .flatMap(Collection::stream)
+                )
+                .filter(distinctByKey(Object::toString))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Node visit(TypeSpecUnion node) {
-        return new TypeSpecUnion(
-                nodeIdGenerator.next(),
-                flattenTypeUnion(node.getTypes())
-        )
-                .getContext()
+        List<TypeSpec> flattenedUnion = flattenTypeUnion(node.getTypes());
+
+        TypeSpec typeSpec = (flattenedUnion.size() > 1)
+                ? new TypeSpecUnion(nodeIdGenerator.next(), flattenedUnion)
+                : flattenedUnion.get(0);
+
+        return typeSpec.getContext()
                 .copyFrom(SourcePosition.class, node)
                 .getNode();
     }
 
     private List<TypeSpec> flattenTypeUnion(List<TypeSpec> types) {
-        return Stream.concat(
-                types.stream()
-                        .filter(obj -> !(obj instanceof TypeSpecUnion)),
-                types.stream()
-                        .filter(TypeSpecUnion.class::isInstance)
-                        .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
-                            @Override
-                            public List<TypeSpec> visit(TypeSpecUnion node) {
-                                return flattenTypeUnion(node.getTypes());
-                            }
-                        }))
-                        .flatMap(Collection::stream)
-        ).collect(Collectors.toList());
+        return Stream
+                .concat(
+                        types.stream()
+                                .filter(obj -> !(obj instanceof TypeSpecUnion)),
+                        types.stream()
+                                .filter(TypeSpecUnion.class::isInstance)
+                                .map(t -> t.accept(new BaseVisitor<List<TypeSpec>>() {
+                                    @Override
+                                    public List<TypeSpec> visit(TypeSpecUnion node) {
+                                        return flattenTypeUnion(node.getTypes());
+                                    }
+                                }))
+                                .flatMap(Collection::stream)
+                )
+                .filter(distinctByKey(Object::toString))
+                .collect(Collectors.toList());
     }
 }

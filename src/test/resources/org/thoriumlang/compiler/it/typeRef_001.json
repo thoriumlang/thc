@@ -31,31 +31,13 @@
             "name": "T",
             "typeParameters": [],
             "superType": {
-              "intersectionType": [
-                {
-                  "type": "T",
-                  "arguments": [],
-                  "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:10",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.T.[body]"
-                  },
-                  "nodeId": 3
-                },
-                {
-                  "type": "T",
-                  "arguments": [],
-                  "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:14",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.T.[body]"
-                  },
-                  "nodeId": 4
-                }
-              ],
+              "type": "T",
+              "arguments": [],
               "context": {
                 "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:10",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.T.[body]"
               },
-              "nodeId": 6
+              "nodeId": 3
             },
             "methods": [],
             "context": {

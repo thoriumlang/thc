@@ -1,1 +1,1 @@
-type T : T | T {} // FIXME remove duplicate T https://github.com/thoriumlang/thc/issues/67
+type T : T | T {}
