@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.TopLevelNode;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeParameter;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
@@ -35,10 +36,17 @@ public class ThoriumType implements Symbol {
     private final Node definingNode;
     private final Node node;
 
-    // TODO create one ctor for each type of accepted type node
-    public ThoriumType(Node definingNode, Node node) {
+    private ThoriumType(Node definingNode, Node node) {
         this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
         this.node = Objects.requireNonNull(node, "node cannot be null");
+    }
+
+    public ThoriumType(Node definingNode, TopLevelNode node) {
+        this(definingNode, (Node) node);
+    }
+
+    public ThoriumType(Node definingNode, TypeParameter node) {
+        this(definingNode, (Node) node);
     }
 
     public Node getNode() {
