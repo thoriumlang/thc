@@ -1,15 +1,19 @@
   namespace
     namespace.TestClass
       namespace.TestClass.[body]
-        method1 -> #8
-        method2 -> #118
-        method3 -> #140
-        method_forward -> #158
-        otherValue -> #177
-        someMethod1 -> #181
-        someMethod2 -> #187
-        someU -> #174
-        someValue -> #133
+        method1 -> #209
+        method1(Object[],Object[],Object[],Object[]) -> #8
+        method2() -> #118
+        method3() -> #140
+        method_forward_1() -> #162
+        method_forward_2(String[]) -> #172
+        otherValue -> #193
+        someMethod1 -> #197
+        someMethod2 -> #203
+        someU -> #190
+        someValue -> #184
+        someValue() -> #128
+        someValue(String[]) -> #133
         this -> #6
         namespace.TestClass.[body].method1
           p0 -> #11
@@ -39,9 +43,13 @@
         namespace.TestClass.[body].method3
           namespace.TestClass.[body].method3.[body]
             s -> #144
-        namespace.TestClass.[body].method_forward
-          namespace.TestClass.[body].method_forward.[body]
-            instance -> #162
+        namespace.TestClass.[body].method_forward_1
+          namespace.TestClass.[body].method_forward_1.[body]
+            instance -> #166
+        namespace.TestClass.[body].method_forward_2
+          p -> #174
+          namespace.TestClass.[body].method_forward_2.[body]
+            instance -> #178
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:11]

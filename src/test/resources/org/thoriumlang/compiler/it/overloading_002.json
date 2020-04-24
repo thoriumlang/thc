@@ -183,9 +183,14 @@
       "parentTableName": "org.thoriumlang.compiler.it.Class",
       "symbols": [
         {
-          "name": "method",
+          "name": "method()",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #11",
           "nodeRef": 11
+        },
+        {
+          "name": "method(Class[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
+          "nodeRef": 4
         },
         {
           "name": "this",
@@ -211,10 +216,5 @@
       "symbols": []
     }
   ],
-  "errors": [
-    {
-      "message": "symbol already defined: method (3)",
-      "nodeRef": 11
-    }
-  ]
+  "errors": []
 }

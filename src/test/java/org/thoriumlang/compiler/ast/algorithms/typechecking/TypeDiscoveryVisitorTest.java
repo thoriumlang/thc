@@ -36,6 +36,7 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
+import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.JavaClass;
@@ -603,11 +604,12 @@ class TypeDiscoveryVisitorTest {
     }
 
     private Optional<Symbol> getSymbol(Node node, String name) {
-        return node
-                .getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(IllegalStateException::new)
-                .find(new Name(name));
+        return Lists.get(
+                node.getContext()
+                        .get(SymbolTable.class)
+                        .orElseThrow(IllegalStateException::new)
+                        .find(new Name(name)),
+                0);
     }
 
     private void putSymbol(String name, Node node, Symbol symbol) {

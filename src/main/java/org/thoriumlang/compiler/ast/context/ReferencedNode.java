@@ -17,19 +17,21 @@ package org.thoriumlang.compiler.ast.context;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
-public class ReferencedNode {
-    private final Node node;
+import java.util.List;
 
-    public ReferencedNode(Node node) {
-        this.node = node;
+public class ReferencedNode {
+    private final List<Node> nodes;
+
+    public ReferencedNode(List<Node> referencedNodes) {
+        this.nodes = referencedNodes;
     }
 
     public Node node() {
-        return node;
+        return nodes.get(0);
     }
 
     @Override
     public String toString() {
-        return String.format("nodeRef %s", node.getNodeId());
+        return String.format("nodeRef %s", nodes.get(0).getNodeId()); // FIXME this is wrong!
     }
 }

@@ -28,8 +28,96 @@ class SymbolTableTest {
         symbolTable.put(new Name("SimpleName"), symbol);
 
         Assertions.assertThat(symbolTable.find(new Name("SimpleName")))
-                .get()
-                .isSameAs(symbol);
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void simpleMethodName() {
+        Symbol symbol = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName()"), symbol);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName()")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void simpleMethodName_putDifferentParameterArity() {
+        Symbol symbol1 = symbol();
+        Symbol symbol2 = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName()"), symbol1);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+                .isEmpty();
+    }
+
+    @Test
+    void simpleMethodName_findDifferentParameterArity() {
+        Symbol symbol1 = symbol();
+        Symbol symbol2 = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName(Object)"), symbol1);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName()")))
+                .isEmpty();
+    }
+
+    @Test
+    void simpleMethodName_withParameter() {
+        Symbol symbol = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName(Object)"), symbol);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void simpleMethodName_withParametersAndTypeParameters() {
+        Symbol symbol = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName[T[]](Object[T[])"), symbol);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void simpleMethodNameOverloaded() {
+        Symbol symbol1 = symbol();
+        Symbol symbol2 = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName(Object)"), symbol1);
+        symbolTable.put(new Name("SimpleName(String)"), symbol2);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+                .hasSize(2)
+                .containsExactly(symbol1, symbol2);
+    }
+
+    @Test
+    void simpleMethodNameOverloaded_withFullParameters() {
+        Symbol symbol1 = symbol();
+        Symbol symbol2 = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("SimpleName(Object)"), symbol1);
+        symbolTable.put(new Name("SimpleName(String)"), symbol2);
+
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName[](Object[])")))
+                .hasSize(2)
+                .containsExactly(symbol1, symbol2);
     }
 
     @Test
@@ -40,8 +128,20 @@ class SymbolTableTest {
         symbolTable.put(new Name("namespace.SimpleName"), symbol);
 
         Assertions.assertThat(symbolTable.find(new Name("namespace.SimpleName")))
-                .get()
-                .isSameAs(symbol);
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void methodName() {
+        Symbol symbol = symbol();
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.put(new Name("namespace.SimpleName()"), symbol);
+
+        Assertions.assertThat(symbolTable.find(new Name("namespace.SimpleName()")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
     }
 
     @Test
@@ -53,8 +153,21 @@ class SymbolTableTest {
         parentSymbolTable.put(new Name("namespace.SimpleName"), symbol);
 
         Assertions.assertThat(childSymbolTable.find(new Name("SimpleName")))
-                .get()
-                .isSameAs(symbol);
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void methodName_fromChild() {
+        Symbol symbol = symbol();
+        SymbolTable parentSymbolTable = new SymbolTable();
+        SymbolTable childSymbolTable = parentSymbolTable.createScope("namespace");
+
+        parentSymbolTable.put(new Name("namespace.SimpleName()"), symbol);
+
+        Assertions.assertThat(childSymbolTable.find(new Name("SimpleName()")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
     }
 
     @Test
@@ -66,8 +179,21 @@ class SymbolTableTest {
         childSymbolTable.put(new Name("SimpleName"), symbol);
 
         Assertions.assertThat(parentSymbolTable.find(new Name("namespace.SimpleName")))
-                .get()
-                .isSameAs(symbol);
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void methodName_fromParent() {
+        Symbol symbol = symbol();
+        SymbolTable parentSymbolTable = new SymbolTable();
+        SymbolTable childSymbolTable = parentSymbolTable.createScope("namespace");
+
+        childSymbolTable.put(new Name("SimpleName()"), symbol);
+
+        Assertions.assertThat(parentSymbolTable.find(new Name("namespace.SimpleName()")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
     }
 
     @Test
@@ -80,8 +206,22 @@ class SymbolTableTest {
         childSymbolTable.put(new Name("SimpleName"), symbol);
 
         Assertions.assertThat(middleSymbolTable.find(new Name("a.b.SimpleName")))
-                .get()
-                .isSameAs(symbol);
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
+    }
+
+    @Test
+    void methodName_fromMiddle() {
+        Symbol symbol = symbol();
+        SymbolTable parentSymbolTable = new SymbolTable();
+        SymbolTable middleSymbolTable = parentSymbolTable.createScope("a");
+        SymbolTable childSymbolTable = middleSymbolTable.createScope("b");
+
+        childSymbolTable.put(new Name("SimpleName()"), symbol);
+
+        Assertions.assertThat(middleSymbolTable.find(new Name("a.b.SimpleName()")))
+                .hasSize(1)
+                .allMatch(s -> s == symbol);
     }
 
     @Test

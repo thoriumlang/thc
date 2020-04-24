@@ -165,7 +165,7 @@
       "parentTableName": "org.thoriumlang.compiler.it.Class",
       "symbols": [
         {
-          "name": "method",
+          "name": "method()",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
           "nodeRef": 4
         },

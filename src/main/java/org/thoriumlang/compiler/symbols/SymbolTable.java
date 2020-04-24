@@ -15,22 +15,33 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.helpers.Strings;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SymbolTable {
     private final String name;
     private final SymbolTable parent;
     private final Map<String, Symbol> symbols;
+    /**
+     * Maps a string such as "methodName" to a list of actual symbols such as ["methodName()", "methodName(String)"]
+     */
+    private final Map<String, List<Symbol>> methodSymbols;
     private final Map<String, SymbolTable> scopes;
 
     private SymbolTable(String name, SymbolTable parent) {
         this.name = name;
         this.parent = parent;
         this.symbols = new HashMap<>();
+        this.methodSymbols = new HashMap<>();
         this.scopes = new HashMap<>();
     }
 
@@ -39,7 +50,40 @@ public class SymbolTable {
     }
 
     public void put(Name name, Symbol symbol) {
-        findTable(name).symbols.put(name.getSimpleName(), symbol);
+        SymbolTable table = findTable(name);
+        table.symbols.put(name.getSimpleName(), symbol);
+        if (isMethodName(name)) {
+            String simpleSignature = simpleSignature(name);
+            table.methodSymbols.putIfAbsent(simpleSignature, new ArrayList<>());
+            table.methodSymbols.get(simpleSignature).add(symbol);
+        }
+    }
+
+    /**
+     * Transforms a method signature of the form methodName[...](A,B) to a simplified signature of the form
+     * methodName(_,_).
+     */
+    private String simpleSignature(Name name) {
+        String methodSignature = name.getSimpleName();
+        return String.format("%s(%s)",
+                methodSignature.substring(
+                        0,
+                        Strings.indexOfFirst(methodSignature, "[", "(")
+                ),
+                Arrays
+                        .stream(
+                                methodSignature
+                                        .substring(methodSignature.indexOf("(") + 1, methodSignature.indexOf(")"))
+                                        .split(",")
+                        )
+                        .filter(s -> !s.isEmpty())
+                        .map(p -> "_")
+                        .collect(Collectors.joining(","))
+        );
+    }
+
+    private boolean isMethodName(Name name) {
+        return name.getSimpleName().contains("(");
     }
 
     private SymbolTable findTable(Name name) {
@@ -71,17 +115,33 @@ public class SymbolTable {
         return parent == null;
     }
 
-    public Optional<Symbol> find(Name name) {
+    public List<Symbol> find(Name name) {
         return findTable(name).findLocal(new Name(name.getSimpleName()));
     }
 
-    private Optional<Symbol> findLocal(Name name) {
-        return Optional.ofNullable(
-                symbols.getOrDefault(
-                        name.getSimpleName(),
-                        isRoot() ? null : parent.find(name).orElse(null)
-                )
+    private List<Symbol> findLocal(Name name) {
+        return isMethodName(name)
+                ? findLocalMethod(simpleSignature(name))
+                : findLocalVariable(name.getSimpleName());
+    }
+
+    private List<Symbol> findLocalMethod(String simpleSignature) {
+        return methodSymbols.getOrDefault(
+                simpleSignature,
+                isRoot() ? Collections.emptyList() : parent.findLocalMethod(simpleSignature)
         );
+    }
+
+    private List<Symbol> findLocalVariable(String name) {
+        return Optional
+                .ofNullable(
+                        symbols.getOrDefault(
+                                name,
+                                isRoot() ? null : Lists.get(parent.findLocalVariable(name), 0).orElse(null)
+                        )
+                )
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList());
     }
 
     public boolean inScope(Name name) {
@@ -91,6 +151,7 @@ public class SymbolTable {
         return symbols.containsKey(name.getSimpleName());
     }
 
+    // FIXME wrong for overloaded methods
     public SymbolTable createScope(String name) {
         SymbolTable symbolTable = new SymbolTable(name, this);
         scopes.putIfAbsent(name, symbolTable);

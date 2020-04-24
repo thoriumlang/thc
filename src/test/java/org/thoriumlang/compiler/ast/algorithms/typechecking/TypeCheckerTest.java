@@ -116,10 +116,10 @@ class TypeCheckerTest {
                 .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
-                .isPresent();
+                .hasSize(1);
 
         Assertions.assertThat(symbolTable.find(new Name("org.thoriumlang.Object")))
-                .isPresent();
+                .hasSize(1);
     }
 
     @Test
@@ -159,10 +159,10 @@ class TypeCheckerTest {
                 .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
-                .isPresent();
+                .hasSize(1);
 
         Assertions.assertThat(symbolTable.find(new Name("java.lang.Object")))
-                .isPresent();
+                .hasSize(1);
     }
 
     @Test
@@ -202,10 +202,10 @@ class TypeCheckerTest {
                 .require(SymbolTable.class);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.Main")))
-                .isPresent();
+                .hasSize(1);
 
         Assertions.assertThat(symbolTable.find(new Name("typechecking.CustomType")))
-                .isPresent();
+                .hasSize(1);
 
         Set<SymbolTable> rootSymbolTablesFromLoadedSymbols = symbolTable.root()
                 .accept(new SymbolsExtractionVisitor())

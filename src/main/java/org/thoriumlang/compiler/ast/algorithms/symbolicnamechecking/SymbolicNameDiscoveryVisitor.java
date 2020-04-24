@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
+import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -38,6 +39,7 @@ import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.StringValue;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
+import org.thoriumlang.compiler.ast.visitor.MappingVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
@@ -86,12 +88,14 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     public List<SemanticError> visit(Attribute node) {
         SymbolTable symbolTable = getSymbolTable(node).enclosingScope();
 
+        Name symbolName = new Name(node.getName());
+
         List<SemanticError> errors = Lists.merge(
-                alreadyDefined(symbolTable, node.getName(), node),
+                alreadyDefined(symbolTable, symbolName, node),
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new Name(node.getName()), new SymbolicName(node));
+        symbolTable.put(symbolName, new SymbolicName(node));
 
         return errors;
     }
@@ -127,15 +131,32 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
             return Collections.emptyList();
         }
 
-        Optional<Node> referencedNode = getSymbolTable(node)
-                .find(new Name(node.getName()))
-                .map(Symbol::getDefiningNode);
+        Name symbolName = node.getContext()
+                .require(Relatives.class)
+                .parent()
+                .orElseThrow(() -> new IllegalStateException("no parent found"))
+                .node()
+                .accept(new MappingVisitor<Name>(new Name(node.getName())) {
+                    @Override
+                    public Name visit(MethodCallValue node) {
+                        return new Name(String.format("%s(%s)",
+                                node.getMethodReference().getName(),
+                                node.getMethodArguments().stream()
+                                        .map(a -> "_")
+                                        .collect(Collectors.joining(","))
+                        ));
+                    }
+                });
 
-        if (!referencedNode.isPresent()) {
-            return Collections.singletonList(undefinedError(node.getName(), node));
+        List<Node> referencedNodes = getSymbolTable(node).find(symbolName).stream()
+                .map(Symbol::getDefiningNode)
+                .collect(Collectors.toList());
+
+        if (referencedNodes.isEmpty()) {
+            return Collections.singletonList(undefinedError(symbolName, node));
         }
 
-        node.getContext().put(ReferencedNode.class, new ReferencedNode(referencedNode.get()));
+        node.getContext().put(ReferencedNode.class, new ReferencedNode(referencedNodes));
 
         return Collections.emptyList();
     }
@@ -186,9 +207,23 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                 .enclosingScope() // the signature's symbol table
                 .enclosingScope(); // the enclosing class
 
-        List<SemanticError> errors = alreadyDefined(symbolTable, node.getSignature().getName(), node);
+        Name symbolName = new Name(
+                String.format("%s(%s)",
+                        node.getSignature().getName(),
+                        node.getSignature().getParameters().stream()
+                                .map(p -> p.getType().toString())
+                                .collect(Collectors.joining(","))
+                )
+        );
 
-        symbolTable.put(new Name(node.getSignature().getName()), new SymbolicName(node));
+        List<SemanticError> errors = alreadyDefined(
+                symbolTable,
+                symbolName,
+                node
+        );
+
+
+        symbolTable.put(symbolName, new SymbolicName(node));
 
         return Lists.merge(
                 errors,
@@ -207,9 +242,11 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     public List<SemanticError> visit(Parameter node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        List<SemanticError> errors = alreadyDefined(symbolTable, node.getName(), node);
+        Name symbolName = new Name(node.getName());
 
-        symbolTable.put(new Name(node.getName()), new SymbolicName(node));
+        List<SemanticError> errors = alreadyDefined(symbolTable, symbolName, node);
+
+        symbolTable.put(symbolName, new SymbolicName(node));
 
         return errors;
     }
@@ -223,12 +260,14 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     public List<SemanticError> visit(NewAssignmentValue node) {
         SymbolTable symbolTable = getSymbolTable(node);
 
+        Name symbolName = new Name(node.getName());
+
         List<SemanticError> errors = Lists.merge(
-                alreadyDefined(symbolTable, node.getName(), node),
+                alreadyDefined(symbolTable, symbolName, node),
                 node.getValue().accept(this)
         );
 
-        symbolTable.put(new Name(node.getName()), new SymbolicName(node));
+        symbolTable.put(symbolName, new SymbolicName(node));
 
         return errors;
     }
@@ -253,8 +292,8 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                 .orElseThrow(() -> new IllegalStateException("no symbol table found"));
     }
 
-    private List<SemanticError> alreadyDefined(SymbolTable symbolTable, String identifier, Node node) {
-        if (symbolTable.inScope(new Name(identifier))) {
+    private List<SemanticError> alreadyDefined(SymbolTable symbolTable, Name identifier, Node node) {
+        if (symbolTable.inScope(identifier)) {
             return Collections.singletonList(
                     new SemanticError(String.format("symbol already defined: %s", identifier), node)
             );
@@ -263,7 +302,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
         return Collections.emptyList();
     }
 
-    private SemanticError undefinedError(String name, Node node) {
+    private SemanticError undefinedError(Name name, Node node) {
         return new SemanticError(String.format("symbol not found: %s", name), node);
     }
 }

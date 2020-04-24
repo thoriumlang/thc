@@ -40,17 +40,22 @@ class TestClass {
 
     public someValue() {}
 
-    public someValue(x: String) {} // TODO should not clash with someValue()
+    public someValue(x: String) {}
 
-    val method1; // TODO should not clash with method1()
+    val method1;
 
     public method3() {
         var s: String;
         s.stuff = "whatever";
-        method_forward();
+        method_forward_1();
+        method_forward_2("");
     }
 
-    method_forward() {
+    method_forward_1() {
+        val instance = this;
+    }
+
+    method_forward_2(p: String) {
         val instance = this;
     }
 }

@@ -198,7 +198,7 @@
           }
         },
         {
-          "name": "method",
+          "name": "method()",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
           "nodeRef": 5
         },

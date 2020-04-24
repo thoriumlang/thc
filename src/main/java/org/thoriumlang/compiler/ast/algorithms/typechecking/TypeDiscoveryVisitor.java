@@ -76,10 +76,11 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
         List<SemanticError> symbolAlreadyDefinedErrors = Stream.of(aliasName, targetName)
                 .map(name -> symbolTable
                         .find(name)
+                        .stream()
                         .map(s -> new SemanticError(String.format("symbol already defined: %s", name), node))
                 )
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(s -> s.collect(Collectors.toList()))
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
         if (!symbolAlreadyDefinedErrors.isEmpty()) {
             return symbolAlreadyDefinedErrors;
@@ -132,7 +133,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     private List<SemanticError> visitTopLevel(TopLevelNode node, String name, List<TypeParameter> typeParameters) {
         SymbolTable symbolTable = getSymbolTable(node);
 
-        if (symbolTable.find(new Name(name)).isPresent()) {
+        if (!symbolTable.find(new Name(name)).isEmpty()) {
             return Collections.singletonList(
                     new SemanticError(String.format("symbol already defined: %s", name), node)
             );
