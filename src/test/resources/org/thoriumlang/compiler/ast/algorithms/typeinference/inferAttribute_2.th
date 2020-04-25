@@ -1,0 +1,7 @@
+class inferAttribute {
+    val assert_NoneOrNumber_1;
+
+    method() {
+        assert_NoneOrNumber_1 = 1;
+    }
+}
