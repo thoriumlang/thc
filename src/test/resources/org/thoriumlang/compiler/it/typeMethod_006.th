@@ -1,4 +1,4 @@
 type Type[T] {
-  method1(p1: T) : Type;
-  method2(p2: T) : Type; // FIXME should have an error!
+  method1(p1: T): Type;
+  method2(p2: T): Type;
 }

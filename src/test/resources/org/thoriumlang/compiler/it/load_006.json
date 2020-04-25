@@ -163,7 +163,13 @@
     {
       "name": "org.thoriumlang.compiler.it._load_006.[body]",
       "parentTableName": "org.thoriumlang.compiler.it._load_006",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "method()",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #9",
+          "nodeRef": 9
+        }
+      ]
     },
     {
       "name": "org.thoriumlang.compiler.it._load_006.[body].method()",

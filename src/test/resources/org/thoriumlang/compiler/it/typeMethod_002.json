@@ -63,7 +63,7 @@
                   "type": "T",
                   "arguments": [],
                   "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:14",
+                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:13",
                     "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method()"
                   },
                   "nodeId": 6
@@ -115,6 +115,11 @@
             },
             "nodeId": 3
           }
+        },
+        {
+          "name": "method()",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
+          "nodeRef": 5
         }
       ]
     },

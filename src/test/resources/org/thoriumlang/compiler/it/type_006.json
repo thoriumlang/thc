@@ -46,14 +46,14 @@
                   "type": "T",
                   "arguments": [],
                   "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:21",
+                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:20",
                     "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body]"
                   },
                   "nodeId": 5
                 }
               ],
               "context": {
-                "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:16",
+                "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:15",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body]"
               },
               "nodeId": 4

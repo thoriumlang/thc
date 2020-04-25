@@ -133,13 +133,24 @@
             },
             "nodeId": 3
           }
+        },
+        {
+          "name": "method(U[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
+          "nodeRef": 5
         }
       ]
     },
     {
       "name": "org.thoriumlang.compiler.it.Type.[body].method(U[])",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "p1",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #6",
+          "nodeRef": 6
+        }
+      ]
     }
   ],
   "errors": [

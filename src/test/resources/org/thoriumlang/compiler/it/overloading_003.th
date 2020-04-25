@@ -1,4 +1,4 @@
 type Type {
     method(): Type;
-    method(): Type; // FIXME should have an error!
+    method(): Type;
 }

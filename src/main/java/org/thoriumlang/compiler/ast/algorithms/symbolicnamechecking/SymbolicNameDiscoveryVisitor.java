@@ -27,6 +27,7 @@ import org.thoriumlang.compiler.ast.nodes.IdentifierValue;
 import org.thoriumlang.compiler.ast.nodes.IndirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
 import org.thoriumlang.compiler.ast.nodes.MethodCallValue;
+import org.thoriumlang.compiler.ast.nodes.MethodSignature;
 import org.thoriumlang.compiler.ast.nodes.NestedValue;
 import org.thoriumlang.compiler.ast.nodes.NewAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Node;
@@ -48,7 +49,6 @@ import org.thoriumlang.compiler.symbols.SymbolicName;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
@@ -65,7 +65,46 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Type node) {
-        return Collections.emptyList();
+        return node.getMethods().stream()
+                .map(m -> m.accept(this))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SemanticError> visit(MethodSignature node) {
+        SymbolTable symbolTable = getSymbolTable(node)
+                .enclosingScope(); // the enclosing type
+
+        Name symbolName = symbolName(node);
+
+        List<SemanticError> errors = alreadyDefined(
+                symbolTable,
+                symbolName,
+                node
+        );
+
+        symbolTable.put(symbolName, new SymbolicName(node));
+
+        return Lists.merge(
+                errors,
+                node.getParameters().stream()
+                        .map(p -> p.accept(this))
+                        .flatMap(List::stream)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private Name symbolName(MethodSignature node) {
+        return new Name(
+                String.format("%s(%s)",
+                        // TODO shouldn't we have the type parameter as well? (see name as well)
+                        node.getName(),
+                        node.getParameters().stream()
+                                .map(p -> p.getType().toString())
+                                .collect(Collectors.joining(","))
+                )
+        );
     }
 
     @Override
@@ -203,26 +242,18 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Method node) {
+        // TODO use visit(MethodSignature)
         SymbolTable symbolTable = getSymbolTable(node)
                 .enclosingScope() // the signature's symbol table
                 .enclosingScope(); // the enclosing class
 
-        Name symbolName = new Name(
-                String.format("%s(%s)",
-                        // TODO shouldn't we have the type parameter as well? (see name as well)
-                        node.getSignature().getName(),
-                        node.getSignature().getParameters().stream()
-                                .map(p -> p.getType().toString())
-                                .collect(Collectors.joining(","))
-                )
-        );
+        Name symbolName = symbolName(node.getSignature());
 
         List<SemanticError> errors = alreadyDefined(
                 symbolTable,
                 symbolName,
                 node
         );
-
 
         symbolTable.put(symbolName, new SymbolicName(node));
 

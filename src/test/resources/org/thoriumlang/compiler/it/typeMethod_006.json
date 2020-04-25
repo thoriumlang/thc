@@ -81,7 +81,7 @@
                   "type": "Type",
                   "arguments": [],
                   "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:20",
+                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:19",
                     "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method1(T[])"
                   },
                   "nodeId": 8
@@ -119,7 +119,7 @@
                   "type": "Type",
                   "arguments": [],
                   "context": {
-                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:20",
+                    "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:19",
                     "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method2(T[])"
                   },
                   "nodeId": 12
@@ -171,18 +171,40 @@
             },
             "nodeId": 3
           }
+        },
+        {
+          "name": "method1(T[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
+          "nodeRef": 5
+        },
+        {
+          "name": "method2(T[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #9",
+          "nodeRef": 9
         }
       ]
     },
     {
       "name": "org.thoriumlang.compiler.it.Type.[body].method1(T[])",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "p1",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #6",
+          "nodeRef": 6
+        }
+      ]
     },
     {
       "name": "org.thoriumlang.compiler.it.Type.[body].method2(T[])",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "p2",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #10",
+          "nodeRef": 10
+        }
+      ]
     }
   ],
   "errors": []

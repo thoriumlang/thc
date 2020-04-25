@@ -30,7 +30,7 @@ import java.util.Collections;
 // TODO refactor, it's to big to be easily understandable
 class SymbolicNameCheckerTest {
     @Test
-    void walk() {
+    void walkClass() {
         SymbolTable rootSymbolTable = new SymbolTable();
         AST ast = new AST(
                 SymbolicNameCheckerTest.class.getResourceAsStream(
@@ -64,12 +64,42 @@ class SymbolicNameCheckerTest {
                 "symbol not found: add(_) (26)",
                 "symbol not found: add(_) (26)",
                 "symbol not found: add(_) (27)"
-                );
+        );
 
         Assertions.assertThat(
                 String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
         ).isEqualTo(ExternalString.fromClasspath(
                 "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/simple.symbols"
+        ));
+    }
+
+    @Test
+    void walkType() {
+        SymbolTable rootSymbolTable = new SymbolTable();
+        AST ast = new AST(
+                SymbolicNameCheckerTest.class.getResourceAsStream(
+                        "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/Type.th"
+                ),
+                "namespace",
+                new NodeIdGenerator(),
+                Collections.emptyList(),
+                rootSymbolTable
+        );
+        Root root = ast.root().orElseThrow(() -> new IllegalStateException("no root found: " + ast.errors().get(0)));
+
+        Assertions.assertThat(
+                new SymbolicNameChecker()
+                        .walk(root)
+                        .stream()
+                        .map(SemanticError::toString)
+        ).containsExactly(
+                "symbol already defined: method1() (3)"
+        );
+
+        Assertions.assertThat(
+                String.join("\n", rootSymbolTable.accept(new SymbolTableDumpingVisitor(true)))
+        ).isEqualTo(ExternalString.fromClasspath(
+                "/org/thoriumlang/compiler/ast/algorithms/symbolicnamechecking/Type.symbols"
         ));
     }
 }

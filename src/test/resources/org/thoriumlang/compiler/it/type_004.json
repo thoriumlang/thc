@@ -34,7 +34,7 @@
               "type": "List",
               "arguments": [],
               "context": {
-                "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:13",
+                "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "1:12",
                 "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body]"
               },
               "nodeId": 3

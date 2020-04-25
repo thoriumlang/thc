@@ -123,6 +123,11 @@
           "name": "_load_005",
           "kind": "org.thoriumlang.compiler.symbols.AliasSymbol: (alias: org.thoriumlang.compiler.it._load_005)",
           "nodeRef": 5
+        },
+        {
+          "name": "method()",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
+          "nodeRef": 4
         }
       ]
     },

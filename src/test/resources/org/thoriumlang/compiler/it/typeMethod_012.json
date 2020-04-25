@@ -142,6 +142,11 @@
             },
             "nodeId": 3
           }
+        },
+        {
+          "name": "method(U[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
+          "nodeRef": 5
         }
       ]
     },
@@ -160,6 +165,11 @@
             },
             "nodeId": 6
           }
+        },
+        {
+          "name": "p1",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #7",
+          "nodeRef": 7
         }
       ]
     }

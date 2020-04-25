@@ -132,7 +132,18 @@
     {
       "name": "org.thoriumlang.compiler.it.Type.[body]",
       "parentTableName": "org.thoriumlang.compiler.it.Type",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "method()",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #8",
+          "nodeRef": 8
+        },
+        {
+          "name": "method(Type[])",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #4",
+          "nodeRef": 4
+        }
+      ]
     },
     {
       "name": "org.thoriumlang.compiler.it.Type.[body].method()",
@@ -142,7 +153,13 @@
     {
       "name": "org.thoriumlang.compiler.it.Type.[body].method(Type[])",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
-      "symbols": []
+      "symbols": [
+        {
+          "name": "p",
+          "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #5",
+          "nodeRef": 5
+        }
+      ]
     }
   ],
   "errors": []
