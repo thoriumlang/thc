@@ -50,6 +50,9 @@ public class PredicateVisitor implements Visitor<Boolean> {
         this.defaultValue = defaultValue;
     }
 
+    /**
+     * Constructs a <code>PredicateVisitor</code> with <code>false</code> as a default value.
+     */
     public PredicateVisitor() {
         this(false);
     }

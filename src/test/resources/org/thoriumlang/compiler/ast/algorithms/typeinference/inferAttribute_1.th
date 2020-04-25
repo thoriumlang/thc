@@ -1,19 +1,19 @@
-class inferAttribute {
+class inferAttribute_1 {
     val assert_Number_1 = 1;
-    val fix_assert_BooleanOrNumberOrString_2; // TODO this needs ctor knowledge...
+    val assert_BooleanOrNumberOrString_2;
     val assert_NoneOrString_3;
     val assert_None_4: Boolean;
 
-    inferAttribute() {
-        fix_assert_BooleanOrNumberOrString_2 = 1;
+    inferAttribute_1() {
+        assert_BooleanOrNumberOrString_2 = 1;
         assert_NoneOrString_3 = "String";
     }
 
-    inferAttribute(p: org.thoriumlang.Object) {
-        fix_assert_BooleanOrNumberOrString_2 = true;
+    inferAttribute_1(p: org.thoriumlang.Object) {
+        assert_BooleanOrNumberOrString_2 = true;
     }
 
-    inferAttribute(p: org.thoriumlang.String) {
-        fix_assert_BooleanOrNumberOrString_2 = p;
+    inferAttribute_1(p: org.thoriumlang.String) {
+        assert_BooleanOrNumberOrString_2 = p;
     }
 }
