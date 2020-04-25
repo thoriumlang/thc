@@ -32,7 +32,7 @@ public class SymbolTable {
     private final SymbolTable parent;
     private final Map<String, Symbol> symbols;
     /**
-     * Maps a string such as "methodName" to a list of actual symbols such as ["methodName()", "methodName(String)"]
+     * Maps a string such as "methodName(_)" to a list of actual symbols such as ["methodName(Number)", "methodName(String)"]
      */
     private final Map<String, List<Symbol>> methodSymbols;
     private final Map<String, SymbolTable> scopes;
@@ -52,38 +52,11 @@ public class SymbolTable {
     public void put(Name name, Symbol symbol) {
         SymbolTable table = findTable(name);
         table.symbols.put(name.getSimpleName(), symbol);
-        if (isMethodName(name)) {
-            String simpleSignature = simpleSignature(name);
+        if (name.isMethod()) {
+            String simpleSignature = name.getNormalizedSimpleName();
             table.methodSymbols.putIfAbsent(simpleSignature, new ArrayList<>());
             table.methodSymbols.get(simpleSignature).add(symbol);
         }
-    }
-
-    /**
-     * Transforms a method signature of the form methodName[...](A,B) to a simplified signature of the form
-     * methodName(_,_).
-     */
-    private String simpleSignature(Name name) {
-        String methodSignature = name.getSimpleName();
-        return String.format("%s(%s)",
-                methodSignature.substring(
-                        0,
-                        Strings.indexOfFirst(methodSignature, "[", "(")
-                ),
-                Arrays
-                        .stream(
-                                methodSignature
-                                        .substring(methodSignature.indexOf("(") + 1, methodSignature.indexOf(")"))
-                                        .split(",")
-                        )
-                        .filter(s -> !s.isEmpty())
-                        .map(p -> "_")
-                        .collect(Collectors.joining(","))
-        );
-    }
-
-    private boolean isMethodName(Name name) {
-        return name.getSimpleName().contains("(");
     }
 
     private SymbolTable findTable(Name name) {
@@ -116,13 +89,13 @@ public class SymbolTable {
     }
 
     public List<Symbol> find(Name name) {
-        return findTable(name).findLocal(new Name(name.getSimpleName()));
+        return findTable(name).findLocal(new Name(name.getNormalizedSimpleName()));
     }
 
     private List<Symbol> findLocal(Name name) {
-        return isMethodName(name)
-                ? findLocalMethod(simpleSignature(name))
-                : findLocalVariable(name.getSimpleName());
+        return name.isMethod()
+                ? findLocalMethod(name.getNormalizedSimpleName())
+                : findLocalVariable(name.getNormalizedSimpleName());
     }
 
     private List<Symbol> findLocalMethod(String simpleSignature) {

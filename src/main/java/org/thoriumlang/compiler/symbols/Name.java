@@ -15,15 +15,32 @@
  */
 package org.thoriumlang.compiler.symbols;
 
+import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.helpers.Strings;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Name {
     private final String fqName;
+    private final boolean isMethod;
+    private final boolean isQualified;
+    private final String simpleName;
+    private final List<String> parts;
+    private final String normalizedSimpleName;
 
     public Name(String fqName) {
         this.fqName = Objects.requireNonNull(fqName, "fqName cannot be null");
+        this.isMethod = fqName.indexOf('(') > -1;
+
+        this.parts = isMethod ? extractMethodParts(fqName) : extractParts(fqName);
+        this.isQualified = parts.size() > 1;
+        this.simpleName = Lists.last(parts).orElseThrow(() -> new IllegalStateException("no last part found"));
+
+        List<String> normalizedParts = extractParts(isMethod ? normalizeMethodParameters(fqName) : fqName);
+        this.normalizedSimpleName = Lists.last(normalizedParts).orElseThrow(() -> new IllegalStateException("no last part found"));
     }
 
     /**
@@ -40,21 +57,94 @@ public class Name {
         );
     }
 
-    public String getSimpleName() {
-        List<String> parts = getParts();
-        return parts.get(parts.size() - 1);
+    private static List<String> extractMethodParts(String fqName) {
+        String name = extractMethodName(fqName);
+        String parameters = extractMethodParameters(fqName);
+
+        List<String> parts = extractParts(name);
+        String methodName = Lists.last(parts).orElseThrow(() -> new IllegalStateException("no last element"));
+
+        return Lists.append(
+                Lists.withoutLast(parts),
+                // TODO shouldn't we have the type parameter as well? (see SymbolicNameDiscoveryVisitor as well)
+                String.format("%s(%s)", methodName, parameters)
+        );
     }
 
+    private static String extractMethodName(String fqName) {
+        return fqName.substring(
+                0,
+                Strings.indexOfFirst(fqName, "[", "(")
+        );
+    }
+
+//    private static String removeParameterTypes(String parametersList) {
+//        return Stream.of(parametersList.split(","))
+//                .map(p -> p + "[") // we make sure we have a type parameter maker
+//                .map(p -> p.substring(0, p.indexOf('[')))
+//                .collect(Collectors.joining(","));
+//    }
+
+    private static String extractMethodParameters(String fqName) {
+        return fqName.substring(fqName.indexOf("(") + 1, fqName.indexOf(")"));
+    }
+
+    private static List<String> extractParts(String fqNormalizedName) {
+        return Arrays.asList(fqNormalizedName.split("\\."));
+    }
+
+    private static String normalizeMethodParameters(String fqName) {
+        return String.format("%s(%s)",
+                extractMethodName(fqName),
+                Arrays.stream(extractMethodParameters(fqName).split(","))
+                        .filter(s -> !s.isEmpty())
+                        .map(p -> "_")
+                        .collect(Collectors.joining(","))
+        );
+    }
+
+    /**
+     * For methods, return a normalized version of the simple name (see {@link #getSimpleName()}). For attributes,
+     * this method returns the same value as {@link #getSimpleName()}.
+     * <p>
+     * The normalized method name is the method signature with all its types replaced by "_". For instance:
+     * method(String[]) becomes method(_).
+     * </p>
+     *
+     * @return the normalizes simple name of the symbol
+     */
+    public String getNormalizedSimpleName() {
+        return normalizedSimpleName;
+    }
+
+    /**
+     * @return the symbol's name without the package prefix.
+     */
+    public String getSimpleName() {
+        return simpleName;
+    }
+
+    /**
+     * @return the fully qualified symbol name.
+     */
     public String getFullName() {
         return fqName;
     }
 
+    /**
+     * @return a list containing each part of a name, i.e. all the namespaces are split in separate element of the list.
+     * The actual name (or full method signature) is the last element of that list.
+     */
     public List<String> getParts() {
-        return Arrays.asList(fqName.split("\\."));
+        return parts;
     }
 
     public boolean isQualified() {
-        return getParts().size() > 1;
+        return isQualified;
+    }
+
+    public boolean isMethod() {
+        return isMethod;
     }
 
     @Override

@@ -47,19 +47,17 @@ class SymbolTableTest {
     @Test
     void simpleMethodName_putDifferentParameterArity() {
         Symbol symbol1 = symbol();
-        Symbol symbol2 = symbol();
         SymbolTable symbolTable = new SymbolTable();
 
         symbolTable.put(new Name("SimpleName()"), symbol1);
 
-        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(Whatever)")))
                 .isEmpty();
     }
 
     @Test
     void simpleMethodName_findDifferentParameterArity() {
         Symbol symbol1 = symbol();
-        Symbol symbol2 = symbol();
         SymbolTable symbolTable = new SymbolTable();
 
         symbolTable.put(new Name("SimpleName(Object)"), symbol1);
@@ -69,25 +67,13 @@ class SymbolTableTest {
     }
 
     @Test
-    void simpleMethodName_withParameter() {
-        Symbol symbol = symbol();
-        SymbolTable symbolTable = new SymbolTable();
-
-        symbolTable.put(new Name("SimpleName(Object)"), symbol);
-
-        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
-                .hasSize(1)
-                .allMatch(s -> s == symbol);
-    }
-
-    @Test
     void simpleMethodName_withParametersAndTypeParameters() {
         Symbol symbol = symbol();
         SymbolTable symbolTable = new SymbolTable();
 
         symbolTable.put(new Name("SimpleName[T[]](Object[T[])"), symbol);
 
-        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(Whatever)")))
                 .hasSize(1)
                 .allMatch(s -> s == symbol);
     }
@@ -101,7 +87,7 @@ class SymbolTableTest {
         symbolTable.put(new Name("SimpleName(Object)"), symbol1);
         symbolTable.put(new Name("SimpleName(String)"), symbol2);
 
-        Assertions.assertThat(symbolTable.find(new Name("SimpleName(_)")))
+        Assertions.assertThat(symbolTable.find(new Name("SimpleName(Whatever)")))
                 .hasSize(2)
                 .containsExactly(symbol1, symbol2);
     }

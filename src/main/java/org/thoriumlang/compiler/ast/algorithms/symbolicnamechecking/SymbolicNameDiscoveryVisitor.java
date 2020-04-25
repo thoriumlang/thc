@@ -209,6 +209,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
         Name symbolName = new Name(
                 String.format("%s(%s)",
+                        // TODO shouldn't we have the type parameter as well? (see name as well)
                         node.getSignature().getName(),
                         node.getSignature().getParameters().stream()
                                 .map(p -> p.getType().toString())

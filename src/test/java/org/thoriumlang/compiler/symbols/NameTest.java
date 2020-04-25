@@ -16,9 +16,63 @@
 package org.thoriumlang.compiler.symbols;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 class NameTest {
+    private static Stream<DynamicTest> buildDynamicTests(Example example) {
+        Name name = new Name(example.fqName);
+        return Stream.of(
+                DynamicTest.dynamicTest(
+                        example.fqName + " / full name",
+                        () -> Assertions.assertThat(name.getFullName())
+                                .describedAs(example.fqName)
+                                .isEqualTo(example.fqName)
+                ),
+                DynamicTest.dynamicTest(
+                        example.fqName + " / is method",
+                        () -> Assertions.assertThat(name.isMethod())
+                                .describedAs(example.fqName)
+                                .isEqualTo(example.isMethod)
+                ),
+
+                DynamicTest.dynamicTest(
+                        example.fqName + " / normalized simple name",
+                        () -> Assertions.assertThat(name.getNormalizedSimpleName())
+                                .describedAs(example.fqName)
+                                .isEqualTo(example.normalizedSimpleName)
+                ),
+
+                DynamicTest.dynamicTest(
+                        example.fqName + " / is qualified",
+                        () -> Assertions.assertThat(name.isQualified())
+                                .isEqualTo(example.isQualified)
+                ),
+
+                DynamicTest.dynamicTest(
+                        example.fqName + " / simple name",
+                        () -> Assertions.assertThat(name.getSimpleName())
+                                .describedAs(example.fqName)
+                                .isEqualTo(example.simpleName)
+                ),
+
+                DynamicTest.dynamicTest(
+                        example.fqName + " / parts",
+                        () -> Assertions.assertThat(name.getParts())
+                                .describedAs(example.fqName)
+                                .containsExactlyElementsOf(example.parts)
+                )
+        );
+    }
+
     @Test
     void constructor_name1() {
         Assertions.assertThatThrownBy(() -> new Name(null))
@@ -40,45 +94,37 @@ class NameTest {
                 .hasMessage("packageName cannot be null");
     }
 
-    @Test
-    void getSimpleName_simple() {
-        Assertions.assertThat(new Name("name").getSimpleName())
-                .isEqualTo("name");
+    @TestFactory
+    Stream<DynamicTest> examples() {
+        return new BufferedReader(
+                new InputStreamReader(
+                        NameTest.class.getResourceAsStream("/org/thoriumlang/compiler/symbols/Name.tests")
+                )
+        )
+                .lines()
+                .filter(l -> !l.startsWith("#"))
+                .map(l -> l.replaceAll("\\s+", " "))
+                .map(l -> l.split(" "))
+                .map(Example::new)
+                .flatMap(NameTest::buildDynamicTests);
     }
 
-    @Test
-    void getSimpleName_qualified() {
-        Assertions.assertThat(new Name("qualified.name").getSimpleName())
-                .isEqualTo("name");
-    }
+    private static class Example {
+        private final String fqName;
+        private final Boolean isQualified;
+        private final Boolean isMethod;
+        private final String simpleName;
+        private final String normalizedSimpleName;
+        private final List<String> parts;
 
-    @Test
-    void getFullName_simple() {
-        Assertions.assertThat(new Name("name").getParts())
-                .containsExactly("name");
-    }
-
-    @Test
-    void getFullName_qualified() {
-        Assertions.assertThat(new Name("qualified.name").getParts())
-                .containsExactly("qualified", "name");
-    }
-
-    @Test
-    void isQualified_simple() {
-        Assertions.assertThat(new Name("name").isQualified())
-                .isFalse();
-    }
-
-    @Test
-    void isQualified_qualified() {
-        Assertions.assertThat(new Name("qualified.name").isQualified())
-                .isTrue();
-    }
-
-    @Test
-    void equals_() {
-        Assertions.assertThat(new Name("qualified.name").equals(new Name("qualified.name")))
-                .isTrue();
+        private Example(String... fields) {
+            int i = 0;
+            this.fqName = fields[i++];
+            this.isQualified = Boolean.valueOf(fields[i++]);
+            this.isMethod = Boolean.valueOf(fields[i++]);
+            this.simpleName = fields[i++];
+            this.normalizedSimpleName = fields[i++];
+            this.parts = Arrays.asList(fields[i].split(";"));
+        }
     }
 }
