@@ -78,15 +78,8 @@ public class Name {
         );
     }
 
-//    private static String removeParameterTypes(String parametersList) {
-//        return Stream.of(parametersList.split(","))
-//                .map(p -> p + "[") // we make sure we have a type parameter maker
-//                .map(p -> p.substring(0, p.indexOf('[')))
-//                .collect(Collectors.joining(","));
-//    }
-
     private static String extractMethodParameters(String fqName) {
-        return fqName.substring(fqName.indexOf("(") + 1, fqName.indexOf(")"));
+        return fqName.substring(fqName.indexOf('(') + 1, fqName.indexOf(')'));
     }
 
     private static List<String> extractParts(String fqNormalizedName) {

@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.api.errors.SemanticError;
-import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -358,7 +357,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private String referencedNodeId(Reference node) {
-        return ""; // FIXME !!!!
+        return ""; // TODO rewrite
 //        node.getContext()
 //                .get(ReferencedNode.class)
 //                .map(ReferencedNode::nodes)
