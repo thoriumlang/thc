@@ -5,11 +5,23 @@ class inferIndirectValues {
 
     caller() {
         val assert_String_1 = callee_1();
-        val assert_Number_1 = callee_2();
+        val assert_Number_2 = callee_2();
+
+        val assert_String_3 = callee_3("Str");
+        val assert_Number_4 = callee_3(1);
+
         // TODO infer indirect value
     }
 
     callee_2() {
+        1;
+    }
+
+    callee_3(str: org.thoriumlang.String) { // TODO rename str to p
+        "String";
+    }
+
+    callee_3(num: org.thoriumlang.Number) { // TODO rename num to p
         1;
     }
 }

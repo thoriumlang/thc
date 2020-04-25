@@ -358,11 +358,12 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private String referencedNodeId(Reference node) {
-        return node.getContext()
-                .get(ReferencedNode.class)
-                .map(ReferencedNode::node)
-                .map(this::formatNodeId)
-                .orElse("node_0");
+        return ""; // FIXME !!!!
+//        node.getContext()
+//                .get(ReferencedNode.class)
+//                .map(ReferencedNode::nodes)
+//                .map(this::formatNodeId)
+//                .orElse("node_0");
     }
 
     @Override

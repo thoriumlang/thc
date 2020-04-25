@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Lists {
     private Lists() {
@@ -80,5 +81,12 @@ public class Lists {
             return Optional.empty();
         }
         return Optional.of(list.get(index));
+    }
+
+    public static <T> List<T> requireNonEmpty(List<T> list, String message) {
+        if (list.isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+        return list;
     }
 }

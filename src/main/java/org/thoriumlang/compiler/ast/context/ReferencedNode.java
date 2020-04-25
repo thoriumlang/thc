@@ -16,22 +16,38 @@
 package org.thoriumlang.compiler.ast.context;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeId;
+import org.thoriumlang.compiler.collections.Lists;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ReferencedNode {
     private final List<Node> nodes;
 
     public ReferencedNode(List<Node> referencedNodes) {
-        this.nodes = referencedNodes;
+        this.nodes = Lists.requireNonEmpty(
+                Objects.requireNonNull(referencedNodes, "nodes cannot be null"),
+                "nodes cannot be empty"
+        );
     }
 
-    public Node node() {
-        return nodes.get(0);
+    /**
+     * The list of target node is never null nor empty.
+     * @return the list of potential target nodes.
+     */
+    public List<Node> nodes() {
+        return nodes;
     }
 
     @Override
     public String toString() {
-        return String.format("nodeRef %s", nodes.get(0).getNodeId()); // FIXME this is wrong!
+        return String.format("nodeRef %s",
+                nodes.stream()
+                        .map(Node::getNodeId)
+                        .map(NodeId::toString)
+                        .collect(Collectors.joining(", "))
+        );
     }
 }

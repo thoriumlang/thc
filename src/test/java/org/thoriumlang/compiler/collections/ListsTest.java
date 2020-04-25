@@ -134,4 +134,12 @@ class ListsTest {
         Assertions.assertThat(Lists.get(Collections.singletonList("A"), -1))
                 .isEmpty();
     }
+
+    @Test
+    void requiresNonEmpty_empty() {
+        Assertions.assertThatThrownBy(() -> Lists.requireNonEmpty(Collections.emptyList(), "list cannot be empty"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("list cannot be empty");
+    }
+
 }

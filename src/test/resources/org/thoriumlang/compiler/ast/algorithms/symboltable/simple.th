@@ -17,4 +17,7 @@ class TestClass {
         val new = 1;
         identifier;
     }
+
+    public method1(p: String) {} // FIXME this should create 2 tables!
+    public method1(p: Number) {}
 }

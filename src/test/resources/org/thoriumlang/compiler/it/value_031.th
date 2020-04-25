@@ -1,0 +1,8 @@
+class Class {
+    method(): Class {
+        callee("String");
+    }
+
+    callee(s: String): Class {}
+    callee(n: Number): Class {}
+}

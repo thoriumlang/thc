@@ -12,3 +12,5 @@ TestClass
           TestClass.[body].method.[body].[anon:12].[body]
             TestClass.[body].method.[body].[anon:12].[body].[anon:13]
               TestClass.[body].method.[body].[anon:12].[body].[anon:13].[body]
+    TestClass.[body].method1
+      TestClass.[body].method1.[body]
