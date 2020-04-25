@@ -81,6 +81,7 @@ class TypeDiscoveryVisitorTest {
 
     @Test
     void fullTable() {
+        // TODO refactor, it's to big to be easily understandable
         SymbolTable rootSymbolTable = new SymbolTable();
         Root root = new AST(
                 TypeDiscoveryVisitorTest.class.getResourceAsStream(

@@ -215,6 +215,50 @@ class SymbolTableInitializationVisitorTest {
     }
 
     @Test
+    void type_overloadedMethodSignature() {
+        Type type = new Type(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "Type",
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
+                Arrays.asList(
+                        new MethodSignature(
+                                nodeIdGenerator.next(),
+                                Visibility.NAMESPACE,
+                                "methodName",
+                                Collections.emptyList(),
+                                Collections.emptyList(),
+                                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                        ),
+                        new MethodSignature(
+                                nodeIdGenerator.next(),
+                                Visibility.NAMESPACE,
+                                "methodName",
+                                Collections.emptyList(),
+                                Collections.singletonList(new Parameter(
+                                        nodeIdGenerator.next(),
+                                        "p",
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList())
+                                )),
+                                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                        )
+                )
+        );
+        Root root = injectParents(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Collections.emptyList(),
+                type
+        ));
+
+        visitor.visit(root);
+
+        Assertions.assertThat(type.getMethods().get(0).getContext().require(SymbolTable.class))
+                .isNotSameAs(type.getMethods().get(1).getContext().require(SymbolTable.class));
+    }
+
+    @Test
     void clazz() {
         Root root = injectParents(new Root(
                 nodeIdGenerator.next(),
@@ -321,6 +365,64 @@ class SymbolTableInitializationVisitorTest {
     }
 
     @Test
+    void clazz_overloadedMethod() {
+        Class clazz = new Class(
+                nodeIdGenerator.next(),
+                Visibility.NAMESPACE,
+                "Class",
+                Collections.emptyList(),
+                new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList()),
+                Arrays.asList(
+                        new Method(
+                                nodeIdGenerator.next(),
+                                new MethodSignature(
+                                        nodeIdGenerator.next(),
+                                        Visibility.NAMESPACE,
+                                        "name",
+                                        Collections.emptyList(),
+                                        Collections.emptyList(),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                                ),
+                                Collections.emptyList()
+                        ),
+                        new Method(
+                                nodeIdGenerator.next(),
+                                new MethodSignature(
+                                        nodeIdGenerator.next(),
+                                        Visibility.NAMESPACE,
+                                        "name",
+                                        Collections.emptyList(),
+                                        Collections.singletonList(
+                                                new Parameter(
+                                                        nodeIdGenerator.next(), "name",
+                                                        new TypeSpecSimple(
+                                                                nodeIdGenerator.next(),
+                                                                "Type",
+                                                                Collections.emptyList()
+                                                        )
+                                                )
+                                        ),
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "type", Collections.emptyList())
+                                ),
+                                Collections.emptyList()
+                        )
+                ),
+                Collections.emptyList()
+        );
+        Root root = injectParents(new Root(
+                nodeIdGenerator.next(),
+                "namespace",
+                Collections.emptyList(),
+                clazz
+        ));
+
+        visitor.visit(root);
+
+        Assertions.assertThat(clazz.getMethods().get(0).getContext().require(SymbolTable.class))
+                .isNotSameAs(clazz.getMethods().get(1).getContext().require(SymbolTable.class));
+    }
+
+    @Test
     void clazz_attribute() {
         Class clazz = new Class(
                 nodeIdGenerator.next(),
@@ -379,6 +481,56 @@ class SymbolTableInitializationVisitorTest {
                                 // this is because the method's symbol table is the method's body symbol table
                                 .enclosingScope()
                 );
+    }
+
+    @Test
+    void method_overloadedMethodSignature() {
+        Method method1 = injectParents(new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "method",
+                        Collections.emptyList(),
+                        Collections.singletonList(
+                                new Parameter(
+                                        nodeIdGenerator.next(),
+                                        "p",
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "T", Collections.emptyList())
+                                )
+                        ),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList())
+                ),
+                Collections.emptyList()
+        ));
+        Method method2 = injectParents(new Method(
+                nodeIdGenerator.next(),
+                new MethodSignature(
+                        nodeIdGenerator.next(),
+                        Visibility.NAMESPACE,
+                        "method",
+                        Collections.emptyList(),
+                        Collections.singletonList(
+                                new Parameter(
+                                        nodeIdGenerator.next(),
+                                        "p",
+                                        new TypeSpecSimple(nodeIdGenerator.next(), "U", Collections.emptyList())
+                                )
+                        ),
+                        new TypeSpecSimple(nodeIdGenerator.next(), "Type", Collections.emptyList())
+                ),
+                Collections.emptyList()
+        ));
+
+        SymbolTable symbolTable = new SymbolTable();
+        method1.getContext().put(Relatives.class, new Relatives(method1, new Relatives(parent(symbolTable))));
+        method2.getContext().put(Relatives.class, new Relatives(method2, new Relatives(parent(symbolTable))));
+
+        visitor.visit(method1);
+        visitor.visit(method2);
+
+        Assertions.assertThat(method1.getSignature().getContext().require(SymbolTable.class))
+                .isNotSameAs(method2.getSignature().getContext().require(SymbolTable.class));
     }
 
     @Test
@@ -783,11 +935,15 @@ class SymbolTableInitializationVisitorTest {
         ));
     }
 
-    private Node parent() {
+    private Node parent(SymbolTable symbolTable) {
         return new Parent(nodeIdGenerator.next())
                 .getContext()
-                .put(SymbolTable.class, new SymbolTable())
+                .put(SymbolTable.class, symbolTable)
                 .getNode();
+    }
+
+    private Node parent() {
+        return parent(new SymbolTable());
     }
 
     @SuppressWarnings("unchecked") // we're sure about what we return: it's the same object as what we get as input

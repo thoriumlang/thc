@@ -47,6 +47,8 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.util.stream.Collectors;
+
 public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public static final String TABLE_NAME_BODY = "[body]";
     private final SymbolTable rootSymbolTable;
@@ -168,9 +170,9 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                 SymbolTable.class,
                 /*
                  * Some nasty trick here... MethodSignature can be the child of either a Method or a Type.
-                 *  - If the parent is a type, we have to define a new symbol table specific for that signature
+                 *  - If the parent is a Type, we have to define a new symbol table specific for that signature
                  *    (otherwise, we pollute the upper table)
-                 *  - If the parent is a method, we have to use the same symbol table as signature is part of the
+                 *  - If the parent is a Method, we have to use the same symbol table as signature is part of the
                  *    method.
                  */
                 node.getContext()
@@ -187,7 +189,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
 
                             @Override
                             public SymbolTable visit(Type parentNode) {
-                                return getSymbolTable(parentNode).createScope(node.getName());
+                                return getSymbolTable(parentNode).createScope(scopeName(node));
                             }
                         })
         );
@@ -197,6 +199,16 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
         node.getTypeParameters().forEach(n -> n.accept(this));
 
         return node;
+    }
+
+    private String scopeName(MethodSignature node) {
+        return String.format("%s(%s)",
+                node.getName(),
+                node.getParameters().stream()
+                        .map(Parameter::getType)
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","))
+        );
     }
 
     @Override
@@ -344,7 +356,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public Node visit(Method node) {
         node.getContext().put(
                 SymbolTable.class,
-                getSymbolTable(getParent(node)).createScope(node.getSignature().getName())
+                getSymbolTable(getParent(node)).createScope(scopeName(node.getSignature()))
         );
 
         node.getSignature().accept(this);

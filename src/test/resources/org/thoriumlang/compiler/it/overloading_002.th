@@ -1,4 +1,4 @@
 class Class {
     method(p: Class) {}
-    method() {} // TODO support overloading: https://github.com/thoriumlang/thc/issues/55
+    method() {}
 }

@@ -16,39 +16,40 @@
         someValue(String[]) -> #133
         this -> #6
         namespace.TestClass.[body].method1
+        namespace.TestClass.[body].method1(Object[],Object[],Object[],Object[])
           p0 -> #11
           p1 -> #13
           p2 -> #17
-          namespace.TestClass.[body].method1.[body]
+          namespace.TestClass.[body].method1(Object[],Object[],Object[],Object[]).[body]
             p0 -> #46
             someVar1 -> #21
             someVar2 -> #30
             someVar3 -> #34
             someVar4 -> #38
             someVar5 -> #50
-        namespace.TestClass.[body].method2
-          namespace.TestClass.[body].method2.[body]
+        namespace.TestClass.[body].method2()
+          namespace.TestClass.[body].method2().[body]
             i -> #60
             x -> #96
             z -> #100
-            namespace.TestClass.[body].method2.[body].[anon:27]
+            namespace.TestClass.[body].method2().[body].[anon:27]
               w -> #76
-              namespace.TestClass.[body].method2.[body].[anon:27].[body]
-            namespace.TestClass.[body].method2.[body].[anon:28]
+              namespace.TestClass.[body].method2().[body].[anon:27].[body]
+            namespace.TestClass.[body].method2().[body].[anon:28]
               y -> #89
-              namespace.TestClass.[body].method2.[body].[anon:28].[body]
-            namespace.TestClass.[body].method2.[body].[anon:31]
-              namespace.TestClass.[body].method2.[body].[anon:31].[body]
+              namespace.TestClass.[body].method2().[body].[anon:28].[body]
+            namespace.TestClass.[body].method2().[body].[anon:31]
+              namespace.TestClass.[body].method2().[body].[anon:31].[body]
                 x -> #107
-        namespace.TestClass.[body].method3
-          namespace.TestClass.[body].method3.[body]
+        namespace.TestClass.[body].method3()
+          namespace.TestClass.[body].method3().[body]
             s -> #144
-        namespace.TestClass.[body].method_forward_1
-          namespace.TestClass.[body].method_forward_1.[body]
+        namespace.TestClass.[body].method_forward_1()
+          namespace.TestClass.[body].method_forward_1().[body]
             instance -> #166
-        namespace.TestClass.[body].method_forward_2
+        namespace.TestClass.[body].method_forward_2(String[])
           p -> #174
-          namespace.TestClass.[body].method_forward_2.[body]
+          namespace.TestClass.[body].method_forward_2(String[]).[body]
             instance -> #178
         namespace.TestClass.[body].otherValue
         namespace.TestClass.[body].someMethod1
@@ -59,5 +60,8 @@
             namespace.TestClass.[body].someMethod2.[anon:12].[body]
         namespace.TestClass.[body].someU
         namespace.TestClass.[body].someValue
+        namespace.TestClass.[body].someValue()
+          namespace.TestClass.[body].someValue().[body]
+        namespace.TestClass.[body].someValue(String[])
           x -> #135
-          namespace.TestClass.[body].someValue.[body]
+          namespace.TestClass.[body].someValue(String[]).[body]

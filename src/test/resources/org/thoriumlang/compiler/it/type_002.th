@@ -1,2 +1,2 @@
-type Type : Super[T] {
+type Type: Super[T] {
 }

@@ -1,2 +1,2 @@
-type Type[T] : List[T] {
+type Type[T]: List[T] {
 }

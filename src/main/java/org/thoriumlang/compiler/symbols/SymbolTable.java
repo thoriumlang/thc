@@ -124,7 +124,6 @@ public class SymbolTable {
         return symbols.containsKey(name.getSimpleName());
     }
 
-    // FIXME wrong for overloaded methods
     public SymbolTable createScope(String name) {
         SymbolTable symbolTable = new SymbolTable(name, this);
         scopes.putIfAbsent(name, symbolTable);

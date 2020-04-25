@@ -1,4 +1,4 @@
 type Type {
     method(p: Type) : Type;
-    method() : Type; // TODO support overloading: https://github.com/thoriumlang/thc/issues/55
+    method() : Type;
 }

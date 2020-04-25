@@ -3,6 +3,6 @@ class Class {
         callee("String");
     }
 
-    callee(s: String): Class {}
-    callee(n: Number): Class {}
+    callee(p: String): Class {}
+    callee(p: Number): Class {}
 }

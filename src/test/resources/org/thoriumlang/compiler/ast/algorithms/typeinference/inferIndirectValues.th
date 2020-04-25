@@ -17,11 +17,11 @@ class inferIndirectValues {
         1;
     }
 
-    callee_3(str: org.thoriumlang.String) { // TODO rename str to p
+    callee_3(p: org.thoriumlang.String) {
         "String";
     }
 
-    callee_3(num: org.thoriumlang.Number) { // TODO rename num to p
+    callee_3(p: org.thoriumlang.Number) {
         1;
     }
 }

@@ -18,6 +18,6 @@ class TestClass {
         identifier;
     }
 
-    public method1(p: String) {} // FIXME this should create 2 tables!
+    public method1(p: String) {}
     public method1(p: Number) {}
 }

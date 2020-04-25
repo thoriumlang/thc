@@ -11,16 +11,16 @@
       TestClass -> (alias: namespace.TestClass)
       namespace.TestClass.[body]
         U -> (th: param U)
-        namespace.TestClass.[body].method1
+        namespace.TestClass.[body].method1(Object[],UnknownParameterType[],JavaList[i:[String[], UnknownMethodTypeParameterType[]]],T[],U[])
           T -> (th: param T)
-          namespace.TestClass.[body].method1.[body]
-        namespace.TestClass.[body].method2
-          namespace.TestClass.[body].method2.[body]
-            namespace.TestClass.[body].method2.[body].[anon:27]
+          namespace.TestClass.[body].method1(Object[],UnknownParameterType[],JavaList[i:[String[], UnknownMethodTypeParameterType[]]],T[],U[]).[body]
+        namespace.TestClass.[body].method2()
+          namespace.TestClass.[body].method2().[body]
+            namespace.TestClass.[body].method2().[body].[anon:27]
               W -> (th: param W)
-              namespace.TestClass.[body].method2.[body].[anon:27].[body]
-            namespace.TestClass.[body].method2.[body].[anon:28]
-              namespace.TestClass.[body].method2.[body].[anon:28].[body]
+              namespace.TestClass.[body].method2().[body].[anon:27].[body]
+            namespace.TestClass.[body].method2().[body].[anon:28]
+              namespace.TestClass.[body].method2().[body].[anon:28].[body]
         namespace.TestClass.[body].someMethod1
           namespace.TestClass.[body].someMethod1.[anon:10]
             V -> (th: param V)

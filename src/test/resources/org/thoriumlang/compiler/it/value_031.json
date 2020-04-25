@@ -56,13 +56,13 @@
                     "arguments": [],
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:15",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method()"
                     },
                     "nodeId": 6
                   },
                   "context": {
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:5",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method"
+                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method()"
                   },
                   "nodeId": 5
                 },
@@ -75,7 +75,7 @@
                         "context": {
                           "null(org.thoriumlang.compiler.ast.context.ReferencedNode)": "nodeRef #13, #20",
                           "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:9",
-                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
+                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method().[body]"
                         },
                         "nodeId": 9
                       },
@@ -85,28 +85,28 @@
                           "value": "String",
                           "context": {
                             "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:16",
-                            "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
+                            "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method().[body]"
                           },
                           "nodeId": 10
                         }
                       ],
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:9",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method().[body]"
                       },
                       "nodeId": 8
                     },
                     "last": true,
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "3:9",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method().[body]"
                     },
                     "nodeId": 7
                   }
                 ],
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:5",
-                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method.[body]"
+                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].method().[body]"
                 },
                 "nodeId": 4
               },
@@ -117,19 +117,19 @@
                   "typeParameters": [],
                   "parameters": [
                     {
-                      "name": "s",
+                      "name": "p",
                       "type": {
                         "type": "String",
                         "arguments": [],
                         "context": {
                           "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:15",
-                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[])"
                         },
                         "nodeId": 16
                       },
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:12",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[])"
                       },
                       "nodeId": 15
                     }
@@ -139,13 +139,13 @@
                     "arguments": [],
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:24",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[])"
                     },
                     "nodeId": 17
                   },
                   "context": {
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:5",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[])"
                   },
                   "nodeId": 14
                 },
@@ -154,7 +154,7 @@
                     "value": {
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:5",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[]).[body]"
                       },
                       "nodeId": 19,
                       "none": true
@@ -162,14 +162,14 @@
                     "last": true,
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:5",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[]).[body]"
                     },
                     "nodeId": 18
                   }
                 ],
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "6:5",
-                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(String[]).[body]"
                 },
                 "nodeId": 13
               },
@@ -180,19 +180,19 @@
                   "typeParameters": [],
                   "parameters": [
                     {
-                      "name": "n",
+                      "name": "p",
                       "type": {
                         "type": "Number",
                         "arguments": [],
                         "context": {
                           "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:15",
-                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                          "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])"
                         },
                         "nodeId": 23
                       },
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:12",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])"
                       },
                       "nodeId": 22
                     }
@@ -202,13 +202,13 @@
                     "arguments": [],
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:24",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])"
                     },
                     "nodeId": 24
                   },
                   "context": {
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:5",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee"
+                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])"
                   },
                   "nodeId": 21
                 },
@@ -217,7 +217,7 @@
                     "value": {
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:5",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[]).[body]"
                       },
                       "nodeId": 26,
                       "none": true
@@ -225,14 +225,14 @@
                     "last": true,
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:5",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[]).[body]"
                     },
                     "nodeId": 25
                   }
                 ],
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "7:5",
-                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee.[body]"
+                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Class.[body].callee(Number[]).[body]"
                 },
                 "nodeId": 20
               }
@@ -290,34 +290,45 @@
       ]
     },
     {
-      "name": "org.thoriumlang.compiler.it.Class.[body].callee",
+      "name": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])",
       "parentTableName": "org.thoriumlang.compiler.it.Class.[body]",
       "symbols": [
         {
-          "name": "n",
+          "name": "p",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #22",
           "nodeRef": 22
-        },
+        }
+      ]
+    },
+    {
+      "name": "org.thoriumlang.compiler.it.Class.[body].callee(Number[]).[body]",
+      "parentTableName": "org.thoriumlang.compiler.it.Class.[body].callee(Number[])",
+      "symbols": []
+    },
+    {
+      "name": "org.thoriumlang.compiler.it.Class.[body].callee(String[])",
+      "parentTableName": "org.thoriumlang.compiler.it.Class.[body]",
+      "symbols": [
         {
-          "name": "s",
+          "name": "p",
           "kind": "org.thoriumlang.compiler.symbols.SymbolicName: #15",
           "nodeRef": 15
         }
       ]
     },
     {
-      "name": "org.thoriumlang.compiler.it.Class.[body].callee.[body]",
-      "parentTableName": "org.thoriumlang.compiler.it.Class.[body].callee",
+      "name": "org.thoriumlang.compiler.it.Class.[body].callee(String[]).[body]",
+      "parentTableName": "org.thoriumlang.compiler.it.Class.[body].callee(String[])",
       "symbols": []
     },
     {
-      "name": "org.thoriumlang.compiler.it.Class.[body].method",
+      "name": "org.thoriumlang.compiler.it.Class.[body].method()",
       "parentTableName": "org.thoriumlang.compiler.it.Class.[body]",
       "symbols": []
     },
     {
-      "name": "org.thoriumlang.compiler.it.Class.[body].method.[body]",
-      "parentTableName": "org.thoriumlang.compiler.it.Class.[body].method",
+      "name": "org.thoriumlang.compiler.it.Class.[body].method().[body]",
+      "parentTableName": "org.thoriumlang.compiler.it.Class.[body].method()",
       "symbols": []
     }
   ],

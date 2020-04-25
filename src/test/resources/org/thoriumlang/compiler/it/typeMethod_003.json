@@ -55,13 +55,13 @@
                   "arguments": [],
                   "context": {
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:14",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method()"
                   },
                   "nodeId": 5
                 },
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:3",
-                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method()"
                 },
                 "nodeId": 4
               }
@@ -97,7 +97,7 @@
       "symbols": []
     },
     {
-      "name": "org.thoriumlang.compiler.it.Type.[body].method",
+      "name": "org.thoriumlang.compiler.it.Type.[body].method()",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
       "symbols": []
     }

@@ -57,13 +57,13 @@
                       "arguments": [],
                       "context": {
                         "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:13",
-                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                        "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method(T[])"
                       },
                       "nodeId": 6
                     },
                     "context": {
                       "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:10",
-                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                      "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method(T[])"
                     },
                     "nodeId": 5
                   }
@@ -73,13 +73,13 @@
                   "arguments": [],
                   "context": {
                     "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:18",
-                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                    "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method(T[])"
                   },
                   "nodeId": 7
                 },
                 "context": {
                   "null(org.thoriumlang.compiler.ast.context.SourcePosition)": "2:3",
-                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method"
+                  "null(org.thoriumlang.compiler.symbols.SymbolTable)": "org.thoriumlang.compiler.it.Type.[body].method(T[])"
                 },
                 "nodeId": 4
               }
@@ -115,7 +115,7 @@
       "symbols": []
     },
     {
-      "name": "org.thoriumlang.compiler.it.Type.[body].method",
+      "name": "org.thoriumlang.compiler.it.Type.[body].method(T[])",
       "parentTableName": "org.thoriumlang.compiler.it.Type.[body]",
       "symbols": []
     }

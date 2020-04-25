@@ -1,2 +1,2 @@
-type Type : List {
+type Type: List {
 }

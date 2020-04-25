@@ -27,6 +27,7 @@ import org.thoriumlang.compiler.testsupport.SymbolTableDumpingVisitor;
 
 import java.util.Collections;
 
+// TODO refactor, it's to big to be easily understandable
 class SymbolicNameCheckerTest {
     @Test
     void walk() {
