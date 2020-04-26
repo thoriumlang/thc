@@ -7,10 +7,10 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.SyntaxErrorListener;
 
-public class ErrorListener extends BaseErrorListener {
+public class LexerErrorListener extends BaseErrorListener {
     private final SyntaxErrorListener listener;
 
-    public ErrorListener(SyntaxErrorListener listener) {
+    public LexerErrorListener(SyntaxErrorListener listener) {
         this.listener = listener;
     }
 
@@ -23,6 +23,15 @@ public class ErrorListener extends BaseErrorListener {
             String msg,
             RecognitionException e
     ) throws ParseCancellationException {
-        listener.onError(new SyntaxError(msg, line));
+        listener.onError(new SyntaxError(
+                msg,
+                line,
+                charPositionInLine,
+                1,
+                recognizer.getInputStream()
+                        .toString()
+                        .split("\n")[line - 1],
+                e
+        ));
     }
 }

@@ -19,7 +19,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.antlr4.ErrorListener;
+import org.thoriumlang.compiler.antlr4.LexerErrorListener;
+import org.thoriumlang.compiler.antlr4.ParserErrorListener;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
@@ -46,7 +47,8 @@ public class AST implements SyntaxErrorListener {
     private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
     private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
-    private final ErrorListener syntaxErrorListener;
+    private final LexerErrorListener syntaxLexerErrorListener;
+    private final ParserErrorListener syntaxParserErrorListener;
     private final SymbolTable symbolTable;
 
     private boolean parsed = false;
@@ -58,7 +60,8 @@ public class AST implements SyntaxErrorListener {
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
-        this.syntaxErrorListener = new ErrorListener(this);
+        this.syntaxLexerErrorListener = new LexerErrorListener(this);
+        this.syntaxParserErrorListener = new ParserErrorListener(this);
         this.symbolTable = symbolTable;
     }
 
@@ -107,8 +110,7 @@ public class AST implements SyntaxErrorListener {
                 )
         );
         parser.removeErrorListeners();
-        parser.addErrorListener(syntaxErrorListener);
-
+        parser.addErrorListener(syntaxParserErrorListener);
         return parser;
     }
 
@@ -120,7 +122,7 @@ public class AST implements SyntaxErrorListener {
                     )
             );
             lexer.removeErrorListeners();
-            lexer.addErrorListener(syntaxErrorListener);
+            lexer.addErrorListener(syntaxLexerErrorListener);
             return lexer;
         }
         catch (IOException e) {

@@ -21,7 +21,6 @@ import org.thoriumlang.compiler.api.CompilationContext;
 import org.thoriumlang.compiler.api.Compiler;
 import org.thoriumlang.compiler.api.NoopCompilationListener;
 import org.thoriumlang.compiler.api.errors.CompilationError;
-import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -64,7 +63,7 @@ class TypeCheckerTest {
                                 ).root().orElseThrow(() -> new IllegalStateException("no root found"))
                         )
                         .stream()
-                        .map(SemanticError::toString)
+                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
         ).containsExactly(
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest (3)",
                 "symbol not found: UnknownSupertype (6)",

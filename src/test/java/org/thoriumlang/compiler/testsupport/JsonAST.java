@@ -93,6 +93,17 @@ public class JsonAST {
 
                             return jsonObject;
                         })
+                .registerTypeAdapter(SemanticError.class,
+                        (JsonSerializer<SemanticError>) (src, typeOfSrc, context) -> {
+                            JsonObject jsonObject = new JsonObject();
+
+                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
+                            jsonObject.add("message", context.serialize(
+                                    src.format((line, column, message) -> String.format("%s (%d)", message, line))
+                            ));
+
+                            return jsonObject;
+                        })
                 .setFieldNamingStrategy(f -> {
                     if (f.getName().equals("types") && f.getDeclaringClass().equals(TypeSpecIntersection.class)) {
                         return "intersectionType";

@@ -22,18 +22,30 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 public class SemanticError implements CompilationError {
     private final Node node;
     private final String message;
+    private final int line;
+    private final int column;
 
     public SemanticError(String message, Node node) {
         this.node = node;
-        this.message = String.format("%s (%d)", message, node.getContext().require(SourcePosition.class).getLine());
+        this.message = message;
+        this.line = node.getContext().require(SourcePosition.class).getLine();
+        this.column = node.getContext().require(SourcePosition.class).getChar();
     }
 
     public Node getNode() {
         return node;
     }
 
+    public String format(SemanticErrorFormatter formatter) {
+        return formatter.format(line, column, message);
+    }
+
     @Override
     public String toString() {
-        return message;
+        return String.format("%s%non line %d, column %d",
+                message,
+                line,
+                column
+        );
     }
 }

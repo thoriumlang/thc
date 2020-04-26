@@ -17,7 +17,6 @@ package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
@@ -47,7 +46,7 @@ class SymbolicNameCheckerTest {
                 new SymbolicNameChecker()
                         .walk(root)
                         .stream()
-                        .map(SemanticError::toString)
+                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
         ).containsExactly(
                 "symbol already defined: someU (9)",
                 "symbol not found: otherValue (10)",
@@ -91,7 +90,7 @@ class SymbolicNameCheckerTest {
                 new SymbolicNameChecker()
                         .walk(root)
                         .stream()
-                        .map(SemanticError::toString)
+                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
         ).containsExactly(
                 "symbol already defined: method1() (3)"
         );

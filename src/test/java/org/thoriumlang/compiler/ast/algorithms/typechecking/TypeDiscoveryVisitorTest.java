@@ -18,7 +18,6 @@ package org.thoriumlang.compiler.ast.algorithms.typechecking;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Class;
@@ -181,7 +180,9 @@ class TypeDiscoveryVisitorTest {
                 )
         ))));
 
-        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream()
+                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+        )
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound (1)");
         Assertions.assertThat(getSymbol(root, "notFound"))
@@ -244,7 +245,9 @@ class TypeDiscoveryVisitorTest {
                 )
         ))));
 
-        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream()
+                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+        )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: Number (1)");
         Assertions.assertThat(getSymbol(root, "Number"))
@@ -279,7 +282,9 @@ class TypeDiscoveryVisitorTest {
                 )
         ))));
 
-        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream()
+                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+        )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: java.lang.String (1)");
         Assertions.assertThat(getSymbol(root, "JavaString1"))
@@ -433,7 +438,9 @@ class TypeDiscoveryVisitorTest {
                 new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
-        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream()
+                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+        )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName (1)");
 
@@ -514,7 +521,9 @@ class TypeDiscoveryVisitorTest {
                 new JavaClass(new NoneValue(nodeIdGenerator.next()), String.class)
         );
 
-        Assertions.assertThat(visitor.visit(root).stream().map(SemanticError::toString))
+        Assertions.assertThat(visitor.visit(root).stream()
+                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+        )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: ClassName (1)");
 

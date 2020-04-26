@@ -30,10 +30,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SyntaxError]"), null))
                 .hasSize(1)
-                .have(new Condition<>(
-                                e -> e.contains("token recognition error at: '~' (2)")
-                                        && e.contains("CompilerTest_error_lexer.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_lexer.th",
+                                "token recognition error at: '~'",
+                                "line 2, column 4"
                         )
                 );
     }
@@ -50,10 +51,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SyntaxError]"), null))
                 .hasSize(1)
-                .have(new Condition<>(
-                                e -> e.contains("token recognition error at: '~' (2)")
-                                        && e.contains("CompilerTest_error_lexer.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_lexer.th",
+                                "token recognition error at: '~'",
+                                "line 2, column 4"
                         )
                 );
     }
@@ -77,10 +79,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SyntaxError]"), null))
                 .hasSize(1)
-                .have(new Condition<>(
-                                e -> e.contains("missing IDENTIFIER at '{' (1)")
-                                        && e.contains("CompilerTest_error_parser.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_parser.th",
+                                "missing IDENTIFIER at '{'",
+                                "line 1"
                         )
                 );
     }
@@ -97,10 +100,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SyntaxError]"), null))
                 .hasSize(1)
-                .haveAtLeastOne(new Condition<>(
-                                e -> e.contains("missing IDENTIFIER at '{' (1)")
-                                        && e.contains("CompilerTest_error_parser.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_parser.th",
+                                "missing IDENTIFIER at '{'",
+                                "line 1, column 5"
                         )
                 );
     }
@@ -117,10 +121,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SemanticError]"), null))
                 .hasSize(1)
-                .haveAtLeastOne(new Condition<>(
-                                e -> e.contains("symbol not found: SuperType (1)")
-                                        && e.contains("CompilerTest_error_semantic.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_semantic.th",
+                                "symbol not found: SuperType",
+                                "line 1, column 35"
                         )
                 );
     }
@@ -137,10 +142,11 @@ public class CompilerTest {
         Assertions.assertThat(compilationErrors)
                 .filteredOn(new Condition<>(e -> e.startsWith("[SemanticError]"), null))
                 .hasSize(1)
-                .haveAtLeastOne(new Condition<>(
-                                e -> e.contains("symbol not found: SuperType (1)")
-                                        && e.contains("CompilerTest_error_semantic.th"),
-                                null
+                .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
+                        .contains(
+                                "CompilerTest_error_semantic.th",
+                                "symbol not found: SuperType",
+                                "line 1, column 35"
                         )
                 );
     }
@@ -183,7 +189,7 @@ public class CompilerTest {
 
         @Override
         public void onError(Source source, CompilationError error) {
-            compilationErrors.add(String.format("[%s] %s: %s",
+            compilationErrors.add(String.format("[%s] %s:%n%s",
                     error.getClass().getSimpleName(), source.toString(), error.toString()
             ));
         }

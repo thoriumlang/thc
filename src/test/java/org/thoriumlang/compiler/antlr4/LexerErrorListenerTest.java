@@ -2,36 +2,37 @@ package org.thoriumlang.compiler.antlr4;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.SyntaxErrorListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class ErrorListenerTest {
+class LexerErrorListenerTest {
     @Test
     void lexer() {
         final List<CompilationError> errors = new ArrayList<>();
         SyntaxErrorListener listener = errors::add;
 
-        ThoriumLexer lexer = new ThoriumLexer(CharStreams.fromString("~?"));
+        ThoriumLexer lexer = new ThoriumLexer(CharStreams.fromString("type Type {~}"));
         lexer.removeErrorListeners();
-        lexer.addErrorListener(new ErrorListener(listener));
+        lexer.addErrorListener(new LexerErrorListener(listener));
 
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         tokenStream.fill();
 
         Assertions.assertThat(tokenStream.getTokens())
-                .hasSize(2) // because of EOF token at the end
-                .haveAtLeastOne(new Condition<>((Token t) -> t.getText().equals("?"), null));
+                .hasSize(5); // they are: ['type', 'Type', '{', '}', <EOF>]
 
         Assertions.assertThat(errors)
                 .hasSize(1)
-                .haveAtLeastOne(new Condition<>((CompilationError e) -> e.toString().equals("token recognition error at: '~' (1)"), null));
+                .extracting(Object::toString)
+                .containsExactly("token recognition error at: '~'\ntype Type {~}\n           ^\non line 1, column 11");
     }
 }

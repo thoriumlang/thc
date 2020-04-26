@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -74,6 +75,9 @@ class CompilerTest {
         Assertions.assertThat(
                 listener.context.errors()
                         .stream()
+                        .filter(e -> e instanceof SemanticError)
+                        .map(e -> (SemanticError) e)
+                        .map(e -> e.format((line, column, message) -> String.format("%s (%d)", message, line)))
                         .map(Object::toString)
                         .collect(Collectors.toList())
         ).containsExactly("ast (-1)");
@@ -170,7 +174,24 @@ class CompilerTest {
 
         @Override
         public void onError(Source source, CompilationError error) {
-            events.add("onError:" + error.toString());
+            if (error instanceof SemanticError) {
+                events.add(
+                        String.format("onError:%s",
+                                ((SemanticError) error)
+                                        .format((line, column, message) ->
+                                                String.format("%s (%d)", message, line))
+                        )
+                );
+            }
+            if (error instanceof SyntaxError) {
+                events.add(
+                        String.format("onError:%s",
+                                ((SyntaxError) error)
+                                        .format((errorLine, line, charPositionInLine, charsCount, message, exception) ->
+                                                String.format("%s (%d)", message, line))
+                        )
+                );
+            }
         }
 
         @Override
