@@ -16,7 +16,7 @@ import java.util.List;
 
 class LexerErrorListenerTest {
     @Test
-    void lexer() {
+    void lexer_defaultConfiguration() {
         final List<CompilationError> errors = new ArrayList<>();
         SyntaxErrorListener listener = errors::add;
 
@@ -34,5 +34,32 @@ class LexerErrorListenerTest {
                 .hasSize(1)
                 .extracting(Object::toString)
                 .containsExactly("token recognition error at: '~'\ntype Type {~}\n           ^\non line 1, column 11");
+    }
+
+    @Test
+    void lexer_keepAllTokens() {
+        final List<CompilationError> errors = new ArrayList<>();
+        SyntaxErrorListener listener = errors::add;
+
+        ThoriumLexer lexer = new ThoriumLexer(
+                CharStreams.fromString("type Type {~}"),
+                new DefaultLexerConfiguration() {
+                    @Override
+                    public boolean keepAllTokens() {
+                        return true;
+                    }
+                }
+        );
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(new LexerErrorListener(listener));
+
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        tokenStream.fill();
+
+        Assertions.assertThat(tokenStream.getTokens())
+                .hasSize(8); // they are: ['type', ' ', 'Type', ' ', '{', '~', '}', <EOF>]
+
+        Assertions.assertThat(errors)
+                .hasSize(0);
     }
 }

@@ -33,8 +33,8 @@ class TypeDefTest {
                         token("Identifier", ThoriumLexer.IDENTIFIER),
                         token("{"),
                         token("}")
-                ).serialize()
-        ).isEqualTo("(root (typeDef type Identifier { }))");
+                ).serialize("typeDef")
+        ).isEqualTo("(typeDef type Identifier { })");
     }
 
     @Test
@@ -54,10 +54,10 @@ class TypeDefTest {
                         token("?"),
                         token("{"),
                         token("}")
-                ).serialize()
-        ).isEqualTo("(root (typeDef type Identifier " +
+                ).serialize("typeDef")
+        ).isEqualTo("(typeDef type Identifier " +
                 "(implementsSpec : (typeSpec (typeSpecIntersection ( (typeSpecUnion (typeSpecSimple (fqIdentifier TA)) & (typeSpecSimple (fqIdentifier TB))) ) | (typeSpecOptional (typeSpecSimple (fqIdentifier TC)) ?)))) " +
-                "{ }))");
+                "{ })");
     }
 
     @Test
@@ -92,11 +92,11 @@ class TypeDefTest {
                         token("None", ThoriumLexer.IDENTIFIER),
                         token(";"),
                         token("}")
-                ).serialize()
-        ).isEqualTo("(root (typeDef type Identifier { " +
+                ).serialize("typeDef")
+        ).isEqualTo("(typeDef type Identifier { " +
                 "(methodSignature public fibonacci ( (methodParameter n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
                 "(methodSignature public square ( (methodParameter n : (typeSpec (typeSpecSimple (fqIdentifier Integer)))) ) : (typeSpec (typeSpecIntersection (typeSpecSimple (fqIdentifier Integer)) | (typeSpecSimple (fqIdentifier None))))) ; " +
-                "}))"
+                "})"
         );
     }
 
@@ -113,7 +113,7 @@ class TypeDefTest {
                         token("]"),
                         token("{"),
                         token("}")
-                ).serialize()
-        ).isEqualTo("(root (typeDef type Identifier [ (typeParameter T , U) ] { }))");
+                ).serialize("typeDef")
+        ).isEqualTo("(typeDef type Identifier [ (typeParameter T , U) ] { })");
     }
 }

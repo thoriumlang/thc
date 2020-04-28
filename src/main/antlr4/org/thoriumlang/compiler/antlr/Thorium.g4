@@ -15,6 +15,22 @@
  */
 grammar Thorium;
 
+@lexer::header {
+import org.thoriumlang.compiler.antlr4.LexerConfiguration;
+import org.thoriumlang.compiler.antlr4.DefaultLexerConfiguration;
+}
+@lexer::members {
+private LexerConfiguration configuration = new DefaultLexerConfiguration();
+public ThoriumLexer(CharStream input, LexerConfiguration configuration) {
+    this(input);
+    this.configuration = configuration;
+}
+
+private boolean keepAllTokens() {
+    return configuration.keepAllTokens();
+}
+}
+
 CLASS : 'class' ;
 TYPE : 'type' ;
 USE : 'use' ;
@@ -32,12 +48,25 @@ THIS : 'this' ;
 NUMBER : ( [0-9][0-9_]* | [0-9][0-9_]*'.'[0-9][0-9_]* ) ( [eE] [+-]? [0-9][0-9_]* )? ;
 STRING : '"' ( ~[\\"\r\n] | '\\"' )* '"' ;
 IDENTIFIER : [a-zA-Z_][0-9a-zA-Z_]* ;
-WS : [ \t\r\n\u000C]+ -> skip ;
-LINE_COMMENT : '//' ~[\r\n]* -> skip ;
-BLOCK_COMMENT : '/*' .*? '*/' -> skip ;
+
+// keepAllTokens must be set to true to make the lexer compatible with org.antlr:antlr4-intellij-adaptor
+// we need to keep all chars so that it can match the position withing the source file
+// see https://github.com/antlr/antlr4-intellij-adaptor/wiki/Getting-started
+// see https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/implementing_lexer.html
+fragment Whitespaces : [ \t\r\n\u000C]+ ;
+WS                 : {keepAllTokens()}?  Whitespaces   -> channel(HIDDEN) ;
+SKIP_WS            : {!keepAllTokens()}? Whitespaces   -> skip ;
+
+fragment LineComment : '//' ~[\r\n]* ;
+LINE_COMMENT       : {keepAllTokens()}?  LineComment   -> channel(HIDDEN) ;
+SKIP_LINE_COMMENT  : {!keepAllTokens()}? LineComment   -> skip ;
+
+fragment BlockComment : '/*' .*? ( '*/' | EOF ) ;
+BLOCK_COMMENT      : {keepAllTokens()}?  BlockComment  -> channel(HIDDEN) ;
+SKIP_BLOCK_COMMENT : {!keepAllTokens()}? BlockComment  -> skip ;
 
 root
-    : use* ( typeDef | classDef )
+    : use* ( typeDef | classDef ) EOF
     ;
 
 fqIdentifier
@@ -166,6 +195,6 @@ methodArguments
     : value ( ',' value )*
     ;
 
-//ERRCHAR
-//    : . -> channel(HIDDEN)
-//    ;
+// make sure we consume all tokens to make org.antlr:antlr4-intellij-adaptor happy
+// see explanation next to the whitespaces / comments lexer rules
+ERRCHAR : . {keepAllTokens()}? -> channel(HIDDEN) ;

@@ -27,6 +27,8 @@ import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.assertj.core.api.Assertions;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
+import org.thoriumlang.compiler.antlr4.DefaultLexerConfiguration;
+import org.thoriumlang.compiler.antlr4.LexerConfiguration;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -35,14 +37,20 @@ import java.util.List;
 
 public class Tokens {
     private final String string;
+    private final LexerConfiguration lexerConfiguration;
+
+    public Tokens(String string, LexerConfiguration lexerConfiguration) {
+        this.string = string;
+        this.lexerConfiguration = lexerConfiguration;
+    }
 
     public Tokens(String string) {
-        this.string = string;
+        this(string, new DefaultLexerConfiguration());
     }
 
     public List<Token> parse() {
         CharStream cStream = CharStreams.fromString(string);
-        ThoriumLexer lexer = new ThoriumLexer(cStream);
+        ThoriumLexer lexer = new ThoriumLexer(cStream, lexerConfiguration);
         lexer.addErrorListener(new ANTLRErrorListener() {
             @Override
             public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
