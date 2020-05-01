@@ -1,14 +1,15 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
+import org.thoriumlang.compiler.data.Maybe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MethodParameterTypes {
@@ -26,17 +27,21 @@ public class MethodParameterTypes {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Node> findBestMatch(Map<Node, List<TypeSpec>> potentialMatches) {
+    public Maybe<Node, SemanticError> findBestMatch(Node node, Map<Node, List<TypeSpec>> potentialMatches) {
         List<Node> matchingNodes = potentialMatches.entrySet().stream()
                 .filter(e -> typesMatch(toListOfString(e.getValue()), parameterTypes))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        if (matchingNodes.size() != 1) {
-            return Optional.empty(); // TODO return an error instead!
+        if (matchingNodes.size() > 1) {
+            return Maybe.failure(new SemanticError("Too many alternatives found", node));
         }
 
-        return Optional.of(matchingNodes.get(0));
+        if (matchingNodes.isEmpty()) {
+            return Maybe.failure(new SemanticError("No alternatives found", node));
+        }
+
+        return Maybe.success(matchingNodes.get(0));
     }
 
     private boolean typesMatch(List<String> left, List<String> right) {

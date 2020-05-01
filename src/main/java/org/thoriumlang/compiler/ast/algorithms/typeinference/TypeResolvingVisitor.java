@@ -37,6 +37,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.data.Maybe;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -139,51 +140,50 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(MethodSignature node) {
-        List<SemanticError> errors = node.getReturnType().accept(this);
+        return Lists.merge(
+                node.getReturnType().accept(this),
+                node.getContext()
+                        .require(Relatives.class)
+                        .parent()
+                        .orElseThrow(() -> new IllegalStateException("no parent found"))
+                        .node()
+                        .accept(new BaseVisitor<List<SemanticError>>() {
+                            @Override
+                            public List<SemanticError> visit(Type parentNode) {
+                                // this is already done in the visit(Method) to infer statements types (and thus return type)
+                                return Lists.merge(
+                                        visitRecursive(node.getTypeParameters()),
+                                        copyTypeSpec(node, node.getReturnType())
+                                );
+                            }
 
-        node.getContext()
-                .require(Relatives.class)
-                .parent()
-                .orElseThrow(() -> new IllegalStateException("no parent found"))
-                .node()
-                .accept(new BaseVisitor<Void>() {
-                    @Override
-                    public Void visit(Type parentNode) {
-                        // this is already done in the visit(Method) to infer statements types (and thus return type)
-                        visitRecursive(node.getTypeParameters());
-                        copyTypeSpec(node, node.getReturnType());
-                        return null;
-                    }
-
-                    @Override
-                    public Void visit(Method parentNode) {
-                        copyTypeSpec(node, parentNode);
-                        return null;
-                    }
-                });
-
-        return errors;
+                            @Override
+                            public List<SemanticError> visit(Method parentNode) {
+                                return copyTypeSpec(node, parentNode);
+                            }
+                        })
+        );
     }
 
     @Override
     public List<SemanticError> visit(Parameter node) {
-        List<SemanticError> errors = node.getType().accept(this);
-
-        copyTypeSpec(node, node.getType());
-
-        return errors;
+        return Lists.merge(
+                node.getType().accept(this),
+                copyTypeSpec(node, node.getType())
+        );
     }
 
-    private void copyTypeSpec(Node to, Node from) {
+    private List<SemanticError> copyTypeSpec(Node to, Node from) {
         if (needsTypeInference(from)) {
-            throw new IllegalStateException(String.format(
-                    "no inferred type found for [ %s ] on [ %s ]", to, from
-            ));
+            // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
+            //  see https://github.com/thoriumlang/thc/issues/72
+            return Collections.singletonList(new SemanticError("Cannot infer type", to));
         }
         to.getContext().put(
                 TypeSpec.class,
                 from.getContext().require(TypeSpec.class)
         );
+        return Collections.emptyList();
     }
 
     private boolean needsTypeInference(Node node) {
@@ -241,23 +241,19 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(IdentifierValue node) {
-        node.getReference().accept(this);
-
-        copyTypeSpec(node, node.getReference());
-
-        return Collections.emptyList();
+        return Lists.merge(
+                node.getReference().accept(this),
+                copyTypeSpec(node, node.getReference())
+        );
     }
 
     @Override
     public List<SemanticError> visit(NewAssignmentValue node) {
-        List<SemanticError> errors = Lists.merge(
+        return Lists.merge(
                 node.getValue().accept(this),
-                node.getType().accept(this)
+                node.getType().accept(this),
+                copyTypeSpec(node, node.getValue())
         );
-
-        copyTypeSpec(node, node.getValue());
-
-        return errors;
     }
 
     @Override
@@ -267,14 +263,18 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
                 node.getReference().accept(this)
         );
 
-        Optional<Node> target = getTargetNode(node.getReference());
+        Maybe<Node, SemanticError> target = getTargetNode(node.getReference());
 
-        if (!target.isPresent()) {
+        if (!target.success()) {
             // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
             //  see https://github.com/thoriumlang/thc/issues/72
-            return Collections.singletonList(new SemanticError("No matching target found", node));
+            return Lists.merge(
+                    errors,
+                    Collections.singletonList(target.error())
+            );
         }
 
+        // TODO this is probably wrong...
         TypeSpec inferredType = target.get().getContext()
                 .get(TypeSpec.class)
                 .orElseThrow(() -> new IllegalStateException("no inferred type found"));
@@ -287,8 +287,10 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
                 )
         );
 
-        copyTypeSpec(node, target.get());
-        return errors;
+        return Lists.merge(
+                errors,
+                copyTypeSpec(node, node.getValue())
+        );
     }
 
     @Override // TODO implement
@@ -298,12 +300,11 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(MethodCallValue node) {
-        List<SemanticError> errors = Lists.merge(
+        return Lists.merge(
                 visitRecursive(node.getMethodArguments()),
-                node.getMethodReference().accept(this)
+                node.getMethodReference().accept(this),
+                copyTypeSpec(node, node.getMethodReference())
         );
-        copyTypeSpec(node, node.getMethodReference());
-        return errors;
     }
 
     @Override // TODO implement
@@ -329,11 +330,10 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
     @Override
     public List<SemanticError> visit(Statement node) {
-        List<SemanticError> errors = node.getValue().accept(this);
-
-        copyTypeSpec(node, node.getValue());
-
-        return errors;
+        return Lists.merge(
+                node.getValue().accept(this),
+                copyTypeSpec(node, node.getValue())
+        );
     }
 
     @Override
@@ -346,99 +346,116 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
                 visitRecursive(node.getStatements())
         );
 
-        node.getContext().put(
-                TypeSpec.class,
-                new TypeSpecIntersection(
-                        nodeIdGenerator.next(),
-                        node.getStatements().stream()
-                                .filter(Statement::isLast)
-                                .map(s -> s.getContext().require(TypeSpec.class))
-                                .collect(Collectors.toList())
-                )
+        if (errors.isEmpty()) {
+            node.getContext().put(
+                    TypeSpec.class,
+                    new TypeSpecIntersection(
+                            nodeIdGenerator.next(),
+                            node.getStatements().stream()
+                                    .filter(Statement::isLast)
+                                    .map(s -> s.getContext().require(TypeSpec.class))
+                                    .collect(Collectors.toList())
+                    )
+            );
+        }
+
+        return Lists.merge(
+                errors,
+                node.getSignature().accept(this)
         );
-
-        node.getSignature().accept(this);
-
-        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Attribute node) {
-        List<SemanticError> errors = Lists.merge(
+        return Lists.merge(
                 node.getValue().accept(this),
-                node.getType().accept(this)
+                node.getType().accept(this),
+                copyTypeSpec(node, node.getValue())
         );
-
-        copyTypeSpec(node, node.getValue());
-
-        return errors;
     }
 
     @Override
     public List<SemanticError> visit(Reference node) {
-        List<SemanticError> errors = Collections.emptyList();
+        Maybe<Node, SemanticError> target = getTargetNode(node);
 
-        Optional<Node> target = getTargetNode(node);
-
-        if (!target.isPresent()) {
+        if (!target.success()) {
             // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
             //  see https://github.com/thoriumlang/thc/issues/72
-            return Collections.singletonList(new SemanticError("No matching target found", node));
+            return Collections.singletonList(target.error());
         }
 
+        List<SemanticError> errors = Collections.emptyList();
         if (needsTypeInference(target.get())) {
             errors = target.get().accept(this);
         }
 
-        copyTypeSpec(node, target.get());
-
-        return errors;
+        return Lists.merge(
+                errors,
+                copyTypeSpec(node, target.get())
+        );
     }
 
-    private Optional<Node> getTargetNode(Reference node) {
+    private Maybe<Node, SemanticError> getTargetNode(Reference node) {
+        // TODO save found node
         List<Node> targetNodes = getTargetNodes(node);
-        return Optional.ofNullable(node
-                .getContext()
-                .require(Relatives.class)
-                .parent()
-                .orElseThrow(() -> new IllegalStateException("no parent found"))
-                .node()
-                .accept(new BaseVisitor<Optional<Node>>() {
-                    @Override
-                    public Optional<Node> visit(MethodCallValue node) {
-                        return new MethodParameterTypes(
-                                node.getMethodArguments().stream()
-                                        .map(p -> p.getContext().require(TypeSpec.class))
-                                        .collect(Collectors.toList())
-                        ).findBestMatch(toTypeMatcherMap());
-                    }
 
-                    private Map<Node, List<TypeSpec>> toTypeMatcherMap() {
-                        return targetNodes.stream()
-                                .collect(Collectors.toMap(
-                                        n -> n,
-                                        n -> n.accept(new BaseVisitor<List<TypeSpec>>() {
-                                            @Override
-                                            public List<TypeSpec> visit(MethodSignature node) {
-                                                return node.getParameters().stream()
-                                                        .map(Parameter::getType)
-                                                        .collect(Collectors.toList());
-                                            }
+        Maybe<Node, SemanticError> targetNode = Optional.ofNullable(
+                node
+                        .getContext()
+                        .require(Relatives.class)
+                        .parent()
+                        .orElseThrow(() -> new IllegalStateException("no parent found"))
+                        .node()
+                        .accept(new BaseVisitor<Maybe<Node, SemanticError>>() {
+                            @Override
+                            public Maybe<Node, SemanticError> visit(MethodCallValue node) {
+                                return new MethodParameterTypes(
+                                        node.getMethodArguments().stream()
+                                                .map(p -> p.getContext().require(TypeSpec.class))
+                                                .collect(Collectors.toList())
+                                ).findBestMatch(node, toTypeMatcherMap());
+                            }
 
-                                            @Override
-                                            public List<TypeSpec> visit(Method node) {
-                                                return node.getSignature().accept(this);
-                                            }
-                                        })
-                                ));
-                    }
-                })
+                            private Map<Node, List<TypeSpec>> toTypeMatcherMap() {
+                                return targetNodes.stream()
+                                        .collect(Collectors.toMap(
+                                                n -> n,
+                                                n -> n.accept(new BaseVisitor<List<TypeSpec>>() {
+                                                    @Override
+                                                    public List<TypeSpec> visit(MethodSignature node) {
+                                                        return node.getParameters().stream()
+                                                                .map(Parameter::getType)
+                                                                .collect(Collectors.toList());
+                                                    }
+
+                                                    @Override
+                                                    public List<TypeSpec> visit(Method node) {
+                                                        return node.getSignature().accept(this);
+                                                    }
+                                                })
+                                        ));
+                            }
+                        })
         ).orElseGet(() -> {
-            if (targetNodes.size() != 1) {
-                throw new IllegalStateException(String.format("found %d targetNodes, expected 1", targetNodes.size()));
+            if (targetNodes.size() > 1) {
+                return Maybe.failure(new SemanticError("Too many alternatives found", node));
             }
-            return Optional.of(targetNodes.get(0));
+
+            if (targetNodes.isEmpty()) {
+                return Maybe.failure(new SemanticError("No alternatives found", node));
+            }
+
+            return Maybe.success(targetNodes.get(0));
         });
+
+        if (targetNode.success() && targetNodes.size() > 1) {
+            node.getContext().put(
+                    ReferencedNode.class,
+                    new ReferencedNode(Collections.singletonList(targetNode.get()))
+            );
+        }
+
+        return targetNode;
     }
 
     private List<Node> getTargetNodes(Reference node) {
