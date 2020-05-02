@@ -53,17 +53,21 @@ IDENTIFIER : [a-zA-Z_][0-9a-zA-Z_]* ;
 // we need to keep all chars so that it can match the position withing the source file
 // see https://github.com/antlr/antlr4-intellij-adaptor/wiki/Getting-started
 // see https://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support/implementing_lexer.html
-fragment Whitespaces : [ \t\r\n\u000C]+ ;
-WS                 : {keepAllTokens()}?  Whitespaces   -> channel(HIDDEN) ;
-SKIP_WS            : {!keepAllTokens()}? Whitespaces   -> skip ;
+fragment Whitespaces  : [ \t\r\n\f]+ ;
+WS                    : {keepAllTokens()}?  Whitespaces   -> channel(HIDDEN) ;
+SKIP_WS               : {!keepAllTokens()}? Whitespaces   -> skip ;
 
-fragment LineComment : '//' ~[\r\n]* ;
-LINE_COMMENT       : {keepAllTokens()}?  LineComment   -> channel(HIDDEN) ;
-SKIP_LINE_COMMENT  : {!keepAllTokens()}? LineComment   -> skip ;
+fragment DocComment   : '/**' .*? ( '*/' | EOF ) ;
+DOC_COMMENT           : {keepAllTokens()}?  DocComment    -> channel(HIDDEN) ;
+SKIP_DOC_COMMENT      : {!keepAllTokens()}? DocComment    -> skip ;
 
 fragment BlockComment : '/*' .*? ( '*/' | EOF ) ;
-BLOCK_COMMENT      : {keepAllTokens()}?  BlockComment  -> channel(HIDDEN) ;
-SKIP_BLOCK_COMMENT : {!keepAllTokens()}? BlockComment  -> skip ;
+BLOCK_COMMENT         : {keepAllTokens()}?  BlockComment  -> channel(HIDDEN) ;
+SKIP_BLOCK_COMMENT    : {!keepAllTokens()}? BlockComment  -> skip ;
+
+fragment LineComment  : '//' ~[\r\n]* ;
+LINE_COMMENT          : {keepAllTokens()}?  LineComment   -> channel(HIDDEN) ;
+SKIP_LINE_COMMENT     : {!keepAllTokens()}? LineComment   -> skip ;
 
 root
     : use* ( typeDef | classDef ) EOF

@@ -64,6 +64,46 @@ class CommentTest {
                 .extracting(Token::getType, Token::getText)
                 .containsExactly(ThoriumLexer.BLOCK_COMMENT, "/* \n ... 1");
     }
+
+    @Test
+    void doc() {
+        List<Token> tokens = new Tokens("/** \n */ 1", new DefaultLexerConfiguration() {
+            @Override
+            public boolean keepAllTokens() {
+                return true;
+            }
+        }).parse();
+
+        Assertions.assertThat(tokens)
+                .hasSize(3);
+
+        Assertions.assertThat(tokens)
+                .element(0)
+                .extracting(Token::getType, Token::getText)
+                .containsExactly(ThoriumLexer.DOC_COMMENT, "/** \n */");
+        Assertions.assertThat(tokens)
+                .element(1)
+                .extracting(Token::getType, Token::getText)
+                .containsExactly(ThoriumLexer.WS, " ");
+        Assertions.assertThat(tokens)
+                .element(2)
+                .extracting(Token::getType, Token::getText)
+                .containsExactly(ThoriumLexer.NUMBER, "1");
+    }
+
+    @Test
+    void docOpen() {
+        Assertions.assertThat(new Tokens("/** \n ... 1", new DefaultLexerConfiguration() {
+            @Override
+            public boolean keepAllTokens() {
+                return true;
+            }
+        }).parse())
+                .hasSize(1)
+                .element(0)
+                .extracting(Token::getType, Token::getText)
+                .containsExactly(ThoriumLexer.DOC_COMMENT, "/** \n ... 1");
+    }
 }
 
 
