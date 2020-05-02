@@ -200,8 +200,8 @@ class CompilerTest {
                 events.add(
                         String.format("onError:%s",
                                 ((SyntaxError) error)
-                                        .format((errorLine, line, charPositionInLine, charsCount, message, exception) ->
-                                                String.format("%s (%d)", message, line))
+                                        .format((sourcePosition, message, exception) ->
+                                                String.format("%s (%d)", message, sourcePosition.getStartLine()))
                         )
                 );
             }

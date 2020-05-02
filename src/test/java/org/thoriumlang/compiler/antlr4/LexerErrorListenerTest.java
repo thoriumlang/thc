@@ -4,10 +4,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
-import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.SyntaxErrorListener;
 
@@ -33,7 +30,9 @@ class LexerErrorListenerTest {
         Assertions.assertThat(errors)
                 .hasSize(1)
                 .extracting(Object::toString)
-                .containsExactly("token recognition error at: '~'\ntype Type {~}\n           ^\non line 1, column 11");
+                .containsExactly(
+                        "token recognition error at: '~'\n  1. type Type {~}\n                ^\non line 1, column 12"
+                );
     }
 
     @Test

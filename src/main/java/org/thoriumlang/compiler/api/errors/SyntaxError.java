@@ -1,39 +1,34 @@
 package org.thoriumlang.compiler.api.errors;
 
-import com.google.common.base.Strings;
 import org.antlr.v4.runtime.RecognitionException;
+import org.thoriumlang.compiler.ast.context.SourcePosition;
+
+import java.util.Collections;
 
 public class SyntaxError implements CompilationError {
+    private static final SyntaxErrorFormatter DEFAULT_FORMATTER = new DefaultErrorFormatter();
+
+    private final SourcePosition sourcePosition;
     private final String message;
-    private final int line;
-    private final int column;
-    private final int charsCount;
-    private final String errorLine;
     private final RecognitionException exception;
 
     public SyntaxError(String message, int line, int column, int charsCount, String errorLine,
                        RecognitionException exception) {
+        this.sourcePosition = new SourcePosition(
+                new SourcePosition.Position(line, column + 1),
+                new SourcePosition.Position(line, column + 1 + charsCount),
+                Collections.singletonList(errorLine)
+        );
         this.message = message;
-        this.line = line;
-        this.column = column;
-        this.charsCount = charsCount;
-        this.errorLine = errorLine;
         this.exception = exception;
     }
 
     public String format(SyntaxErrorFormatter formatter) {
-        return formatter.format(errorLine, line, column, charsCount, message, exception);
+        return formatter.format(sourcePosition, message, exception);
     }
 
     @Override
     public String toString() {
-        return String.format("%s%n%s%n%s%s%non line %d, column %d",
-                message,
-                errorLine,
-                Strings.repeat(" ", column),
-                Strings.repeat("^", charsCount),
-                line,
-                column
-        );
+        return format(DEFAULT_FORMATTER);
     }
 }

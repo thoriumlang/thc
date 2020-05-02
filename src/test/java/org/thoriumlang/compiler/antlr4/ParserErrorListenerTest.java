@@ -12,8 +12,8 @@ import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.SyntaxErrorListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 
 class ParserErrorListenerTest {
     @AfterEach
@@ -25,24 +25,34 @@ class ParserErrorListenerTest {
     @ValueSource(strings = {
             "type Type {%" +
                     "mismatched input '<EOF>' expecting {'}', 'public', 'namespace', IDENTIFIER}\n" +
-                    "type Type {\n" +
-                    "           ^\n" +
-                    "on line 1, column 11",
+                    "  1. type Type {\n" +
+                    "                ^\n" +
+                    "on line 1, column 12",
             "type type Type {}%" +
                     "extraneous input 'type' expecting IDENTIFIER\n" +
-                    "type type Type {}\n" +
-                    "     ^^^^\n" +
-                    "on line 1, column 5",
+                    "  1. type type Type {}\n" +
+                    "          ^^^^\n" +
+                    "on line 1, column 6",
             "type Type[T {}%" +
                     "missing ']' at '{'\n" +
-                    "type Type[T {}\n" +
-                    "            ^\n" +
-                    "on line 1, column 12",
-            // TODO no viable alternative
-            "type Type {} stuff%extraneous input 'stuff' expecting <EOF>\n" +
-                    "type Type {} stuff\n" +
-                    "             ^^^^^\n" +
+                    "  1. type Type[T {}\n" +
+                    "                 ^\n" +
                     "on line 1, column 13",
+            "class Class { method() { other(\"String\" } }%" +
+                    "no viable alternative at input 'other(\"String\"}'\n" +
+                    "  1. class Class { method() { other(\"String\" } }\n" +
+                    "                                             ^\n" +
+                    "on line 1, column 41" +
+                    "%" +
+                    "mismatched input '}' expecting ')'\n" +
+                    "  1. class Class { method() { other(\"String\" } }\n" +
+                    "                                             ^\n" +
+                    "on line 1, column 41",
+            "type Type {} stuff%" +
+                    "extraneous input 'stuff' expecting <EOF>\n" +
+                    "  1. type Type {} stuff\n" +
+                    "                  ^^^^^\n" +
+                    "on line 1, column 14",
     })
     void parser_withoutDebug(String string) {
         final List<CompilationError> errors = new ArrayList<>();
@@ -62,33 +72,37 @@ class ParserErrorListenerTest {
         parser.root();
 
         Assertions.assertThat(errors)
-                .hasSize(1)
                 .extracting(Object::toString)
-                .containsExactly(parts[1]);
+                .containsExactly(
+                        Arrays.asList(parts)
+                                .subList(1, parts.length)
+                                .toArray(new String[]{})
+                );
     }
 
-    @ParameterizedTest
+    @ParameterizedTest()
     @ValueSource(strings = {
             "type Type {%" +
                     "mismatched input '<EOF>' expecting {'}', 'public', 'namespace', IDENTIFIER}\n" +
-                    "type Type {\n" +
-                    "           ^\n" +
-                    "on line 1, column 11",
+                    "  1. type Type {\n" +
+                    "                ^\n" +
+                    "on line 1, column 12",
             "type type Type {}%" +
                     "extraneous input 'type' expecting IDENTIFIER\n" +
-                    "type type Type {}\n" +
-                    "     ^^^^\n" +
-                    "on line 1, column 5",
+                    "  1. type type Type {}\n" +
+                    "          ^^^^\n" +
+                    "on line 1, column 6",
             "type Type[T {}%" +
                     "missing ']' at '{'\n" +
-                    "type Type[T {}\n" +
-                    "            ^\n" +
-                    "on line 1, column 12",
-            // no viable alternative
-            "type Type {} stuff%extraneous input 'stuff' expecting <EOF>\n" +
-                    "type Type {} stuff\n" +
-                    "             ^^^^^\n" +
+                    "  1. type Type[T {}\n" +
+                    "                 ^\n" +
                     "on line 1, column 13",
+            // no viable alternative
+            "type Type {} stuff%" +
+                    "extraneous input 'stuff' expecting <EOF>\n" +
+                    "  1. type Type {} stuff\n" +
+                    "                  ^^^^^\n" +
+                    "on line 1, column 14",
     })
     void parser_withoutDebugKeepAllTokens(String string) {
         final List<CompilationError> errors = new ArrayList<>();
@@ -126,26 +140,27 @@ class ParserErrorListenerTest {
             "type Type {%" +
                     "mismatched input '<EOF>' expecting {'}', 'public', 'namespace', IDENTIFIER}\n" +
                     "parser stack: [root, typeDef]\n" +
-                    "type Type {\n" +
-                    "           ^\n" +
-                    "on line 1, column 11",
+                    "  1. type Type {\n" +
+                    "                ^\n" +
+                    "on line 1, column 12",
             "type type Type {}%" +
                     "extraneous input 'type' expecting IDENTIFIER\n" +
                     "parser stack: [root, typeDef]\n" +
-                    "type type Type {}\n" +
-                    "     ^^^^\n" +
-                    "on line 1, column 5",
+                    "  1. type type Type {}\n" +
+                    "          ^^^^\n" +
+                    "on line 1, column 6",
             "type Type[T {}%" +
                     "missing ']' at '{'\n" +
                     "parser stack: [root, typeDef]\n" +
-                    "type Type[T {}\n" +
-                    "            ^\n" +
-                    "on line 1, column 12",
-            "type Type {} stuff%extraneous input 'stuff' expecting <EOF>\n" +
-                    "parser stack: [root]\n" +
-                    "type Type {} stuff\n" +
-                    "             ^^^^^\n" +
+                    "  1. type Type[T {}\n" +
+                    "                 ^\n" +
                     "on line 1, column 13",
+            "type Type {} stuff%" +
+                    "extraneous input 'stuff' expecting <EOF>\n" +
+                    "parser stack: [root]\n" +
+                    "  1. type Type {} stuff\n" +
+                    "                  ^^^^^\n" +
+                    "on line 1, column 14",
             // no viable alternative
     })
     void parser_withDebug(String string) {

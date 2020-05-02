@@ -34,7 +34,7 @@ public class CompilerTest {
                         .contains(
                                 "CompilerTest_error_lexer.th",
                                 "token recognition error at: '~'",
-                                "line 2, column 4"
+                                "line 2, column 5"
                         )
                 );
     }
@@ -55,7 +55,7 @@ public class CompilerTest {
                         .contains(
                                 "CompilerTest_error_lexer.th",
                                 "token recognition error at: '~'",
-                                "line 2, column 4"
+                                "line 2, column 5"
                         )
                 );
     }
@@ -104,7 +104,7 @@ public class CompilerTest {
                         .contains(
                                 "CompilerTest_error_parser.th",
                                 "missing IDENTIFIER at '{'",
-                                "line 1, column 5"
+                                "line 1, column 6"
                         )
                 );
     }
