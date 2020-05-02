@@ -4,15 +4,14 @@ import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
-import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.DirectAssignmentValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
-import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Statement;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
+import org.thoriumlang.compiler.ast.predicates.NodePredicates;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
@@ -34,24 +33,6 @@ public class TypeResolver implements Algorithm {
     public TypeResolver(NodeIdGenerator nodeIdGenerator) {
         this.nodeIdGenerator = nodeIdGenerator;
         this.typeFlatteningVisitor = new TypeFlatteningVisitor(nodeIdGenerator);
-    }
-
-    private static Boolean isDirectAssignmentValue(Node node) { // TODO extract to NodeFilters?
-        return node.accept(new PredicateVisitor() {
-            @Override
-            public Boolean visit(DirectAssignmentValue node) {
-                return true;
-            }
-        });
-    }
-
-    private static Boolean isAttribute(Node node) { // TODO extract to NodeFilters?
-        return node.accept(new PredicateVisitor() {
-            @Override
-            public Boolean visit(Attribute node) {
-                return true;
-            }
-        });
     }
 
     public static Predicate<SemanticError> distinctByKey(Function<? super SemanticError, ?> keyExtractor) {
@@ -91,7 +72,7 @@ public class TypeResolver implements Algorithm {
     }
 
     private void removeNoneFomInferredTypeOfAttributesAssignedInAllConstructors(Root root) {
-        if (toplevelIsClass(root.getTopLevelNode())) {
+        if (NodePredicates.isClass(root.getTopLevelNode())) {
             List<List<Attribute>> attributesSetInConstructors = constructors(root).stream()
                     .map(this::attributesAssignedInMethod)
                     .collect(Collectors.toList());
@@ -105,14 +86,6 @@ public class TypeResolver implements Algorithm {
         }
     }
 
-    private boolean toplevelIsClass(Node topLevelNode) {
-        return topLevelNode.accept(new PredicateVisitor() {
-            @Override
-            public Boolean visit(Class node) {
-                return true;
-            }
-        });
-    }
 
     @SuppressWarnings("unchecked") // the nodes that are returned by the NodeMatchingVisitor are all instances of Method
     private List<Method> constructors(Root root) {
@@ -135,17 +108,17 @@ public class TypeResolver implements Algorithm {
     private List<Attribute> attributesAssignedInMethod(Method method) {
         return method.getStatements().stream()
                 .map(Statement::getValue)
-                .filter(TypeResolver::isDirectAssignmentValue)
+                .filter(NodePredicates::isDirectAssignmentValue)
                 .map(n -> (DirectAssignmentValue) n)
                 .map(a -> a.getReference().getContext().require(ReferencedNode.class).nodes().get(0))
-                .filter(TypeResolver::isAttribute)
+                .filter(NodePredicates::isAttribute)
                 .map(n -> (Attribute) n)
                 .collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked") // the nodes that are returned by the NodeMatchingVisitor are all instances of Method
     private List<Attribute> attributes(Root root) {
-        return (List<Attribute>) (List<?>) new NodesMatchingVisitor(TypeResolver::isAttribute).visit(root);
+        return (List<Attribute>) (List<?>) new NodesMatchingVisitor(NodePredicates::isAttribute).visit(root);
     }
 
     /**

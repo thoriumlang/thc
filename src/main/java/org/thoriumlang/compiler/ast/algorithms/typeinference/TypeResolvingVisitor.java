@@ -36,8 +36,8 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
+import org.thoriumlang.compiler.ast.predicates.NodePredicates;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.data.Maybe;
@@ -197,12 +197,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     private boolean needsTypeInference(Node node) {
         return node.getContext()
                 .get(TypeSpec.class)
-                .map(t -> t.accept(new PredicateVisitor() {
-                    @Override
-                    public Boolean visit(TypeSpecInferred node) {
-                        return true;
-                    }
-                }))
+                .map(NodePredicates::isTypeSpecInferred)
                 .orElse(true);
     }
 
