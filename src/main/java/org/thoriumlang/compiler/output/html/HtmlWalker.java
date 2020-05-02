@@ -161,8 +161,8 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
                 .with("nodeId", formatNodeId(node))
                 .with("nodeKind", node.getClass().getSimpleName())
                 .with("hasErrors", compilationErrors.containsKey(node))
-                .with("line", sourcePosition.map(p -> String.valueOf(p.getLine())).orElse("?"))
-                .with("char", sourcePosition.map(p -> String.valueOf(p.getChar())).orElse("?"));
+                .with("line", sourcePosition.map(p -> String.valueOf(p.getStartLine())).orElse("?"))
+                .with("char", sourcePosition.map(p -> String.valueOf(p.getStartColumn())).orElse("?"));
     }
 
     private String formatNodeId(Node node) {

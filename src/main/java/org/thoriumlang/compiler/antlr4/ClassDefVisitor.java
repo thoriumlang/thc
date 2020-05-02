@@ -73,7 +73,8 @@ class ClassDefVisitor extends ThoriumBaseVisitor<Class> {
                                         .map(a -> a.accept(attributeDefVisitor))
                                         .collect(Collectors.toList())
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 

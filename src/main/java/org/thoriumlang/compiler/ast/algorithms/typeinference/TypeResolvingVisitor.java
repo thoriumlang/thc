@@ -384,19 +384,13 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
             return Collections.singletonList(target.error());
         }
 
-        List<SemanticError> errors = Collections.emptyList();
-        if (needsTypeInference(target.get())) {
-            errors = target.get().accept(this);
-        }
-
         return Lists.merge(
-                errors,
+                needsTypeInference(target.get()) ? target.get().accept(this) : Collections.emptyList(),
                 copyTypeSpec(node, target.get())
         );
     }
 
     private Maybe<Node, SemanticError> getTargetNode(Reference node) {
-        // TODO save found node
         List<Node> targetNodes = getTargetNodes(node);
 
         Maybe<Node, SemanticError> targetNode = Optional.ofNullable(

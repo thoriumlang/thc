@@ -21,6 +21,10 @@ import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class TypeResolver implements Algorithm {
@@ -50,6 +54,11 @@ public class TypeResolver implements Algorithm {
         });
     }
 
+    public static Predicate<SemanticError> distinctByKey(Function<? super SemanticError, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
     @Override
     public List<SemanticError> walk(Root root) {
         List<SemanticError> errors = new TypeResolvingVisitor(nodeIdGenerator).visit(root);
@@ -57,13 +66,19 @@ public class TypeResolver implements Algorithm {
         if (!errors.isEmpty()) {
             // TODO better error handing, should we try to flatten before?
             //  see https://github.com/thoriumlang/thc/issues/72
-            return errors;
+            return removeDuplicateErrors(errors);
         }
 
         flattenInferredTypes(root);
         removeNoneFomInferredTypeOfAttributesAssignedInAllConstructors(root);
 
         return Collections.emptyList();
+    }
+
+    private List<SemanticError> removeDuplicateErrors(List<SemanticError> errors) {
+        return errors.stream()
+                .filter(distinctByKey(SemanticError::getNode))
+                .collect(Collectors.toList());
     }
 
     private void flattenInferredTypes(Root root) {

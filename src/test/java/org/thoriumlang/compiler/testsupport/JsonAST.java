@@ -99,7 +99,7 @@ public class JsonAST {
 
                             jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
                             jsonObject.add("message", context.serialize(
-                                    src.format((line, column, message) -> String.format("%s (%d)", message, line))
+                                    src.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine()))
                             ));
 
                             return jsonObject;

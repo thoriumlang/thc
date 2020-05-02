@@ -49,6 +49,7 @@ class TypeParameterVisitor extends ThoriumBaseVisitor<List<TypeParameter>> {
                                 nodeIdGenerator.next(),
                                 i.getSymbol().getText()
                         ),
+                        i.getSymbol(),
                         i.getSymbol()
                 ))
                 .collect(Collectors.toList());

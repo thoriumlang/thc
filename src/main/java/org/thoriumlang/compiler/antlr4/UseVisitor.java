@@ -46,7 +46,8 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                                         nodeIdGenerator.next(),
                                         fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER()) + ".*"
                                 ),
-                                ctx.start
+                                ctx.start,
+                                ctx.stop
                         )
                 );
             }
@@ -64,7 +65,8 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                                     nodeIdGenerator.next(),
                                     fqIdentifier(ctx.baseFqIdentifier.IDENTIFIER())
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     )
             );
         }
@@ -77,7 +79,8 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                                     fqIdentifier(ctx.useAs().get(0).fqIdentifier().IDENTIFIER()),
                                     ctx.useAs().get(0).alias.getText()
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     )
             );
         }
@@ -102,7 +105,8 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                             ),
                             ctx.alias.getText()
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
         return sourceSourcePositionProvider.provide(
@@ -113,7 +117,8 @@ class UseVisitor extends ThoriumBaseVisitor<List<Use>> {
                                 fqIdentifier(ctx.fqIdentifier().IDENTIFIER())
                         )
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 }

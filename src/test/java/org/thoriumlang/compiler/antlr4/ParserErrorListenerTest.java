@@ -38,7 +38,7 @@ class ParserErrorListenerTest {
                     "type Type[T {}\n" +
                     "            ^\n" +
                     "on line 1, column 12",
-            // no viable alternative
+            // TODO no viable alternative
             "type Type {} stuff%extraneous input 'stuff' expecting <EOF>\n" +
                     "type Type {} stuff\n" +
                     "             ^^^^^\n" +

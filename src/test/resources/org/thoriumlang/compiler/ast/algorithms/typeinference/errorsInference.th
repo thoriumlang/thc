@@ -1,0 +1,35 @@
+class errorsInference {
+    method() {
+        val assert_Error_1 = numberMethod("String");
+    }
+
+    numberMethod(n: Number) {}
+}
+/*ERRORS
+No alternatives found
+  3.         val assert_Error_1 = numberMethod("String");
+                                  ^^^^^^^^^^^^^^^^^^^^^^
+on line 3, column 30
+
+
+
+Cannot infer type
+  3.         val assert_Error_1 = numberMethod("String");
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+on line 3, column 9
+
+
+
+Cannot infer type
+  3.         val assert_Error_1 = numberMethod("String");
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+on line 3, column 9
+
+
+
+Cannot infer type
+  2.     method() {
+         ^^^^^^^^^^ °°°
+  3.         val assert_Error_1 = numberMethod("String");
+  4.     }
+on line 2, column 5

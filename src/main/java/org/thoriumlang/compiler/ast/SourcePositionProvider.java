@@ -18,5 +18,5 @@ package org.thoriumlang.compiler.ast;
 import org.thoriumlang.compiler.ast.nodes.Node;
 
 public interface SourcePositionProvider<S> {
-    <T extends Node> T provide(T node, S source);
+    <T extends Node> T provide(T node, S firstToken, S lastToken);
 }

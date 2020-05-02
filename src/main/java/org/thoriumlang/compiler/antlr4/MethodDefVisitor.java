@@ -75,11 +75,13 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                         ctx.typeSpec() == null ?
                                                 sourcePositionProvider.provide(
                                                         new TypeSpecInferred(nodeIdGenerator.next()),
-                                                        ctx.start
+                                                        ctx.start,
+                                                        ctx.stop
                                                 ) :
                                                 ctx.typeSpec().accept(typeSpecVisitor)
                                 ),
-                                ctx.start
+                                ctx.start,
+                                ctx.stop
                         ),
                         Lists.append(
                                 Lists.withoutLast(ctx.statement()).stream()
@@ -90,7 +92,8 @@ class MethodDefVisitor extends ThoriumBaseVisitor<Method> {
                                         .orElse(statementVisitorForLast.none(ctx.start))
                         )
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 

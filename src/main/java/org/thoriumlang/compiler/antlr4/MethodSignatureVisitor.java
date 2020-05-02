@@ -62,7 +62,8 @@ class MethodSignatureVisitor extends ThoriumBaseVisitor<MethodSignature> {
                                 .collect(Collectors.toList()),
                         ctx.returnType.accept(typeSpecVisitor)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 

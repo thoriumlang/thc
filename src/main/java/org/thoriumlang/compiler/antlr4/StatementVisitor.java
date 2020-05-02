@@ -54,7 +54,8 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
                         ctx.value().accept(valueVisitor),
                         last || isReturnStatement(ctx)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -68,10 +69,12 @@ class StatementVisitor extends ThoriumBaseVisitor<Statement> {
                         nodeIdGenerator.next(),
                         sourcePositionProvider.provide(
                                 new NoneValue(nodeIdGenerator.next()),
+                                start,
                                 start
                         ),
                         true
                 ),
+                start,
                 start
         );
     }

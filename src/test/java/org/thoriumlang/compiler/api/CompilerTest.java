@@ -77,7 +77,7 @@ class CompilerTest {
                         .stream()
                         .filter(e -> e instanceof SemanticError)
                         .map(e -> (SemanticError) e)
-                        .map(e -> e.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                        .map(e -> e.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
                         .map(Object::toString)
                         .collect(Collectors.toList())
         ).containsExactly("ast (-1)");
@@ -126,7 +126,14 @@ class CompilerTest {
                         "ast",
                         new NodeStub()
                                 .getContext()
-                                .put(SourcePosition.class, new SourcePosition(-1, -1))
+                                .put(
+                                        SourcePosition.class,
+                                        new SourcePosition(
+                                                new SourcePosition.Position(-1, -1),
+                                                new SourcePosition.Position(-1, -1),
+                                                Collections.singletonList("")
+                                        )
+                                )
                                 .getNode()
                 ));
             }
@@ -141,7 +148,14 @@ class CompilerTest {
                     "plugin",
                     new NodeStub()
                             .getContext()
-                            .put(SourcePosition.class, new SourcePosition(-1, -1))
+                            .put(
+                                    SourcePosition.class,
+                                    new SourcePosition(
+                                            new SourcePosition.Position(-1, -1),
+                                            new SourcePosition.Position(-1, -1),
+                                            Collections.singletonList("")
+                                    )
+                            )
                             .getNode()
             ));
         }
@@ -178,8 +192,7 @@ class CompilerTest {
                 events.add(
                         String.format("onError:%s",
                                 ((SemanticError) error)
-                                        .format((line, column, message) ->
-                                                String.format("%s (%d)", message, line))
+                                        .format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine()))
                         )
                 );
             }

@@ -54,12 +54,14 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                             ctx.value() == null ?
                                     sourcePositionProvider.provide(
                                             new NoneValue(nodeIdGenerator.next()),
-                                            ctx.start
+                                            ctx.start,
+                                            ctx.stop
                                     ) :
                                     ctx.value().accept(valueVisitor),
                             Mode.VAR
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -70,18 +72,21 @@ class AttributeDefVisitor extends ThoriumBaseVisitor<Attribute> {
                         ctx.typeSpec() == null ?
                                 sourcePositionProvider.provide(
                                         new TypeSpecInferred(nodeIdGenerator.next()),
-                                        ctx.start
+                                        ctx.start,
+                                        ctx.stop
                                 ) :
                                 ctx.typeSpec().accept(typeSpecVisitor),
                         ctx.value() == null ?
                                 sourcePositionProvider.provide(
                                         new NoneValue(nodeIdGenerator.next()),
-                                        ctx.start
+                                        ctx.start,
+                                        ctx.stop
                                 ) :
                                 ctx.value().accept(valueVisitor),
                         Mode.VAL
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 }

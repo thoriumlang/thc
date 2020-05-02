@@ -45,7 +45,8 @@ class MethodParameterVisitor extends ThoriumBaseVisitor<Parameter> {
                         ctx.IDENTIFIER().getSymbol().getText(),
                         ctx.typeSpec().accept(typeSpecVisitor)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 }

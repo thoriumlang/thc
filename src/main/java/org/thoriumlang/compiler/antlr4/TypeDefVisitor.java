@@ -62,7 +62,8 @@ class TypeDefVisitor extends ThoriumBaseVisitor<Type> {
                                 .map(method -> method.accept(methodSignatureVisitor))
                                 .collect(Collectors.toList())
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 

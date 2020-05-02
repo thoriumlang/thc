@@ -140,20 +140,41 @@ class TypeFlatteningVisitorTest {
                                 nodeIdGenerator.next(),
                                 "TD",
                                 Collections.emptyList()
-                        ).getContext().put(SourcePosition.class, new SourcePosition(2, 0)).getNode(),
+                        ).getContext().put(
+                                SourcePosition.class,
+                                new SourcePosition(
+                                        new SourcePosition.Position(2,1),
+                                        new SourcePosition.Position(2,1),
+                                        Collections.singletonList("")
+                                )
+                        ).getNode(),
                         (TypeSpecSimple) new TypeSpecSimple(
                                 nodeIdGenerator.next(),
                                 "TE",
                                 Collections.emptyList()
-                        ).getContext().put(SourcePosition.class, new SourcePosition(3, 0)).getNode()
+                        ).getContext().put(
+                                SourcePosition.class,
+                                new SourcePosition(
+                                        new SourcePosition.Position(3,1),
+                                        new SourcePosition.Position(3,1),
+                                        Collections.singletonList("")
+                                )
+                        ).getNode()
                 )
-        ).getContext().put(SourcePosition.class, new SourcePosition(1, 0)).getNode();
+        ).getContext().put(
+                SourcePosition.class,
+                new SourcePosition(
+                        new SourcePosition.Position(1,1),
+                        new SourcePosition.Position(1,1),
+                        Collections.singletonList("")
+                )
+        ).getNode();
 
         Node flattened = spec.accept(visitor);
 
         Assertions.assertThat(flattened.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
-                .isEqualTo("1:0");
+                .isEqualTo("1:1");
     }
 
     @Test
@@ -166,20 +187,41 @@ class TypeFlatteningVisitorTest {
                                 nodeIdGenerator.next(),
                                 "TD",
                                 Collections.emptyList()
-                        ).getContext().put(SourcePosition.class, new SourcePosition(2, 0)).getNode(),
+                        ).getContext().put(
+                                SourcePosition.class,
+                                new SourcePosition(
+                                        new SourcePosition.Position(2,1),
+                                        new SourcePosition.Position(2,1),
+                                        Collections.singletonList("")
+                                )
+                        ).getNode(),
                         (TypeSpecSimple) new TypeSpecSimple(
                                 nodeIdGenerator.next(),
                                 "TE",
                                 Collections.emptyList()
-                        ).getContext().put(SourcePosition.class, new SourcePosition(3, 0)).getNode()
+                        ).getContext().put(
+                                SourcePosition.class,
+                                new SourcePosition(
+                                        new SourcePosition.Position(3,1),
+                                        new SourcePosition.Position(3,1),
+                                        Collections.singletonList("")
+                                )
+                        ).getNode()
                 )
-        ).getContext().put(SourcePosition.class, new SourcePosition(1, 0)).getNode();
+        ).getContext().put(
+                SourcePosition.class,
+                new SourcePosition(
+                        new SourcePosition.Position(1,1),
+                        new SourcePosition.Position(1,1),
+                        Collections.singletonList("")
+                )
+        ).getNode();
 
         Node flattened = spec.accept(visitor);
 
         Assertions.assertThat(flattened.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
-                .isEqualTo("1:0");
+                .isEqualTo("1:1");
     }
 
     @Test
@@ -237,7 +279,7 @@ class TypeFlatteningVisitorTest {
                                 Arrays.asList(
                                         new TypeSpecSimple(nodeIdGenerator.next(), "TA", Collections.emptyList()),
                                         new TypeSpecSimple(nodeIdGenerator.next(), "TB", Collections.emptyList())
-                                        )
+                                )
                         ).toString()
                 );
     }

@@ -1,6 +1,7 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import com.google.common.collect.Maps;
+import jdk.nashorn.internal.ir.debug.ASTWriter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -14,12 +15,10 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
-import org.thoriumlang.compiler.ast.nodes.TypeSpecInferred;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecIntersection;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.SourceFiles;
@@ -28,6 +27,8 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolicName;
 import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -46,17 +47,17 @@ class TypeResolverTest {
     private static final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
 
     @TestFactory
-    Stream<DynamicTest> valuesCases() throws URISyntaxException {
+    Stream<DynamicTest> inferenceValuesCases() throws URISyntaxException {
         return new SourceFiles(
                 Paths.get(ThoriumRTClassLoader.class.getResource(TEST_FILES_PATH).toURI()),
-                p -> true
+                p -> p.getFileName().toString().startsWith("infer")
         )
                 .sources()
                 .stream()
-                .flatMap(this::buildTestsStream);
+                .flatMap(this::buildInferenceTestsStream);
     }
 
-    private Stream<? extends DynamicTest> buildTestsStream(Source source) {
+    private Stream<? extends DynamicTest> buildInferenceTestsStream(Source source) {
         AST ast = source.ast(
                 nodeIdGenerator,
                 new SymbolTable(),
@@ -103,7 +104,7 @@ class TypeResolverTest {
                     })) // we have all NewAssignmentValue and Attribute nodes
                     .map(node -> DynamicTest.dynamicTest(
                             fileName + " / " + getName(node),
-                            () -> doAssert(root, errors, node)
+                            () -> doInferenceAssert(root, errors, node)
                     ));
         }
         catch (Exception e) {
@@ -116,7 +117,7 @@ class TypeResolverTest {
         }
     }
 
-    private void doAssert(Root root, List<SemanticError> errors, Node node) {
+    private void doInferenceAssert(Root root, List<SemanticError> errors, Node node) {
         Assertions.assertThat(errors.stream().map(SemanticError::toString).collect(Collectors.toList()))
                 .isEmpty();
 
@@ -207,5 +208,67 @@ class TypeResolverTest {
         return Arrays.stream(fqNames.split("And"))
                 .map(name -> predefined.getOrDefault(name, String.format("%s[]", name)))
                 .collect(Collectors.joining(" & "));
+    }
+
+    @TestFactory
+    Stream<DynamicTest> inferenceErrors() throws URISyntaxException {
+        return new SourceFiles(
+                Paths.get(ThoriumRTClassLoader.class.getResource(TEST_FILES_PATH).toURI()),
+                p -> p.getFileName().toString().startsWith("errors")
+        )
+                .sources()
+                .stream()
+                .map(this::buildInferenceErrorsTestsStream);
+    }
+
+    private DynamicTest buildInferenceErrorsTestsStream(Source source) {
+        AST ast = source.ast(
+                nodeIdGenerator,
+                new SymbolTable(),
+                Collections.singletonList(new SymbolicNameChecker())
+        );
+
+        String fileName = source.toString().substring(source.toString().lastIndexOf('/') + 1);
+
+        if (!ast.root().isPresent() || !ast.errors().isEmpty()) {
+            return DynamicTest.dynamicTest(
+                    fileName + " / *",
+                    () -> Assertions.fail(ast.errors().get(0).toString())
+            );
+        }
+
+        Root root = ast.root().get();
+
+        try {
+            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root);
+            return DynamicTest.dynamicTest(
+                    fileName,
+                    () -> doInferenceErrorsAssert(root, errors)
+            );
+        }
+        catch (Exception e) {
+            return DynamicTest.dynamicTest(
+                    fileName + " / *",
+                    () -> Assertions.fail(e.getMessage(), e)
+            );
+        }
+    }
+
+    private void doInferenceErrorsAssert(Root root, List<SemanticError> errors) {
+        String fileContent = new BufferedReader(
+                new InputStreamReader(
+                        TypeResolverTest.class.getResourceAsStream(
+                                Paths.get(TEST_FILES_PATH, root.getTopLevelNode().getName() + ".th").toString()
+                        )
+                )
+        ).lines().collect(Collectors.joining("\n"));
+
+        String expectedErrors = fileContent.split("/\\*ERRORS")[1].trim();
+
+        Assertions.assertThat(
+                errors.stream()
+                        .map(SemanticError::toString)
+                        .collect(Collectors.joining("\n\n\n\n"))
+        ).isEqualTo(expectedErrors);
     }
 }

@@ -15,21 +15,23 @@
  */
 package org.thoriumlang.compiler.api.errors;
 
+import com.google.common.base.Strings;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Node;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 // TODO have one for each type of error? symbol not found, symbol already defined, etc.?
 public class SemanticError implements CompilationError {
     private final Node node;
     private final String message;
-    private final int line;
-    private final int column;
 
     public SemanticError(String message, Node node) {
         this.node = node;
         this.message = message;
-        this.line = node.getContext().require(SourcePosition.class).getLine();
-        this.column = node.getContext().require(SourcePosition.class).getChar();
     }
 
     public Node getNode() {
@@ -37,15 +39,58 @@ public class SemanticError implements CompilationError {
     }
 
     public String format(SemanticErrorFormatter formatter) {
-        return formatter.format(line, column, message);
+        return formatter.format(node.getContext().require(SourcePosition.class), message);
     }
 
     @Override
     public String toString() {
-        return String.format("%s%non line %d, column %d",
-                message,
-                line,
-                column
-        );
+        return format(new DefaultFormatter());
+    }
+
+    private static class DefaultFormatter implements SemanticErrorFormatter {
+        @Override
+        public String format(SourcePosition sourcePosition, String message) {
+            int padding = lineNumberPrefixWidth(sourcePosition.getEndLine()) + sourcePosition.getStartColumn() - 1;
+            int underlineLength = Math.min(
+                    sourcePosition.getLines().get(0).length() - sourcePosition.getStartLine() - 2,
+                    sourcePosition.getLength()
+            );
+            boolean errorSpansMultipleLines = sourcePosition.getLength() > underlineLength;
+
+            String underline = Strings.repeat(" ", padding) +
+                    Strings.repeat("^", underlineLength) +
+                    (errorSpansMultipleLines ? " °°°" : "");
+
+            List<String> lines =
+                    sourcePosition.getLines()
+                            .stream()
+                            .map(prefixWithLineNumber(sourcePosition.getStartLine(), sourcePosition.getEndLine()))
+                            .collect(Collectors.toList());
+            lines.add(1, underline);
+
+            return String.format("%s%n%s%non line %d, column %d",
+                    message,
+                    String.join("\n", lines),
+                    sourcePosition.getStartLine(),
+                    sourcePosition.getStartColumn()
+            );
+        }
+
+        private Function<String, String> prefixWithLineNumber(int firstLine, int lastLine) {
+            AtomicInteger lineNumber = new AtomicInteger(firstLine);
+            return line -> String.format(lineNumberPrefixFormat(lastLine) + "%s", lineNumber.getAndIncrement(), line);
+        }
+
+        private String lineNumberPrefixFormat(int lastLine) {
+            return String.format("  %%%dd. ", numberWidth(lastLine));
+        }
+
+        private int numberWidth(int number) {
+            return (int) Math.floor(Math.log10(number)) + 1;
+        }
+
+        private int lineNumberPrefixWidth(int lastLine) {
+            return String.format(lineNumberPrefixFormat(lastLine), lastLine).length();
+        }
     }
 }

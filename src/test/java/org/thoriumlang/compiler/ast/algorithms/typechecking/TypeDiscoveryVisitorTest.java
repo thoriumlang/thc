@@ -181,7 +181,7 @@ class TypeDiscoveryVisitorTest {
         ))));
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         )
                 .isNotEmpty()
                 .containsExactly("symbol not found: notFound (1)");
@@ -246,7 +246,7 @@ class TypeDiscoveryVisitorTest {
         ))));
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: Number (1)");
@@ -283,7 +283,7 @@ class TypeDiscoveryVisitorTest {
         ))));
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: java.lang.String (1)");
@@ -439,7 +439,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: TypeName (1)");
@@ -522,7 +522,7 @@ class TypeDiscoveryVisitorTest {
         );
 
         Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         )
                 .isNotEmpty()
                 .containsExactly("symbol already defined: ClassName (1)");
@@ -600,7 +600,14 @@ class TypeDiscoveryVisitorTest {
     private Root injectSourcePosition(Root node) {
         new NodesMatchingVisitor(n -> true)
                 .visit(node)
-                .forEach(n -> n.getContext().put(SourcePosition.class, new SourcePosition(1, 1)));
+                .forEach(n -> n.getContext().put(
+                        SourcePosition.class,
+                        new SourcePosition(
+                                new SourcePosition.Position(1, 1),
+                                new SourcePosition.Position(1, 1),
+                                Collections.singletonList("")
+                        )
+                ));
 
         return node;
     }

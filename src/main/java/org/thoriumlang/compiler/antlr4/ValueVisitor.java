@@ -108,7 +108,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         ctx.typeSpec() == null ?
                                 sourcePositionProvider.provide(
                                         new TypeSpecInferred(nodeIdGenerator.next()),
-                                        ctx.start
+                                        ctx.start,
+                                        ctx.stop
                                 ) :
                                 ctx.typeSpec().accept(typeSpecVisitor),
                         ctx.value() != null ?
@@ -118,7 +119,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                                         nodeIdGenerator.next(),
                                                         ctx.value().accept(this), true
                                                 ),
-                                                ctx.start
+                                                ctx.start,
+                                                ctx.stop
                                         )
                                 ) :
                                 Lists.append(
@@ -130,7 +132,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                                 .orElse(statementVisitorForLast.none(ctx.start))
                                 )
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -147,11 +150,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                             ctx.identifier.getText(),
                                             false
                                     ),
-                                    ctx.start
+                                    ctx.start,
+                                    ctx.stop
                             ),
                             ctx.value().accept(this)
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
         if (ctx.VAR() != null) {
@@ -162,18 +167,21 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             ctx.typeSpec() == null ?
                                     sourcePositionProvider.provide(
                                             new TypeSpecInferred(nodeIdGenerator.next()),
-                                            ctx.start
+                                            ctx.start,
+                                            ctx.stop
                                     ) :
                                     ctx.typeSpec().accept(typeSpecVisitor),
                             ctx.value() == null ?
                                     sourcePositionProvider.provide(
                                             new NoneValue(nodeIdGenerator.next()),
-                                            ctx.start
+                                            ctx.start,
+                                            ctx.stop
                                     ) :
                                     ctx.value().accept(this),
                             Mode.VAR
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
         if (ctx.VAL() != null) {
@@ -184,13 +192,15 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             ctx.typeSpec() == null ?
                                     sourcePositionProvider.provide(
                                             new TypeSpecInferred(nodeIdGenerator.next()),
-                                            ctx.start
+                                            ctx.start,
+                                            ctx.stop
                                     ) :
                                     ctx.typeSpec().accept(typeSpecVisitor),
                             ctx.value().accept(this),
                             Mode.VAL
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
         return sourcePositionProvider.provide(
@@ -202,11 +212,13 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                         ctx.identifier.getText(),
                                         false
                                 ),
-                                ctx.start
+                                ctx.start,
+                                ctx.stop
                         ),
                         ctx.value().accept(this)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -218,7 +230,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             nodeIdGenerator.next(),
                             ctx.NUMBER().getSymbol().getText()
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -229,28 +242,32 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                             nodeIdGenerator.next(),
                             str.substring(1, str.length() - 1)
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
         if (ctx.TRUE() != null) {
             return sourcePositionProvider.provide(
                     new BooleanValue(nodeIdGenerator.next(), true),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
         if (ctx.FALSE() != null) {
             return sourcePositionProvider.provide(
                     new BooleanValue(nodeIdGenerator.next(), false),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
         if (ctx.NONE() != null) {
             return sourcePositionProvider.provide(
                     new NoneValue(nodeIdGenerator.next()),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -269,10 +286,12 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                             "this",
                                             false
                                     ),
-                                    ctx.start
+                                    ctx.start,
+                                    ctx.stop
                             )
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -284,7 +303,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                     ctx.indirectValue().accept(this),
                                     methodCall(ctx)
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     ) :
                     sourcePositionProvider.provide(
                             new NestedValue(
@@ -292,7 +312,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                     ctx.indirectValue().accept(this),
                                     identifier(ctx)
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     );
         }
 
@@ -304,7 +325,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                     ctx.directValue().accept(this),
                                     methodCall(ctx)
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     ) :
                     sourcePositionProvider.provide(
                             new NestedValue(
@@ -312,7 +334,8 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                     ctx.directValue().accept(this),
                                     identifier(ctx)
                             ),
-                            ctx.start
+                            ctx.start,
+                            ctx.stop
                     );
         }
 
@@ -335,12 +358,14 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                         nodeIdGenerator.next(),
                         sourcePositionProvider.provide(
                                 new Reference(nodeIdGenerator.next(), ctx.IDENTIFIER().getSymbol().getText(), true),
-                                ctx.start
+                                ctx.start,
+                                ctx.stop
                         ),
                         typeArguments(ctx),
                         methodArguments(ctx)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -370,10 +395,12 @@ class ValueVisitor extends ThoriumBaseVisitor<Value> {
                                         ctx.IDENTIFIER().getSymbol().getText(),
                                         false
                                 ),
-                                ctx.start
+                                ctx.start,
+                                ctx.stop
                         )
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 }

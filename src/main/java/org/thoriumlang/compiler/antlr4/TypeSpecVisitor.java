@@ -78,7 +78,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         ctx.fqIdentifier().accept(fqIdentifierVisitor),
                         visitArguments(ctx.typeArguments())
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -102,7 +103,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                                     none(ctx.start)
                             )
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -115,7 +117,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                                     none(ctx.start)
                             )
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -132,7 +135,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                                     none(ctx.start)
                             )
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -145,7 +149,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                                     none(ctx.start)
                             )
                     ),
-                    ctx.start
+                    ctx.start,
+                    ctx.stop
             );
         }
 
@@ -177,7 +182,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         nodeIdGenerator.next(),
                         types
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -230,7 +236,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         nodeIdGenerator.next(),
                         types
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -242,7 +249,8 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         visitArguments(ctx.typeArguments()),
                         ctx.typeSpec().accept(this)
                 ),
-                ctx.start
+                ctx.start,
+                ctx.stop
         );
     }
 
@@ -253,6 +261,7 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         "org.thoriumlang.Object",
                         Collections.emptyList()
                 ),
+                token,
                 token
         );
     }
@@ -264,6 +273,7 @@ class TypeSpecVisitor extends ThoriumBaseVisitor<TypeSpec> {
                         "org.thoriumlang.None",
                         Collections.emptyList()
                 ),
+                token,
                 token
         );
     }

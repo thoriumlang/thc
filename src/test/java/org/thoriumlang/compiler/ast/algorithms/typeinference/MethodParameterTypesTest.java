@@ -58,7 +58,14 @@ class MethodParameterTypesTest {
                 Collections.emptyList()
         )));
         NodeStub node = new NodeStub();
-        node.getContext().put(SourcePosition.class, new SourcePosition(-1,1));
+        node.getContext().put(
+                SourcePosition.class,
+                new SourcePosition(
+                        new SourcePosition.Position(1,1),
+                        new SourcePosition.Position(1,1),
+                        Collections.singletonList("")
+                )
+        );
         Assertions.assertThat(
                 mpt.findBestMatch(
                         node,

@@ -1,5 +1,7 @@
 package org.thoriumlang.compiler.api.errors;
 
+import org.thoriumlang.compiler.ast.context.SourcePosition;
+
 public interface SemanticErrorFormatter {
-    String format(int line, int column, String message);
+    String format(SourcePosition sourcePosition, String message);
 }

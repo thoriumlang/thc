@@ -15,11 +15,8 @@
  */
 package org.thoriumlang.compiler.antlr4;
 
-import org.antlr.v4.runtime.Token;
 import org.thoriumlang.compiler.antlr.ThoriumBaseVisitor;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
-import org.thoriumlang.compiler.ast.SourcePositionProvider;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Use;
@@ -29,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RootVisitor extends ThoriumBaseVisitor<Root> {
+    private final Antlr4SourcePositionProvider sourcePositionProvider;
     private final String namespace;
     private final NodeIdGenerator nodeIdGenerator;
     private final TypeDefVisitor typeDefVisitor;
@@ -36,7 +34,7 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
     private final UseVisitor useVisitor;
 
     public RootVisitor(NodeIdGenerator nodeIdGenerator, String namespace) {
-        SourcePositionProvider<Token> sourcePositionProvider = new Antlr4SourcePositionProvider();
+        this.sourcePositionProvider = new Antlr4SourcePositionProvider();
 
         TypeSpecVisitor typeSpecVisitor = new TypeSpecVisitor(
                 nodeIdGenerator,
@@ -116,26 +114,27 @@ public class RootVisitor extends ThoriumBaseVisitor<Root> {
     @Override
     public Root visitRoot(ThoriumParser.RootContext ctx) {
         if (ctx.typeDef() != null) {
-            return (Root) new Root(
-                    nodeIdGenerator.next(),
-                    namespace,
-                    visitUse(ctx),
-                    ctx.typeDef().accept(typeDefVisitor)
-            )
-                    .getContext()
-                    .put(SourcePosition.class, new SourcePosition(1, 1))
-                    .getNode();
+            return sourcePositionProvider.provide(
+                    new Root(
+                            nodeIdGenerator.next(),
+                            namespace,
+                            visitUse(ctx),
+                            ctx.typeDef().accept(typeDefVisitor)
+                    ),
+                    ctx.start,
+                    ctx.stop
+            );
         }
         if (ctx.classDef() != null) {
-            return (Root) new Root(
-                    nodeIdGenerator.next(),
-                    namespace,
-                    visitUse(ctx),
-                    ctx.classDef().accept(classDefVisitor)
-            )
-                    .getContext()
-                    .put(SourcePosition.class, new SourcePosition(1, 1))
-                    .getNode();
+            return sourcePositionProvider.provide(new Root(
+                            nodeIdGenerator.next(),
+                            namespace,
+                            visitUse(ctx),
+                            ctx.classDef().accept(classDefVisitor)
+                    ),
+                    ctx.start,
+                    ctx.stop
+            );
         }
         throw new IllegalStateException("No root node found");
     }

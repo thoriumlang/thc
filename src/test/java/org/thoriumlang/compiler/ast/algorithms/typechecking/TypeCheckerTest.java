@@ -63,7 +63,7 @@ class TypeCheckerTest {
                                 ).root().orElseThrow(() -> new IllegalStateException("no root found"))
                         )
                         .stream()
-                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                        .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest (3)",
                 "symbol not found: UnknownSupertype (6)",

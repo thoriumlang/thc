@@ -322,7 +322,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                 getSymbolTable(getParent(node))
                         .createScope(
                                 String.format("[anon:%s]", node.getContext().get(SourcePosition.class)
-                                        .map(SourcePosition::getLine)
+                                        .map(SourcePosition::getStartLine)
                                         .map(Object::toString)
                                         .orElse("?")
                                 )

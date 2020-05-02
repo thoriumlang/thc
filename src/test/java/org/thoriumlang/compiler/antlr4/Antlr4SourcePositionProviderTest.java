@@ -16,6 +16,7 @@
 package org.thoriumlang.compiler.antlr4;
 
 import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenSource;
 import org.assertj.core.api.Assertions;
@@ -32,12 +33,19 @@ class Antlr4SourcePositionProviderTest {
         Node node = new NodeStub();
         Token token = new TokenStub();
 
-        provider.provide(node, token);
+        provider.provide(node, token, token);
 
         Assertions.assertThat(node.getContext().require(SourcePosition.class))
                 .extracting(SourcePosition::toString)
-                .isEqualTo("1:3");
+                .isEqualTo("1:1");
 
+        Assertions.assertThat(node.getContext().require(SourcePosition.class))
+                .extracting(SourcePosition::getText)
+                .isEqualTo("line1");
+
+        Assertions.assertThat(node.getContext().require(SourcePosition.class))
+                .extracting(SourcePosition::getLength)
+                .isEqualTo(5);
     }
 
     private static class NodeStub extends Node {
@@ -54,7 +62,7 @@ class Antlr4SourcePositionProviderTest {
     private static class TokenStub implements Token {
         @Override
         public String getText() {
-            return null;
+            return "line1";
         }
 
         @Override
@@ -69,7 +77,7 @@ class Antlr4SourcePositionProviderTest {
 
         @Override
         public int getCharPositionInLine() {
-            return 2;
+            return 0;
         }
 
         @Override
@@ -99,7 +107,7 @@ class Antlr4SourcePositionProviderTest {
 
         @Override
         public CharStream getInputStream() {
-            return null;
+            return CharStreams.fromString("line1\nline2");
         }
     }
 }

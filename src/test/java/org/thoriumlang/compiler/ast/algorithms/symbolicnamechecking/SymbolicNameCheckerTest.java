@@ -46,7 +46,7 @@ class SymbolicNameCheckerTest {
                 new SymbolicNameChecker()
                         .walk(root)
                         .stream()
-                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                        .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol already defined: someU (9)",
                 "symbol not found: otherValue (10)",
@@ -90,7 +90,7 @@ class SymbolicNameCheckerTest {
                 new SymbolicNameChecker()
                         .walk(root)
                         .stream()
-                        .map(se -> se.format((line, column, message) -> String.format("%s (%d)", message, line)))
+                        .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol already defined: method1() (3)"
         );

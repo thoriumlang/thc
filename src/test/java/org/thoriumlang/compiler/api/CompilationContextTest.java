@@ -42,7 +42,22 @@ class CompilationContextTest {
                     "message",
                     new NodeStub()
                             .getContext()
-                            .put(SourcePosition.class, new SourcePosition(-1, -1))
+                            .put(
+                                    SourcePosition.class,
+                                    new SourcePosition(
+                                            new SourcePosition.Position(1, 1),
+                                            new SourcePosition.Position(1, 1),
+                                            Collections.singletonList("")
+                                    )
+                            )
+                            .put(
+                                    SourcePosition.class,
+                                    new SourcePosition(
+                                            new SourcePosition.Position(1,1),
+                                            new SourcePosition.Position(1,1),
+                                            Collections.singletonList("")
+                                    )
+                            )
                             .getNode()
             ));
         }
