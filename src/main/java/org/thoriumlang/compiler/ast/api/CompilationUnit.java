@@ -7,6 +7,7 @@ import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -20,13 +21,13 @@ public class CompilationUnit {
     }
 
     public Optional<Class> findClass(String className) {
-        Optional<Symbol> symbol = symbolTable.find(new Name(className));
+        List<Symbol> symbol = symbolTable.find(new Name(className));
 
-        if (!symbol.isPresent()) {
+        if (symbol.size() != 1) {
             return Optional.empty();
         }
 
-        ThoriumType thoriumType = (ThoriumType) symbol.get();
+        ThoriumType thoriumType = (ThoriumType) symbol.get(0);
 
         return thoriumType.getNode().accept(new BaseVisitor<Optional<Class>>() {
             @Override
@@ -42,13 +43,13 @@ public class CompilationUnit {
     }
 
     public Optional<TypeType> findType(String typeName) {
-        Optional<Symbol> symbol = symbolTable.find(new Name(typeName));
+        List<Symbol> symbol = symbolTable.find(new Name(typeName));
 
-        if (!symbol.isPresent()) {
+        if (symbol.size() != 1) {
             return Optional.empty();
         }
 
-        ThoriumType thoriumType = (ThoriumType) symbol.get();
+        ThoriumType thoriumType = (ThoriumType) symbol.get(0);
 
         return thoriumType.getNode().accept(new BaseVisitor<Optional<TypeType>>() {
             @Override

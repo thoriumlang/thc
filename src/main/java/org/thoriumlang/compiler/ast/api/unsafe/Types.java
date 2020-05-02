@@ -14,6 +14,7 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.ThoriumLibType;
 import org.thoriumlang.compiler.symbols.ThoriumType;
 
+import java.util.List;
 import java.util.Optional;
 
 public class Types {
@@ -22,13 +23,13 @@ public class Types {
     }
 
     public static Optional<Type> find(SymbolTable symbolTable, Name name){
-        Optional<Symbol> symbol = symbolTable.find(name);
+        List<Symbol> symbols = symbolTable.find(name);
 
-        if (!symbol.isPresent()) {
+        if (symbols.size() != 1) {
             return Optional.empty();
         }
 
-        Symbol actualSymbol = symbol.get();
+        Symbol actualSymbol = symbols.get(0);
         if (actualSymbol instanceof ThoriumType) {
             return Optional.of(((ThoriumType) actualSymbol).getNode().accept(
                     new BaseVisitor<Type>() {
@@ -57,6 +58,6 @@ public class Types {
             return Optional.of(new EmptyType());
         }
 
-        throw new IllegalStateException(symbol.get().getClass() + " is not supported for " + name);
+        throw new IllegalStateException(symbols.get(0).getClass() + " is not supported for " + name);
     }
 }
