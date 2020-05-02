@@ -105,7 +105,7 @@ public class TypeResolver implements Algorithm {
         }
     }
 
-    private Boolean toplevelIsClass(Node topLevelNode) {
+    private boolean toplevelIsClass(Node topLevelNode) {
         return topLevelNode.accept(new PredicateVisitor() {
             @Override
             public Boolean visit(Class node) {

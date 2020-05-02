@@ -145,11 +145,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     public List<SemanticError> visit(MethodSignature node) {
         return Lists.merge(
                 node.getReturnType().accept(this),
-                node.getContext()
-                        .require(Relatives.class)
-                        .parent()
-                        .orElseThrow(() -> new IllegalStateException("no parent found"))
-                        .node()
+                getParentNode(node)
                         .accept(new BaseVisitor<List<SemanticError>>() {
                             @Override
                             public List<SemanticError> visit(Type parentNode) {
@@ -166,6 +162,15 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
                             }
                         })
         );
+    }
+
+    private Node getParentNode(Node node) {
+        return node
+                .getContext()
+                .require(Relatives.class)
+                .parent()
+                .orElseThrow(() -> new IllegalStateException("no parent found"))
+                .node();
     }
 
     @Override
@@ -397,12 +402,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         List<Node> targetNodes = getTargetNodes(node);
 
         Maybe<Node, SemanticError> targetNode = Optional.ofNullable(
-                node
-                        .getContext()
-                        .require(Relatives.class)
-                        .parent()
-                        .orElseThrow(() -> new IllegalStateException("no parent found"))
-                        .node()
+                getParentNode(node)
                         .accept(new BaseVisitor<Maybe<Node, SemanticError>>() {
                             @Override
                             public Maybe<Node, SemanticError> visit(MethodCallValue node) {

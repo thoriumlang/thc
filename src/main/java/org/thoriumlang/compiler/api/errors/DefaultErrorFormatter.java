@@ -45,7 +45,10 @@ class DefaultErrorFormatter implements SemanticErrorFormatter, SyntaxErrorFormat
 
     private Function<String, String> prefixWithLineNumber(int firstLine, int lastLine) {
         AtomicInteger lineNumber = new AtomicInteger(firstLine);
-        return line -> String.format(lineNumberPrefixFormat(lastLine) + "%s", lineNumber.getAndIncrement(), line);
+        return line -> String.format(
+                String.format("%s%%s", lineNumberPrefixFormat(lastLine)),
+                lineNumber.getAndIncrement(), line
+        );
     }
 
     private String lineNumberPrefixFormat(int lastLine) {

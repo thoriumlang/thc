@@ -3,6 +3,7 @@ package org.thoriumlang.compiler.api;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking.SymbolicNameChecker;
 import org.thoriumlang.compiler.ast.algorithms.typechecking.TypeChecker;
+import org.thoriumlang.compiler.ast.algorithms.typeinference.TypeResolver;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
@@ -59,6 +60,7 @@ public class Compiler {
                                 )
                         ),
                         new SymbolicNameChecker()
+                        // TODO add TypeResolver
                 )
         ).parse();
 
