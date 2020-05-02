@@ -18,14 +18,13 @@ package org.thoriumlang.compiler.api.errors;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Node;
 
-// TODO have one for each type of error? symbol not found, symbol already defined, etc.?
 public class SemanticError implements CompilationError {
     private static final SemanticErrorFormatter DEFAULT_FORMATTER = new DefaultErrorFormatter();
 
     private final Node node;
     private final String message;
 
-    public SemanticError(String message, Node node) {
+    SemanticError(String message, Node node) {
         this.node = node;
         this.message = message;
     }

@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
@@ -62,9 +63,9 @@ class CompilerTest {
                 .containsExactly(
                         "onCompilationStarted",
                         "onSourceStarted",
-                        "onError:ast (-1)",
+                        "onError:symbol not found: ast (-1)",
                         "onEvent:plugin",
-                        "onError:plugin (-1)",
+                        "onError:symbol not found: plugin (-1)",
                         "onSourceFinished",
                         "onCompilationFinished"
                 );
@@ -80,7 +81,7 @@ class CompilerTest {
                         .map(e -> e.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
                         .map(Object::toString)
                         .collect(Collectors.toList())
-        ).containsExactly("ast (-1)");
+        ).containsExactly("symbol not found: ast (-1)");
 
         Assertions.assertThat(listener.context.root().orElseThrow(() -> new IllegalStateException("no root found")))
                 .isSameAs(ast.root().orElseThrow(() -> new IllegalStateException("no root found")));
@@ -122,8 +123,7 @@ class CompilerTest {
 
             @Override
             public List<CompilationError> errors() {
-                return Collections.singletonList(new SemanticError(
-                        "ast",
+                return Collections.singletonList(new SymbolNotFoundError(
                         new NodeStub()
                                 .getContext()
                                 .put(
@@ -134,7 +134,8 @@ class CompilerTest {
                                                 Collections.singletonList("")
                                         )
                                 )
-                                .getNode()
+                                .getNode(),
+                        "ast"
                 ));
             }
         };
@@ -144,8 +145,7 @@ class CompilerTest {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
-            return Collections.singletonList(new SemanticError(
-                    "plugin",
+            return Collections.singletonList(new SymbolNotFoundError(
                     new NodeStub()
                             .getContext()
                             .put(
@@ -156,7 +156,8 @@ class CompilerTest {
                                             Collections.singletonList("")
                                     )
                             )
-                            .getNode()
+                            .getNode(),
+                    "plugin"
             ));
         }
     }

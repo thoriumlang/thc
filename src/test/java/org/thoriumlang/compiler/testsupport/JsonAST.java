@@ -21,6 +21,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializer;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolAlreadyDefinedError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
+import org.thoriumlang.compiler.api.errors.TargetNotFoundError;
+import org.thoriumlang.compiler.api.errors.TooManyAlternativesError;
+import org.thoriumlang.compiler.api.errors.TypeNotInferableError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.Context;
 import org.thoriumlang.compiler.ast.nodes.NodeId;
@@ -56,6 +61,17 @@ public class JsonAST {
         this.root = ast.root().orElseThrow(() -> new IllegalStateException("no root found"));
         this.errors = ast.errors();
         this.gson = new GsonBuilder();
+
+        JsonSerializer<SemanticError> semanticErrorSerializer = (src, typeOfSrc, context) -> {
+            JsonObject jsonObject = new JsonObject();
+
+            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
+            jsonObject.add("message", context.serialize(
+                    src.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine()))
+            ));
+
+            return jsonObject;
+        };
 
         gson
                 .registerTypeAdapter(NodeId.class,
@@ -93,17 +109,11 @@ public class JsonAST {
 
                             return jsonObject;
                         })
-                .registerTypeAdapter(SemanticError.class,
-                        (JsonSerializer<SemanticError>) (src, typeOfSrc, context) -> {
-                            JsonObject jsonObject = new JsonObject();
-
-                            jsonObject.add("nodeRef", context.serialize(src.getNode().getNodeId()));
-                            jsonObject.add("message", context.serialize(
-                                    src.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine()))
-                            ));
-
-                            return jsonObject;
-                        })
+                .registerTypeAdapter(SymbolAlreadyDefinedError.class, semanticErrorSerializer)
+                .registerTypeAdapter(SymbolNotFoundError.class, semanticErrorSerializer)
+                .registerTypeAdapter(TargetNotFoundError.class, semanticErrorSerializer)
+                .registerTypeAdapter(TooManyAlternativesError.class, semanticErrorSerializer)
+                .registerTypeAdapter(TypeNotInferableError.class, semanticErrorSerializer)
                 .setFieldNamingStrategy(f -> {
                     if (f.getName().equals("types") && f.getDeclaringClass().equals(TypeSpecIntersection.class)) {
                         return "intersectionType";

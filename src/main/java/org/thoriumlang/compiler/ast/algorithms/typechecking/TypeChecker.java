@@ -16,11 +16,12 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
-import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
+import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
@@ -61,7 +62,7 @@ public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to Ty
                         return null;
                     }
 
-                    return new SemanticError(String.format("symbol not found: %s", t.getType()), t);
+                    return new SymbolNotFoundError(t, t.getType());
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

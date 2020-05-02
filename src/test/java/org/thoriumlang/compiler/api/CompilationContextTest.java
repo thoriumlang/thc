@@ -3,7 +3,7 @@ package org.thoriumlang.compiler.api;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
-import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -38,8 +38,7 @@ class CompilationContextTest {
 
         @Override
         public List<CompilationError> errors() {
-            return Collections.singletonList(new SemanticError(
-                    "message",
+            return Collections.singletonList(new SymbolNotFoundError(
                     new NodeStub()
                             .getContext()
                             .put(
@@ -53,12 +52,13 @@ class CompilationContextTest {
                             .put(
                                     SourcePosition.class,
                                     new SourcePosition(
-                                            new SourcePosition.Position(1,1),
-                                            new SourcePosition.Position(1,1),
+                                            new SourcePosition.Position(1, 1),
+                                            new SourcePosition.Position(1, 1),
                                             Collections.singletonList("")
                                     )
                             )
-                            .getNode()
+                            .getNode(),
+                    "message"
             ));
         }
     };

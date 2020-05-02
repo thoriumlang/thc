@@ -1,6 +1,8 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.TargetNotFoundError;
+import org.thoriumlang.compiler.api.errors.TooManyAlternativesError;
 import org.thoriumlang.compiler.ast.nodes.Node;
 import org.thoriumlang.compiler.ast.nodes.TypeSpec;
 import org.thoriumlang.compiler.data.Maybe;
@@ -34,11 +36,11 @@ public class MethodParameterTypes {
                 .collect(Collectors.toList());
 
         if (matchingNodes.size() > 1) {
-            return Maybe.failure(new SemanticError("Too many alternatives found", node));
+            return Maybe.failure(new TooManyAlternativesError(node, matchingNodes));
         }
 
         if (matchingNodes.isEmpty()) {
-            return Maybe.failure(new SemanticError("No alternatives found", node));
+            return Maybe.failure(new TargetNotFoundError(node));
         }
 
         return Maybe.success(matchingNodes.get(0));

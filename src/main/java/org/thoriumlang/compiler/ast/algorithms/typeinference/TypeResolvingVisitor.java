@@ -1,6 +1,9 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.TargetNotFoundError;
+import org.thoriumlang.compiler.api.errors.TooManyAlternativesError;
+import org.thoriumlang.compiler.api.errors.TypeNotInferableError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
@@ -177,7 +180,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         if (needsTypeInference(from)) {
             // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
             //  see https://github.com/thoriumlang/thc/issues/72
-            return Collections.singletonList(new SemanticError("Cannot infer type", to));
+            return Collections.singletonList(new TypeNotInferableError(to));
         }
         to.getContext().put(
                 TypeSpec.class,
@@ -432,11 +435,11 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
                         })
         ).orElseGet(() -> {
             if (targetNodes.size() > 1) {
-                return Maybe.failure(new SemanticError("Too many alternatives found", node));
+                return Maybe.failure(new TooManyAlternativesError(node, targetNodes));
             }
 
             if (targetNodes.isEmpty()) {
-                return Maybe.failure(new SemanticError("No alternatives found", node));
+                return Maybe.failure(new TargetNotFoundError(node));
             }
 
             return Maybe.success(targetNodes.get(0));

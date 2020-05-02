@@ -119,7 +119,7 @@ public class CompilerTest {
         compiler.compile(sourceFiles);
 
         Assertions.assertThat(compilationErrors)
-                .filteredOn(new Condition<>(e -> e.startsWith("[SemanticError]"), null))
+                .filteredOn(new Condition<>(e -> e.startsWith("[SymbolNotFoundError]"), null))
                 .hasSize(1)
                 .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
                         .contains(
@@ -140,7 +140,7 @@ public class CompilerTest {
         compiler.compile(sourceFiles);
 
         Assertions.assertThat(compilationErrors)
-                .filteredOn(new Condition<>(e -> e.startsWith("[SemanticError]"), null))
+                .filteredOn(new Condition<>(e -> e.startsWith("[SymbolNotFoundError]"), null))
                 .hasSize(1)
                 .hasOnlyOneElementSatisfying(s -> Assertions.assertThat(s)
                         .contains(

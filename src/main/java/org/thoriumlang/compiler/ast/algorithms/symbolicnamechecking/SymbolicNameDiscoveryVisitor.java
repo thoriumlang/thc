@@ -16,6 +16,8 @@
 package org.thoriumlang.compiler.ast.algorithms.symbolicnamechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolAlreadyDefinedError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.Relatives;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
@@ -327,7 +329,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     private List<SemanticError> alreadyDefined(SymbolTable symbolTable, Name identifier, Node node) {
         if (symbolTable.inScope(identifier)) {
             return Collections.singletonList(
-                    new SemanticError(String.format("symbol already defined: %s", identifier), node)
+                    new SymbolAlreadyDefinedError(node, identifier.toString())
             );
         }
 
@@ -335,6 +337,6 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     }
 
     private SemanticError undefinedError(Name name, Node node) {
-        return new SemanticError(String.format("symbol not found: %s", name), node);
+        return new SymbolNotFoundError(node, name.toString());
     }
 }

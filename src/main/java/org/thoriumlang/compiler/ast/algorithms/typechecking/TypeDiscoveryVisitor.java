@@ -16,6 +16,8 @@
 package org.thoriumlang.compiler.ast.algorithms.typechecking;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
+import org.thoriumlang.compiler.api.errors.SymbolAlreadyDefinedError;
+import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.nodes.Class;
 import org.thoriumlang.compiler.ast.nodes.FunctionValue;
 import org.thoriumlang.compiler.ast.nodes.Method;
@@ -77,7 +79,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                 .map(name -> symbolTable
                         .find(name)
                         .stream()
-                        .map(s -> new SemanticError(String.format("symbol already defined: %s", name), node))
+                        .map(s -> new SymbolAlreadyDefinedError(node, name.toString()))
                 )
                 .map(s -> s.collect(Collectors.toList()))
                 .flatMap(List::stream)
@@ -96,7 +98,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
         }
 
         return Collections.singletonList(
-                new SemanticError(String.format("symbol not found: %s", node.getFrom()), node)
+                new SymbolNotFoundError(node, node.getFrom())
         );
     }
 
@@ -135,7 +137,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
 
         if (!symbolTable.find(new Name(name)).isEmpty()) {
             return Collections.singletonList(
-                    new SemanticError(String.format("symbol already defined: %s", name), node)
+                    new SymbolAlreadyDefinedError(node, name)
             );
         }
 
