@@ -76,7 +76,7 @@ class TypeResolverTest {
         Root root = ast.root().get();
 
         try {
-            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root);
+            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root).right();
 
             return root.getContext()
                     .require(SymbolTable.class)
@@ -238,7 +238,7 @@ class TypeResolverTest {
         Root root = ast.root().get();
 
         try {
-            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root);
+            List<SemanticError> errors = new TypeResolver(nodeIdGenerator).walk(root).right();
             return DynamicTest.dynamicTest(
                     fileName,
                     () -> doInferenceErrorsAssert(root, errors)

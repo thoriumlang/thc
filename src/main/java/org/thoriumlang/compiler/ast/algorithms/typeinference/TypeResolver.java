@@ -16,6 +16,7 @@ import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
 import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
+import org.thoriumlang.compiler.data.Pair;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,19 +42,20 @@ public class TypeResolver implements Algorithm {
     }
 
     @Override
-    public List<SemanticError> walk(Root root) {
-        List<SemanticError> errors = new TypeResolvingVisitor(nodeIdGenerator).visit(root);
+    public Pair<Root, List<SemanticError>> walk(Root root) {
+        List<SemanticError> errors = removeDuplicateErrors(
+                new TypeResolvingVisitor(nodeIdGenerator).visit(root)
+        );
 
         if (!errors.isEmpty()) {
-            // TODO better error handing, should we try to flatten before?
-            //  see https://github.com/thoriumlang/thc/issues/72
-            return removeDuplicateErrors(errors);
+            return new Pair<>(root, errors);
         }
 
+        // TODO change: this mutates the AST!
         flattenInferredTypes(root);
-        removeNoneFomInferredTypeOfAttributesAssignedInAllConstructors(root);
+        removeNoneFromInferredTypeOfAttributesAssignedInAllConstructors(root);
 
-        return Collections.emptyList();
+        return new Pair<>(root, Collections.emptyList());
     }
 
     private List<SemanticError> removeDuplicateErrors(List<SemanticError> errors) {
@@ -71,7 +73,7 @@ public class TypeResolver implements Algorithm {
                 );
     }
 
-    private void removeNoneFomInferredTypeOfAttributesAssignedInAllConstructors(Root root) {
+    private void removeNoneFromInferredTypeOfAttributesAssignedInAllConstructors(Root root) {
         if (NodePredicates.isClass(root.getTopLevelNode())) {
             List<List<Attribute>> attributesSetInConstructors = constructors(root).stream()
                     .map(this::attributesAssignedInMethod)
@@ -85,7 +87,6 @@ public class TypeResolver implements Algorithm {
                     );
         }
     }
-
 
     @SuppressWarnings("unchecked") // the nodes that are returned by the NodeMatchingVisitor are all instances of Method
     private List<Method> constructors(Root root) {

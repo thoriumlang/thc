@@ -25,26 +25,30 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.data.Maybe;
+import org.thoriumlang.compiler.data.Pair;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.Symbol;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to TypeLoader
+    private final NodeIdGenerator nodeIdGenerator;
     private final List<TypeLoader> typeLoaders;
 
-    public TypeChecker(List<TypeLoader> typeLoaders) {
+    public TypeChecker(NodeIdGenerator nodeIdGenerator, List<TypeLoader> typeLoaders) {
+        this.nodeIdGenerator = nodeIdGenerator;
         this.typeLoaders = Objects.requireNonNull(typeLoaders, "typeLoaders cannot be null");
     }
 
     @Override
-    public List<SemanticError> walk(Root root) {
+    public Pair<Root, List<SemanticError>> walk(Root root) {
         List<SemanticError> discoveryErrors = root
                 .accept(
                         new TypeDiscoveryVisitor(
@@ -70,13 +74,13 @@ public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to Ty
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        // TODO use it!
-        // Maybe<Root, List<SemanticError>> qualifyingResult = new TypeQualifyingVisitor(new NodeIdGenerator()).visit(root);
+        Maybe<Root, List<SemanticError>> qualifyingResult = new TypeQualifyingVisitor(nodeIdGenerator).visit(root);
 
-        return Lists.merge(
+        return new Pair<>(root, Lists.merge(
                 discoveryErrors,
-                typeNotFoundErrors
-        );
+                typeNotFoundErrors,
+                qualifyingResult.isFailure() ? qualifyingResult.error() : Collections.emptyList()
+        ));
     }
 
     private boolean load(Name name, Node node, SymbolTable symbolTable) {

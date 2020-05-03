@@ -45,24 +45,25 @@ import java.util.stream.Collectors;
 class TypeCheckerTest {
     @Test
     void walk() {
+        NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
         Assertions.assertThat(
                 new TypeChecker(
+                        nodeIdGenerator,
                         Collections.singletonList(
                                 new JavaRTClassLoader()
-                        )
-                )
+                        ))
                         .walk(
                                 new AST(
                                         TypeCheckerTest.class.getResourceAsStream(
                                                 "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_discovery.th"
                                         ),
                                         "namespace",
-                                        new NodeIdGenerator(),
+                                        nodeIdGenerator,
                                         Collections.emptyList(),
                                         new SymbolTable()
                                 ).root().orElseThrow(() -> new IllegalStateException("no root found"))
                         )
-                        .stream()
+                        .right().stream()
                         .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol not found: org.thoriumlang.compiler.ast.algorithms.typechecking.TypeCheckerTest (3)",

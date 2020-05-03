@@ -22,6 +22,7 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.ast.visitor.PredicateVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.data.Pair;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,7 +37,7 @@ public class SymbolicNameChecker implements Algorithm {
     }
 
     @Override
-    public List<SemanticError> walk(Root root) {
+    public Pair<Root, List<SemanticError>> walk(Root root) {
         List<SemanticError> firstPassErrors = root.accept(visitorSkippingNodesAllowingForwardReference);
 
         // now we have to do a second pass on the Reference nodes that allow forward reference (we discovered the
@@ -55,6 +56,6 @@ public class SymbolicNameChecker implements Algorithm {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        return Lists.merge(firstPassErrors, secondPassErrors);
+        return new Pair<>(root, Lists.merge(firstPassErrors, secondPassErrors));
     }
 }

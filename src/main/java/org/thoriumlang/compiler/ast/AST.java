@@ -17,12 +17,14 @@ package org.thoriumlang.compiler.ast;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenSource;
 import org.thoriumlang.compiler.antlr.ThoriumLexer;
 import org.thoriumlang.compiler.antlr.ThoriumParser;
 import org.thoriumlang.compiler.antlr4.LexerErrorListener;
 import org.thoriumlang.compiler.antlr4.ParserErrorListener;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
@@ -30,6 +32,8 @@ import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
 import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
 import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
+import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.data.Pair;
 import org.thoriumlang.compiler.symbols.Name;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 
@@ -37,18 +41,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-public class AST implements SyntaxErrorListener {
+public class AST {
     private final InputStream inputStream;
     private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
     private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
-    private final LexerErrorListener syntaxLexerErrorListener;
-    private final ParserErrorListener syntaxParserErrorListener;
     private final SymbolTable symbolTable;
 
     private boolean parsed = false;
@@ -60,8 +63,6 @@ public class AST implements SyntaxErrorListener {
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
-        this.syntaxLexerErrorListener = new LexerErrorListener(this);
-        this.syntaxParserErrorListener = new ParserErrorListener(this);
         this.symbolTable = symbolTable;
     }
 
@@ -74,61 +75,50 @@ public class AST implements SyntaxErrorListener {
             if (parsed) {
                 return this;
             }
-
             parsed = true;
-            errors = new ArrayList<>();
 
-            ThoriumParser.RootContext rootContext = parser().root();
+            Pair<ThoriumParser.RootContext, List<SyntaxError>> parsingResult = new Parser().parse(inputStream);
 
-            if (!errors.isEmpty()) {
-                // parsing failed, we cannot proceed...
+            if (!parsingResult.right().isEmpty()) {
+                errors = new ArrayList<>(parsingResult.right());
                 return this;
             }
 
-            root = (Root) new RootVisitor(nodeIdGenerator, namespace).visit(rootContext)
-                    .accept(new TypeFlatteningVisitor(nodeIdGenerator))
-                    .accept(new RelativesInjectionVisitor())
-                    .accept(new SymbolTableInitializationVisitor(
-                            findLocalTable(symbolTable, new Name(namespace).getParts()))
-                    );
-
-            errors.addAll(
-                    algorithms.stream()
-                            .map(a -> a.walk(root))
-                            .flatMap(List::stream)
-                            .collect(Collectors.toList())
+            Pair<Root, List<SemanticError>> algorithmsResult = applyAlgorithm(
+                    algorithms.iterator(),
+                    new Pair<>(
+                            (Root) parsingResult.left()
+                                    .accept(new RootVisitor(nodeIdGenerator, namespace))
+                                    .accept(new TypeFlatteningVisitor(nodeIdGenerator))
+                                    .accept(new RelativesInjectionVisitor())
+                                    .accept(new SymbolTableInitializationVisitor(
+                                            findLocalTable(symbolTable, new Name(namespace).getParts()))
+                                    ),
+                            Collections.emptyList()
+                    )
             );
+
+            errors = new ArrayList<>(algorithmsResult.right());
+            root = algorithmsResult.left();
         }
 
         return this;
     }
 
-    private ThoriumParser parser() {
-        ThoriumParser parser = new ThoriumParser(
-                new CommonTokenStream(
-                        lexer()
-                )
+    private Pair<Root, List<SemanticError>> applyAlgorithm(Iterator<Algorithm> currentAlgorithm,
+                                                           Pair<Root, List<SemanticError>> state) {
+        if (!currentAlgorithm.hasNext()) {
+            return state;
+        }
+
+        Pair<Root, List<SemanticError>> result = currentAlgorithm.next().walk(state.left());
+
+        return applyAlgorithm(
+                currentAlgorithm,
+                new Pair<>(result.left(), Lists.merge(state.right(), result.right()))
         );
-        parser.removeErrorListeners();
-        parser.addErrorListener(syntaxParserErrorListener);
-        return parser;
     }
 
-    private ThoriumLexer lexer() {
-        try {
-            ThoriumLexer lexer = new ThoriumLexer(
-                    CharStreams.fromStream(
-                            inputStream
-                    )
-            );
-            lexer.removeErrorListeners();
-            lexer.addErrorListener(syntaxLexerErrorListener);
-            return lexer;
-        }
-        catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 
     private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
         if (namespaces.isEmpty()) {
@@ -151,8 +141,44 @@ public class AST implements SyntaxErrorListener {
         return errors;
     }
 
-    @Override
-    public void onError(SyntaxError syntaxError) {
-        errors.add(syntaxError);
+    private static class Parser implements SyntaxErrorListener {
+        private final List<SyntaxError> errors = new ArrayList<>();
+
+        private Pair<ThoriumParser.RootContext, List<SyntaxError>> parse(InputStream inputStream) {
+            return new Pair<>(parser(lexer(inputStream)).root(), errors);
+        }
+
+        private ThoriumParser parser(TokenSource lexer) {
+            ThoriumParser parser = new ThoriumParser(
+                    new CommonTokenStream(
+                            lexer
+                    )
+            );
+            parser.removeErrorListeners();
+            parser.addErrorListener(new ParserErrorListener(this));
+            return parser;
+        }
+
+        private ThoriumLexer lexer(InputStream inputStream) {
+            try {
+                ThoriumLexer lexer = new ThoriumLexer(
+                        CharStreams.fromStream(
+                                inputStream
+                        )
+                );
+                lexer.removeErrorListeners();
+                lexer.addErrorListener(new LexerErrorListener(this));
+                return lexer;
+            }
+            catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+
+
+        @Override
+        public void onError(SyntaxError syntaxError) {
+            errors.add(syntaxError);
+        }
     }
 }

@@ -44,8 +44,7 @@ class SymbolicNameCheckerTest {
 
         Assertions.assertThat(
                 new SymbolicNameChecker()
-                        .walk(root)
-                        .stream()
+                        .walk(root).right().stream()
                         .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol already defined: someU (9)",
@@ -88,8 +87,7 @@ class SymbolicNameCheckerTest {
 
         Assertions.assertThat(
                 new SymbolicNameChecker()
-                        .walk(root)
-                        .stream()
+                        .walk(root).right().stream()
                         .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
         ).containsExactly(
                 "symbol already defined: method1() (3)"

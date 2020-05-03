@@ -17,9 +17,10 @@ package org.thoriumlang.compiler.ast.algorithms;
 
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.data.Pair;
 
 import java.util.List;
 
 public interface Algorithm {
-    List<SemanticError> walk(Root root);
+    Pair<Root, List<SemanticError>> walk(Root root);
 }

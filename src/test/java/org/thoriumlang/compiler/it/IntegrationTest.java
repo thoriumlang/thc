@@ -151,7 +151,7 @@ class IntegrationTest {
             "/org/thoriumlang/compiler/ast/algorithms/typechecking/Main_packageType"
     })
     @DisabledIfSystemProperty(named = "skipHtml", matches = "true")
-    void html(String path) throws Exception {
+    void html(String path) throws Exception { // TODO rewrite this test
         HttpResponse<String> uniResponse = Unirest.post("http://localhost:8888/")
                 .header("User-Agent",
                         "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.101 Safari/537.36")
@@ -195,15 +195,17 @@ class IntegrationTest {
                         "compilationErrors",
                         Map.class,
                         new TypeChecker(
+                                new NodeIdGenerator(),
                                 Collections.singletonList(
                                         (name, node) -> Optional.empty()
+                                )).walk(root).right().stream()
+                                .collect(
+                                        Collectors.toMap(
+                                                SemanticError::getNode,
+                                                Collections::singletonList,
+                                                Lists::merge
+                                        )
                                 )
-                        ).walk(root).stream()
-                                .collect(Collectors.toMap(
-                                        SemanticError::getNode,
-                                        Collections::singletonList,
-                                        Lists::merge
-                                ))
                 );
 
         return new HtmlWalker(

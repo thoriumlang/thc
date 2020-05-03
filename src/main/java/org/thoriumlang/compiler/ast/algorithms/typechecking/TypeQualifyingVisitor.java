@@ -99,7 +99,9 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
         List<Symbol> symbols = symbolTable.find(new Name(type));
 
         if (symbols.size() != 1) {
-            throw new IllegalStateException("found " + symbols.size() + " symbols for " + type + "; expecting excacly 1");
+            // type is not found, but this visitor's task is not to check the presence of types.
+            // we consider what we received as the canonical name for the missing type and return it.
+            return type;
         }
 
         if (symbols.get(0) instanceof AliasSymbol) {
@@ -107,6 +109,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
         }
 
         return type;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Node> T copyContext(T src, T dst) {
+        return (T) dst.getContext().putAll(src.getContext()).getNode();
     }
 
     @Override
@@ -118,12 +125,12 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(topLevel));
         }
 
-        return Maybe.success(new Root(
+        return Maybe.success(copyContext(node, new Root(
                 nodeIdGenerator.next(),
                 node.getNamespace(),
                 node.getUses(),
                 topLevel.value()
-        ));
+        )));
     }
 
     @Override
@@ -138,14 +145,14 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new Type(
+        return Maybe.success(copyContext(node, new Type(
                 nodeIdGenerator.next(),
                 node.getVisibility(),
                 node.getName(),
                 node.getTypeParameters(),
                 superType.value(),
                 extractValue(methods)
-        ));
+        )));
     }
 
     @Override
@@ -162,7 +169,7 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new Class(
+        return Maybe.success(copyContext(node, new Class(
                 nodeIdGenerator.next(),
                 node.getVisibility(),
                 node.getName(),
@@ -170,7 +177,7 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
                 superType.value(),
                 extractValue(methods),
                 extractValue(attributes)
-        ));
+        )));
     }
 
     @Override
@@ -181,10 +188,10 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(typeSpec));
         }
 
-        return Maybe.success(new TypeSpecIntersection(
+        return Maybe.success(copyContext(node, new TypeSpecIntersection(
                 nodeIdGenerator.next(),
                 extractValue(typeSpec)
-        ));
+        )));
     }
 
     @Override
@@ -195,10 +202,10 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(typeSpec));
         }
 
-        return Maybe.success(new TypeSpecUnion(
+        return Maybe.success(copyContext(node, new TypeSpecUnion(
                 nodeIdGenerator.next(),
                 extractValue(typeSpec)
-        ));
+        )));
     }
 
     @Override
@@ -209,11 +216,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(arguments));
         }
 
-        return Maybe.success(new TypeSpecSimple(
+        return Maybe.success(copyContext(node, new TypeSpecSimple(
                 nodeIdGenerator.next(),
                 getCanonicalName(node.getType(), node.getContext().require(SymbolTable.class)),
                 extractValue(arguments)
-        ));
+        )));
     }
 
     @Override
@@ -228,11 +235,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new TypeSpecFunction(
+        return Maybe.success(copyContext(node, new TypeSpecFunction(
                 nodeIdGenerator.next(),
                 extractValue(arguments),
                 returnType.value()
-        ));
+        )));
     }
 
     @Override
@@ -254,14 +261,14 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new MethodSignature(
+        return Maybe.success(copyContext(node, new MethodSignature(
                 nodeIdGenerator.next(),
                 node.getVisibility(),
                 node.getName(),
                 extractValue(typeParameters),
                 extractValue(parameters),
                 returnType.value()
-        ));
+        )));
     }
 
     @Override
@@ -272,11 +279,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(type));
         }
 
-        return Maybe.success(new Parameter(
+        return Maybe.success(copyContext(node, new Parameter(
                 nodeIdGenerator.next(),
                 node.getName(),
                 type.value()
-        ));
+        )));
     }
 
     @Override
@@ -312,10 +319,10 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(reference));
         }
 
-        return Maybe.success(new IdentifierValue(
+        return Maybe.success(copyContext(node, new IdentifierValue(
                 nodeIdGenerator.next(),
                 reference.value()
-        ));
+        )));
     }
 
     @Override
@@ -330,13 +337,13 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new NewAssignmentValue(
+        return Maybe.success(copyContext(node, new NewAssignmentValue(
                 nodeIdGenerator.next(),
                 node.getName(),
                 type.value(),
                 value.value(),
                 node.getMode()
-        ));
+        )));
     }
 
     @Override
@@ -351,11 +358,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new DirectAssignmentValue(
+        return Maybe.success(copyContext(node, new DirectAssignmentValue(
                 nodeIdGenerator.next(),
                 reference.value(),
                 value.value()
-        ));
+        )));
     }
 
     @Override
@@ -372,12 +379,12 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new IndirectAssignmentValue(
+        return Maybe.success(copyContext(node, new IndirectAssignmentValue(
                 nodeIdGenerator.next(),
                 indirectValue.value(),
                 reference.value(),
                 value.value()
-        ));
+        )));
     }
 
     @Override
@@ -394,12 +401,12 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new MethodCallValue(
+        return Maybe.success(copyContext(node, new MethodCallValue(
                 nodeIdGenerator.next(),
                 reference.value(),
                 extractValue(typeArguments),
                 extractValue(methodArguments)
-        ));
+        )));
     }
 
     @Override
@@ -414,11 +421,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new NestedValue(
+        return Maybe.success(copyContext(node, new NestedValue(
                 nodeIdGenerator.next(),
                 outer.value(),
                 inner.value()
-        ));
+        )));
     }
 
     @Override
@@ -437,13 +444,13 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new FunctionValue(
+        return Maybe.success(copyContext(node, new FunctionValue(
                 nodeIdGenerator.next(),
                 extractValue(typeParameters),
                 extractValue(parameters),
                 returnType.value(),
                 extractValue(statements)
-        ));
+        )));
     }
 
     @Override
@@ -454,11 +461,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             return Maybe.failure(collectErrors(value));
         }
 
-        return Maybe.success(new Statement(
+        return Maybe.success(copyContext(node, new Statement(
                 nodeIdGenerator.next(),
                 value.value(),
                 node.isLast()
-        ));
+        )));
     }
 
     @Override
@@ -473,11 +480,11 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new Method(
+        return Maybe.success(copyContext(node, new Method(
                 nodeIdGenerator.next(),
                 signature.value(),
                 extractValue(statements)
-        ));
+        )));
     }
 
     @Override
@@ -492,13 +499,13 @@ public class TypeQualifyingVisitor extends BaseVisitor<Maybe<? extends Node, Lis
             ));
         }
 
-        return Maybe.success(new Attribute(
+        return Maybe.success(copyContext(node, new Attribute(
                 nodeIdGenerator.next(),
                 node.getName(),
                 type.value(),
                 value.value(),
                 node.getMode()
-        ));
+        )));
     }
 
     @Override
