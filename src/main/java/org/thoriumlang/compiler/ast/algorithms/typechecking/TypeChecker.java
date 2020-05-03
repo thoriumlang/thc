@@ -19,10 +19,12 @@ import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.Node;
+import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.visitor.NodesMatchingVisitor;
 import org.thoriumlang.compiler.collections.Lists;
+import org.thoriumlang.compiler.data.Maybe;
 import org.thoriumlang.compiler.input.loaders.TypeLoader;
 import org.thoriumlang.compiler.symbols.AliasSymbol;
 import org.thoriumlang.compiler.symbols.Name;
@@ -67,6 +69,9 @@ public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to Ty
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+
+        // TODO use it!
+        // Maybe<Root, List<SemanticError>> qualifyingResult = new TypeQualifyingVisitor(new NodeIdGenerator()).visit(root);
 
         return Lists.merge(
                 discoveryErrors,

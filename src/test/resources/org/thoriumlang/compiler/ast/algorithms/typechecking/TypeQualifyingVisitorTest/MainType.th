@@ -1,0 +1,18 @@
+use org.thoriumlang.String;
+use org.thoriumlang.String: StringAlias;
+use org.thoriumlang.Object;
+use org.thoriumlang.Number;
+use org.thoriumlang.Date;
+use org.thoriumlang.Mutator;
+use org.thoriumlang.None;
+use org.thoriumlang.T;
+
+type MainType: Object {
+    getNames(first:String, last:StringAlias): None;
+
+    getAge(): Number;
+
+    setBirthDate(date: Date): None;
+
+    mutate[T](mutator: Mutator[T]): None;
+}

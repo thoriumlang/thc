@@ -1,0 +1,41 @@
+use org.thoriumlang.String;
+use org.thoriumlang.String: StringAlias;
+use org.thoriumlang.Object;
+use org.thoriumlang.Number;
+use org.thoriumlang.Date;
+use org.thoriumlang.Mutator;
+use org.thoriumlang.None;
+use org.thoriumlang.T;
+
+class MainClass: Object {
+    val uuidGenerator: ((): Number) = () => Number().random();
+    val uuid: Number;
+    val firstName: String = "";
+    val lastName: String | StringAlias = "";
+    var middleName: String & StringAlias = "";
+    var age: Number = 0;
+
+    MainClass() {
+        uuid.value = uuidGenerator.apply(); // tests nested value
+    }
+
+    getAge(newAge: Number): Number {
+        var age: Number?;
+        age = newAge; // tests direct assignment
+        this.age = age; // tests indirect assignment
+        return 0;
+    }
+
+    setBirthDate(date: Date) {
+        val mutator: Mutator[Date] = none;
+        mutate(mutator);
+    }
+
+    mutate[T](mutator: Mutator[T]) {}
+
+    mutateString(mutator: Mutator[String]) {}
+
+    execute(fn: ((String): String)) {}
+
+    randomUuid() {}
+}
