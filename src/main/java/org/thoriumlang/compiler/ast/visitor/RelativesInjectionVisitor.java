@@ -38,6 +38,7 @@ import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecUnion;
 import org.thoriumlang.compiler.ast.nodes.Use;
 
+// TODO make sure what is done survive the tree rewrites... (see https://github.com/thoriumlang/thc/issues/69)
 public class RelativesInjectionVisitor extends IdentityVisitor {
     @Override
     public Node visit(Root node) {

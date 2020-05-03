@@ -31,6 +31,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO verify what it does with context (see https://github.com/thoriumlang/thc/issues/69)
 public class TypeFlatteningVisitor extends CopyVisitor {
     private final NodeIdGenerator nodeIdGenerator;
 

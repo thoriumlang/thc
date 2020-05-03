@@ -49,6 +49,7 @@ import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.util.stream.Collectors;
 
+// TODO make sure what is done survive the tree rewrites... (see https://github.com/thoriumlang/thc/issues/69)
 public class SymbolTableInitializationVisitor extends IdentityVisitor {
     public static final String TABLE_NAME_BODY = "[body]";
     private final SymbolTable rootSymbolTable;

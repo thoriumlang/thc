@@ -51,6 +51,7 @@ public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to Ty
                         )
                 );
 
+        // TODO move to TypeDiscoveryVisitor
         List<SemanticError> typeNotFoundErrors = new NodesMatchingVisitor(n -> n instanceof TypeSpecSimple)
                 .visit(root).stream()
                 .map(t -> (TypeSpecSimple) t)
