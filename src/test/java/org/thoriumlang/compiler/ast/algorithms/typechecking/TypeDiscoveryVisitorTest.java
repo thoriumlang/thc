@@ -619,19 +619,13 @@ class TypeDiscoveryVisitorTest {
     }
 
     private Optional<Symbol> getSymbol(Node node, String name) {
-        return Lists.get(
-                node.getContext()
-                        .get(SymbolTable.class)
-                        .orElseThrow(IllegalStateException::new)
-                        .find(new Name(name)),
-                0);
+        return Lists.get(node.getContext().require(SymbolTable.class).find(new Name(name)), 0);
     }
 
     private void putSymbol(String name, Node node, Symbol symbol) {
         node
                 .getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(IllegalStateException::new)
+                .require(SymbolTable.class)
                 .put(new Name(name), symbol);
     }
 }

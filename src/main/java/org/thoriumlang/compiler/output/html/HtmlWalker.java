@@ -327,9 +327,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private void renderSymbolTable(Node node) {
-        SymbolTable symbolTable = node.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
+        SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
         symbolTables.add(templates.get(SymbolTable.class).render(
                 newModel(node)
                         .with("nodeId", formatNodeId(node))

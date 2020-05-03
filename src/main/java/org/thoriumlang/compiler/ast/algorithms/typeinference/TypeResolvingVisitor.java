@@ -82,13 +82,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     public List<SemanticError> visit(Class node) {
         List<SemanticError> superTypeErrors = node.getSuperType().accept(this);
 
-        String namespace = node
-                .getContext()
-                .require(Relatives.class)
-                .parent()
-                .map(n -> (Root) n.node())
-                .map(Root::getNamespace)
-                .orElseThrow(() -> new IllegalStateException("no parent found"));
+        String namespace = ((Root) getParentNode(node)).getNamespace();
 
         node.getContext().put(
                 TypeSpec.class,
@@ -278,9 +272,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         }
 
         // TODO this is probably wrong...
-        TypeSpec inferredType = target.value().getContext()
-                .get(TypeSpec.class)
-                .orElseThrow(() -> new IllegalStateException("no inferred type found"));
+        TypeSpec inferredType = target.value().getContext().require(TypeSpec.class);
 
         target.value().getContext().put(
                 TypeSpec.class,

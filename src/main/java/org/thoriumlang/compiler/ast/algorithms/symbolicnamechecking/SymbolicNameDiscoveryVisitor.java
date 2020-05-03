@@ -321,9 +321,7 @@ class SymbolicNameDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     }
 
     private SymbolTable getSymbolTable(Node node) {
-        return node.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
+        return node.getContext().require(SymbolTable.class);
     }
 
     private List<SemanticError> alreadyDefined(SymbolTable symbolTable, Name identifier, Node node) {

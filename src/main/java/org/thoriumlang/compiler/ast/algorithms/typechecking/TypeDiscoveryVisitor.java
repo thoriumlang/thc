@@ -109,9 +109,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
     }
 
     private SymbolTable getSymbolTable(Node node) {
-        return node.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("no symbol table found"));
+        return node.getContext().require(SymbolTable.class);
     }
 
     @Override

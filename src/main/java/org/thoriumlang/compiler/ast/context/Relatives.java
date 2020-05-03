@@ -48,8 +48,7 @@ public class Relatives {
     public List<Relatives> children(Visitor<List<Node>> visitor) {
         return node.accept(visitor).stream()
                 .map(n -> n.getContext()
-                        .get(Relatives.class)
-                        .orElseThrow(() -> new IllegalStateException("No relatives found in node's context")))
+                        .require(Relatives.class))
                 .collect(Collectors.toList());
     }
 

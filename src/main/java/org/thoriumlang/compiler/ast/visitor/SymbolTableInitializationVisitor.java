@@ -78,15 +78,12 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
     }
 
     private SymbolTable getSymbolTable(Node node) {
-        return node.getContext()
-                .get(SymbolTable.class)
-                .orElseThrow(() -> new IllegalStateException("No symbol table found"));
+        return node.getContext().require(SymbolTable.class);
     }
 
     private Node getParent(Node node) {
         return node.getContext()
-                .get(Relatives.class)
-                .orElseThrow(() -> new IllegalStateException("Relatives not found"))
+                .require(Relatives.class)
                 .parent()
                 .orElseThrow(() -> new IllegalStateException("No parent found"))
                 .node();
@@ -177,8 +174,7 @@ public class SymbolTableInitializationVisitor extends IdentityVisitor {
                  *    method.
                  */
                 node.getContext()
-                        .get(Relatives.class)
-                        .orElseThrow(() -> new IllegalStateException("No relatives found"))
+                        .require(Relatives.class)
                         .parent()
                         .orElseThrow(() -> new IllegalStateException("No parent found"))
                         .node()
