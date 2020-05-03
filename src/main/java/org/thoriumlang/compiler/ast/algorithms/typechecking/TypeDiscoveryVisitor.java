@@ -75,7 +75,12 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
         Name aliasName = new Name(node.getTo());
         Name targetName = new Name(node.getFrom(), namespace);
 
-        List<SemanticError> symbolAlreadyDefinedErrors = Stream.of(aliasName, targetName)
+        if (!symbolTable.find(targetName).isEmpty()) {
+            symbolTable.put(aliasName, new AliasSymbol(node, targetName.getFullName()));
+            return Collections.emptyList();
+        }
+
+        List<SemanticError> symbolAlreadyDefinedErrors = Stream.of(aliasName)
                 .map(name -> symbolTable
                         .find(name)
                         .stream()
@@ -84,6 +89,7 @@ public class TypeDiscoveryVisitor extends BaseVisitor<List<SemanticError>> {
                 .map(s -> s.collect(Collectors.toList()))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+
         if (!symbolAlreadyDefinedErrors.isEmpty()) {
             return symbolAlreadyDefinedErrors;
         }

@@ -282,16 +282,14 @@ class TypeDiscoveryVisitorTest {
                 )
         ))));
 
-        Assertions.assertThat(visitor.visit(root).stream()
-                .map(se -> se.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
-        )
-                .isNotEmpty()
-                .containsExactly("symbol already defined: java.lang.String (1)");
+        Assertions.assertThat(visitor.visit(root))
+                .isEmpty();
         Assertions.assertThat(getSymbol(root, "JavaString1"))
                 .get()
                 .isInstanceOf(AliasSymbol.class);
         Assertions.assertThat(getSymbol(root, "JavaString2"))
-                .isEmpty();
+                .get()
+                .isInstanceOf(AliasSymbol.class);
     }
 
     @Test
