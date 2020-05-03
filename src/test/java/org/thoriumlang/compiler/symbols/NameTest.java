@@ -19,12 +19,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 class NameTest {
@@ -96,12 +94,9 @@ class NameTest {
 
     @TestFactory
     Stream<DynamicTest> examples() {
-        return new BufferedReader(
-                new InputStreamReader(
-                        NameTest.class.getResourceAsStream("/org/thoriumlang/compiler/symbols/Name.tests")
-                )
-        )
-                .lines()
+        return Stream.of(ExternalString.fromClasspath(
+                "/org/thoriumlang/compiler/symbols/Name.tests"
+        ).split("\n"))
                 .filter(l -> !l.startsWith("#"))
                 .map(l -> l.replaceAll("\\s+", " "))
                 .map(l -> l.split(" "))

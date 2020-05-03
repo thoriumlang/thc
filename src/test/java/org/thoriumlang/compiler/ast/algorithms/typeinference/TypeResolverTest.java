@@ -1,7 +1,6 @@
 package org.thoriumlang.compiler.ast.algorithms.typeinference;
 
 import com.google.common.collect.Maps;
-import jdk.nashorn.internal.ir.debug.ASTWriter;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -25,10 +24,9 @@ import org.thoriumlang.compiler.input.SourceFiles;
 import org.thoriumlang.compiler.input.loaders.ThoriumRTClassLoader;
 import org.thoriumlang.compiler.symbols.SymbolTable;
 import org.thoriumlang.compiler.symbols.SymbolicName;
+import org.thoriumlang.compiler.testsupport.ExternalString;
 import org.thoriumlang.compiler.testsupport.SymbolsExtractionVisitor;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -255,13 +253,9 @@ class TypeResolverTest {
     }
 
     private void doInferenceErrorsAssert(Root root, List<SemanticError> errors) {
-        String fileContent = new BufferedReader(
-                new InputStreamReader(
-                        TypeResolverTest.class.getResourceAsStream(
-                                Paths.get(TEST_FILES_PATH, root.getTopLevelNode().getName() + ".th").toString()
-                        )
-                )
-        ).lines().collect(Collectors.joining("\n"));
+        String fileContent = ExternalString.fromClasspath(
+                Paths.get(TEST_FILES_PATH, root.getTopLevelNode().getName() + ".th").toString()
+        );
 
         String expectedErrors = fileContent.split("/\\*ERRORS")[1].trim();
 
