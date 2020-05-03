@@ -23,6 +23,7 @@ import java.util.Objects;
  * Represents a variable, a constant, a parameter, a method or a class attribute.
  */
 // TODO one ctor for each accepted defining node
+// TODO rename to BoundName?
 public class SymbolicName implements Symbol {
     private final Node definingNode;
 

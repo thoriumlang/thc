@@ -161,7 +161,7 @@ public class JsonAST {
 
     private static class JsonSymbolTable {
         private static final Map<Class<? extends Symbol>, BiFunction<String, Symbol, Map<String, Object>>> mappers =
-                ImmutableMap.of(
+                ImmutableMap.of(// TODO change once Symbol implement the visitor pattern
                         ThoriumType.class,
                         (name, symbol) -> ImmutableMap.of(
                                 "name", name,

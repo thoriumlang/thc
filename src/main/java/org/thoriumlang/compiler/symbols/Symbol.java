@@ -17,6 +17,7 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+// TODO implement visitor pattern? (get rd of instanceof)
 public interface Symbol {
     /**
      * @return the node where the symbol is defined.

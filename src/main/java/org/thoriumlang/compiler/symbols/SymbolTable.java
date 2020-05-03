@@ -62,7 +62,7 @@ public class SymbolTable {
         }
 
         List<String> parts = new ArrayList<>(name.getParts());
-        SymbolTable table = findRoot();
+        SymbolTable table = root();
 
         while (parts.size() > 1) {
             table.scopes.putIfAbsent(parts.get(0), table.createScope(parts.get(0)));
@@ -73,20 +73,8 @@ public class SymbolTable {
         return table;
     }
 
-    private SymbolTable findRoot() {
-        SymbolTable table = this;
-        while (!table.isRoot()) {
-            table = table.parent;
-        }
-        return table;
-    }
-
-    private boolean isRoot() {
-        return parent == null;
-    }
-
     public List<Symbol> find(Name name) {
-        return findTable(name).findLocal(new Name(name.getNormalizedSimpleName()));
+        return findTable(name).findLocal(name);
     }
 
     private List<Symbol> findLocal(Name name) {
@@ -100,6 +88,10 @@ public class SymbolTable {
                 simpleSignature,
                 isRoot() ? Collections.emptyList() : parent.findLocalMethod(simpleSignature)
         );
+    }
+
+    private boolean isRoot() {
+        return parent == null;
     }
 
     private List<Symbol> findLocalVariable(String name) {
@@ -135,10 +127,11 @@ public class SymbolTable {
     }
 
     public SymbolTable root() {
-        if (isRoot()) {
-            return this;
+        SymbolTable table = this;
+        while (!table.isRoot()) {
+            table = table.parent;
         }
-        return enclosingScope().root();
+        return table;
     }
 
     public <T> T accept(SymbolTableVisitor<? extends T> visitor) {

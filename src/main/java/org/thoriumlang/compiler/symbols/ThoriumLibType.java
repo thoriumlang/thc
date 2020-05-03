@@ -2,6 +2,9 @@ package org.thoriumlang.compiler.symbols;
 
 import org.thoriumlang.compiler.ast.nodes.Node;
 
+/**
+ * Represents a type coming from the thorium RT library.
+ */
 public class ThoriumLibType implements Symbol {
     private final Node node;
     private final String name;

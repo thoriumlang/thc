@@ -19,6 +19,9 @@ import org.thoriumlang.compiler.ast.nodes.Node;
 
 import java.util.Objects;
 
+/**
+ * An alias to another symbol.
+ */
 public class AliasSymbol implements Symbol {
     private final Node definingNode;
     private final String target;
@@ -26,6 +29,14 @@ public class AliasSymbol implements Symbol {
     public AliasSymbol(Node definingNode, String target) {
         this.definingNode = Objects.requireNonNull(definingNode, "definingNode cannot be null");
         this.target = Objects.requireNonNull(target, "target cannot be null");
+    }
+
+    /**
+     * Returns the name of the symbol being aliased.
+     * @return the target symbol fully qualified name.
+     */
+    public String getTarget() {
+        return target;
     }
 
     @Override
