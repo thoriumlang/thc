@@ -63,7 +63,7 @@ public class TypeChecker implements Algorithm, TypeLoader { // TODO rename to Ty
                 .map(t -> (TypeSpecSimple) t)
                 .filter(t -> t.getContext().require(SymbolTable.class).find(new Name(t.getType())).isEmpty())
                 .map(t -> {
-                    Name name = new Name(t.getType(), root.getNamespace());
+                    Name name = new Name(t.getType(), root.getNamespace()); // TODO make sure t is not qualified
 
                     if (load(name, t, t.getContext().require(SymbolTable.class))) {
                         return null;

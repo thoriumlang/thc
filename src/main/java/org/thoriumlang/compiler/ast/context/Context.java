@@ -157,12 +157,12 @@ public class Context {
         return map.containsKey(key);
     }
 
-    public Context putAll(Context other) {
+    public Context putAll(Context other) { // TODO should deep copy
         map.putAll(other.map);
         return this;
     }
 
-    public <T> Context copyFrom(java.lang.Class<T> type, Node source) {
+    public <T> Context copyFrom(java.lang.Class<T> type, Node source) { // TODO should deep copy
         source.getContext().get(type).ifPresent(
                 v -> put(type, v)
         );

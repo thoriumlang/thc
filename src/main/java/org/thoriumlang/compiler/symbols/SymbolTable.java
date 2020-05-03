@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO should keep a mapping from nodeId -> symbol so that we can update the target node by giving the previous nodeId
 public class SymbolTable {
     private final String name;
     private final SymbolTable parent;
