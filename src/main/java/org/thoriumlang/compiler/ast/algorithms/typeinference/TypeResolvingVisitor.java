@@ -268,7 +268,7 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
 
         Maybe<Node, SemanticError> target = getTargetNode(node.getReference());
 
-        if (!target.success()) {
+        if (!target.isSuccess()) {
             // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
             //  see https://github.com/thoriumlang/thc/issues/72
             return Lists.merge(
@@ -278,11 +278,11 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
         }
 
         // TODO this is probably wrong...
-        TypeSpec inferredType = target.get().getContext()
+        TypeSpec inferredType = target.value().getContext()
                 .get(TypeSpec.class)
                 .orElseThrow(() -> new IllegalStateException("no inferred type found"));
 
-        target.get().getContext().put(
+        target.value().getContext().put(
                 TypeSpec.class,
                 new TypeSpecIntersection(
                         nodeIdGenerator.next(),
@@ -381,15 +381,15 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
     public List<SemanticError> visit(Reference node) {
         Maybe<Node, SemanticError> target = getTargetNode(node);
 
-        if (!target.success()) {
+        if (!target.isSuccess()) {
             // TODO error handling: shouldn't we put some dummy match-all type as the inferred type here?
             //  see https://github.com/thoriumlang/thc/issues/72
             return Collections.singletonList(target.error());
         }
 
         return Lists.merge(
-                needsTypeInference(target.get()) ? target.get().accept(this) : Collections.emptyList(),
-                copyTypeSpec(node, target.get())
+                needsTypeInference(target.value()) ? target.value().accept(this) : Collections.emptyList(),
+                copyTypeSpec(node, target.value())
         );
     }
 
@@ -440,10 +440,10 @@ public class TypeResolvingVisitor implements Visitor<List<SemanticError>> {
             return Maybe.success(targetNodes.get(0));
         });
 
-        if (targetNode.success() && targetNodes.size() > 1) {
+        if (targetNode.isSuccess() && targetNodes.size() > 1) {
             node.getContext().put(
                     ReferencedNode.class,
-                    new ReferencedNode(Collections.singletonList(targetNode.get()))
+                    new ReferencedNode(Collections.singletonList(targetNode.value()))
             );
         }
 

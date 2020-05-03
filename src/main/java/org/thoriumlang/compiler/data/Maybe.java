@@ -20,11 +20,15 @@ public class Maybe<T, E> {
         return new Maybe<>(null, Objects.requireNonNull(error, "error cannot be null"));
     }
 
-    public boolean success() {
+    public boolean isSuccess() {
         return value != null;
     }
 
-    public T get() {
+    public boolean isFailure() {
+        return !isSuccess();
+    }
+
+    public T value() {
         if (value == null) {
             throw new NoSuchElementException("No value present");
         }

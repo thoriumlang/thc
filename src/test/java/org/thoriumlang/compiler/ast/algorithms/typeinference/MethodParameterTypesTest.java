@@ -75,7 +75,7 @@ class MethodParameterTypesTest {
                                         new TypeSpecSimple(nodeIdGenerator.next(), "B", Collections.emptyList())
                                 )
                         )
-                ).success()
+                ).isSuccess()
         ).isFalse();
     }
 
@@ -98,7 +98,7 @@ class MethodParameterTypesTest {
                                         new TypeSpecSimple(nodeIdGenerator.next(), "A", Collections.emptyList())
                                 )
                         )
-                ).get()
+                ).value()
         ).isEqualTo(node);
     }
 }

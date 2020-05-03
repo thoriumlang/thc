@@ -24,18 +24,20 @@ class MaybeTest {
     @Test
     void success() {
         Maybe<String, String> maybe = Maybe.success("Success");
-        Assertions.assertThat(maybe.success()).isTrue();
-        Assertions.assertThat(maybe.get()).isEqualTo("Success");
-        Assertions.assertThatThrownBy(() -> maybe.error())
+        Assertions.assertThat(maybe.isSuccess()).isTrue();
+        Assertions.assertThat(maybe.isFailure()).isFalse();
+        Assertions.assertThat(maybe.value()).isEqualTo("Success");
+        Assertions.assertThatThrownBy(maybe::error)
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("No error present");
     }
     @Test
     void failure() {
         Maybe<String, String> maybe = Maybe.failure("Failure");
-        Assertions.assertThat(maybe.success()).isFalse();
+        Assertions.assertThat(maybe.isSuccess()).isFalse();
+        Assertions.assertThat(maybe.isFailure()).isTrue();
         Assertions.assertThat(maybe.error()).isEqualTo("Failure");
-        Assertions.assertThatThrownBy(() -> maybe.get())
+        Assertions.assertThatThrownBy(maybe::value)
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("No value present");
     }
