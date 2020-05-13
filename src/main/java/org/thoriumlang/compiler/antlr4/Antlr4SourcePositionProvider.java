@@ -37,7 +37,7 @@ public class Antlr4SourcePositionProvider implements SourcePositionProvider<Toke
                                 lastToken.getCharPositionInLine() + lastToken.getText().length() + 1
                         ),
                         Arrays.asList(firstToken.getInputStream().toString().split("\n"))
-                                .subList(firstToken.getLine() - 1, lastToken.getLine() - 1)
+                                .subList(firstToken.getLine() - 1, lastToken.getLine())
                 )
         );
         return node;
