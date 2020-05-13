@@ -29,7 +29,7 @@ on line 3, column 9
 
 Cannot infer type
   2.     method() {
-         ^^^^^^^^^^ °°°
+         ^^^^^^^^^^
   3.         val error_1 = numberMethod("String");
   4.     }
 on line 2, column 5

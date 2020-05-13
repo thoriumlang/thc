@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class DefaultErrorFormatter implements SemanticErrorFormatter, SyntaxErrorFormatter{
+class DefaultErrorFormatter implements SemanticErrorFormatter, SyntaxErrorFormatter {
     @Override
     public String format(SourcePosition sourcePosition, String message, RecognitionException exception) {
         return format(sourcePosition, message);
@@ -18,15 +18,13 @@ class DefaultErrorFormatter implements SemanticErrorFormatter, SyntaxErrorFormat
     @Override
     public String format(SourcePosition sourcePosition, String message) {
         int padding = lineNumberPrefixWidth(sourcePosition.getEndLine()) + sourcePosition.getStartColumn() - 1;
-        int underlineLength = Math.min(
-                sourcePosition.getLines().get(0).length() - sourcePosition.getStartLine() - 2,
+        int underlineLength = Math.max(Math.min(
+                sourcePosition.getLines().get(0).length() - sourcePosition.getStartColumn() + 1,
                 sourcePosition.getLength()
-        );
-        boolean errorSpansMultipleLines = sourcePosition.getLength() > underlineLength;
+        ), 1);
 
         String underline = Strings.repeat(" ", padding) +
-                Strings.repeat("^", underlineLength) +
-                (errorSpansMultipleLines ? " °°°" : "");
+                Strings.repeat("^", underlineLength);
 
         List<String> lines =
                 sourcePosition.getLines()
