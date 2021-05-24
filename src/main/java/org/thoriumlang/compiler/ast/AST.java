@@ -15,6 +15,7 @@
  */
 package org.thoriumlang.compiler.ast;
 
+import io.vavr.control.Either;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenSource;
@@ -27,7 +28,6 @@ import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.data.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,15 +64,15 @@ public class AST {
             }
             parsed = true;
 
-            Pair<ThoriumParser.RootContext, List<SyntaxError>> parsingResult = new Parser().parse(inputStream);
+            Either<List<SyntaxError>, ThoriumParser.RootContext> parsingResult = new Parser().parse(inputStream);
 
-            if (!parsingResult.right().isEmpty()) {
-                errors = new ArrayList<>(parsingResult.right());
+            if (parsingResult.isLeft()) {
+                errors = new ArrayList<>(parsingResult.getLeft());
                 return this;
             }
 
             errors = Collections.emptyList();
-            root = parsingResult.left().accept(new RootVisitor(nodeIdGenerator, namespace));
+            root = parsingResult.get().accept(new RootVisitor(nodeIdGenerator, namespace));
         }
 
         return this;
@@ -91,8 +91,12 @@ public class AST {
     private static class Parser implements SyntaxErrorListener {
         private final List<SyntaxError> errors = new ArrayList<>();
 
-        private Pair<ThoriumParser.RootContext, List<SyntaxError>> parse(InputStream inputStream) {
-            return new Pair<>(parser(lexer(inputStream)).root(), errors);
+        private Either<List<SyntaxError>, ThoriumParser.RootContext> parse(InputStream inputStream) {
+            ThoriumParser.RootContext root = parser(lexer(inputStream)).root();
+            if (errors.isEmpty()) {
+                return Either.right(root);
+            }
+            return Either.left(errors);
         }
 
         private ThoriumParser parser(TokenSource lexer) {
