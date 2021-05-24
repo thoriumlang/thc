@@ -48,7 +48,7 @@ class CompilerTest {
                         "onSourceStarted",
                         "onError:syntaxError (1)",
                         "onEvent:plugin",
-                        "onError:syntaxError (1)",
+                        "onError:pluginError (1)",
                         "onSourceFinished",
                         "onCompilationFinished"
                 );
@@ -103,7 +103,7 @@ class CompilerTest {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
-            return Collections.singletonList(new SyntaxError("syntaxError", 1, 2, 3, "errorLine", null));
+            return Collections.singletonList(new SyntaxError("pluginError", 1, 2, 3, "errorLine", null));
         }
     }
 
