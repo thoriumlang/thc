@@ -1,6 +1,0 @@
-class inferValues {
-    val assert_Boolean_1 = true;
-    val assert_Boolean_2 = false;
-    val assert_String_3 = "String";
-    val assert_Number_4 = 1;
-}

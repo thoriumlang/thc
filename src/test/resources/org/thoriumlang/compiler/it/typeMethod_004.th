@@ -1,3 +1,0 @@
-type Type {
-  method(p: T): Type;
-}

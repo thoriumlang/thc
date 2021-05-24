@@ -1,4 +1,0 @@
-use _load_006_1;
-type _load_006 {
-    method(): _load_006_1;
-}

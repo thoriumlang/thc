@@ -1,7 +1,0 @@
-class Class {
-    val identifier;
-
-    method(): Class {
-        identifier;
-    }
-}

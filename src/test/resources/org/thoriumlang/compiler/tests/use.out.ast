@@ -1,9 +1,0 @@
-NAMESPACE org.thoriumlang.compiler.tests
-USE a.b.C : C
-USE a.b.C : CC
-USE a.b.* : *
-USE a.b.c.D : D
-USE a.b.c.E : E
-USE a.b.c.D : DD
-USE a.b.c.E : EE
-NAMESPACE TYPE T[] : org.thoriumlang.Object[]:

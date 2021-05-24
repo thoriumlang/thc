@@ -17,7 +17,6 @@ package org.thoriumlang.compiler.input;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.thoriumlang.compiler.symbols.Name;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -27,7 +26,7 @@ class SourceFilesTest {
     @Test
     void sources() throws URISyntaxException {
         SourceFiles sourceFiles = new SourceFiles(
-                Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/").toURI()),
+                Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/input/").toURI()),
                 p -> p.getFileName().toString().equals("class.th")
         );
 
@@ -36,19 +35,6 @@ class SourceFilesTest {
         Assertions.assertThat(sources)
                 .hasSize(1);
 
-        Assertions.assertThat(sources.get(0).toString()).endsWith("/org/thoriumlang/compiler/tests/class.th");
-    }
-
-    @Test
-    void load() throws URISyntaxException {
-        SourceFiles sourceFiles = new SourceFiles(
-                Paths.get(SourceFilesTest.class.getResource("/org/thoriumlang/compiler/").toURI()),
-                p -> false
-        );
-
-        Assertions.assertThat(sourceFiles.sources())
-                .isEmpty();
-
-        sourceFiles.load(new Name("org.thoriumlang.compiler.tests.class"));
+        Assertions.assertThat(sources.get(0).toString()).endsWith("/org/thoriumlang/compiler/input/class.th");
     }
 }

@@ -1,6 +1,0 @@
-use LegalPerson : Legal; // not needed, used to trigger compilation
-use NaturalPerson;       // not needed, used to trigger compilation
-
-class Main {
-
-}

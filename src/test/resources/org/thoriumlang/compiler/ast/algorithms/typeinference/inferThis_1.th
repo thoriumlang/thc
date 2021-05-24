@@ -1,5 +1,0 @@
-class inferThis {
-    method() {
-        val assert_ObjectAndtypeinferenceDOTinferThis = this;
-    }
-}

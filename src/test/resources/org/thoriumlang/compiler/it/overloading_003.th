@@ -1,4 +1,0 @@
-type Type {
-    method(): Type;
-    method(): Type;
-}

@@ -1,5 +1,0 @@
-class Class {
-    method[T](): Class {
-        (p: Class[T]) => none;
-    }
-}

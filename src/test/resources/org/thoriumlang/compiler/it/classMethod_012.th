@@ -1,4 +1,0 @@
-class Class[T] {
-    method(p: Class[T]): Class {
-    }
-}

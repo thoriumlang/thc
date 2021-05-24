@@ -1,4 +1,0 @@
-type Person {
-    getLegalAddress(): Address;
-    getMailingAddress(): Address?;
-}

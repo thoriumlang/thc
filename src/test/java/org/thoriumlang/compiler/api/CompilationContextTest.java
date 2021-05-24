@@ -3,16 +3,12 @@ package org.thoriumlang.compiler.api;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
-import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
-import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.testsupport.NodeStub;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -22,9 +18,7 @@ import java.util.Optional;
 class CompilationContextTest {
     private static final CompilationListener listener = new NoopCompilationListener();
     private static final Root root = new RootStub();
-    private static final AST ast = new AST(
-            new InputStreamStub(), "", new NodeIdGenerator(), Collections.emptyList(), new SymbolTable()
-    ) {
+    private static final AST ast = new AST(new InputStreamStub(), "", new NodeIdGenerator()) {
         @Override
         public AST parse() {
             // nothing to parse, the AST is already built
@@ -38,28 +32,8 @@ class CompilationContextTest {
 
         @Override
         public List<CompilationError> errors() {
-            return Collections.singletonList(new SymbolNotFoundError(
-                    new NodeStub()
-                            .getContext()
-                            .put(
-                                    SourcePosition.class,
-                                    new SourcePosition(
-                                            new SourcePosition.Position(1, 1),
-                                            new SourcePosition.Position(1, 1),
-                                            Collections.singletonList("")
-                                    )
-                            )
-                            .put(
-                                    SourcePosition.class,
-                                    new SourcePosition(
-                                            new SourcePosition.Position(1, 1),
-                                            new SourcePosition.Position(1, 1),
-                                            Collections.singletonList("")
-                                    )
-                            )
-                            .getNode(),
-                    "message"
-            ));
+            return Collections.singletonList(new CompilationError() {
+            });
         }
     };
 

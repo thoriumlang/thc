@@ -1,6 +1,0 @@
-type Type {
-    method1(): Type;
-    method1(): Type;
-    method1(a: String): Type;
-    method2(): Type;
-}

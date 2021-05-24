@@ -1,4 +1,0 @@
-class Class {
-    method(p1: Class, p2: Class): Class {
-    }
-}

@@ -1,3 +1,0 @@
-type Type[T] {
-  method(p1: U) : T;
-}

@@ -16,15 +16,12 @@
 package org.thoriumlang.compiler.input;
 
 
-import org.thoriumlang.compiler.symbols.Name;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -125,26 +122,5 @@ public class SourceFiles implements Sources {
                 .substring(path.toString().length())
                 .replace(File.separator, ".")
                 .replaceFirst("^\\.", "");
-    }
-
-    @Override
-    public Optional<Source> load(Name name) {
-        for (Path rootPath : findThRoots()) {
-            Path path = rootPath.resolve(name.getFullName().replace(".", File.separator) + ".th");
-
-            if (Files.exists(path)) {
-                return Optional.of(
-                        new SourceFile(
-                                namespace(
-                                        path.getParent(),
-                                        path,
-                                        Collections.singletonList(rootPath)
-                                ),
-                                path
-                        )
-                );
-            }
-        }
-        return Optional.empty();
     }
 }

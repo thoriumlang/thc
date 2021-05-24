@@ -1,5 +1,0 @@
-class Class {
-    method(): Class {
-        () : Type0 | (Type1 & Type2) => none;
-    }
-}

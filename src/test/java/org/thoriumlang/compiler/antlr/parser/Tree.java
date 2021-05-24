@@ -96,8 +96,4 @@ class Tree {
             return null;
         }
     }
-
-    String serialize() {
-        return serialize("root");
-    }
 }

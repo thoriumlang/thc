@@ -1,5 +1,0 @@
-use java.lang.String;
-
-type Country {
-    getName(): String;
-}

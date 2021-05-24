@@ -1,5 +1,0 @@
-class Main {
-    f(): CustomType {
-        // nothing
-    }
-}

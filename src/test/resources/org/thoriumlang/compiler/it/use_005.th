@@ -1,3 +1,0 @@
-use java.util.{List: JavaList, Set: JavaSet};
-type Type {
-}

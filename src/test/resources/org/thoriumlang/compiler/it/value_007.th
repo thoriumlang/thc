@@ -1,5 +1,0 @@
-class Class {
-    method(): Class {
-        this;
-    }
-}

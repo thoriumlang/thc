@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMap;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.thoriumlang.compiler.api.errors.SemanticError;
-import org.thoriumlang.compiler.ast.context.ReferencedNode;
 import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.Attribute;
 import org.thoriumlang.compiler.ast.nodes.BooleanValue;
@@ -53,7 +52,6 @@ import org.thoriumlang.compiler.ast.nodes.Use;
 import org.thoriumlang.compiler.ast.visitor.BaseVisitor;
 import org.thoriumlang.compiler.ast.visitor.Visitor;
 import org.thoriumlang.compiler.output.Walker;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -97,8 +95,8 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
             .put(MethodSignature.class, classpathTemplate(TEMPLATE_PATH + "methodSignature.twig"))
             .put(Parameter.class, classpathTemplate(TEMPLATE_PATH + "parameter.twig"))
             .put(Statement.class, classpathTemplate(TEMPLATE_PATH + "statement.twig"))
-            .put(SemanticError.class, classpathTemplate(TEMPLATE_PATH + "compilationError.twig"))
-            .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig"))
+            // .put(SemanticError.class, classpathTemplate(TEMPLATE_PATH + "compilationError.twig")) // TODO rewrite
+            // .put(SymbolTable.class, classpathTemplate(TEMPLATE_PATH + "symbolTable.twig")) TODO rewrite
             .build();
     private final Root root;
     private final Map<Node, List<SemanticError>> compilationErrors;
@@ -156,7 +154,7 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private JtwigModel newModel(Node node) {
-        Optional<SourcePosition> sourcePosition = node.getContext().get(SourcePosition.class);
+        Optional<SourcePosition> sourcePosition = Optional.empty();// TODO redo node.getContext().get(SourcePosition.class);
 
         return JtwigModel.newModel()
                 .with("nodeId", formatNodeId(node))
@@ -327,22 +325,23 @@ public class HtmlWalker implements Visitor<String>, Walker<String> {
     }
 
     private void renderSymbolTable(Node node) {
-        SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
-        symbolTables.add(templates.get(SymbolTable.class).render(
-                newModel(node)
-                        .with("nodeId", formatNodeId(node))
-                        .with("sourceNodeId", "")
-                        .with("name", symbolTable)
-                        .with("hash", Integer.toHexString(symbolTable.hashCode()))
-// FIXME rewrite
-//                        .with("symbols", symbolTable.symbolsStream()
-//                                .map(s -> ImmutableMap.of(
-//                                        "name", s.getName(),
-//                                        "kind", s.getClass().getSimpleName(),
-//                                        "refNodeId", formatNodeId(s.getNode())
-//                                ))
-//                                .collect(Collectors.toList()))
-        ));
+        // FIXME rewrite
+//        SymbolTable symbolTable = node.getContext().require(SymbolTable.class);
+//        symbolTables.add(templates.get(SymbolTable.class).render(
+//                newModel(node)
+//                        .with("nodeId", formatNodeId(node))
+//                        .with("sourceNodeId", "")
+//                        .with("name", symbolTable)
+//                        .with("hash", Integer.toHexString(symbolTable.hashCode()))
+//
+////                        .with("symbols", symbolTable.symbolsStream()
+////                                .map(s -> ImmutableMap.of(
+////                                        "name", s.getName(),
+////                                        "kind", s.getClass().getSimpleName(),
+////                                        "refNodeId", formatNodeId(s.getNode())
+////                                ))
+////                                .collect(Collectors.toList()))
+//        ));
     }
 
     @Override

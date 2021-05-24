@@ -16,16 +16,13 @@
 package org.thoriumlang.compiler.input;
 
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 
 public class SourceFile implements Source {
@@ -38,13 +35,11 @@ public class SourceFile implements Source {
     }
 
     @Override
-    public AST ast(NodeIdGenerator nodeIdGenerator, SymbolTable symbolTable, List<Algorithm> algorithms) {
+    public AST ast(NodeIdGenerator nodeIdGenerator) {
         return new AST(
                 inputStream(),
                 namespace(),
-                nodeIdGenerator,
-                algorithms,
-                symbolTable
+                nodeIdGenerator
         );
     }
 

@@ -1,4 +1,0 @@
-type Type[T] {
-  method1(p1: T): Type;
-  method2(p2: T): Type;
-}

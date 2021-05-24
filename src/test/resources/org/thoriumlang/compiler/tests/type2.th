@@ -1,4 +1,0 @@
-public type MyType[A, B]: Parent[o.A, B] {
-    add[T, U](a: T): T;
-    add[T, U](a: T[U]): T[U];
-}

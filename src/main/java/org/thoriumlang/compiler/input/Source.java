@@ -16,11 +16,7 @@
 package org.thoriumlang.compiler.input;
 
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
-import org.thoriumlang.compiler.symbols.SymbolTable;
-
-import java.util.List;
 
 /**
  * Represents a source to compile.
@@ -28,5 +24,5 @@ import java.util.List;
  * Must override {@link Object#equals(Object)} and {@link Object#hashCode()}.
  */
 public interface Source {
-    AST ast(NodeIdGenerator nodeIdGenerator, SymbolTable symbolTable, List<Algorithm> algorithms);
+    AST ast(NodeIdGenerator nodeIdGenerator);
 }

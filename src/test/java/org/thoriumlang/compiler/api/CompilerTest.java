@@ -4,27 +4,20 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
-import org.thoriumlang.compiler.api.errors.SymbolNotFoundError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
 import org.thoriumlang.compiler.ast.AST;
-import org.thoriumlang.compiler.ast.context.SourcePosition;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
 import org.thoriumlang.compiler.ast.nodes.TypeSpecSimple;
 import org.thoriumlang.compiler.ast.nodes.Visibility;
 import org.thoriumlang.compiler.input.Source;
-import org.thoriumlang.compiler.input.Sources;
-import org.thoriumlang.compiler.symbols.Name;
-import org.thoriumlang.compiler.symbols.SymbolTable;
-import org.thoriumlang.compiler.testsupport.NodeStub;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 class CompilerTest {
     @Test
@@ -47,41 +40,21 @@ class CompilerTest {
         Compiler compiler = new Compiler(listener, Collections.singletonList(new PluginStub()));
         AST ast = ast();
 
-        compiler.compile(new Sources() {
-            @Override
-            public List<Source> sources() {
-                return Collections.singletonList((nodeIdGenerator, symbolTable, algorithms) -> ast);
-            }
-
-            @Override
-            public Optional<Source> load(Name name) {
-                return Optional.empty();
-            }
-        });
+        compiler.compile(() -> Collections.singletonList((nodeIdGenerator) -> ast));
 
         Assertions.assertThat(listener.events)
                 .containsExactly(
                         "onCompilationStarted",
                         "onSourceStarted",
-                        "onError:symbol not found: ast (-1)",
+                        "onError:syntaxError (1)",
                         "onEvent:plugin",
-                        "onError:symbol not found: plugin (-1)",
+                        "onError:syntaxError (1)",
                         "onSourceFinished",
                         "onCompilationFinished"
                 );
 
         Assertions.assertThat(listener.context)
                 .isNotNull();
-
-        Assertions.assertThat(
-                listener.context.errors()
-                        .stream()
-                        .filter(e -> e instanceof SemanticError)
-                        .map(e -> (SemanticError) e)
-                        .map(e -> e.format((sp, message) -> String.format("%s (%d)", message, sp.getStartLine())))
-                        .map(Object::toString)
-                        .collect(Collectors.toList())
-        ).containsExactly("symbol not found: ast (-1)");
 
         Assertions.assertThat(listener.context.root().orElseThrow(() -> new IllegalStateException("no root found")))
                 .isSameAs(ast.root().orElseThrow(() -> new IllegalStateException("no root found")));
@@ -91,9 +64,7 @@ class CompilerTest {
         return new AST(
                 new InputStreamStub(),
                 "",
-                new NodeIdGenerator(),
-                Collections.emptyList(),
-                new SymbolTable()
+                new NodeIdGenerator()
         ) {
             private final NodeIdGenerator nodeIdGenerator = new NodeIdGenerator();
             private final Root root = new Root(
@@ -123,20 +94,7 @@ class CompilerTest {
 
             @Override
             public List<CompilationError> errors() {
-                return Collections.singletonList(new SymbolNotFoundError(
-                        new NodeStub()
-                                .getContext()
-                                .put(
-                                        SourcePosition.class,
-                                        new SourcePosition(
-                                                new SourcePosition.Position(-1, -1),
-                                                new SourcePosition.Position(-1, -1),
-                                                Collections.singletonList("")
-                                        )
-                                )
-                                .getNode(),
-                        "ast"
-                ));
+                return Collections.singletonList(new SyntaxError("syntaxError", 1, 2, 3, "errorLine", null));
             }
         };
     }
@@ -145,20 +103,7 @@ class CompilerTest {
         @Override
         public List<CompilationError> execute(CompilationContext context) {
             context.listener().onEvent(new Event(String.class, "plugin"));
-            return Collections.singletonList(new SymbolNotFoundError(
-                    new NodeStub()
-                            .getContext()
-                            .put(
-                                    SourcePosition.class,
-                                    new SourcePosition(
-                                            new SourcePosition.Position(-1, -1),
-                                            new SourcePosition.Position(-1, -1),
-                                            Collections.singletonList("")
-                                    )
-                            )
-                            .getNode(),
-                    "plugin"
-            ));
+            return Collections.singletonList(new SyntaxError("syntaxError", 1, 2, 3, "errorLine", null));
         }
     }
 

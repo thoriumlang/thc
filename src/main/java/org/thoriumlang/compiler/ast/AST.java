@@ -24,25 +24,16 @@ import org.thoriumlang.compiler.antlr4.LexerErrorListener;
 import org.thoriumlang.compiler.antlr4.ParserErrorListener;
 import org.thoriumlang.compiler.antlr4.RootVisitor;
 import org.thoriumlang.compiler.api.errors.CompilationError;
-import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
-import org.thoriumlang.compiler.ast.algorithms.Algorithm;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
-import org.thoriumlang.compiler.ast.visitor.RelativesInjectionVisitor;
-import org.thoriumlang.compiler.ast.visitor.SymbolTableInitializationVisitor;
-import org.thoriumlang.compiler.ast.visitor.TypeFlatteningVisitor;
-import org.thoriumlang.compiler.collections.Lists;
 import org.thoriumlang.compiler.data.Pair;
-import org.thoriumlang.compiler.symbols.Name;
-import org.thoriumlang.compiler.symbols.SymbolTable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -50,20 +41,16 @@ import java.util.Optional;
 public class AST {
     private final InputStream inputStream;
     private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
-    private final List<Algorithm> algorithms;
     private final NodeIdGenerator nodeIdGenerator;
-    private final SymbolTable symbolTable;
 
     private boolean parsed = false;
     private Root root;
     private List<CompilationError> errors;
 
-    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator, List<Algorithm> algorithms, SymbolTable symbolTable) {
+    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator) {
         this.inputStream = Objects.requireNonNull(inputStream, "inputStream cannot be null");
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
-        this.algorithms = Objects.requireNonNull(algorithms, "algorithms cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
-        this.symbolTable = symbolTable;
     }
 
     public AST parse() {
@@ -84,51 +71,11 @@ public class AST {
                 return this;
             }
 
-            Pair<Root, List<SemanticError>> algorithmsResult = applyAlgorithm(
-                    algorithms.iterator(),
-                    new Pair<>(
-                            (Root) parsingResult.left()
-                                    .accept(new RootVisitor(nodeIdGenerator, namespace))
-                                    .accept(new TypeFlatteningVisitor(nodeIdGenerator))
-                                    .accept(new RelativesInjectionVisitor())
-                                    .accept(new SymbolTableInitializationVisitor(
-                                            findLocalTable(symbolTable, new Name(namespace).getParts()))
-                                    ),
-                            Collections.emptyList()
-                    )
-            );
-
-            errors = new ArrayList<>(algorithmsResult.right());
-            root = algorithmsResult.left();
+            errors = Collections.emptyList();
+            root = parsingResult.left().accept(new RootVisitor(nodeIdGenerator, namespace));
         }
 
         return this;
-    }
-
-    private Pair<Root, List<SemanticError>> applyAlgorithm(Iterator<Algorithm> currentAlgorithm,
-                                                           Pair<Root, List<SemanticError>> state) {
-        if (!currentAlgorithm.hasNext()) {
-            return state;
-        }
-
-        Pair<Root, List<SemanticError>> result = currentAlgorithm.next().walk(state.left());
-
-        return applyAlgorithm(
-                currentAlgorithm,
-                new Pair<>(result.left(), Lists.merge(state.right(), result.right()))
-        );
-    }
-
-
-    private SymbolTable findLocalTable(SymbolTable symbolTable, List<String> namespaces) {
-        if (namespaces.isEmpty()) {
-            return symbolTable;
-        }
-        ArrayList<String> newNamespaces = new ArrayList<>(namespaces);
-        return findLocalTable(
-                symbolTable.createScope(newNamespaces.remove(0)),
-                newNamespaces
-        );
     }
 
     public Optional<Root> root() {
