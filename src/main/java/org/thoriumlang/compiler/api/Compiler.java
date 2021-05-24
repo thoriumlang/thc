@@ -1,7 +1,10 @@
 package org.thoriumlang.compiler.api;
 
-import org.thoriumlang.compiler.ast.AST;
+import io.vavr.control.Either;
+import org.thoriumlang.compiler.api.errors.CompilationError;
+import org.thoriumlang.compiler.ast.ASTFactory;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
+import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.input.Source;
 import org.thoriumlang.compiler.input.Sources;
 
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
 public class Compiler {
     private final List<Plugin> plugins;
     private final CompilationListener listener;
-    private final Map<Source, AST> compiledSources;
+    private final Map<Source, Either<List<CompilationError>, Root>> compiledSources;
     private final NodeIdGenerator nodeIdGenerator;
 
     public Compiler(CompilationListener listener, List<Plugin> plugins) {
@@ -32,15 +35,17 @@ public class Compiler {
         listener.onCompilationFinished();
     }
 
-    public void compile(Source source) {
+    private void compile(Source source) {
         if (compiledSources.containsKey(source)) {
             return ;
         }
         listener.onSourceStarted(source);
 
-        AST ast = source.ast(nodeIdGenerator).parse();
+        Either<List<CompilationError>, Root> ast = source.ast(nodeIdGenerator).parse();
 
-        ast.errors().forEach(e -> listener.onError(source, e));
+        if (ast.isLeft()) {
+            ast.getLeft().forEach(e -> listener.onError(source, e));
+        }
 
         CompilationContext context = new CompilationContext(ast, listener);
 

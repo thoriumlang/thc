@@ -1,9 +1,9 @@
 package org.thoriumlang.compiler.api;
 
+import io.vavr.control.Either;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
-import org.thoriumlang.compiler.ast.AST;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -12,30 +12,10 @@ import org.thoriumlang.compiler.ast.nodes.Visibility;
 
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 class CompilationContextTest {
     private static final CompilationListener listener = new NoopCompilationListener();
     private static final Root root = new RootStub();
-    private static final AST ast = new AST(new InputStreamStub(), "", new NodeIdGenerator()) {
-        @Override
-        public AST parse() {
-            // nothing to parse, the AST is already built
-            return this;
-        }
-
-        @Override
-        public Optional<Root> root() {
-            return Optional.of(root);
-        }
-
-        @Override
-        public List<CompilationError> errors() {
-            return Collections.singletonList(new CompilationError() {
-            });
-        }
-    };
 
     @Test
     void constructor_ast() {
@@ -46,7 +26,7 @@ class CompilationContextTest {
 
     @Test
     void constructor_listener() {
-        Assertions.assertThatThrownBy(() -> new CompilationContext(ast, null))
+        Assertions.assertThatThrownBy(() -> new CompilationContext(Either.left(Collections.emptyList()), null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("listener cannot be null");
     }
@@ -54,7 +34,7 @@ class CompilationContextTest {
     @Test
     void root() {
         Assertions.assertThat(
-                new CompilationContext(ast, listener)
+                new CompilationContext(Either.right(root), listener)
                         .root()
                         .orElseThrow(() -> new IllegalStateException("no root found"))
         ).isSameAs(root);
@@ -62,19 +42,22 @@ class CompilationContextTest {
 
     @Test
     void error() {
-        Assertions.assertThat(new CompilationContext(ast, listener).errors())
-                .hasSize(1);
+        Assertions.assertThat(new CompilationContext(
+                Either.left(Collections.singletonList(new CompilationError() {
+                })),
+                listener
+        ).errors()).hasSize(1);
     }
 
     @Test
     void listener() {
-        Assertions.assertThat(new CompilationContext(ast, listener).listener())
+        Assertions.assertThat(new CompilationContext(Either.right(root), listener).listener())
                 .isSameAs(listener);
     }
 
     @Test
     void put_get() {
-        CompilationContext context = new CompilationContext(ast, listener);
+        CompilationContext context = new CompilationContext(Either.right(root), listener);
         context.put(String.class, "String");
 
         Assertions.assertThat(context.get(String.class))

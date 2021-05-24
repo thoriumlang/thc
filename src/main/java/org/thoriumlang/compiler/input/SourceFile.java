@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.input;
 
-import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.ASTFactory;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 
 import java.io.IOException;
@@ -35,8 +35,8 @@ public class SourceFile implements Source {
     }
 
     @Override
-    public AST ast(NodeIdGenerator nodeIdGenerator) {
-        return new AST(
+    public ASTFactory ast(NodeIdGenerator nodeIdGenerator) {
+        return new ASTFactory(
                 inputStream(),
                 namespace(),
                 nodeIdGenerator

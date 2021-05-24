@@ -15,7 +15,7 @@
  */
 package org.thoriumlang.compiler.input;
 
-import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.ASTFactory;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 
 /**
@@ -24,5 +24,5 @@ import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
  * Must override {@link Object#equals(Object)} and {@link Object#hashCode()}.
  */
 public interface Source {
-    AST ast(NodeIdGenerator nodeIdGenerator);
+    ASTFactory ast(NodeIdGenerator nodeIdGenerator);
 }

@@ -1,11 +1,12 @@
 package org.thoriumlang.compiler.api;
 
+import io.vavr.control.Either;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.api.errors.SemanticError;
 import org.thoriumlang.compiler.api.errors.SyntaxError;
-import org.thoriumlang.compiler.ast.AST;
+import org.thoriumlang.compiler.ast.ASTFactory;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 import org.thoriumlang.compiler.ast.nodes.Type;
@@ -35,12 +36,35 @@ class CompilerTest {
     }
 
     @Test
-    void compile() {
+    void compile_success() {
+        ListenerStub listener = new ListenerStub();
+        Compiler compiler = new Compiler(listener, Collections.emptyList());
+        ASTFactory astFactory = successAstFactory();
+
+        compiler.compile(() -> Collections.singletonList((nodeIdGenerator) -> astFactory));
+
+        Assertions.assertThat(listener.events)
+                .containsExactly(
+                        "onCompilationStarted",
+                        "onSourceStarted",
+                        "onSourceFinished",
+                        "onCompilationFinished"
+                );
+
+        Assertions.assertThat(listener.context)
+                .isNotNull();
+
+        Assertions.assertThat(listener.context.root().orElseThrow(() -> new IllegalStateException("no root found")))
+                .isSameAs(astFactory.parse().get());
+    }
+
+    @Test
+    void compile_error() {
         ListenerStub listener = new ListenerStub();
         Compiler compiler = new Compiler(listener, Collections.singletonList(new PluginStub()));
-        AST ast = ast();
+        ASTFactory astFactory = errorAstFactory();
 
-        compiler.compile(() -> Collections.singletonList((nodeIdGenerator) -> ast));
+        compiler.compile(() -> Collections.singletonList((nodeIdGenerator) -> astFactory));
 
         Assertions.assertThat(listener.events)
                 .containsExactly(
@@ -55,13 +79,10 @@ class CompilerTest {
 
         Assertions.assertThat(listener.context)
                 .isNotNull();
-
-        Assertions.assertThat(listener.context.root().orElseThrow(() -> new IllegalStateException("no root found")))
-                .isSameAs(ast.root().orElseThrow(() -> new IllegalStateException("no root found")));
     }
 
-    private AST ast() {
-        return new AST(
+    private ASTFactory successAstFactory() {
+        return new ASTFactory(
                 new InputStreamStub(),
                 "",
                 new NodeIdGenerator()
@@ -82,19 +103,21 @@ class CompilerTest {
             );
 
             @Override
-            public AST parse() {
-                // nothing to parse, the AST is already built
-                return this;
+            public Either<List<CompilationError>, Root> parse() {
+                return Either.right(root);
             }
+        };
+    }
 
+    private ASTFactory errorAstFactory() {
+        return new ASTFactory(
+                new InputStreamStub(),
+                "",
+                new NodeIdGenerator()
+        ) {
             @Override
-            public Optional<Root> root() {
-                return Optional.of(root);
-            }
-
-            @Override
-            public List<CompilationError> errors() {
-                return Collections.singletonList(new SyntaxError("syntaxError", 1, 2, 3, "errorLine", null));
+            public Either<List<CompilationError>, Root> parse() {
+                return Either.left(Collections.singletonList(new SyntaxError("syntaxError", 1, 2, 3, "errorLine", null)));
             }
         };
     }

@@ -33,65 +33,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-public class AST {
+public class ASTFactory {
     private final InputStream inputStream;
     private final String namespace; // TODO create a Namespace  (/!\ we use Name for some namespaces values)
     private final NodeIdGenerator nodeIdGenerator;
+    private Either<List<CompilationError>, Root> parsingResult;
 
-    private boolean parsed = false;
-    private Root root;
-    private List<CompilationError> errors;
-
-    public AST(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator) {
+    public ASTFactory(InputStream inputStream, String namespace, NodeIdGenerator nodeIdGenerator) {
         this.inputStream = Objects.requireNonNull(inputStream, "inputStream cannot be null");
         this.namespace = Objects.requireNonNull(namespace, "namespace cannot be null");
         this.nodeIdGenerator = Objects.requireNonNull(nodeIdGenerator, "nodeIdGenerator cannot be null");
     }
 
-    public AST parse() {
-        if (parsed) {
-            return this;
+    public Either<List<CompilationError>, Root> parse() {
+        if (parsingResult != null) {
+            return parsingResult;
         }
 
-        synchronized (inputStream) {
-            if (parsed) {
-                return this;
+        synchronized (this) {
+            if (parsingResult != null) {
+                return parsingResult;
             }
-            parsed = true;
+            parsingResult = new Parser()
+                    .parse(inputStream)
+                    .map(rootContext -> rootContext.accept(new RootVisitor(nodeIdGenerator, namespace)));
 
-            Either<List<SyntaxError>, ThoriumParser.RootContext> parsingResult = new Parser().parse(inputStream);
-
-            if (parsingResult.isLeft()) {
-                errors = new ArrayList<>(parsingResult.getLeft());
-                return this;
-            }
-
-            errors = Collections.emptyList();
-            root = parsingResult.get().accept(new RootVisitor(nodeIdGenerator, namespace));
         }
 
-        return this;
-    }
-
-    public Optional<Root> root() {
-        parse();
-        return Optional.ofNullable(root);
-    }
-
-    public List<CompilationError> errors() {
-        parse();
-        return errors;
+        return parsingResult;
     }
 
     private static class Parser implements SyntaxErrorListener {
-        private final List<SyntaxError> errors = new ArrayList<>();
+        private final List<CompilationError> errors = new ArrayList<>();
 
-        private Either<List<SyntaxError>, ThoriumParser.RootContext> parse(InputStream inputStream) {
+        private Either<List<CompilationError>, ThoriumParser.RootContext> parse(InputStream inputStream) {
             ThoriumParser.RootContext root = parser(lexer(inputStream)).root();
             if (errors.isEmpty()) {
                 return Either.right(root);
