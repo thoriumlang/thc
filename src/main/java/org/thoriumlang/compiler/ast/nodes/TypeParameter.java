@@ -19,7 +19,7 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class TypeParameter extends Node {
+public class TypeParameter extends Node implements HasName {
     private final String name;
 
     public TypeParameter(NodeId nodeId, String name) {
@@ -37,6 +37,7 @@ public class TypeParameter extends Node {
         return name;
     }
 
+    @Override
     public String getName() {
         return name;
     }

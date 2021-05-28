@@ -66,6 +66,7 @@ public class Class extends TopLevelNode {
         );
     }
 
+    @Override
     public Visibility getVisibility() {
         return visibility;
     }

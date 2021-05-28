@@ -19,7 +19,7 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class NewAssignmentValue extends AssignmentValue {
+public class NewAssignmentValue extends AssignmentValue implements HasName {
     private final String name;
     private final TypeSpec type;
     private final Mode mode;
@@ -47,6 +47,7 @@ public class NewAssignmentValue extends AssignmentValue {
         );
     }
 
+    @Override
     public String getName() {
         return name;
     }

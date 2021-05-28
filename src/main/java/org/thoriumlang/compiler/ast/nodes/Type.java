@@ -29,7 +29,7 @@ public class Type extends TopLevelNode {
     private final List<MethodSignature> methods;
 
     public Type(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            TypeSpec superType, List<MethodSignature> methods) {
+                TypeSpec superType, List<MethodSignature> methods) {
         super(nodeId);
         this.visibility = Objects.requireNonNull(visibility, "visibility cannot be null");
         this.name = Objects.requireNonNull(name, "name cannot be null");
@@ -69,6 +69,7 @@ public class Type extends TopLevelNode {
         return name;
     }
 
+    @Override
     public List<TypeParameter> getTypeParameters() {
         return typeParameters;
     }

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MethodSignature extends Node {
+public class MethodSignature extends Node implements HasName, HasTypeParameters, HasVisibility {
     private final Visibility visibility;
     private final String name;
     private final List<TypeParameter> typeParameters;
@@ -29,7 +29,7 @@ public class MethodSignature extends Node {
     private final TypeSpec returnType;
 
     public MethodSignature(NodeId nodeId, Visibility visibility, String name, List<TypeParameter> typeParameters,
-            List<Parameter> parameters, TypeSpec returnType) {
+                           List<Parameter> parameters, TypeSpec returnType) {
         super(nodeId);
         this.visibility = Objects.requireNonNull(visibility, "visibility cannot be null");
         this.name = Objects.requireNonNull(name, "name cannot be null");
@@ -58,14 +58,17 @@ public class MethodSignature extends Node {
         );
     }
 
+    @Override
     public Visibility getVisibility() {
         return visibility;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public List<TypeParameter> getTypeParameters() {
         return typeParameters;
     }

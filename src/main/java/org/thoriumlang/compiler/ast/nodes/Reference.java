@@ -19,7 +19,7 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class Reference extends Node {
+public class Reference extends Node implements HasName {
     private final String name;
     private final boolean allowForwardReference;
 
@@ -39,6 +39,7 @@ public class Reference extends Node {
         return name;
     }
 
+    @Override
     public String getName() {
         return name;
     }

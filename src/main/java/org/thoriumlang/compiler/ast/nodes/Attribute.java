@@ -19,7 +19,7 @@ import org.thoriumlang.compiler.ast.visitor.Visitor;
 
 import java.util.Objects;
 
-public class Attribute extends Node {
+public class Attribute extends Node implements HasName {
     private final String name;
     private final TypeSpec type;
     private final Value value;
@@ -48,6 +48,7 @@ public class Attribute extends Node {
         );
     }
 
+    @Override
     public String getName() {
         return name;
     }
