@@ -1,0 +1,7 @@
+use org.thoriumlang.MyType;
+
+class MyClass {
+    var attr : MyType;
+
+    var attrWithValue : MyType = call[MyType]();
+}

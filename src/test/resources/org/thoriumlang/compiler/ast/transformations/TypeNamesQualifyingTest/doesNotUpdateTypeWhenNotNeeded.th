@@ -1,0 +1,5 @@
+type MyType : org.thoriumlang.SuperType[org.thoriumlang.Other] {
+    public myMethod(param: org.thorium.lang.String & org.thorium.lang.String): org.thoriumlang.Integer & org.thoriumlang.Integer;
+
+    public myMethod(param: org.thorium.lang.String | org.thorium.lang.String): org.thoriumlang.Integer | org.thoriumlang.Integer;
+}

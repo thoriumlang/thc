@@ -1,0 +1,5 @@
+use org.thoriumlang.SuperType;
+use org.thoriumlang.OtherSuperType;
+
+class MyType : SuperType[OtherSuperType] {
+}

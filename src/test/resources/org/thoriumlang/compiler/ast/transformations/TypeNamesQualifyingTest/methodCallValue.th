@@ -1,0 +1,13 @@
+use org.thoriumlang.MyType;
+
+class MyClass {
+    myMethodCallingWithTypeArgs() : MyType {
+        methodCall[MyType]();
+    }
+
+    myMethodCallingWithArguments() : MyType {
+        methodCall(
+            paramMethodCall[MyType]()
+        );
+    }
+}

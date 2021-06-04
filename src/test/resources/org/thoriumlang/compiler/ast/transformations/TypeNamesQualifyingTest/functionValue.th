@@ -1,0 +1,7 @@
+use org.thoriumlang.MyType;
+
+class MyClass {
+    myFn = (p: MyType): MyType => {
+        var a : MyType;
+    };
+}

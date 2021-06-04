@@ -1,0 +1,14 @@
+use org.thoriumlang.Type;
+use org.thoriumlang.Arg;
+
+type MyType {
+    uu() : Type[Arg];
+    un() : Type[NsArg];
+    uq() : Type[q.Arg];
+    nu() : NsType[Arg];
+    nn() : NsType[NsArg];
+    nq() : NsType[q.Arg];
+    qu() : q.Type[Arg];
+    qn() : q.Type[NsArg];
+    qq() : q.Type[q.Arg];
+}

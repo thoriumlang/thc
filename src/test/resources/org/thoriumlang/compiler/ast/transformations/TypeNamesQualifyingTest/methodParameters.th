@@ -1,0 +1,5 @@
+use org.thoriumlang.ParameterType;
+
+type MyType {
+    myMethod(a: ParameterType) : None;
+}

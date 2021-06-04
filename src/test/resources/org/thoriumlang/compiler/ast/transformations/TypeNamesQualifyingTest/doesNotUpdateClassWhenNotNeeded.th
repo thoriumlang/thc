@@ -1,0 +1,20 @@
+class MyClass : org.thoriumlang.SuperType[org.thoriumlang.Other] {
+    var myAttribute : org.thoriumlang.String;
+    var myAttributeWithValue : org.thoriumlang.String = call[org.thoriumlang.String]();
+    var myFnAttr : () : org.thoriumlang.String;
+    var attrFnWithParams : (org.thoriumlang.String) : org.thoriumlang.String;
+    myFn = [T](p: org.thoriumlang.String): org.thoriumlang.String => {
+        var a : org.thoriumlang.String;
+    };
+
+    public myMethod(param: org.thorium.lang.String): org.thoriumlang.Integer {
+        var myString: org.thoriumlang.String = "myString";
+
+        var myUnion: org.thoriumlang.String & org.thoriumlang.String = "myString";
+
+        var myIntersection: org.thoriumlang.String | org.thoriumlang.String = "myString";
+
+        call[org.thoriumlang.String]();
+        call(call[org.thoriumlang.String]());
+    }
+}

@@ -30,7 +30,8 @@ public final class SourceFilesHelper {
                 Path.of(
                         c.getResource(
                                 "/" + Path.of(
-                                        c.getPackageName().replace(".", "/")
+                                        c.getPackageName().replace(".", "/"),
+                                        c.getSimpleName()
                                 ).toString()
                         ).toURI()
                 ),

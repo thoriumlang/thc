@@ -1,0 +1,7 @@
+use org.thoriumlang.String;
+
+class MyClass {
+    myMethod() {
+        var myString: String = "";
+    }
+}

@@ -1,0 +1,6 @@
+use org.thoriumlang.MyType;
+
+class MyClass {
+    var attrFn : () : MyType;
+    var attrFnWithParams : (MyType) : MyType;
+}

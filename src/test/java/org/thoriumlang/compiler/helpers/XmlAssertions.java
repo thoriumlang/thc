@@ -3,7 +3,11 @@ package org.thoriumlang.compiler.helpers;
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.junit.jupiter.api.Assertions;
+import org.thoriumlang.compiler.ast.nodes.Root;
+import org.thoriumlang.compiler.output.xml.XmlWalker;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Objects;
 
 public final class XmlAssertions {
@@ -22,7 +26,19 @@ public final class XmlAssertions {
     }
 
     public static XmlAssertions on(Document document) {
+        if (Boolean.getBoolean("xmlAssertions.dump")) {
+            try (FileWriter out = new FileWriter("/tmp/dump.xml")) {
+                document.write(out);
+            }
+            catch (IOException e) {
+                System.out.println("Cannot open dump file");
+            }
+        }
         return new XmlAssertions(document);
+    }
+
+    public static XmlAssertions on(Root root) {
+        return on(new XmlWalker(root).walk());
     }
 
     public XmlAssertions assertXpathEquals(String xpath, String value) {
@@ -54,5 +70,9 @@ public final class XmlAssertions {
 
     public XmlAssertions removePrefix() {
         return Objects.requireNonNull(prev);
+    }
+
+    public XmlComparingAssertions comparing(Root root) {
+        return new XmlComparingAssertions(this, new XmlWalker(root).walk(), prefix);
     }
 }

@@ -1,0 +1,6 @@
+use org.thoriumlang.ReturnType;
+
+class MyType {
+    someMethod() : ReturnType {
+    }
+}
