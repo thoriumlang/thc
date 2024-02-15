@@ -1,0 +1,8 @@
+use None;
+class MyClass {
+    val a = 1;
+
+    myMethod(): None {
+        a.add(1);
+    }
+}

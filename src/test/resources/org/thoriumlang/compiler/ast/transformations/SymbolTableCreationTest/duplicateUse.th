@@ -1,0 +1,5 @@
+use org.thoriumlang.String;
+use org.thoriumlang.String;
+
+type MyType {
+}

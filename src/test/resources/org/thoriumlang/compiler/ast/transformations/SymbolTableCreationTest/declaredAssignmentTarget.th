@@ -1,0 +1,13 @@
+use String;
+
+class MyClass {
+    val myAttribute: String;
+
+    myMethod(myParameter: String): String {
+        myAttribute = 1;
+        myParameter = 1;
+
+        var myVar: String;
+        myVar = 1;
+    }
+}

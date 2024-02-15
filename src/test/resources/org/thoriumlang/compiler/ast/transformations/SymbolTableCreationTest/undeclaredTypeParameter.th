@@ -1,0 +1,5 @@
+use String;
+use None;
+type MyType {
+    myMethod(p: String[T]): None;
+}

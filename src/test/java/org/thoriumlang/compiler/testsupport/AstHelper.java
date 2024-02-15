@@ -15,10 +15,13 @@
  */
 package org.thoriumlang.compiler.testsupport;
 
+import io.vavr.control.Either;
+import org.thoriumlang.compiler.api.errors.CompilationError;
 import org.thoriumlang.compiler.ast.nodes.NodeIdGenerator;
 import org.thoriumlang.compiler.ast.nodes.Root;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 public final class AstHelper {
     private AstHelper() {
@@ -30,12 +33,17 @@ public final class AstHelper {
 
     public static Root from(Class<?> c, String fileName, NodeIdGenerator nodeIdGenerator) {
         try {
-            return SourceFilesHelper.from(c, fileName)
+            Either<List<CompilationError>, Root> maybeRoot = SourceFilesHelper.from(c, fileName)
                     .sources()
                     .get(0)
                     .ast(nodeIdGenerator)
-                    .parse()
-                    .get();
+                    .parse();
+
+            if (maybeRoot.isLeft()) {
+                System.out.println(maybeRoot.getLeft());
+            }
+
+            return maybeRoot.get();
         }
         catch (URISyntaxException e) {
             throw new RuntimeException(e);

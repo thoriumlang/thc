@@ -1,0 +1,5 @@
+use String;
+use None;
+type MyType[A, A, T] {
+    myMethod[T, T, U](p1: String, p1: String, p2: String): None;
+}

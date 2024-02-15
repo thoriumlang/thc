@@ -1,0 +1,8 @@
+use String;
+
+class MyClass {
+    var x: String;
+    myMethod() {
+        var x: String;
+    }
+}

@@ -1,0 +1,7 @@
+use String;
+
+class MyClass {
+    myMethod(): String {
+        undefinedTarget = 1;
+    }
+}

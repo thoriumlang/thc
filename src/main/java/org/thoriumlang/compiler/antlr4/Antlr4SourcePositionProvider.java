@@ -37,6 +37,7 @@ public class Antlr4SourcePositionProvider implements SourcePositionProvider<Toke
                                 lastToken.getCharPositionInLine() + lastToken.getText().length() + 1
                         ),
                         Arrays.asList(firstToken.getInputStream().toString().split("\n"))
+                                // FIXME error when file ends in \n
                                 .subList(firstToken.getLine() - 1, lastToken.getLine())
                 )
         );

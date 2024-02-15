@@ -1,0 +1,7 @@
+class MyClass[U] {
+    val x: U = 1;
+    method[T](p: T, q: U) {
+        val a: T = 1;
+        val b: U = 1;
+    }
+}

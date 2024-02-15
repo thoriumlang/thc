@@ -1,0 +1,7 @@
+class MyClass {
+    var myAttribute: UndeclaredAttributeType;
+    myMethod(): UndeclaredMethodReturnType {
+    }
+    myMethod(p: UndeclaredParameterType) {
+    }
+}

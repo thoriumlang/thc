@@ -1,0 +1,3 @@
+use org.thoriumlang.compiler.ast.transformations.SymbolTableCreationTest.MyType;
+type MyType {
+}

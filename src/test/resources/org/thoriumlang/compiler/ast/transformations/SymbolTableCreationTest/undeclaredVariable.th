@@ -1,0 +1,6 @@
+use None;
+class MyClass {
+    myMethod(): None {
+        p.add(1);
+    }
+}

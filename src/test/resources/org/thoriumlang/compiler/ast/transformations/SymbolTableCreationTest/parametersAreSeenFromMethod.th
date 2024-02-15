@@ -1,0 +1,7 @@
+use String;
+use None;
+class MyClass {
+    myMethod(p: String): None {
+        p;
+    }
+}

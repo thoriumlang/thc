@@ -1,0 +1,4 @@
+use org.thoriumlang.MyType;
+
+type MyOtherType {
+}
